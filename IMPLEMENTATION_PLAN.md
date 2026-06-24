@@ -31,6 +31,15 @@
 - **Reversible:** both variants live in the DOM — `#activity-experiment` (visible) and `#activity-classic` (`.hidden`, the 60/40 marquee preserved). Rollback = swap the `hidden` class between them (instructions in an HTML comment at the section). Git baseline: `4fc7179`.
 - *Trade-off / open:* because Scira can't grow and the objective content is taller, there's whitespace to the right below Scira. Alternatives if undesired: vertically center Scira, or trim the left card (e.g., 2 rows) to shrink the gap.
 
+**Phase 2 EXPERIMENT — Direction 3 *Refined* (`Activity Section – Direction 3 Refined.pdf`, supersedes the above):** fixes the excess-height/imbalance of the first experiment.
+- **Heights now align** — reverted `align-items:start` → stretch; left card ≈ Scira (229/229, ~9px Scira adjustment, within "slight adjustments acceptable").
+- **Featured** compacted (`.obj-featured` padding 18→13/15, flex row): category → title → description, **no default CTA**; "Ask Scira →" reveals on **hover to the right** (`.obj-feat-hovercta`, opacity/translateX fade) — discoverable, not promotional.
+- **Supporting objectives → horizontal carousel** (`.obj-carousel.scroll-area#objcar-scroll`): replaced the stacked `.obj-row`s with `.sobj` items (icon + title + discipline), **dot-separated** (`.sobj-sep`), transparent default, hover = "temporary card" (subtle bg + soft border + elevation). Chevron nav reuses `hscroll('objcar',±1)` — same handler as every other carousel. Scrolls for future expansion.
+- **Header:** status pill "Updated Weekly" (removed "Real industry objectives").
+- **Scira card** unchanged — remains primary action / visual anchor.
+- Rollback unchanged: `#activity-experiment` (live) vs `#activity-classic` (`.hidden`); git baselines `4fc7179` (pre-experiment) / `e994a6c` (first experiment).
+- *Note:* smooth `scrollBy` is a no-op in the preview engine (instant works); chevrons scroll normally in a real browser.
+
 ### Preservation rules (all phases)
 Preserve existing spacing system, typography scale, card styles, section paddings, and responsive behavior. **Prefer extending existing components over creating new ones.**
 

@@ -23,6 +23,14 @@
 
 **Phase 2 refinement (balance):** rebalanced 75/25 → **60/40** (`.activity-grid-2{grid-template-columns:3fr 2fr}`). Left card density raised to **two marquee rows** scrolling opposite directions (kills vertical whitespace). Scira card given **stronger prominence**: sparkle badge + "Scira Intelligence" eyebrow, radial glow, larger Poppins title (17px), full-width CTA.
 
+**Phase 2 EXPERIMENT (Direction 3 modified) — `Activity Section – Direction 3 (Modified).pdf`:** reframed the left card from search pills to **scientific objectives**.
+- **70/30** layout (`.activity-grid-exp{grid-template-columns:7fr 3fr;align-items:start}`).
+- Left = **featured opportunity card** (`.obj-featured`, ~42% of left: category → Poppins title → description → Ask Scira CTA) + **3 supporting objective rows** (`.obj-row`: icon → objective → discipline → chevron; plain rows, not cards/pills/tags/buttons).
+- Header "What People Are Building Today" — no search terminology.
+- **Scira card preserved exactly** and **not stretched**: `align-items:start` keeps it at its natural height (~220px), top-aligned, while the taller objective content lives in the left card. (A featured card + 3 rows can't fit inside Scira's ~220px height, so stretch alignment would have forced Scira taller — top-align is the resolution that respects "do not increase Scira height".)
+- **Reversible:** both variants live in the DOM — `#activity-experiment` (visible) and `#activity-classic` (`.hidden`, the 60/40 marquee preserved). Rollback = swap the `hidden` class between them (instructions in an HTML comment at the section). Git baseline: `4fc7179`.
+- *Trade-off / open:* because Scira can't grow and the objective content is taller, there's whitespace to the right below Scira. Alternatives if undesired: vertically center Scira, or trim the left card (e.g., 2 rows) to shrink the gap.
+
 ### Preservation rules (all phases)
 Preserve existing spacing system, typography scale, card styles, section paddings, and responsive behavior. **Prefer extending existing components over creating new ones.**
 

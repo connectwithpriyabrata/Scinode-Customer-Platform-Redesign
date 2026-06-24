@@ -417,6 +417,30 @@
     .act-scira .act-va-title{font-size:17px;line-height:1.3;margin-bottom:7px;}
     .act-scira .act-va-sub{font-size:12px;line-height:1.5;}
     .act-scira .scira-cta{width:100%;justify-content:center;margin-top:16px;}
+    /* Day 0 — Your Activity: EXPERIMENT (Direction 3 modified) — Featured objective + supporting rows.
+       Reversible: toggle the .hidden class between #activity-experiment and #activity-classic. */
+    .activity-grid-exp{grid-template-columns:7fr 3fr;align-items:start;}
+    .act-objectives{gap:11px;overflow:hidden;}
+    .objhead{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .objhead-title{font-size:13px;font-weight:600;color:var(--text-1);}
+    .objhead-meta{font-size:10px;font-weight:500;color:var(--text-3);}
+    .obj-featured{background:var(--teal-50);border:1px solid var(--teal-100);border-radius:10px;padding:18px 18px;display:flex;flex-direction:column;flex-shrink:0;}
+    .obj-feat-cat{font-size:9px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--teal-600);margin-bottom:10px;}
+    .obj-feat-title{font-family:var(--font-heading);font-size:15.5px;font-weight:600;color:var(--text-1);line-height:1.3;margin-bottom:8px;}
+    .obj-feat-desc{font-size:12px;color:var(--text-2);line-height:1.55;margin-bottom:16px;}
+    .obj-feat-cta{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--teal-500);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-family:var(--font);font-size:12.5px;font-weight:500;cursor:pointer;transition:background .15s;}
+    .obj-feat-cta:hover{background:var(--teal-600);}
+    .obj-rows{display:flex;flex-direction:column;flex:1;justify-content:center;}
+    .obj-row{display:flex;align-items:center;gap:11px;padding:9px 2px;width:100%;text-align:left;background:none;border:none;border-bottom:0.5px solid var(--border);cursor:pointer;font-family:var(--font);transition:padding .12s;}
+    .obj-row:last-child{border-bottom:none;}
+    .obj-row:hover{padding-left:6px;}
+    .obj-row:hover .obj-row-name{color:var(--teal-600);}
+    .obj-row:hover .obj-row-go{color:var(--teal-500);}
+    .obj-row-ic{width:28px;height:28px;border-radius:8px;background:var(--teal-50);display:flex;align-items:center;justify-content:center;color:var(--teal-500);flex-shrink:0;}
+    .obj-row-body{flex:1;min-width:0;display:flex;flex-direction:column;}
+    .obj-row-name{font-size:12.5px;font-weight:500;color:var(--text-1);line-height:1.3;}
+    .obj-row-cat{font-size:10px;color:var(--teal-600);font-weight:500;margin-top:1px;}
+    .obj-row-go{color:var(--text-3);flex-shrink:0;}
 
     /* ── DAY 10 ── */
     .cmd-bar{background:var(--navy-500);height:68px;padding:0 28px;display:flex;align-items:center;gap:18px;}
@@ -1647,7 +1671,40 @@
     <div class="content">
       <section>
             <div class="sec-hdr"><div><div class="sec-title">Your Activity</div><div class="sec-sub">Explore what you can build and execute</div></div></div>
-            <div class="activity-grid activity-grid-2">
+            <!-- ═══ EXPERIMENT: Direction 3 (modified) — Featured objective + supporting rows.
+                 ROLLBACK: add class "hidden" to #activity-experiment below and remove it from #activity-classic. ═══ -->
+            <div id="activity-experiment" class="activity-grid activity-grid-exp">
+              <!-- Left (70%): Featured objective + supporting objective rows -->
+              <div class="act-card act-objectives">
+                <div class="objhead"><span class="objhead-title">What People Are Building Today</span><span class="objhead-meta">Real industry objectives</span></div>
+                <div class="obj-featured">
+                  <div class="obj-feat-cat">Formulation R&amp;D</div>
+                  <div class="obj-feat-title">Develop a next-generation topical formulation</div>
+                  <div class="obj-feat-desc">Needs formulation support, scale-up guidance, and a manufacturing strategy to move from concept to production.</div>
+                  <button type="button" class="obj-feat-cta" onclick="openScira('Develop a next-generation topical formulation')">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+                </div>
+                <div class="obj-rows">
+                  <button type="button" class="obj-row" onclick="openScira('Improve cosmetic emulsion stability')"><span class="obj-row-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6m-6 0v7l-4 7a1 1 0 0 0 .9 1.5h12.2A1 1 0 0 0 19 17l-4-7V3M9 3H6"/></svg></span><span class="obj-row-body"><span class="obj-row-name">Improve cosmetic emulsion stability</span><span class="obj-row-cat">Formulation R&amp;D</span></span><span class="obj-row-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span></button>
+                  <button type="button" class="obj-row" onclick="openScira('Optimize fermentation yield')"><span class="obj-row-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0M5.52 16h12.96"/></svg></span><span class="obj-row-body"><span class="obj-row-name">Optimize fermentation yield</span><span class="obj-row-cat">Bioprocessing</span></span><span class="obj-row-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span></button>
+                  <button type="button" class="obj-row" onclick="openScira('Scale an API route to commercial volume')"><span class="obj-row-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg></span><span class="obj-row-body"><span class="obj-row-name">Scale an API route to commercial volume</span><span class="obj-row-cat">Process scale-up</span></span><span class="obj-row-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span></button>
+                </div>
+              </div>
+              <!-- Right (30%): existing Scira card — unchanged component, preserved dimensions -->
+              <div class="act-card view-all act-scira" style="background:linear-gradient(135deg,#043E54 0%,#021C26 100%);border-color:transparent;">
+                <div class="scira-glow" aria-hidden="true"></div>
+                <div class="scira-top">
+                  <span class="scira-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg></span>
+                  <span class="scira-eyebrow">Scira Intelligence</span>
+                </div>
+                <div class="scira-main">
+                  <div class="act-va-title" style="color:#fff;">Lay out your execution pathway with Scira</div>
+                  <div class="act-va-sub" style="color:rgba(255,255,255,0.6);">Explore molecules, manufacturers or R&amp;D needs with Scira</div>
+                </div>
+                <button type="button" class="btn btn-default scira-cta" onclick="openScira('')">Ask Scira <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+              </div>
+            </div>
+            <!-- ═══ CLASSIC: previous 60/40 design — preserved for rollback (hidden) ═══ -->
+            <div id="activity-classic" class="activity-grid activity-grid-2 hidden">
               <!-- Card 1: Popular Searches Today — two-row auto-scroll carousel; every item opens Scira -->
               <div class="act-card act-searches">
                 <div class="searches-hdr">

@@ -19,7 +19,9 @@
 - **Phase 3 — Hero & case-study expansion** ← *next*
 - **Phase 4 — Compliance section redesign**
 
-**Phase 2 notes:** Day 0 "Your Activity" went 4 cards → 2. Card 1 `.act-searches` (spans 3 cols) = "Popular Searches Today" CSS marquee carousel of `.search-chip`s (pause-on-hover, seamless via duplicated set). Card 2 `.act-scira` (spans 1 col) reuses the `.act-card.view-all` dark card with new copy + "Ask Scira" CTA. New `openScira(query)` global routes every chip + CTA to the hero search (Philosophy §4). Existing `.activity-grid` / card styles / spacing reused — no new card system.
+**Phase 2 notes:** Day 0 "Your Activity" went 4 cards → 2. Card 1 `.act-searches` = "Popular Searches Today" CSS marquee of `.search-chip`s (pause-on-hover, seamless via duplicated set). Card 2 `.act-scira` reuses the `.act-card.view-all` dark card + "Ask Scira" CTA. New `openScira(query)` global routes every chip + CTA to the hero search (Philosophy §4). Existing `.activity-grid` / card styles / spacing reused — no new card system.
+
+**Phase 2 refinement (balance):** rebalanced 75/25 → **60/40** (`.activity-grid-2{grid-template-columns:3fr 2fr}`). Left card density raised to **two marquee rows** scrolling opposite directions (kills vertical whitespace). Scira card given **stronger prominence**: sparkle badge + "Scira Intelligence" eyebrow, radial glow, larger Poppins title (17px), full-width CTA.
 
 ### Preservation rules (all phases)
 Preserve existing spacing system, typography scale, card styles, section paddings, and responsive behavior. **Prefer extending existing components over creating new ones.**

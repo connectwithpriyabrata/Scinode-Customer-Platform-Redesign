@@ -361,19 +361,16 @@
     .cert-logo{width:44px;height:44px;border-radius:8px;background:var(--teal-50);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal-600);}
     .cert-name{font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
     .cert-sub{font-size:10px;color:var(--text-2);}
-    /* Compliance module (Day 0) — seal cards by category */
-    .cmp-card{min-width:172px;width:172px;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0;cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s,transform .15s,box-shadow .15s;}
-    .cmp-card:hover{border-color:var(--teal-100);transform:translateY(-2px);box-shadow:0 6px 16px rgba(16,24,22,0.07);}
-    .cmp-seal{height:76px;display:flex;align-items:center;justify-content:center;position:relative;}
-    .cmp-seal-ic{position:absolute;top:8px;right:8px;opacity:.55;}
-    .cmp-abbr{font-family:var(--font-heading);font-size:17px;font-weight:700;letter-spacing:-0.01em;}
-    .cmp-body{padding:10px 12px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;flex:1;}
-    .cmp-name{font-size:12px;font-weight:600;color:var(--text-1);line-height:1.3;}
-    .cmp-cat{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-top:auto;}
-    .cmp-Factory .cmp-seal{background:var(--teal-50);} .cmp-Factory .cmp-abbr,.cmp-Factory .cmp-cat,.cmp-Factory .cmp-seal-ic{color:var(--teal-600);}
-    .cmp-Product .cmp-seal{background:#EEF2FF;} .cmp-Product .cmp-abbr,.cmp-Product .cmp-cat,.cmp-Product .cmp-seal-ic{color:#4338CA;}
-    .cmp-Documentation .cmp-seal{background:#EFF6FF;} .cmp-Documentation .cmp-abbr,.cmp-Documentation .cmp-cat,.cmp-Documentation .cmp-seal-ic{color:#1D4ED8;}
-    .cmp-Regulatory .cmp-seal{background:#F0FDF4;} .cmp-Regulatory .cmp-abbr,.cmp-Regulatory .cmp-cat,.cmp-Regulatory .cmp-seal-ic{color:#15803D;}
+    /* Compliance module (Day 0) — Figma card: logo + title/sub + verified check */
+    .cmp-card{min-width:272px;width:272px;display:flex;align-items:flex-start;gap:8px;background:var(--white);border:1px solid #e4e4e7;border-radius:8px;padding:16px;overflow:hidden;flex-shrink:0;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s;}
+    .cmp-card:hover{border-color:var(--teal-100);box-shadow:0 6px 16px rgba(16,24,22,0.07);transform:translateY(-2px);}
+    .cmp-main{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:48px;}
+    .cmp-logo{width:41px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .cmp-logo img{max-width:100%;max-height:100%;object-fit:contain;}
+    .cmp-text{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;}
+    .cmp-name{font-size:15px;font-weight:600;color:var(--text-1);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cmp-sub{font-size:12px;font-weight:500;color:var(--text-2);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cmp-check{flex-shrink:0;color:var(--teal-500);display:flex;}
 
     /* ── DAY 1 ── */
     .d1-greeting{background:var(--navy-500);padding:14px 28px;display:flex;align-items:center;gap:16px;}
@@ -4141,48 +4138,60 @@
   (function() {
     var wrap = document.getElementById('compliance-scroll');
     if (!wrap) return;
-    var ITEMS = [
-      {a:'GMP',n:'Good Manufacturing Practice',c:'Factory'},
-      {a:'ISO',n:'ISO 9001:2015 — Quality',c:'Factory'},
-      {a:'ISO',n:'ISO 14001 — Environment',c:'Factory'},
-      {a:'ISO',n:'ISO 45001 — Health & Safety',c:'Factory'},
-      {a:'FDA',n:'FDA Registered Facility',c:'Factory'},
-      {a:'EHS',n:'EHS Compliance',c:'Factory'},
-      {a:'WHO',n:'WHO-GMP — Export ready',c:'Factory'},
-      {a:'EU',n:'EU GMP — Annex 1',c:'Factory'},
-      {a:'LIC',n:'Product License',c:'Product'},
-      {a:'CEP',n:'Certificate of Suitability',c:'Product'},
-      {a:'DMF',n:'Drug Master File',c:'Product'},
-      {a:'REACH',n:'REACH Registered',c:'Product'},
-      {a:'HALAL',n:'Halal Certified',c:'Product'},
-      {a:'KOSHER',n:'Kosher Certified',c:'Product'},
-      {a:'IP',n:'Patent & IP Filings',c:'Product'},
-      {a:'SDS',n:'Safety Data Sheet',c:'Documentation'},
-      {a:'COA',n:'Certificate of Analysis',c:'Documentation'},
-      {a:'SPEC',n:'Technical Specification',c:'Documentation'},
-      {a:'TSE',n:'TSE / BSE Statement',c:'Documentation'},
-      {a:'STAB',n:'Stability Data',c:'Documentation'},
-      {a:'MVR',n:'Method Validation Report',c:'Documentation'},
-      {a:'BMR',n:'Batch Manufacturing Record',c:'Documentation'},
-      {a:'NRA',n:'Nitrosamine Risk Assessment',c:'Documentation'},
-      {a:'Q10',n:'ICH Q10 — Pharma QMS',c:'Regulatory'},
-      {a:'EMA',n:'EMA Compliant',c:'Regulatory'},
-      {a:'Q3D',n:'ICH Q3D — Elemental Impurities',c:'Regulatory'},
-      {a:'cGMP',n:'Current GMP (cGMP)',c:'Regulatory'},
-      {a:'ANVISA',n:'ANVISA — Brazil',c:'Regulatory'},
-      {a:'PMDA',n:'PMDA — Japan',c:'Regulatory'},
-      {a:'REG',n:'Regulatory Filing Support',c:'Regulatory'}
-    ];
-    var ICONS = {
-      Factory:'<path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0H5m-2 0h2m0-11h10"/>',
-      Product:'<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>',
-      Documentation:'<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>',
-      Regulatory:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>'
+    var COLORS = {
+      Factory:{bg:'#E6F7F6',fg:'#016358'},
+      Product:{bg:'#EEF2FF',fg:'#4338CA'},
+      Documentation:{bg:'#EFF6FF',fg:'#1D4ED8'},
+      Regulatory:{bg:'#F0FDF4',fg:'#15803D'}
     };
+    function badge(k, cat) {
+      var c = COLORS[cat] || COLORS.Factory;
+      var fs = k.length <= 3 ? 11 : (k.length <= 4 ? 9 : (k.length <= 5 ? 7.5 : 6.2));
+      return '<svg width="41" height="42" viewBox="0 0 42 42" aria-hidden="true">'
+        + '<circle cx="21" cy="21" r="20" fill="' + c.bg + '" stroke="' + c.fg + '" stroke-width="1.4"/>'
+        + '<circle cx="21" cy="21" r="16" fill="none" stroke="' + c.fg + '" stroke-width="0.7" opacity="0.45"/>'
+        + '<text x="21" y="22" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-weight="700" font-size="' + fs + '" fill="' + c.fg + '">' + k + '</text>'
+        + '</svg>';
+    }
+    var ITEMS = [
+      {t:'GMP Certified',s:'Good Manufacturing Practice',c:'Factory',k:'GMP',img:'assets/certs/gmp.png'},
+      {t:'ISO 9001:2015',s:'Quality Management',c:'Factory',k:'ISO'},
+      {t:'ISO 14001',s:'Environmental Management',c:'Factory',k:'ISO'},
+      {t:'ISO 45001',s:'Occupational Health &amp; Safety',c:'Factory',k:'ISO'},
+      {t:'FDA Registered',s:'US 21 CFR Part 211',c:'Factory',k:'FDA'},
+      {t:'EHS Compliance',s:'Environment, Health &amp; Safety',c:'Factory',k:'EHS'},
+      {t:'WHO-GMP',s:'Global export ready',c:'Factory',k:'WHO'},
+      {t:'EU GMP',s:'Annex 1 compliant',c:'Factory',k:'EU'},
+      {t:'Product License',s:'Marketing authorization',c:'Product',k:'LIC'},
+      {t:'CEP',s:'Certificate of Suitability',c:'Product',k:'CEP'},
+      {t:'Drug Master File',s:'DMF on record',c:'Product',k:'DMF'},
+      {t:'REACH Registered',s:'EU chemical compliance',c:'Product',k:'REACH'},
+      {t:'Halal Certified',s:'Halal assurance',c:'Product',k:'HALAL'},
+      {t:'Kosher Certified',s:'Kosher assurance',c:'Product',k:'KOSHER'},
+      {t:'Patent &amp; IP',s:'Filed and protected',c:'Product',k:'IP'},
+      {t:'Safety Data Sheet',s:'SDS available',c:'Documentation',k:'SDS'},
+      {t:'Certificate of Analysis',s:'COA per batch',c:'Documentation',k:'COA'},
+      {t:'Specification',s:'Technical specification',c:'Documentation',k:'SPEC'},
+      {t:'TSE / BSE Statement',s:'Animal-origin free',c:'Documentation',k:'TSE'},
+      {t:'Stability Data',s:'Shelf-life studies',c:'Documentation',k:'STAB'},
+      {t:'Method Validation',s:'Analytical methods',c:'Documentation',k:'MVR'},
+      {t:'Batch Record',s:'Manufacturing record',c:'Documentation',k:'BMR'},
+      {t:'Nitrosamine Risk',s:'Risk assessment',c:'Documentation',k:'NRA'},
+      {t:'ICH Q10',s:'Pharmaceutical QMS',c:'Regulatory',k:'Q10'},
+      {t:'EMA Compliant',s:'EU GMP Annex 1',c:'Regulatory',k:'EMA'},
+      {t:'ICH Q3D',s:'Elemental impurities',c:'Regulatory',k:'Q3D'},
+      {t:'cGMP',s:'Current GMP',c:'Regulatory',k:'cGMP'},
+      {t:'ANVISA',s:'Brazil regulatory',c:'Regulatory',k:'ANVISA'},
+      {t:'PMDA',s:'Japan regulatory',c:'Regulatory',k:'PMDA'},
+      {t:'Regulatory Filing',s:'Dossier support',c:'Regulatory',k:'REG'}
+    ];
+    var CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
     wrap.innerHTML = ITEMS.map(function(it) {
-      return '<div role="listitem" class="cmp-card cmp-' + it.c + '" data-cat="' + it.c + '">'
-        + '<div class="cmp-seal"><span class="cmp-seal-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[it.c] + '</svg></span><span class="cmp-abbr">' + it.a + '</span></div>'
-        + '<div class="cmp-body"><span class="cmp-name">' + it.n + '</span><span class="cmp-cat">' + it.c + '</span></div>'
+      var logo = it.img ? '<img alt="" src="' + it.img + '">' : badge(it.k, it.c);
+      return '<div role="listitem" class="cmp-card" data-cat="' + it.c + '">'
+        + '<div class="cmp-main"><div class="cmp-logo">' + logo + '</div>'
+        + '<div class="cmp-text"><span class="cmp-name">' + it.t + '</span><span class="cmp-sub">' + it.s + '</span></div></div>'
+        + '<span class="cmp-check">' + CHECK + '</span>'
         + '</div>';
     }).join('');
     window.filterCompliance = function(btn, cat) {

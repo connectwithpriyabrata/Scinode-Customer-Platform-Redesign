@@ -385,6 +385,26 @@
     .act-va-sub{font-size:12px;color:var(--teal-600);line-height:1.45;flex:1;}
     .act-arrow{width:32px;height:32px;border-radius:8px;background:var(--teal-500);display:flex;align-items:center;justify-content:center;align-self:flex-end;}
 
+    /* Day 0 — Your Activity: 2-card layout (Popular Searches + Scira pathway) */
+    .activity-grid-2 .act-searches{grid-column:span 3;gap:14px;cursor:default;overflow:hidden;}
+    .activity-grid-2 .act-scira{grid-column:span 1;}
+    .searches-hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .searches-title{font-size:13px;font-weight:600;color:var(--text-1);line-height:1.35;}
+    .searches-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:500;color:var(--teal-600);background:var(--teal-50);border:1px solid var(--teal-100);padding:3px 8px;border-radius:20px;white-space:nowrap;}
+    .searches-live-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 3px rgba(150,221,165,0.25);flex-shrink:0;}
+    .searches-viewport{position:relative;flex:1;display:flex;align-items:center;overflow:hidden;
+      -webkit-mask-image:linear-gradient(to right,transparent,#000 5%,#000 95%,transparent);
+      mask-image:linear-gradient(to right,transparent,#000 5%,#000 95%,transparent);}
+    .searches-track{display:flex;gap:8px;width:max-content;animation:searchesScroll 34s linear infinite;}
+    .act-searches:hover .searches-track{animation-play-state:paused;}
+    @keyframes searchesScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    .search-chip{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;background:var(--page-bg);
+      border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-family:var(--font);font-size:12px;
+      font-weight:500;color:var(--text-1);cursor:pointer;transition:border-color 0.15s,background 0.15s,color 0.15s;}
+    .search-chip:hover{border-color:var(--teal-500);color:var(--teal-600);background:var(--white);}
+    .search-chip svg{color:var(--text-3);flex-shrink:0;}
+    .search-chip:hover svg{color:var(--teal-500);}
+
     /* ── DAY 10 ── */
     .cmd-bar{background:var(--navy-500);height:68px;padding:0 28px;display:flex;align-items:center;gap:18px;}
     .cmd-greeting{font-size:13px;color:rgba(255,255,255,0.5);white-space:nowrap;min-width:130px;}
@@ -1614,27 +1634,42 @@
     <div class="content">
       <section>
             <div class="sec-hdr"><div><div class="sec-title">Your Activity</div><div class="sec-sub">Explore what you can build and execute</div></div></div>
-            <div class="activity-grid">
-              <div class="act-card">
-                <div class="act-top"><span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--teal-50);flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-500)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span></div>
-                <h4>Start your first request</h4>
-                <div class="act-desc">Explore molecules, manufacturers or R&D needs with Scira</div>
-                <button type="button" class="btn btn-default btn-sm" style="font-size:11px;padding:5px 10px;margin-top:auto;">Ask Scira</button>
+            <div class="activity-grid activity-grid-2">
+              <!-- Card 1: Popular Searches Today — auto-scroll carousel; every item opens Scira -->
+              <div class="act-card act-searches">
+                <div class="searches-hdr">
+                  <span class="searches-title">Popular Searches Today</span>
+                  <span class="searches-live"><span class="searches-live-dot"></span>Trending now</span>
+                </div>
+                <div class="searches-viewport">
+                  <div class="searches-track" role="list" aria-label="Popular searches today">
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Scale ibuprofen production')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Scale ibuprofen production</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Develop nutraceutical formulation')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Develop nutraceutical formulation</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Fermentation process optimization')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Fermentation process optimization</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Improve yield of Grignard reaction')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Improve yield of Grignard reaction</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('API technology transfer')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>API technology transfer</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Polymorph screening for API')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Polymorph screening for API</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Cosmetic emulsion stability')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Cosmetic emulsion stability</button>
+                    <button type="button" role="listitem" class="search-chip" onclick="openScira('Route scouting for intermediate')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Route scouting for intermediate</button>
+                    <!-- duplicate set for seamless loop (decorative) -->
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Scale ibuprofen production')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Scale ibuprofen production</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Develop nutraceutical formulation')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Develop nutraceutical formulation</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Fermentation process optimization')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Fermentation process optimization</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Improve yield of Grignard reaction')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Improve yield of Grignard reaction</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('API technology transfer')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>API technology transfer</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Polymorph screening for API')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Polymorph screening for API</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Cosmetic emulsion stability')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Cosmetic emulsion stability</button>
+                    <button type="button" tabindex="-1" aria-hidden="true" class="search-chip" onclick="openScira('Route scouting for intermediate')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Route scouting for intermediate</button>
+                  </div>
+                </div>
               </div>
-              <div class="act-card">
-                <div class="act-top"><span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--teal-50);flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-500)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span></div>
-                <h4>Popular starting points</h4>
-                <div class="act-desc" style="line-height:1.6;">• Explore CRO capabilities<br>• Explore APIs<br>• Source materials</div>
-              </div>
-              <div class="act-card">
-                <div class="act-top"><span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--teal-50);flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-500)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m3.5 11.5 5 5"/><path d="M22 2c-1.5 4-3 5.5-7 7.5L9.5 7c2-4 3.5-5.5 7.5-7C21 2 22 2 22 2z"/></svg></span></div>
-                <h4>AI can help with</h4>
-                <div class="act-desc" style="line-height:1.6;">• Compliance<br>• Sourcing<br>• Route optimization</div>
-              </div>
-              <div class="act-card view-all" style="background:linear-gradient(135deg,#043E54 0%,#021C26 100%);border-color:transparent;">
-                <div class="act-va-title" style="color:#fff;">Explore with Scira</div>
-                <div class="act-va-sub" style="color:rgba(255,255,255,0.6);">Discover manufacturers, routes & opportunities</div>
-                <div class="act-arrow" role="img" aria-label="Explore with Scira"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></div>
+              <!-- Card 2: Lay out your execution pathway with Scira -->
+              <div class="act-card view-all act-scira" style="background:linear-gradient(135deg,#043E54 0%,#021C26 100%);border-color:transparent;">
+                <div>
+                  <div class="act-va-title" style="color:#fff;">Lay out your execution pathway with Scira</div>
+                  <div class="act-va-sub" style="color:rgba(255,255,255,0.6);">Explore molecules, manufacturers or R&amp;D needs with Scira</div>
+                </div>
+                <button type="button" class="btn btn-default btn-sm" style="align-self:flex-start;margin-top:14px;" onclick="openScira('')">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
               </div>
             </div>
           </section>
@@ -3844,6 +3879,18 @@
     tab.setAttribute('aria-selected', 'true');
     tab.classList.add('active');
   }
+
+  /* ── Scira entry point ── every exploration flow routes to Scira (Philosophy §4).
+     Prototype: surfaces the query in the hero search and scrolls to it. */
+  function openScira(query) {
+    var input = document.querySelector('.hero-input');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (input) {
+      input.value = query || '';
+      input.focus({ preventScroll: true });
+    }
+  }
+  window.openScira = openScira;
 
   switchDay(10);
 

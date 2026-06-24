@@ -14,10 +14,12 @@
 4. **Notifications** — **no changes** this stage; retain current notification UI. Requirements later. *(Resolves #4.)*
 
 ### Phased implementation order (commit each phase separately; do not modify unrelated components)
-- **Phase 1 — Global terminology cleanup + Service section updates** ← *current*
-- **Phase 2 — Day 0 activity redesign (Popular Searches + Scira activity cards)**
-- **Phase 3 — Hero & case-study expansion**
+- **Phase 1 — Global terminology cleanup + Service section updates** ✅ done (`5968d38`)
+- **Phase 2 — Day 0 activity redesign (Popular Searches + Scira activity cards)** ✅ done
+- **Phase 3 — Hero & case-study expansion** ← *next*
 - **Phase 4 — Compliance section redesign**
+
+**Phase 2 notes:** Day 0 "Your Activity" went 4 cards → 2. Card 1 `.act-searches` (spans 3 cols) = "Popular Searches Today" CSS marquee carousel of `.search-chip`s (pause-on-hover, seamless via duplicated set). Card 2 `.act-scira` (spans 1 col) reuses the `.act-card.view-all` dark card with new copy + "Ask Scira" CTA. New `openScira(query)` global routes every chip + CTA to the hero search (Philosophy §4). Existing `.activity-grid` / card styles / spacing reused — no new card system.
 
 ### Preservation rules (all phases)
 Preserve existing spacing system, typography scale, card styles, section paddings, and responsive behavior. **Prefer extending existing components over creating new ones.**

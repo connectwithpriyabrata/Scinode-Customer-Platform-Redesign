@@ -16,8 +16,10 @@
 ### Phased implementation order (commit each phase separately; do not modify unrelated components)
 - **Phase 1 — Global terminology cleanup + Service section updates** ✅ done (`5968d38`)
 - **Phase 2 — Day 0 activity redesign (Popular Searches + Scira activity cards)** ✅ done
-- **Phase 3 — Hero & case-study expansion** ← *next*
-- **Phase 4 — Compliance section redesign**
+- **Phase 3 — Hero & case-study expansion** ✅ done
+- **Phase 4 — Compliance section redesign** ← *next*
+
+**Phase 3 notes:** hero showcase carousel expanded **3 → 8 educational case studies** (API scale-up, process optimization, specialty chemicals, nutraceutical mfg, cosmetic formulation, bioprocessing, quality & compliance, tech transfer). Removed the dead `.showcase-arrow` CTAs. Carousel JS now derives `total` from `track.children.length` and **generates the dots dynamically** (was hardcoded `total=3` + 3 hardcoded `.cdot`s) — reusable for any slide count. Images: relevant temporary Unsplash stock photos (reused IDs already proven to load in the file). Hero stays in the shared region → global on all day states (per v1 decision).
 
 **Phase 2 notes:** Day 0 "Your Activity" went 4 cards → 2. Card 1 `.act-searches` = "Popular Searches Today" CSS marquee of `.search-chip`s (pause-on-hover, seamless via duplicated set). Card 2 `.act-scira` reuses the `.act-card.view-all` dark card + "Ask Scira" CTA. New `openScira(query)` global routes every chip + CTA to the hero search (Philosophy §4). Existing `.activity-grid` / card styles / spacing reused — no new card system.
 

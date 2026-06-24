@@ -17,7 +17,9 @@
 - **Phase 1 — Global terminology cleanup + Service section updates** ✅ done (`5968d38`)
 - **Phase 2 — Day 0 activity redesign (Popular Searches + Scira activity cards)** ✅ done
 - **Phase 3 — Hero & case-study expansion** ✅ done
-- **Phase 4 — Compliance section redesign** ← *next*
+- **Phase 4 — Compliance section redesign** ✅ done
+
+**Phase 4 notes:** Day 0 "Built for Regulated Chemistry" (6 plain cert cards) → dedicated **"Compliance & Certifications"** module: **30 items** across Factory (8) / Product (7) / Documentation (8) / Regulatory (7), JS-rendered from a data array into `#compliance-scroll`. Each `.cmp-card` = a category-colored **seal emblem** (abbreviation + category icon) + name + category label. Category **filter tabs** (All + 4) via `filterCompliance()`; **chevron** horizontal scroll via `hscroll('compliance',±1)`. Images: seal emblems are deliberate temporary visuals (real trademarked cert logos can be dropped in later) — no gray placeholders. *Scope:* Day 0 only (per PDF); the collapsed copies in Day 1/Day 10 still show the old 6 cert cards — can be propagated on request.
 
 **Phase 3 notes:** hero showcase carousel expanded **3 → 8 educational case studies** (API scale-up, process optimization, specialty chemicals, nutraceutical mfg, cosmetic formulation, bioprocessing, quality & compliance, tech transfer). Removed the dead `.showcase-arrow` CTAs. Carousel JS now derives `total` from `track.children.length` and **generates the dots dynamically** (was hardcoded `total=3` + 3 hardcoded `.cdot`s) — reusable for any slide count. Images: relevant temporary Unsplash stock photos (reused IDs already proven to load in the file). Hero stays in the shared region → global on all day states (per v1 decision).
 

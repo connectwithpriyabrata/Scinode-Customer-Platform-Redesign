@@ -361,6 +361,19 @@
     .cert-logo{width:44px;height:44px;border-radius:8px;background:var(--teal-50);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--teal-600);}
     .cert-name{font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
     .cert-sub{font-size:10px;color:var(--text-2);}
+    /* Compliance module (Day 0) — seal cards by category */
+    .cmp-card{min-width:172px;width:172px;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0;cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s,transform .15s,box-shadow .15s;}
+    .cmp-card:hover{border-color:var(--teal-100);transform:translateY(-2px);box-shadow:0 6px 16px rgba(16,24,22,0.07);}
+    .cmp-seal{height:76px;display:flex;align-items:center;justify-content:center;position:relative;}
+    .cmp-seal-ic{position:absolute;top:8px;right:8px;opacity:.55;}
+    .cmp-abbr{font-family:var(--font-heading);font-size:17px;font-weight:700;letter-spacing:-0.01em;}
+    .cmp-body{padding:10px 12px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;flex:1;}
+    .cmp-name{font-size:12px;font-weight:600;color:var(--text-1);line-height:1.3;}
+    .cmp-cat{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-top:auto;}
+    .cmp-Factory .cmp-seal{background:var(--teal-50);} .cmp-Factory .cmp-abbr,.cmp-Factory .cmp-cat,.cmp-Factory .cmp-seal-ic{color:var(--teal-600);}
+    .cmp-Product .cmp-seal{background:#EEF2FF;} .cmp-Product .cmp-abbr,.cmp-Product .cmp-cat,.cmp-Product .cmp-seal-ic{color:#4338CA;}
+    .cmp-Documentation .cmp-seal{background:#EFF6FF;} .cmp-Documentation .cmp-abbr,.cmp-Documentation .cmp-cat,.cmp-Documentation .cmp-seal-ic{color:#1D4ED8;}
+    .cmp-Regulatory .cmp-seal{background:#F0FDF4;} .cmp-Regulatory .cmp-abbr,.cmp-Regulatory .cmp-cat,.cmp-Regulatory .cmp-seal-ic{color:#15803D;}
 
     /* ── DAY 1 ── */
     .d1-greeting{background:var(--navy-500);padding:14px 28px;display:flex;align-items:center;gap:16px;}
@@ -1975,16 +1988,22 @@
             </section>
 </div>
       <div style="padding:16px 20px;">
-        <section>
-              <div class="sec-hdr"><div><div class="sec-title">Built for Regulated Chemistry</div><div class="sec-sub">Trusted infrastructure across research, scale-up and production</div></div></div>
-              <div class="hscroll scroll-area">
-                <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">GMP</span></span><div class="cert-name">GMP Certified</div><div class="cert-sub">ICH Q7 compliant</div></div>
-                <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">FDA</span></span><div class="cert-name">FDA Registered</div><div class="cert-sub">US 21 CFR Part 211</div></div>
-                <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">ISO</span></span><div class="cert-name">ISO 9001:2015</div><div class="cert-sub">Quality management</div></div>
-                <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">EMA</span></span><div class="cert-name">EMA Compliant</div><div class="cert-sub">EU GMP Annex 1</div></div>
-                <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">ICH</span></span><div class="cert-name">ICH Q10</div><div class="cert-sub">Pharmaceutical QMS</div></div>
-                <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">WHO</span></span><div class="cert-name">WHO-GMP</div><div class="cert-sub">Global export ready</div></div>
+        <section aria-label="Compliance and certifications">
+              <div class="sec-hdr">
+                <div><div class="sec-title">Compliance &amp; Certifications</div><div class="sec-sub">Verified standards across factory, product, documentation and regulatory</div></div>
+                <div class="hscroll-controls">
+                  <button type="button" class="btn btn-icon-sm" onclick="hscroll('compliance',-1)" aria-label="Scroll compliance left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+                  <button type="button" class="btn btn-icon-sm" onclick="hscroll('compliance',1)" aria-label="Scroll compliance right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
+                </div>
               </div>
+              <div class="tabs-list" role="tablist" aria-label="Filter compliance by category">
+                <button type="button" role="tab" aria-selected="true" class="tabs-trigger" onclick="filterCompliance(this,'all')">All</button>
+                <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Factory')">Factory</button>
+                <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Product')">Product</button>
+                <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Documentation')">Documentation</button>
+                <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Regulatory')">Regulatory</button>
+              </div>
+              <div class="hscroll scroll-area" id="compliance-scroll" role="list" aria-label="Compliance items"><!-- rendered by JS --></div>
             </section>
       </div>
       <div style="height:24px"></div>
@@ -4116,6 +4135,65 @@
 
     renderDots();
     startTimer();
+  })();
+
+  /* ── Compliance module (Day 0) — ~30 items across 4 categories, with filter ── */
+  (function() {
+    var wrap = document.getElementById('compliance-scroll');
+    if (!wrap) return;
+    var ITEMS = [
+      {a:'GMP',n:'Good Manufacturing Practice',c:'Factory'},
+      {a:'ISO',n:'ISO 9001:2015 — Quality',c:'Factory'},
+      {a:'ISO',n:'ISO 14001 — Environment',c:'Factory'},
+      {a:'ISO',n:'ISO 45001 — Health & Safety',c:'Factory'},
+      {a:'FDA',n:'FDA Registered Facility',c:'Factory'},
+      {a:'EHS',n:'EHS Compliance',c:'Factory'},
+      {a:'WHO',n:'WHO-GMP — Export ready',c:'Factory'},
+      {a:'EU',n:'EU GMP — Annex 1',c:'Factory'},
+      {a:'LIC',n:'Product License',c:'Product'},
+      {a:'CEP',n:'Certificate of Suitability',c:'Product'},
+      {a:'DMF',n:'Drug Master File',c:'Product'},
+      {a:'REACH',n:'REACH Registered',c:'Product'},
+      {a:'HALAL',n:'Halal Certified',c:'Product'},
+      {a:'KOSHER',n:'Kosher Certified',c:'Product'},
+      {a:'IP',n:'Patent & IP Filings',c:'Product'},
+      {a:'SDS',n:'Safety Data Sheet',c:'Documentation'},
+      {a:'COA',n:'Certificate of Analysis',c:'Documentation'},
+      {a:'SPEC',n:'Technical Specification',c:'Documentation'},
+      {a:'TSE',n:'TSE / BSE Statement',c:'Documentation'},
+      {a:'STAB',n:'Stability Data',c:'Documentation'},
+      {a:'MVR',n:'Method Validation Report',c:'Documentation'},
+      {a:'BMR',n:'Batch Manufacturing Record',c:'Documentation'},
+      {a:'NRA',n:'Nitrosamine Risk Assessment',c:'Documentation'},
+      {a:'Q10',n:'ICH Q10 — Pharma QMS',c:'Regulatory'},
+      {a:'EMA',n:'EMA Compliant',c:'Regulatory'},
+      {a:'Q3D',n:'ICH Q3D — Elemental Impurities',c:'Regulatory'},
+      {a:'cGMP',n:'Current GMP (cGMP)',c:'Regulatory'},
+      {a:'ANVISA',n:'ANVISA — Brazil',c:'Regulatory'},
+      {a:'PMDA',n:'PMDA — Japan',c:'Regulatory'},
+      {a:'REG',n:'Regulatory Filing Support',c:'Regulatory'}
+    ];
+    var ICONS = {
+      Factory:'<path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0H5m-2 0h2m0-11h10"/>',
+      Product:'<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>',
+      Documentation:'<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>',
+      Regulatory:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>'
+    };
+    wrap.innerHTML = ITEMS.map(function(it) {
+      return '<div role="listitem" class="cmp-card cmp-' + it.c + '" data-cat="' + it.c + '">'
+        + '<div class="cmp-seal"><span class="cmp-seal-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[it.c] + '</svg></span><span class="cmp-abbr">' + it.a + '</span></div>'
+        + '<div class="cmp-body"><span class="cmp-name">' + it.n + '</span><span class="cmp-cat">' + it.c + '</span></div>'
+        + '</div>';
+    }).join('');
+    window.filterCompliance = function(btn, cat) {
+      var list = btn.closest('[role="tablist"]');
+      if (list) list.querySelectorAll('[role="tab"]').forEach(function(t) { t.setAttribute('aria-selected', 'false'); });
+      btn.setAttribute('aria-selected', 'true');
+      wrap.querySelectorAll('.cmp-card').forEach(function(card) {
+        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+      });
+      wrap.scrollLeft = 0;
+    };
   })();
 </script>
 

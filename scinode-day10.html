@@ -384,11 +384,11 @@
     .opps-search svg{position:absolute;left:11px;color:var(--text-3);pointer-events:none;}
     .opps-search input{font-family:var(--font);font-size:12px;color:var(--text-1);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;width:210px;outline:none;transition:border-color .15s;}
     .opps-search input:focus{border-color:var(--teal-300);}
-    .opps-split{display:grid;grid-template-columns:2fr 1fr;gap:14px;align-items:stretch;}
-    .opps-feed{position:relative;overflow:hidden;border-radius:14px;padding:20px 22px;height:320px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(150deg,#04332f 0%,#021a24 100%);color:#fff;border:1px solid #0b433f;}
+    .opps-split{display:grid;grid-template-columns:2.2fr 1fr;gap:16px;align-items:stretch;}
+    .opps-feed{position:relative;overflow:hidden;border-radius:16px;padding:22px 24px;height:340px;display:flex;flex-direction:column;justify-content:flex-start;background:linear-gradient(150deg,#04332f 0%,#021a24 100%);color:#fff;border:1px solid #0b433f;}
     .opps-feed::after{content:"";position:absolute;right:-60px;bottom:-60px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.16),transparent 65%);pointer-events:none;}
     .opps-feed>*{position:relative;z-index:1;}
-    .opps-feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+    .opps-feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;}
     .opps-feed-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
     .opps-cat{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;}
     .opps-src{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,.55);}
@@ -401,35 +401,34 @@
     .opps-iconbtn:hover{background:rgba(255,255,255,.12);color:#fff;}
     .opps-iconbtn.star.on{color:var(--gold);}
     .opps-feed-mid{cursor:pointer;}
-    .opps-feed-title{font-family:var(--font-heading);font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;margin-bottom:4px;transition:color .2s;}
+    .opps-feed-title{font-family:var(--font-heading);font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;margin-bottom:6px;transition:color .2s;}
     .opps-feed-mid:hover .opps-feed-title{color:var(--teal-300);}
     .opps-feed-subt{font-size:12px;color:rgba(255,255,255,.65);margin-bottom:8px;}
     .opps-feed-desc{font-size:12px;color:rgba(255,255,255,.5);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-    .opps-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px;margin:12px 0;background:rgba(3,45,42,.5);border-top:1px solid rgba(11,67,63,.6);border-bottom:1px solid rgba(11,67,63,.6);border-radius:8px;}
+    .opps-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:11px 12px;margin:24px 0 0;background:rgba(3,45,42,.5);border-top:1px solid rgba(11,67,63,.6);border-bottom:1px solid rgba(11,67,63,.6);border-radius:8px;}
     .opps-metric .l{font-size:10px;color:rgba(255,255,255,.45);line-height:1.2;margin-bottom:3px;}
     .opps-metric .v{font-size:13px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;}
-    .opps-feed-foot{display:flex;align-items:center;justify-content:space-between;}
+    .opps-feed-foot{display:flex;align-items:center;justify-content:space-between;margin-top:20px;}
     .opps-impact{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,.5);}
     .opps-impact b{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--teal-300);background:rgba(2,150,138,.2);border:1px solid rgba(88,201,194,.25);padding:2px 7px;border-radius:5px;}
     .opps-explore{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--teal-300);background:none;border:none;cursor:pointer;font-family:var(--font);transition:gap .15s,color .15s;}
     .opps-explore:hover{gap:8px;color:#7fe3da;}
     .opps-feed-empty{display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.4);font-size:12px;}
-    .opps-stack{position:relative;height:320px;}
+    .opps-stack{position:relative;height:340px;}
     .opps-stack-scroll{display:flex;flex-direction:column;gap:10px;height:100%;overflow-y:auto;padding-right:4px;scrollbar-width:thin;}
     .opps-stack-scroll::-webkit-scrollbar{width:5px;}.opps-stack-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-    .opps-cand{position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 16px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color .3s,box-shadow .3s,transform .15s;}
-    .opps-cand::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cc);}
-    .opps-cand:hover{border-color:var(--text-3);transform:translateY(-1px);}
-    .opps-cand.sel{border-color:var(--teal-500);box-shadow:0 0 0 3px rgba(2,150,138,.12);}
-    .opps-cand-body{flex:1;min-width:0;}
-    .opps-cand-title{font-size:13px;font-weight:600;color:var(--text-1);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s;}
-    .opps-cand:hover .opps-cand-title{color:var(--teal-600);}
-    .opps-cand-meta{display:flex;align-items:center;gap:8px;margin-top:7px;}
-    .opps-cand-rel{width:64px;height:4px;border-radius:2px;background:var(--teal-50);overflow:hidden;}
-    .opps-cand-rel i{display:block;height:100%;background:var(--teal-500);border-radius:2px;}
-    .opps-cand-cat{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
-    .opps-cand-arrow{flex-shrink:0;color:var(--text-3);transition:transform .15s,color .15s;background:none;border:none;cursor:pointer;display:flex;padding:2px;}
-    .opps-cand:hover .opps-cand-arrow{color:var(--teal-500);transform:translate(2px,-2px);}
+    .opps-cand{position:relative;overflow:hidden;flex-shrink:0;display:block;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:10px 14px;cursor:pointer;text-align:left;font-family:var(--font);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease;}
+    .opps-cand:hover{transform:translateY(-2px);border-color:#e3e7ea;box-shadow:0 6px 16px rgba(16,24,22,.07);}
+    .opps-cand.sel{background:#fbfdfc;border-color:#dfe4e7;box-shadow:0 4px 14px rgba(2,150,138,.1);}
+    .opps-cand.sel::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:2px;border-radius:0 2px 2px 0;background:var(--cc);}
+    .opps-cand-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+    .opps-cand-pill{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);}
+    .opps-cand-dot{width:6px;height:6px;border-radius:50%;background:var(--cc);flex-shrink:0;}
+    .opps-cand-score{flex-shrink:0;font-size:11px;font-weight:500;color:var(--text-3);}
+    .opps-cand-score b{font-weight:700;color:var(--teal-600);font-variant-numeric:tabular-nums;}
+    .opps-cand-title{font-size:13px;font-weight:600;color:var(--text-1);line-height:1.28;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:3px;transition:color .2s;}
+    .opps-cand:hover .opps-cand-title{color:var(--teal-700);}
+    .opps-cand-sum{font-size:11.5px;color:var(--text-2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
     .opps-fade{position:absolute;left:0;right:6px;bottom:0;height:54px;pointer-events:none;background:linear-gradient(to top,var(--page-bg) 0%,rgba(247,247,247,.5) 55%,transparent 100%);display:none;}
     .opps-more{position:absolute;left:0;right:6px;bottom:6px;text-align:center;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-600);animation:oppspulse 2s infinite;pointer-events:none;display:none;}
     .opps-stack.scrollable .opps-fade,.opps-stack.scrollable .opps-more{display:block;}
@@ -5273,10 +5272,10 @@ function App() {
 <script>
 (function(){
   var CAT={
-    Product:{l:'#6366F1',d:'#A5B4FC',bg:'#EEF2FF'},
-    Market:{l:'#02968A',d:'#58C9C2',bg:'#E6F7F6'},
-    Technology:{l:'#2563EB',d:'#93C5FD',bg:'#EFF4FF'},
-    Distribution:{l:'#C2410C',d:'#FDBA74',bg:'#FFF3E9'}
+    Product:{l:'#6366F1',d:'#A5B4FC',bg:'#EEF2FF',dot:'#2563EB'},
+    Market:{l:'#02968A',d:'#58C9C2',bg:'#E6F7F6',dot:'#16A34A'},
+    Technology:{l:'#2563EB',d:'#93C5FD',bg:'#EFF4FF',dot:'#02968A'},
+    Distribution:{l:'#C2410C',d:'#FDBA74',bg:'#FFF3E9',dot:'#EA580C'}
   };
   var LEVEL={day0:'Level 1 · Profile-based',activity:'Level 2 · Activity-based',day1:'Level 3 · Request-based',day10:'Level 4 · Project-based'};
   var ACTIONS={
@@ -5287,32 +5286,32 @@ function App() {
   };
   var DATA={
     day0:[
-      {id:'d0-1',cat:'Technology',src:'Technology Matchmaking',title:'Microfluidic Encapsulation of Botanical Actives',subt:'High-precision lipid-shell encapsulation for stable, target-released delivery',desc:'Protect volatile oils and active vitamins using microfluidic lipid bilayers — enhancing topical penetration ~3× and shielding ingredients from oxidation.',mets:[['Penetration Boost','310%'],['Oxidation Half-Life','18 mo'],['Encapsulation Yield','98.5%']],impact:'HIGH',rel:93,doss:'### Microfluidic Encapsulation Technology\nProtect unstable lipid-soluble actives with microfluidically assembled lipid nanoparticles.\n#### Background\nMany botanical actives oxidise within weeks of formulation, causing discolouration and efficacy loss. Precision encapsulation creates uniform lipid vesicles that surround and isolate these sensitive chemicals.\n#### Key benefits\n* **Incredible stability:** shielded from oxygen and light, prolonging active shelf life.\n* **Targeted release:** bilayers break down naturally on contact with skin enzymes, delivering the active exactly where needed.'},
-      {id:'d0-2',cat:'Product',src:'Profile Match',title:'Bio-based Emulsifier Systems',subt:'Cold-processable emulsifiers aligned to your personal-care portfolio',desc:'Plant-derived emulsifier blends matched to the formulation categories in your onboarding profile.',mets:[['HLB Range','8–16'],['Bio-content','96%'],['Cold-process','Yes']],impact:'MEDIUM',rel:84},
-      {id:'d0-3',cat:'Market',src:'Industry Signal',title:'Plant-based Actives Demand Up 18% YoY',subt:'Sustained growth across personal-care actives in your segment',desc:'Demand for plant-based actives continues to outpace synthetic equivalents across your industry.',mets:[['YoY Growth','+18%'],['Region','Global'],['Segment','Personal care']],impact:'MEDIUM',rel:76},
-      {id:'d0-4',cat:'Distribution',src:'Growth Signal',title:'Regional Demand — SE Asia Personal Care',subt:'An expanding regional channel relevant to your category',desc:'Rising D2C personal-care demand in South-East Asia presents a portfolio-expansion opportunity.',mets:[['Market CAGR','11%'],['Region','SE Asia'],['Channel','D2C']],impact:'MEDIUM',rel:64},
-      {id:'d0-5',cat:'Technology',src:'Technology Match',title:'Spray-dry Microencapsulation',subt:'Robust powder encapsulation for sensitive actives',desc:'A widely adopted production method for stabilising actives into free-flowing powders.',mets:[['Load Capacity','High'],['Throughput','Continuous'],['Moisture','< 3%']],impact:'LOW',rel:58}
+      {id:'d0-1',cat:'Technology',src:'Technology Matchmaking',title:'Microfluidic Encapsulation of Botanical Actives',subt:'High-precision lipid-shell encapsulation for stable, target-released delivery',desc:'Protect volatile oils and active vitamins using microfluidic lipid bilayers — enhancing topical penetration ~3× and shielding ingredients from oxidation.',mets:[['Penetration Boost','310%'],['Oxidation Half-Life','18 mo'],['Encapsulation Yield','98.5%']],impact:'HIGH',rel:74,doss:'### Microfluidic Encapsulation Technology\nProtect unstable lipid-soluble actives with microfluidically assembled lipid nanoparticles.\n#### Background\nMany botanical actives oxidise within weeks of formulation, causing discolouration and efficacy loss. Precision encapsulation creates uniform lipid vesicles that surround and isolate these sensitive chemicals.\n#### Key benefits\n* **Incredible stability:** shielded from oxygen and light, prolonging active shelf life.\n* **Targeted release:** bilayers break down naturally on contact with skin enzymes, delivering the active exactly where needed.'},
+      {id:'d0-2',cat:'Product',src:'Profile Match',title:'Bio-based Emulsifier Systems',subt:'Cold-processable emulsifiers aligned to your personal-care portfolio',desc:'Plant-derived emulsifier blends matched to the formulation categories in your onboarding profile.',mets:[['HLB Range','8–16'],['Bio-content','96%'],['Cold-process','Yes']],impact:'MEDIUM',rel:68},
+      {id:'d0-3',cat:'Market',src:'Industry Signal',title:'Plant-based Actives Demand Up 18% YoY',subt:'Sustained growth across personal-care actives in your segment',desc:'Demand for plant-based actives continues to outpace synthetic equivalents across your industry.',mets:[['YoY Growth','+18%'],['Region','Global'],['Segment','Personal care']],impact:'MEDIUM',rel:63},
+      {id:'d0-4',cat:'Distribution',src:'Growth Signal',title:'Regional Demand — SE Asia Personal Care',subt:'An expanding regional channel relevant to your category',desc:'Rising D2C personal-care demand in South-East Asia presents a portfolio-expansion opportunity.',mets:[['Market CAGR','11%'],['Region','SE Asia'],['Channel','D2C']],impact:'MEDIUM',rel:57},
+      {id:'d0-5',cat:'Technology',src:'Technology Match',title:'Spray-dry Microencapsulation',subt:'Robust powder encapsulation for sensitive actives',desc:'A widely adopted production method for stabilising actives into free-flowing powders.',mets:[['Load Capacity','High'],['Throughput','Continuous'],['Moisture','< 3%']],impact:'LOW',rel:52}
     ],
     activity:[
-      {id:'a-1',cat:'Product',src:'Scira Search Activity Match',title:'Natural Squalane from Sugarcane Fermentation',subt:'Sustainable alternative to olive-derived squalane with 99.5% purity',desc:'Following your recent Scira search for high-performance emollients and bio-active carrier lipids, we recommend sugarcane-derived squalane — offering unmatched batch-to-batch consistency.',mets:[['Purity Level','99.5%'],['Batch Variance','< 0.1%'],['Sustainability','A++']],impact:'HIGH',rel:96,doss:'### Sugarcane-derived Squalane\nA renewable, high-purity emollient matched to your recent emollient and carrier-lipid searches.\n#### Why it surfaced\n* You explored **high-performance emollients** with Scira this week.\n* You viewed **bio-active carrier lipid** capabilities.\n#### Highlights\n* **99.5% purity** with exceptional batch-to-batch consistency.\n* Fully traceable, sugarcane-fermentation feedstock.'},
-      {id:'a-2',cat:'Market',src:'Market Signal',title:'Raw Material Warning: Squalene Supply Deficit',subt:'Tightening shark- and olive-squalene supply is lifting prices',desc:'A widening squalene supply gap is pushing prices up — strengthening the case for fermentation-derived squalane.',mets:[['Supply Gap','-14%'],['Price Move','+9%'],['Lead Time','8 wk']],impact:'HIGH',rel:88},
-      {id:'a-3',cat:'Technology',src:'Capability Audit Match',title:'Solid-state Yeast Fermentation Scaling',subt:'Scale-ready fermentation route for bio-identical actives',desc:'A production route aligned to the bioprocessing capabilities you reviewed.',mets:[['Titer Uplift','3×'],['Scale','Pilot → Comm.'],['Yield','92%']],impact:'MEDIUM',rel:81},
+      {id:'a-1',cat:'Product',src:'Scira Search Activity Match',title:'Natural Squalane from Sugarcane Fermentation',subt:'Sustainable alternative to olive-derived squalane with 99.5% purity',desc:'Following your recent Scira search for high-performance emollients and bio-active carrier lipids, we recommend sugarcane-derived squalane — offering unmatched batch-to-batch consistency.',mets:[['Purity Level','99.5%'],['Batch Variance','< 0.1%'],['Sustainability','A++']],impact:'HIGH',rel:88,doss:'### Sugarcane-derived Squalane\nA renewable, high-purity emollient matched to your recent emollient and carrier-lipid searches.\n#### Why it surfaced\n* You explored **high-performance emollients** with Scira this week.\n* You viewed **bio-active carrier lipid** capabilities.\n#### Highlights\n* **99.5% purity** with exceptional batch-to-batch consistency.\n* Fully traceable, sugarcane-fermentation feedstock.'},
+      {id:'a-2',cat:'Market',src:'Market Signal',title:'Raw Material Warning: Squalene Supply Deficit',subt:'Tightening shark- and olive-squalene supply is lifting prices',desc:'A widening squalene supply gap is pushing prices up — strengthening the case for fermentation-derived squalane.',mets:[['Supply Gap','-14%'],['Price Move','+9%'],['Lead Time','8 wk']],impact:'HIGH',rel:82},
+      {id:'a-3',cat:'Technology',src:'Capability Audit Match',title:'Solid-state Yeast Fermentation Scaling',subt:'Scale-ready fermentation route for bio-identical actives',desc:'A production route aligned to the bioprocessing capabilities you reviewed.',mets:[['Titer Uplift','3×'],['Scale','Pilot → Comm.'],['Yield','92%']],impact:'MEDIUM',rel:78},
       {id:'a-4',cat:'Product',src:'Activity Match',title:'Encapsulated Vitamin-C Derivatives',subt:'Stabilised ascorbyl actives for brightening formulations',desc:'Adjacent to the actives you browsed, with improved oxidative stability.',mets:[['Stability','24 mo'],['Activity','Retained'],['Format','Powder']],impact:'MEDIUM',rel:72},
-      {id:'a-5',cat:'Technology',src:'Technology Match',title:'Precision Fermentation Route',subt:'Bio-identical actives without animal or plant extraction',desc:'A precision-fermentation pathway relevant to your recent exploration.',mets:[['Purity','> 99%'],['Footprint','-40%'],['Scale','Modular']],impact:'LOW',rel:64}
+      {id:'a-5',cat:'Technology',src:'Technology Match',title:'Precision Fermentation Route',subt:'Bio-identical actives without animal or plant extraction',desc:'A precision-fermentation pathway relevant to your recent exploration.',mets:[['Purity','> 99%'],['Footprint','-40%'],['Scale','Modular']],impact:'LOW',rel:66}
     ],
     day1:[
-      {id:'r-1',cat:'Market',src:'Request Signal',title:'Solvent Supply Tightening for Your Requested Route',subt:'Spot pricing is rising on the nitration intermediate in your active RFQ',desc:'Pricing on the solvent system tied to your submitted request is moving up — locking volume now hedges cost.',mets:[['Spot Move','+9%'],['Lead Time','6 wk'],['Coverage','70%']],impact:'HIGH',rel:90,doss:'### Solvent supply tightening\nThe solvent system referenced in your active RFQ is seeing upward price pressure.\n#### Relevance\n* Directly tied to your **submitted request** for the nitration intermediate.\n#### Recommended move\n* Lock current spot pricing through an RFQ to secure Q3 coverage.'},
-      {id:'r-2',cat:'Technology',src:'Request Match',title:'Continuous-flow Nitration at Scale',subt:'A safer, lower-cost route for the chemistry in your request',desc:'Flow nitration could cut route cost and footprint for the process you requested.',mets:[['Cost Δ','-14%'],['Throughput','+2.2×'],['Footprint','-40%']],impact:'HIGH',rel:86},
-      {id:'r-3',cat:'Product',src:'Request Match',title:'Alternative Raw Material for Your RFQ',subt:'A qualified substitute with better availability',desc:'A drop-in alternative raw material matched to your open RFQ.',mets:[['Availability','High'],['Cost Δ','-6%'],['Spec Match','98%']],impact:'MEDIUM',rel:80},
-      {id:'r-4',cat:'Distribution',src:'Supply Signal',title:'Regional Supply Option — APAC',subt:'Shorter lead-time sourcing for your requested material',desc:'A regional supply route that reduces lead time for your request.',mets:[['Lead Time','-3 wk'],['Region','APAC'],['Risk','Low']],impact:'MEDIUM',rel:62},
-      {id:'r-5',cat:'Market',src:'Market Watch',title:'Piperidine Watch — EMEA',subt:'Early signal on a derivative relevant to your pipeline',desc:'An emerging market signal to monitor alongside your requests.',mets:[['Trend','Tightening'],['Region','EMEA'],['Horizon','30 d']],impact:'LOW',rel:58}
+      {id:'r-1',cat:'Market',src:'Request Signal',title:'Solvent Supply Tightening for Your Requested Route',subt:'Spot pricing is rising on the nitration intermediate in your active RFQ',desc:'Pricing on the solvent system tied to your submitted request is moving up — locking volume now hedges cost.',mets:[['Spot Move','+9%'],['Lead Time','6 wk'],['Coverage','70%']],impact:'HIGH',rel:94,doss:'### Solvent supply tightening\nThe solvent system referenced in your active RFQ is seeing upward price pressure.\n#### Relevance\n* Directly tied to your **submitted request** for the nitration intermediate.\n#### Recommended move\n* Lock current spot pricing through an RFQ to secure Q3 coverage.'},
+      {id:'r-2',cat:'Technology',src:'Request Match',title:'Continuous-flow Nitration at Scale',subt:'A safer, lower-cost route for the chemistry in your request',desc:'Flow nitration could cut route cost and footprint for the process you requested.',mets:[['Cost Δ','-14%'],['Throughput','+2.2×'],['Footprint','-40%']],impact:'HIGH',rel:91},
+      {id:'r-3',cat:'Product',src:'Request Match',title:'Alternative Raw Material for Your RFQ',subt:'A qualified substitute with better availability',desc:'A drop-in alternative raw material matched to your open RFQ.',mets:[['Availability','High'],['Cost Δ','-6%'],['Spec Match','98%']],impact:'MEDIUM',rel:85},
+      {id:'r-4',cat:'Distribution',src:'Supply Signal',title:'Regional Supply Option — APAC',subt:'Shorter lead-time sourcing for your requested material',desc:'A regional supply route that reduces lead time for your request.',mets:[['Lead Time','-3 wk'],['Region','APAC'],['Risk','Low']],impact:'MEDIUM',rel:79},
+      {id:'r-5',cat:'Market',src:'Market Watch',title:'Piperidine Watch — EMEA',subt:'Early signal on a derivative relevant to your pipeline',desc:'An emerging market signal to monitor alongside your requests.',mets:[['Trend','Tightening'],['Region','EMEA'],['Horizon','30 d']],impact:'LOW',rel:73}
     ],
     day10:[
-      {id:'p-1',cat:'Market',src:'Project Signal',title:'Piperidine Derivatives Tightening 12% Across EMEA',subt:'Two of your active projects depend on this intermediate',desc:'Securing volume now hedges Q3 cost exposure across PRJ-0081 and PRJ-0074.',mets:[['30-day Move','+12%'],['Projects','2 affected'],['Q3 Exposure','High']],impact:'HIGH',rel:94,doss:'### Piperidine derivatives tightening\nA 12% price move across EMEA directly affects your active project portfolio.\n#### Project impact\n* **PRJ-0081** — Nitration Scale-Up depends on this intermediate.\n* **PRJ-0074** — Route Scouting references the same derivative.\n#### Recommended move\n* Lock volume via an RFQ to hedge Q3 exposure before further tightening.'},
-      {id:'p-2',cat:'Product',src:'Project Match',title:'Bio-based Emulsifier Matched to Your Cosmetic Line',subt:'A portfolio-aligned emulsifier for your active project family',desc:'Matched to the product family in your active project portfolio.',mets:[['Spec Match','94%'],['Bio-content','96%'],['Cost Δ','-4%']],impact:'HIGH',rel:92},
-      {id:'p-3',cat:'Technology',src:'Project Match',title:'Continuous-flow Nitration Now Available',subt:'Production-ready capacity for your scale-up project',desc:'A qualified flow-nitration line that fits your active scale-up.',mets:[['Throughput','+2.2×'],['Cost Δ','-14%'],['Status','Available']],impact:'HIGH',rel:84},
-      {id:'p-4',cat:'Distribution',src:'Growth Signal',title:'Exclusive APAC Distribution for Vitamin Premix',subt:'A growth channel matched to your commercial portfolio',desc:'An exclusive regional channel for the premix family in your projects.',mets:[['Region','APAC'],['Channel','Exclusive'],['Margin','+8%']],impact:'MEDIUM',rel:78},
-      {id:'p-5',cat:'Product',src:'Adjacency Match',title:'Adjacent Opportunity — Encapsulated Actives',subt:'A portfolio expansion adjacent to your active work',desc:'An adjacent product opportunity building on your project history.',mets:[['Fit','Adjacent'],['Demand','Rising'],['Effort','Low']],impact:'MEDIUM',rel:74}
+      {id:'p-1',cat:'Market',src:'Project Signal',title:'Piperidine Derivatives Tightening 12% Across EMEA',subt:'Two of your active projects depend on this intermediate',desc:'Securing volume now hedges Q3 cost exposure across PRJ-0081 and PRJ-0074.',mets:[['30-day Move','+12%'],['Projects','2 affected'],['Q3 Exposure','High']],impact:'HIGH',rel:98,doss:'### Piperidine derivatives tightening\nA 12% price move across EMEA directly affects your active project portfolio.\n#### Project impact\n* **PRJ-0081** — Nitration Scale-Up depends on this intermediate.\n* **PRJ-0074** — Route Scouting references the same derivative.\n#### Recommended move\n* Lock volume via an RFQ to hedge Q3 exposure before further tightening.'},
+      {id:'p-2',cat:'Product',src:'Project Match',title:'Bio-based Emulsifier Matched to Your Cosmetic Line',subt:'A portfolio-aligned emulsifier for your active project family',desc:'Matched to the product family in your active project portfolio.',mets:[['Spec Match','94%'],['Bio-content','96%'],['Cost Δ','-4%']],impact:'HIGH',rel:96},
+      {id:'p-3',cat:'Technology',src:'Project Match',title:'Continuous-flow Nitration Now Available',subt:'Production-ready capacity for your scale-up project',desc:'A qualified flow-nitration line that fits your active scale-up.',mets:[['Throughput','+2.2×'],['Cost Δ','-14%'],['Status','Available']],impact:'HIGH',rel:91},
+      {id:'p-4',cat:'Distribution',src:'Growth Signal',title:'Exclusive APAC Distribution for Vitamin Premix',subt:'A growth channel matched to your commercial portfolio',desc:'An exclusive regional channel for the premix family in your projects.',mets:[['Region','APAC'],['Channel','Exclusive'],['Margin','+8%']],impact:'MEDIUM',rel:85},
+      {id:'p-5',cat:'Product',src:'Adjacency Match',title:'Adjacent Opportunity — Encapsulated Actives',subt:'A portfolio expansion adjacent to your active work',desc:'An adjacent product opportunity building on your project history.',mets:[['Fit','Adjacent'],['Demand','Rising'],['Effort','Low']],impact:'MEDIUM',rel:80}
     ]
   };
 
@@ -5399,7 +5398,7 @@ function App() {
       if(!st.selId||!L.some(function(x){return x.id===st.selId;}))st.selId=L[0].id;
       var sel=L.filter(function(x){return x.id===st.selId;})[0];
       feedEl.className='opps-feed opps-fadein';void feedEl.offsetWidth;feedEl.innerHTML=feedHTML(sel);
-      scrollEl.innerHTML=L.map(function(it){var c=CAT[it.cat];return '<button type="button" class="opps-cand'+(it.id===st.selId?' sel':'')+'" data-id="'+it.id+'" style="--cc:'+c.l+'"><div class="opps-cand-body"><div class="opps-cand-title">'+it.title+'</div><div class="opps-cand-meta"><div class="opps-cand-rel"><i style="width:'+it.rel+'%"></i></div><span class="opps-cand-cat" style="color:'+c.l+'">'+it.cat+'</span></div></div><span class="opps-cand-arrow" data-arrow="'+it.id+'" role="button" aria-label="Open dossier">'+IARRUP+'</span></button>';}).join('');
+      scrollEl.innerHTML=L.map(function(it){var c=CAT[it.cat];return '<button type="button" class="opps-cand'+(it.id===st.selId?' sel':'')+'" data-id="'+it.id+'" style="--cc:'+c.dot+'"><div class="opps-cand-top"><span class="opps-cand-pill"><span class="opps-cand-dot"></span>'+it.cat+'</span><span class="opps-cand-score"><b>'+it.rel+'%</b> Match</span></div><div class="opps-cand-title">'+it.title+'</div><div class="opps-cand-sum">'+it.subt+'</div></button>';}).join('');
       stackEl.classList.toggle('scrollable',L.length>3);
     }
     render();

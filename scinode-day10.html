@@ -372,6 +372,112 @@
     .cmp-sub{font-size:12px;font-weight:500;color:var(--text-2);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .cmp-check{flex-shrink:0;color:var(--teal-500);display:flex;}
 
+    /* ═══ Opportunities for Your Business — Variation D: Live Signal Split ═══ */
+    .opps-hd{align-items:flex-start;}
+    .opps-level{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--teal-700);background:var(--teal-50);border:1px solid var(--teal-100);padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:8px;letter-spacing:.01em;}
+    .opps-substates{display:inline-flex;gap:3px;background:var(--page-bg);border:1px solid var(--border);border-radius:8px;padding:3px;flex-shrink:0;}
+    .opps-substates button{border:none;background:none;font-family:var(--font);font-size:11px;font-weight:500;color:var(--text-2);padding:5px 11px;border-radius:6px;cursor:pointer;transition:all .15s;}
+    .opps-substates button.on{background:var(--white);color:var(--teal-600);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+    .opps-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+    .opps-toolbar .tabs-list{margin-bottom:0;}
+    .opps-search{position:relative;display:flex;align-items:center;}
+    .opps-search svg{position:absolute;left:11px;color:var(--text-3);pointer-events:none;}
+    .opps-search input{font-family:var(--font);font-size:12px;color:var(--text-1);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;width:210px;outline:none;transition:border-color .15s;}
+    .opps-search input:focus{border-color:var(--teal-300);}
+    .opps-split{display:grid;grid-template-columns:2fr 1fr;gap:14px;align-items:stretch;}
+    .opps-feed{position:relative;overflow:hidden;border-radius:14px;padding:20px 22px;height:320px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(150deg,#04332f 0%,#021a24 100%);color:#fff;border:1px solid #0b433f;}
+    .opps-feed::after{content:"";position:absolute;right:-60px;bottom:-60px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.16),transparent 65%);pointer-events:none;}
+    .opps-feed>*{position:relative;z-index:1;}
+    .opps-feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+    .opps-feed-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .opps-cat{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;}
+    .opps-src{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,.55);}
+    .opps-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--sage);background:rgba(150,221,165,.1);padding:2px 8px;border-radius:20px;border:1px solid rgba(150,221,165,.25);}
+    .opps-live .ping{position:relative;display:inline-flex;width:6px;height:6px;}
+    .opps-live .ping span{position:absolute;inset:0;border-radius:50%;background:var(--sage);}
+    .opps-live .ping .a{animation:oppsping 1.8s cubic-bezier(0,0,.2,1) infinite;opacity:.75;}
+    .opps-actbtns{display:flex;gap:4px;flex-shrink:0;}
+    .opps-iconbtn{width:26px;height:26px;border-radius:7px;border:none;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+    .opps-iconbtn:hover{background:rgba(255,255,255,.12);color:#fff;}
+    .opps-iconbtn.star.on{color:var(--gold);}
+    .opps-feed-mid{cursor:pointer;}
+    .opps-feed-title{font-family:var(--font-heading);font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;margin-bottom:4px;transition:color .2s;}
+    .opps-feed-mid:hover .opps-feed-title{color:var(--teal-300);}
+    .opps-feed-subt{font-size:12px;color:rgba(255,255,255,.65);margin-bottom:8px;}
+    .opps-feed-desc{font-size:12px;color:rgba(255,255,255,.5);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .opps-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px;margin:12px 0;background:rgba(3,45,42,.5);border-top:1px solid rgba(11,67,63,.6);border-bottom:1px solid rgba(11,67,63,.6);border-radius:8px;}
+    .opps-metric .l{font-size:10px;color:rgba(255,255,255,.45);line-height:1.2;margin-bottom:3px;}
+    .opps-metric .v{font-size:13px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;}
+    .opps-feed-foot{display:flex;align-items:center;justify-content:space-between;}
+    .opps-impact{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,.5);}
+    .opps-impact b{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--teal-300);background:rgba(2,150,138,.2);border:1px solid rgba(88,201,194,.25);padding:2px 7px;border-radius:5px;}
+    .opps-explore{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--teal-300);background:none;border:none;cursor:pointer;font-family:var(--font);transition:gap .15s,color .15s;}
+    .opps-explore:hover{gap:8px;color:#7fe3da;}
+    .opps-feed-empty{display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.4);font-size:12px;}
+    .opps-stack{position:relative;height:320px;}
+    .opps-stack-scroll{display:flex;flex-direction:column;gap:10px;height:100%;overflow-y:auto;padding-right:4px;scrollbar-width:thin;}
+    .opps-stack-scroll::-webkit-scrollbar{width:5px;}.opps-stack-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    .opps-cand{position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 16px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color .3s,box-shadow .3s,transform .15s;}
+    .opps-cand::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cc);}
+    .opps-cand:hover{border-color:var(--text-3);transform:translateY(-1px);}
+    .opps-cand.sel{border-color:var(--teal-500);box-shadow:0 0 0 3px rgba(2,150,138,.12);}
+    .opps-cand-body{flex:1;min-width:0;}
+    .opps-cand-title{font-size:13px;font-weight:600;color:var(--text-1);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s;}
+    .opps-cand:hover .opps-cand-title{color:var(--teal-600);}
+    .opps-cand-meta{display:flex;align-items:center;gap:8px;margin-top:7px;}
+    .opps-cand-rel{width:64px;height:4px;border-radius:2px;background:var(--teal-50);overflow:hidden;}
+    .opps-cand-rel i{display:block;height:100%;background:var(--teal-500);border-radius:2px;}
+    .opps-cand-cat{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+    .opps-cand-arrow{flex-shrink:0;color:var(--text-3);transition:transform .15s,color .15s;background:none;border:none;cursor:pointer;display:flex;padding:2px;}
+    .opps-cand:hover .opps-cand-arrow{color:var(--teal-500);transform:translate(2px,-2px);}
+    .opps-fade{position:absolute;left:0;right:6px;bottom:0;height:54px;pointer-events:none;background:linear-gradient(to top,var(--page-bg) 0%,rgba(247,247,247,.5) 55%,transparent 100%);display:none;}
+    .opps-more{position:absolute;left:0;right:6px;bottom:6px;text-align:center;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-600);animation:oppspulse 2s infinite;pointer-events:none;display:none;}
+    .opps-stack.scrollable .opps-fade,.opps-stack.scrollable .opps-more{display:block;}
+    /* Drawer */
+    .opps-backdrop{position:fixed;inset:0;background:rgba(2,14,18,.45);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;z-index:200;}
+    .opps-backdrop.open{opacity:1;visibility:visible;}
+    .opps-drawer{position:fixed;top:0;right:0;height:100vh;width:440px;max-width:92vw;background:var(--white);box-shadow:-12px 0 40px rgba(16,24,22,.18);transform:translateX(100%);transition:transform .32s cubic-bezier(.16,1,.3,1);z-index:201;display:flex;flex-direction:column;}
+    .opps-drawer.open{transform:translateX(0);}
+    .opps-dr-top{display:flex;align-items:center;gap:10px;padding:18px 22px 14px;border-bottom:1px solid var(--border);}
+    .opps-dr-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:6px;}
+    .opps-dr-recd{font-size:11px;color:var(--text-3);margin-left:auto;}
+    .opps-dr-close{width:30px;height:30px;border-radius:8px;border:none;background:var(--page-bg);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .opps-dr-close:hover{background:#eceef1;}
+    .opps-dr-body{flex:1;overflow-y:auto;padding:20px 22px;}
+    .opps-dr-title{font-family:var(--font-heading);font-size:20px;font-weight:600;line-height:1.25;color:var(--text-1);margin-bottom:5px;}
+    .opps-dr-subt{font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:14px;}
+    .opps-dr-matched{font-size:11px;color:var(--text-3);margin-bottom:16px;}
+    .opps-dr-matched b{color:var(--teal-600);background:var(--teal-50);border:1px solid var(--teal-100);padding:2px 8px;border-radius:5px;font-weight:600;margin-left:4px;}
+    .opps-dr-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+    .opps-dr-stat{background:var(--page-bg);border-radius:10px;padding:13px 14px;text-align:center;}
+    .opps-dr-stat .l{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;}
+    .opps-dr-stat .v{font-family:var(--font-heading);font-size:18px;font-weight:600;color:var(--teal-600);}
+    .opps-md{font-size:13px;color:var(--text-2);line-height:1.6;}
+    .opps-md h3{font-family:var(--font-heading);font-size:14px;font-weight:600;color:var(--text-1);margin:16px 0 6px;}
+    .opps-md h4{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--text-3);margin:14px 0 5px;}
+    .opps-md p{margin-bottom:8px;}
+    .opps-md ul{margin:0 0 8px;padding:0;list-style:none;}
+    .opps-md li{position:relative;padding-left:16px;margin-bottom:5px;}
+    .opps-md li::before{content:"";position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--teal-500);}
+    .opps-md strong{color:var(--text-1);font-weight:600;}
+    .opps-action{margin-top:18px;background:var(--teal-50);border:1px solid var(--teal-100);border-radius:12px;padding:16px;}
+    .opps-action-hd{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-700);margin-bottom:8px;}
+    .opps-action p{font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:12px;}
+    .opps-action label{display:block;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+    .opps-action input{width:100%;font-family:var(--font);font-size:12px;color:var(--text-1);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 12px;outline:none;margin-bottom:12px;}
+    .opps-action input:focus{border-color:var(--teal-300);}
+    .opps-action .btn{width:100%;justify-content:center;}
+    .opps-confirm{display:flex;gap:10px;background:var(--white);border:1px solid var(--teal-100);border-radius:10px;padding:13px 14px;}
+    .opps-confirm svg{color:var(--teal-500);flex-shrink:0;margin-top:1px;}
+    .opps-confirm b{display:block;font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
+    .opps-confirm span{font-size:11.5px;color:var(--text-2);line-height:1.5;}
+    .opps-dr-foot{display:flex;align-items:center;gap:8px;padding:14px 22px;border-top:1px solid var(--border);}
+    .opps-dr-foot .grow{margin-left:auto;}
+    @keyframes oppsping{75%,100%{transform:scale(2.4);opacity:0;}}
+    @keyframes oppspulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+    @keyframes oppsfade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+    .opps-fadein{animation:oppsfade .35s ease;}
+
     /* ── DAY 1 ── */
     .d1-greeting{background:var(--navy-500);padding:14px 28px;display:flex;align-items:center;gap:16px;}
     .d1-greet-text{font-size:14px;color:rgba(255,255,255,0.6);}
@@ -1857,6 +1963,29 @@
               </div>
             </div>
           </section>
+      <!-- ═══ OPPS:start · Opportunities for Your Business (Variation D · reversible block).
+           Rollback: delete the three .opps sections (day0/day1/day10), #opps-backdrop/#opps-drawer, the opps CSS block, and the opps <script>. ═══ -->
+      <section class="opps" data-rec-state="day0" aria-label="Opportunities for Your Business">
+        <div class="sec-hdr opps-hd">
+          <div><div class="sec-title">Opportunities for Your Business <span class="opps-level"></span></div><div class="sec-sub">Relevant products, market developments, technologies and growth opportunities</div></div>
+          <div class="opps-substates" role="tablist" aria-label="Recommendation maturity">
+            <button type="button" data-sub="day0" class="on">Profile</button>
+            <button type="button" data-sub="activity">Activity started</button>
+          </div>
+        </div>
+        <div class="opps-toolbar">
+          <div class="tabs-list opps-filter" role="tablist" aria-label="Filter opportunities">
+            <button type="button" role="tab" class="tabs-trigger" aria-selected="true" data-cat="All">All Opportunities</button>
+            <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Product">Product</button>
+            <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Market">Market</button>
+            <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Technology">Technology</button>
+            <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Distribution">Distribution</button>
+          </div>
+          <div class="opps-search"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="search" placeholder="Search opportunities..." aria-label="Search opportunities"></div>
+        </div>
+        <div class="opps-split"><div class="opps-feed"></div><div class="opps-stack"><div class="opps-stack-scroll"></div><div class="opps-fade"></div><div class="opps-more">Scroll for more signals ↓</div></div></div>
+      </section>
+      <!-- ═══ OPPS:end (day0) ═══ -->
       <section>
         <div class="sec-hdr">
           <div>
@@ -2130,6 +2259,22 @@
         </div>
       </section>
       <!-- ── /Combined Dashboard ── -->
+          <!-- ═══ OPPS (day1) ═══ -->
+          <section class="opps" data-rec-state="day1" aria-label="Opportunities for Your Business">
+            <div class="sec-hdr opps-hd"><div><div class="sec-title">Opportunities for Your Business <span class="opps-level"></span></div><div class="sec-sub">Relevant products, market developments, technologies and growth opportunities</div></div></div>
+            <div class="opps-toolbar">
+              <div class="tabs-list opps-filter" role="tablist" aria-label="Filter opportunities">
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="true" data-cat="All">All Opportunities</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Product">Product</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Market">Market</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Technology">Technology</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Distribution">Distribution</button>
+              </div>
+              <div class="opps-search"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="search" placeholder="Search opportunities..." aria-label="Search opportunities"></div>
+            </div>
+            <div class="opps-split"><div class="opps-feed"></div><div class="opps-stack"><div class="opps-stack-scroll"></div><div class="opps-fade"></div><div class="opps-more">Scroll for more signals ↓</div></div></div>
+          </section>
+          <!-- ═══ /OPPS (day1) ═══ -->
           <section>
             <div class="sec-hdr"><div><div class="sec-title">Recent Requests</div></div><a href="#" class="sec-link">All Requests <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></a></div>
             <div class="tbl-wrap">
@@ -3030,6 +3175,22 @@
               </div>
             </div>
           </section>
+          <!-- ═══ OPPS (day10) ═══ -->
+          <section class="opps" data-rec-state="day10" aria-label="Opportunities for Your Business">
+            <div class="sec-hdr opps-hd"><div><div class="sec-title">Opportunities for Your Business <span class="opps-level"></span></div><div class="sec-sub">Relevant products, market developments, technologies and growth opportunities</div></div></div>
+            <div class="opps-toolbar">
+              <div class="tabs-list opps-filter" role="tablist" aria-label="Filter opportunities">
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="true" data-cat="All">All Opportunities</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Product">Product</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Market">Market</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Technology">Technology</button>
+                <button type="button" role="tab" class="tabs-trigger" aria-selected="false" data-cat="Distribution">Distribution</button>
+              </div>
+              <div class="opps-search"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="search" placeholder="Search opportunities..." aria-label="Search opportunities"></div>
+            </div>
+            <div class="opps-split"><div class="opps-feed"></div><div class="opps-stack"><div class="opps-stack-scroll"></div><div class="opps-fade"></div><div class="opps-more">Scroll for more signals ↓</div></div></div>
+          </section>
+          <!-- ═══ /OPPS (day10) ═══ -->
           <section>
             <div class="sec-hdr"><div><div class="sec-title">Action Required</div><div class="sec-sub">Needs your attention</div></div><a href="#" class="sec-link">View all <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></a></div>
             <div class="action-grid">
@@ -3934,6 +4095,9 @@
   </div>
 </div>
 
+<!-- Opportunity detail drawer (shared across day states) -->
+<div class="opps-backdrop" id="opps-backdrop"></div>
+<aside class="opps-drawer" id="opps-drawer" role="dialog" aria-modal="true" aria-label="Opportunity dossier" aria-hidden="true"></aside>
 </main>
 
 <!-- ── Create Request Modal ── -->
@@ -5103,6 +5267,167 @@ function App() {
   });
 })();
 
+</script>
+
+<!-- ═══ Opportunities for Your Business — Variation D engine (mock data) ═══ -->
+<script>
+(function(){
+  var CAT={
+    Product:{l:'#6366F1',d:'#A5B4FC',bg:'#EEF2FF'},
+    Market:{l:'#02968A',d:'#58C9C2',bg:'#E6F7F6'},
+    Technology:{l:'#2563EB',d:'#93C5FD',bg:'#EFF4FF'},
+    Distribution:{l:'#C2410C',d:'#FDBA74',bg:'#FFF3E9'}
+  };
+  var LEVEL={day0:'Level 1 · Profile-based',activity:'Level 2 · Activity-based',day1:'Level 3 · Request-based',day10:'Level 4 · Project-based'};
+  var ACTIONS={
+    Product:{p:'Dispatch a free evaluation sample to your registered facility.',label:'Shipping address',val:'100 BioTech Parkway, Pune 411057',btn:'Submit Sample Request',ok:'Sample request submitted',okmsg:'A 50 g evaluation sample will be dispatched to your facility within 3 working days. Tracking will appear in Requests.'},
+    Market:{p:'Lock current spot pricing and build a request for quote across qualified sources.',label:'Target volume (kg / month)',val:'500',btn:'Build RFQ at Current Spot',ok:'RFQ drafted',okmsg:'Your RFQ has been drafted against current spot pricing and routed to Scinode sourcing. A response window opens within 48 hours.'},
+    Technology:{p:"Connect with Scinode's chemical engineering group to run an integration feasibility study on your production floor.",label:'Target scale (L)',val:'500',btn:'Request Scale-up Integration Study',ok:'Feasibility study scheduled',okmsg:'Your scale criteria and formulation stability milestones have been dispatched to Scinode Engineering. A technical advisor will upload a draft report within 24 hours.'},
+    Distribution:{p:'Draft a distribution route and indicative transport schedule for this growth opportunity.',label:'Target region',val:'APAC — Singapore hub',btn:'Draft Distribution Route',ok:'Distribution route drafted',okmsg:'A regional route and indicative transport schedule have been drafted. Scinode commercial will follow up to confirm terms.'}
+  };
+  var DATA={
+    day0:[
+      {id:'d0-1',cat:'Technology',src:'Technology Matchmaking',title:'Microfluidic Encapsulation of Botanical Actives',subt:'High-precision lipid-shell encapsulation for stable, target-released delivery',desc:'Protect volatile oils and active vitamins using microfluidic lipid bilayers — enhancing topical penetration ~3× and shielding ingredients from oxidation.',mets:[['Penetration Boost','310%'],['Oxidation Half-Life','18 mo'],['Encapsulation Yield','98.5%']],impact:'HIGH',rel:93,doss:'### Microfluidic Encapsulation Technology\nProtect unstable lipid-soluble actives with microfluidically assembled lipid nanoparticles.\n#### Background\nMany botanical actives oxidise within weeks of formulation, causing discolouration and efficacy loss. Precision encapsulation creates uniform lipid vesicles that surround and isolate these sensitive chemicals.\n#### Key benefits\n* **Incredible stability:** shielded from oxygen and light, prolonging active shelf life.\n* **Targeted release:** bilayers break down naturally on contact with skin enzymes, delivering the active exactly where needed.'},
+      {id:'d0-2',cat:'Product',src:'Profile Match',title:'Bio-based Emulsifier Systems',subt:'Cold-processable emulsifiers aligned to your personal-care portfolio',desc:'Plant-derived emulsifier blends matched to the formulation categories in your onboarding profile.',mets:[['HLB Range','8–16'],['Bio-content','96%'],['Cold-process','Yes']],impact:'MEDIUM',rel:84},
+      {id:'d0-3',cat:'Market',src:'Industry Signal',title:'Plant-based Actives Demand Up 18% YoY',subt:'Sustained growth across personal-care actives in your segment',desc:'Demand for plant-based actives continues to outpace synthetic equivalents across your industry.',mets:[['YoY Growth','+18%'],['Region','Global'],['Segment','Personal care']],impact:'MEDIUM',rel:76},
+      {id:'d0-4',cat:'Distribution',src:'Growth Signal',title:'Regional Demand — SE Asia Personal Care',subt:'An expanding regional channel relevant to your category',desc:'Rising D2C personal-care demand in South-East Asia presents a portfolio-expansion opportunity.',mets:[['Market CAGR','11%'],['Region','SE Asia'],['Channel','D2C']],impact:'MEDIUM',rel:64},
+      {id:'d0-5',cat:'Technology',src:'Technology Match',title:'Spray-dry Microencapsulation',subt:'Robust powder encapsulation for sensitive actives',desc:'A widely adopted production method for stabilising actives into free-flowing powders.',mets:[['Load Capacity','High'],['Throughput','Continuous'],['Moisture','< 3%']],impact:'LOW',rel:58}
+    ],
+    activity:[
+      {id:'a-1',cat:'Product',src:'Scira Search Activity Match',title:'Natural Squalane from Sugarcane Fermentation',subt:'Sustainable alternative to olive-derived squalane with 99.5% purity',desc:'Following your recent Scira search for high-performance emollients and bio-active carrier lipids, we recommend sugarcane-derived squalane — offering unmatched batch-to-batch consistency.',mets:[['Purity Level','99.5%'],['Batch Variance','< 0.1%'],['Sustainability','A++']],impact:'HIGH',rel:96,doss:'### Sugarcane-derived Squalane\nA renewable, high-purity emollient matched to your recent emollient and carrier-lipid searches.\n#### Why it surfaced\n* You explored **high-performance emollients** with Scira this week.\n* You viewed **bio-active carrier lipid** capabilities.\n#### Highlights\n* **99.5% purity** with exceptional batch-to-batch consistency.\n* Fully traceable, sugarcane-fermentation feedstock.'},
+      {id:'a-2',cat:'Market',src:'Market Signal',title:'Raw Material Warning: Squalene Supply Deficit',subt:'Tightening shark- and olive-squalene supply is lifting prices',desc:'A widening squalene supply gap is pushing prices up — strengthening the case for fermentation-derived squalane.',mets:[['Supply Gap','-14%'],['Price Move','+9%'],['Lead Time','8 wk']],impact:'HIGH',rel:88},
+      {id:'a-3',cat:'Technology',src:'Capability Audit Match',title:'Solid-state Yeast Fermentation Scaling',subt:'Scale-ready fermentation route for bio-identical actives',desc:'A production route aligned to the bioprocessing capabilities you reviewed.',mets:[['Titer Uplift','3×'],['Scale','Pilot → Comm.'],['Yield','92%']],impact:'MEDIUM',rel:81},
+      {id:'a-4',cat:'Product',src:'Activity Match',title:'Encapsulated Vitamin-C Derivatives',subt:'Stabilised ascorbyl actives for brightening formulations',desc:'Adjacent to the actives you browsed, with improved oxidative stability.',mets:[['Stability','24 mo'],['Activity','Retained'],['Format','Powder']],impact:'MEDIUM',rel:72},
+      {id:'a-5',cat:'Technology',src:'Technology Match',title:'Precision Fermentation Route',subt:'Bio-identical actives without animal or plant extraction',desc:'A precision-fermentation pathway relevant to your recent exploration.',mets:[['Purity','> 99%'],['Footprint','-40%'],['Scale','Modular']],impact:'LOW',rel:64}
+    ],
+    day1:[
+      {id:'r-1',cat:'Market',src:'Request Signal',title:'Solvent Supply Tightening for Your Requested Route',subt:'Spot pricing is rising on the nitration intermediate in your active RFQ',desc:'Pricing on the solvent system tied to your submitted request is moving up — locking volume now hedges cost.',mets:[['Spot Move','+9%'],['Lead Time','6 wk'],['Coverage','70%']],impact:'HIGH',rel:90,doss:'### Solvent supply tightening\nThe solvent system referenced in your active RFQ is seeing upward price pressure.\n#### Relevance\n* Directly tied to your **submitted request** for the nitration intermediate.\n#### Recommended move\n* Lock current spot pricing through an RFQ to secure Q3 coverage.'},
+      {id:'r-2',cat:'Technology',src:'Request Match',title:'Continuous-flow Nitration at Scale',subt:'A safer, lower-cost route for the chemistry in your request',desc:'Flow nitration could cut route cost and footprint for the process you requested.',mets:[['Cost Δ','-14%'],['Throughput','+2.2×'],['Footprint','-40%']],impact:'HIGH',rel:86},
+      {id:'r-3',cat:'Product',src:'Request Match',title:'Alternative Raw Material for Your RFQ',subt:'A qualified substitute with better availability',desc:'A drop-in alternative raw material matched to your open RFQ.',mets:[['Availability','High'],['Cost Δ','-6%'],['Spec Match','98%']],impact:'MEDIUM',rel:80},
+      {id:'r-4',cat:'Distribution',src:'Supply Signal',title:'Regional Supply Option — APAC',subt:'Shorter lead-time sourcing for your requested material',desc:'A regional supply route that reduces lead time for your request.',mets:[['Lead Time','-3 wk'],['Region','APAC'],['Risk','Low']],impact:'MEDIUM',rel:62},
+      {id:'r-5',cat:'Market',src:'Market Watch',title:'Piperidine Watch — EMEA',subt:'Early signal on a derivative relevant to your pipeline',desc:'An emerging market signal to monitor alongside your requests.',mets:[['Trend','Tightening'],['Region','EMEA'],['Horizon','30 d']],impact:'LOW',rel:58}
+    ],
+    day10:[
+      {id:'p-1',cat:'Market',src:'Project Signal',title:'Piperidine Derivatives Tightening 12% Across EMEA',subt:'Two of your active projects depend on this intermediate',desc:'Securing volume now hedges Q3 cost exposure across PRJ-0081 and PRJ-0074.',mets:[['30-day Move','+12%'],['Projects','2 affected'],['Q3 Exposure','High']],impact:'HIGH',rel:94,doss:'### Piperidine derivatives tightening\nA 12% price move across EMEA directly affects your active project portfolio.\n#### Project impact\n* **PRJ-0081** — Nitration Scale-Up depends on this intermediate.\n* **PRJ-0074** — Route Scouting references the same derivative.\n#### Recommended move\n* Lock volume via an RFQ to hedge Q3 exposure before further tightening.'},
+      {id:'p-2',cat:'Product',src:'Project Match',title:'Bio-based Emulsifier Matched to Your Cosmetic Line',subt:'A portfolio-aligned emulsifier for your active project family',desc:'Matched to the product family in your active project portfolio.',mets:[['Spec Match','94%'],['Bio-content','96%'],['Cost Δ','-4%']],impact:'HIGH',rel:92},
+      {id:'p-3',cat:'Technology',src:'Project Match',title:'Continuous-flow Nitration Now Available',subt:'Production-ready capacity for your scale-up project',desc:'A qualified flow-nitration line that fits your active scale-up.',mets:[['Throughput','+2.2×'],['Cost Δ','-14%'],['Status','Available']],impact:'HIGH',rel:84},
+      {id:'p-4',cat:'Distribution',src:'Growth Signal',title:'Exclusive APAC Distribution for Vitamin Premix',subt:'A growth channel matched to your commercial portfolio',desc:'An exclusive regional channel for the premix family in your projects.',mets:[['Region','APAC'],['Channel','Exclusive'],['Margin','+8%']],impact:'MEDIUM',rel:78},
+      {id:'p-5',cat:'Product',src:'Adjacency Match',title:'Adjacent Opportunity — Encapsulated Actives',subt:'A portfolio expansion adjacent to your active work',desc:'An adjacent product opportunity building on your project history.',mets:[['Fit','Adjacent'],['Demand','Rising'],['Effort','Low']],impact:'MEDIUM',rel:74}
+    ]
+  };
+
+  var ICX='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+  var ICOMPASS='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>';
+  var ISLIDERS='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>';
+  var ISTAR='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  var IARR='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M7 7h10v10"/></svg>';
+  var IARRUP='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>';
+  var IBOLT='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+  var ICHK='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+
+  function hexa(h,a){var n=parseInt(h.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+  function cap(s){return s.charAt(0)+s.slice(1).toLowerCase();}
+  function inl(s){return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');}
+  function md(src){
+    var lines=src.split('\n'),out='',ul=false;
+    function cu(){if(ul){out+='</ul>';ul=false;}}
+    lines.forEach(function(ln){
+      ln=ln.trim();
+      if(!ln){cu();return;}
+      if(ln.indexOf('#### ')===0){cu();out+='<h4>'+inl(ln.slice(5))+'</h4>';}
+      else if(ln.indexOf('### ')===0){cu();out+='<h3>'+inl(ln.slice(4))+'</h3>';}
+      else if(ln.indexOf('* ')===0){if(!ul){out+='<ul>';ul=true;}out+='<li>'+inl(ln.slice(2))+'</li>';}
+      else{cu();out+='<p>'+inl(ln)+'</p>';}
+    });
+    cu();return out;
+  }
+  function dossierOf(it){return it.doss||('### Overview\n'+it.desc+'\n#### Why it surfaced\n* Source: '+it.src+'.\n* '+it.cat+' opportunity · '+it.rel+'% relevance fit.');}
+
+  /* ── shared drawer ── */
+  var backdrop=document.getElementById('opps-backdrop'),drawer=document.getElementById('opps-drawer');
+  function openDrawer(it){
+    var c=CAT[it.cat],act=ACTIONS[it.cat];
+    drawer.innerHTML=
+      '<div class="opps-dr-top"><span class="opps-dr-tag" style="color:'+c.l+';background:'+c.bg+'">'+it.cat+' Dossier</span><span class="opps-dr-recd">Recommended 1h ago</span><button type="button" class="opps-dr-close" id="opps-dr-close" aria-label="Close dossier">'+ICX+'</button></div>'
+      +'<div class="opps-dr-body"><div class="opps-dr-title">'+it.title+'</div><div class="opps-dr-subt">'+it.subt+'</div>'
+      +'<div class="opps-dr-matched">Matched via:<b>'+it.src+'</b></div>'
+      +'<div class="opps-dr-stats"><div class="opps-dr-stat"><div class="l">Relevance fit</div><div class="v">'+it.rel+'% Match</div></div><div class="opps-dr-stat"><div class="l">Estimated impact</div><div class="v">'+cap(it.impact)+'</div></div></div>'
+      +'<div class="opps-md">'+md(dossierOf(it))+'</div>'
+      +'<div class="opps-action" id="opps-action"><div class="opps-action-hd">'+IBOLT+' Operational Action Center</div><p>'+act.p+'</p><label>'+act.label+'</label><input id="opps-action-input" value="'+act.val+'"><button type="button" class="btn btn-default" id="opps-action-btn">'+act.btn+'</button></div>'
+      +'</div>'
+      +'<div class="opps-dr-foot"><button type="button" class="btn btn-outline btn-sm" id="opps-save"><span style="display:inline-flex;width:13px;height:13px;margin-right:4px;vertical-align:-2px">'+ISTAR+'</span>Save opportunity</button><span class="grow"></span><button type="button" class="btn btn-outline btn-sm">PDF</button><button type="button" class="btn btn-outline btn-sm">Share</button></div>';
+    document.getElementById('opps-dr-close').addEventListener('click',closeDrawer);
+    document.getElementById('opps-action-btn').addEventListener('click',function(){
+      document.getElementById('opps-action').innerHTML='<div class="opps-action-hd" style="color:var(--teal-600)">'+IBOLT+' '+act.ok+'</div><div class="opps-confirm">'+ICHK+'<div><b>'+act.ok+'</b><span>'+act.okmsg+'</span></div></div>';
+    });
+    var sv=document.getElementById('opps-save');
+    sv.addEventListener('click',function(){var on=sv.classList.toggle('btn-default');sv.classList.toggle('btn-outline',!on);sv.lastChild.textContent=on?'Saved':'Save opportunity';});
+    backdrop.classList.add('open');drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  }
+  function closeDrawer(){backdrop.classList.remove('open');drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  backdrop&&backdrop.addEventListener('click',closeDrawer);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&drawer.classList.contains('open'))closeDrawer();});
+
+  /* ── per-section instance ── */
+  function initOpps(sec){
+    var st={state:sec.dataset.recState,cat:'All',q:'',selId:null,fav:{},dis:{}};
+    var feedEl=sec.querySelector('.opps-feed'),scrollEl=sec.querySelector('.opps-stack-scroll'),stackEl=sec.querySelector('.opps-stack'),levelEl=sec.querySelector('.opps-level');
+    function list(){
+      return (DATA[st.state]||[]).filter(function(it){
+        if(st.dis[it.id])return false;
+        if(st.cat!=='All'&&it.cat!==st.cat)return false;
+        if(st.q&&(it.title+' '+it.subt+' '+it.desc).toLowerCase().indexOf(st.q)<0)return false;
+        return true;
+      });
+    }
+    function byId(id){return (DATA[st.state]||[]).filter(function(x){return x.id===id;})[0];}
+    function feedHTML(it){
+      var c=CAT[it.cat];
+      return '<div class="opps-feed-top"><div class="opps-feed-tags">'
+        +'<span class="opps-cat" style="color:'+c.d+';border-color:'+hexa(c.d,.3)+';background:'+hexa(c.d,.12)+'">'+ICOMPASS+it.cat+'</span>'
+        +'<span class="opps-src">'+ISLIDERS+it.src+'</span>'
+        +'<span class="opps-live"><span class="ping"><span class="a"></span><span></span></span>Live</span></div>'
+        +'<div class="opps-actbtns"><button type="button" class="opps-iconbtn star'+(st.fav[it.id]?' on':'')+'" data-act="star" aria-label="Save">'+ISTAR+'</button><button type="button" class="opps-iconbtn" data-act="dismiss" aria-label="Dismiss">'+ICX+'</button></div></div>'
+        +'<div class="opps-feed-mid" data-act="explore"><div class="opps-feed-title">'+it.title+'</div><div class="opps-feed-subt">'+it.subt+'</div><div class="opps-feed-desc">'+it.desc+'</div></div>'
+        +'<div><div class="opps-metrics">'+it.mets.map(function(m){return '<div class="opps-metric"><div class="l">'+m[0]+'</div><div class="v">'+m[1]+'</div></div>';}).join('')+'</div>'
+        +'<div class="opps-feed-foot"><span class="opps-impact">Impact: <b>'+it.impact+'</b></span><button type="button" class="opps-explore" data-act="explore">Explore Technical Dossier '+IARR+'</button></div></div>';
+    }
+    function render(){
+      levelEl.textContent=LEVEL[st.state];
+      var L=list();
+      if(!L.length){feedEl.className='opps-feed';feedEl.innerHTML='<div class="opps-feed-empty">No opportunities match this filter.</div>';scrollEl.innerHTML='';stackEl.classList.remove('scrollable');return;}
+      if(!st.selId||!L.some(function(x){return x.id===st.selId;}))st.selId=L[0].id;
+      var sel=L.filter(function(x){return x.id===st.selId;})[0];
+      feedEl.className='opps-feed opps-fadein';void feedEl.offsetWidth;feedEl.innerHTML=feedHTML(sel);
+      scrollEl.innerHTML=L.map(function(it){var c=CAT[it.cat];return '<button type="button" class="opps-cand'+(it.id===st.selId?' sel':'')+'" data-id="'+it.id+'" style="--cc:'+c.l+'"><div class="opps-cand-body"><div class="opps-cand-title">'+it.title+'</div><div class="opps-cand-meta"><div class="opps-cand-rel"><i style="width:'+it.rel+'%"></i></div><span class="opps-cand-cat" style="color:'+c.l+'">'+it.cat+'</span></div></div><span class="opps-cand-arrow" data-arrow="'+it.id+'" role="button" aria-label="Open dossier">'+IARRUP+'</span></button>';}).join('');
+      stackEl.classList.toggle('scrollable',L.length>3);
+    }
+    render();
+    feedEl.addEventListener('click',function(e){
+      var t=e.target.closest('[data-act]');if(!t)return;
+      var sel=byId(st.selId);if(!sel)return;
+      var a=t.dataset.act;
+      if(a==='explore')openDrawer(sel);
+      else if(a==='star'){st.fav[sel.id]=!st.fav[sel.id];t.classList.toggle('on',st.fav[sel.id]);}
+      else if(a==='dismiss'){st.dis[sel.id]=true;st.selId=null;render();}
+    });
+    scrollEl.addEventListener('click',function(e){
+      var ar=e.target.closest('[data-arrow]');
+      if(ar){var it=byId(ar.dataset.arrow);if(it)openDrawer(it);return;}
+      var card=e.target.closest('.opps-cand');if(card){st.selId=card.dataset.id;render();}
+    });
+    [].forEach.call(sec.querySelectorAll('.opps-filter .tabs-trigger'),function(b){
+      b.addEventListener('click',function(){[].forEach.call(sec.querySelectorAll('.opps-filter .tabs-trigger'),function(x){x.setAttribute('aria-selected','false');});b.setAttribute('aria-selected','true');st.cat=b.dataset.cat;st.selId=null;render();});
+    });
+    var search=sec.querySelector('.opps-search input');
+    search&&search.addEventListener('input',function(){st.q=this.value.trim().toLowerCase();st.selId=null;render();});
+    [].forEach.call(sec.querySelectorAll('.opps-substates button'),function(b){
+      b.addEventListener('click',function(){[].forEach.call(sec.querySelectorAll('.opps-substates button'),function(x){x.classList.remove('on');});b.classList.add('on');st.state=b.dataset.sub;st.cat='All';st.q='';st.selId=null;st.dis={};
+        [].forEach.call(sec.querySelectorAll('.opps-filter .tabs-trigger'),function(x){x.setAttribute('aria-selected',x.dataset.cat==='All'?'true':'false');});if(search)search.value='';render();});
+    });
+  }
+  [].forEach.call(document.querySelectorAll('.opps'),initOpps);
+})();
 </script>
 </body>
 </html>

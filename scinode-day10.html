@@ -362,8 +362,8 @@
     .cert-name{font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
     .cert-sub{font-size:10px;color:var(--text-2);}
     /* Compliance module (Day 0) — Figma card: logo + title/sub + verified check */
-    .cmp-card{min-width:272px;width:272px;display:flex;align-items:flex-start;gap:8px;background:var(--white);border:1px solid #e4e4e7;border-radius:8px;padding:16px;overflow:hidden;flex-shrink:0;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s;}
-    .cmp-card:hover{border-color:var(--teal-100);box-shadow:0 6px 16px rgba(16,24,22,0.07);transform:translateY(-2px);}
+    .cmp-card{min-width:272px;width:272px;display:flex;align-items:flex-start;gap:8px;background:var(--white);border:none;border-radius:8px;padding:16px;overflow:hidden;flex-shrink:0;cursor:pointer;box-shadow:0 1px 3px rgba(16,24,22,0.06);transition:box-shadow .15s,transform .15s;}
+    .cmp-card:hover{box-shadow:0 8px 20px rgba(16,24,22,0.10);transform:translateY(-2px);}
     .cmp-main{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:48px;}
     .cmp-logo{width:41px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
     .cmp-logo img{max-width:100%;max-height:100%;object-fit:contain;}
@@ -2000,7 +2000,7 @@
                 <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Documentation')">Documentation</button>
                 <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Regulatory')">Regulatory</button>
               </div>
-              <div class="hscroll scroll-area" id="compliance-scroll" role="list" aria-label="Compliance items"><!-- rendered by JS --></div>
+              <div class="hscroll scroll-area cmp-scroll" id="compliance-scroll" role="list" aria-label="Compliance items"><!-- rendered by JS --></div>
             </section>
       </div>
       <div style="height:24px"></div>
@@ -2838,18 +2838,24 @@
             </div>
             <div class="collapsible">
               <button type="button" class="collapsible-trigger" aria-expanded="false" aria-controls="d1-col-mfg" onclick="toggleCollapsible(this)">
-                <span class="collap-title">Built for Regulated Chemistry</span>
+                <span class="collap-title">Compliance &amp; Certifications</span>
                 <svg class="chev" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div id="d1-col-mfg" class="collapsible-content" data-state="closed" role="region" style="padding:12px 20px;">
-                <div class="hscroll scroll-area">
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">GMP</span></span><div class="cert-name">GMP Certified</div><div class="cert-sub">ICH Q7 compliant</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">FDA</span></span><div class="cert-name">FDA Registered</div><div class="cert-sub">US 21 CFR Part 211</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">ISO</span></span><div class="cert-name">ISO 9001:2015</div><div class="cert-sub">Quality management</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">EMA</span></span><div class="cert-name">EMA Compliant</div><div class="cert-sub">EU GMP Annex 1</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">ICH</span></span><div class="cert-name">ICH Q10</div><div class="cert-sub">Pharmaceutical QMS</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">WHO</span></span><div class="cert-name">WHO-GMP</div><div class="cert-sub">Global export ready</div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                  <div class="tabs-list" role="tablist" aria-label="Filter compliance by category" style="margin-bottom:12px;">
+                    <button type="button" role="tab" aria-selected="true" class="tabs-trigger" onclick="filterCompliance(this,'all')">All</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Factory')">Factory</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Product')">Product</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Documentation')">Documentation</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Regulatory')">Regulatory</button>
+                  </div>
+                  <div class="hscroll-controls">
+                    <button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-compliance',-1)" aria-label="Scroll compliance left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+                    <button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-compliance',1)" aria-label="Scroll compliance right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
+                  </div>
                 </div>
+                <div class="hscroll scroll-area cmp-scroll" id="d1-compliance-scroll" role="list" aria-label="Compliance items"></div>
               </div>
             </div>
           </div>
@@ -3593,18 +3599,24 @@
             </div>
             <div class="collapsible">
               <button type="button" class="collapsible-trigger" aria-expanded="false" aria-controls="d10-col-mfg" onclick="toggleCollapsible(this)">
-                <span class="collap-title">Built for Regulated Chemistry</span>
+                <span class="collap-title">Compliance &amp; Certifications</span>
                 <svg class="chev" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div id="d10-col-mfg" class="collapsible-content" data-state="closed" role="region" style="padding:12px 20px;">
-                <div class="hscroll scroll-area">
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">GMP</span></span><div class="cert-name">GMP Certified</div><div class="cert-sub">ICH Q7 compliant</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">FDA</span></span><div class="cert-name">FDA Registered</div><div class="cert-sub">US 21 CFR Part 211</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">ISO</span></span><div class="cert-name">ISO 9001:2015</div><div class="cert-sub">Quality management</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">EMA</span></span><div class="cert-name">EMA Compliant</div><div class="cert-sub">EU GMP Annex 1</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">ICH</span></span><div class="cert-name">ICH Q10</div><div class="cert-sub">Pharmaceutical QMS</div></div>
-                  <div class="cert-card"><span class="avatar cert-logo"><span class="avatar-fallback">WHO</span></span><div class="cert-name">WHO-GMP</div><div class="cert-sub">Global export ready</div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                  <div class="tabs-list" role="tablist" aria-label="Filter compliance by category" style="margin-bottom:12px;">
+                    <button type="button" role="tab" aria-selected="true" class="tabs-trigger" onclick="filterCompliance(this,'all')">All</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Factory')">Factory</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Product')">Product</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Documentation')">Documentation</button>
+                    <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Regulatory')">Regulatory</button>
+                  </div>
+                  <div class="hscroll-controls">
+                    <button type="button" class="btn btn-icon-sm" onclick="hscroll('d10-compliance',-1)" aria-label="Scroll compliance left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+                    <button type="button" class="btn btn-icon-sm" onclick="hscroll('d10-compliance',1)" aria-label="Scroll compliance right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
+                  </div>
                 </div>
+                <div class="hscroll scroll-area cmp-scroll" id="d10-compliance-scroll" role="list" aria-label="Compliance items"></div>
               </div>
             </div>
           </div>
@@ -4136,8 +4148,8 @@
 
   /* ── Compliance module (Day 0) — ~30 items across 4 categories, with filter ── */
   (function() {
-    var wrap = document.getElementById('compliance-scroll');
-    if (!wrap) return;
+    var wraps = document.querySelectorAll('.cmp-scroll');
+    if (!wraps.length) return;
     var COLORS = {
       Factory:{bg:'#E6F7F6',fg:'#016358'},
       Product:{bg:'#EEF2FF',fg:'#4338CA'},
@@ -4148,25 +4160,24 @@
       var c = COLORS[cat] || COLORS.Factory;
       var fs = k.length <= 3 ? 11 : (k.length <= 4 ? 9 : (k.length <= 5 ? 7.5 : 6.2));
       return '<svg width="41" height="42" viewBox="0 0 42 42" aria-hidden="true">'
-        + '<circle cx="21" cy="21" r="20" fill="' + c.bg + '" stroke="' + c.fg + '" stroke-width="1.4"/>'
-        + '<circle cx="21" cy="21" r="16" fill="none" stroke="' + c.fg + '" stroke-width="0.7" opacity="0.45"/>'
+        + '<circle cx="21" cy="21" r="20" fill="' + c.bg + '"/>'
         + '<text x="21" y="22" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-weight="700" font-size="' + fs + '" fill="' + c.fg + '">' + k + '</text>'
         + '</svg>';
     }
     var ITEMS = [
       {t:'GMP Certified',s:'Good Manufacturing Practice',c:'Factory',k:'GMP',img:'assets/certs/gmp.png'},
-      {t:'ISO 9001:2015',s:'Quality Management',c:'Factory',k:'ISO'},
-      {t:'ISO 14001',s:'Environmental Management',c:'Factory',k:'ISO'},
-      {t:'ISO 45001',s:'Occupational Health &amp; Safety',c:'Factory',k:'ISO'},
-      {t:'FDA Registered',s:'US 21 CFR Part 211',c:'Factory',k:'FDA'},
+      {t:'ISO 9001:2015',s:'Quality Management',c:'Factory',k:'ISO',img:'assets/certs/iso.png'},
+      {t:'ISO 14001',s:'Environmental Management',c:'Factory',k:'ISO',img:'assets/certs/iso.png'},
+      {t:'ISO 45001',s:'Occupational Health &amp; Safety',c:'Factory',k:'ISO',img:'assets/certs/iso.png'},
+      {t:'FDA Registered',s:'US 21 CFR Part 211',c:'Factory',k:'FDA',img:'assets/certs/fda.png'},
       {t:'EHS Compliance',s:'Environment, Health &amp; Safety',c:'Factory',k:'EHS'},
-      {t:'WHO-GMP',s:'Global export ready',c:'Factory',k:'WHO'},
-      {t:'EU GMP',s:'Annex 1 compliant',c:'Factory',k:'EU'},
+      {t:'WHO-GMP',s:'Global export ready',c:'Factory',k:'WHO',img:'assets/certs/who.png'},
+      {t:'EU GMP',s:'Annex 1 compliant',c:'Factory',k:'EU',img:'assets/certs/ce.png'},
       {t:'Product License',s:'Marketing authorization',c:'Product',k:'LIC'},
       {t:'CEP',s:'Certificate of Suitability',c:'Product',k:'CEP'},
       {t:'Drug Master File',s:'DMF on record',c:'Product',k:'DMF'},
       {t:'REACH Registered',s:'EU chemical compliance',c:'Product',k:'REACH'},
-      {t:'Halal Certified',s:'Halal assurance',c:'Product',k:'HALAL'},
+      {t:'Halal Certified',s:'Halal assurance',c:'Product',k:'HALAL',img:'assets/certs/halal.png'},
       {t:'Kosher Certified',s:'Kosher assurance',c:'Product',k:'KOSHER'},
       {t:'Patent &amp; IP',s:'Filed and protected',c:'Product',k:'IP'},
       {t:'Safety Data Sheet',s:'SDS available',c:'Documentation',k:'SDS'},
@@ -4186,7 +4197,7 @@
       {t:'Regulatory Filing',s:'Dossier support',c:'Regulatory',k:'REG'}
     ];
     var CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-    wrap.innerHTML = ITEMS.map(function(it) {
+    var cardsHTML = ITEMS.map(function(it) {
       var logo = it.img ? '<img alt="" src="' + it.img + '">' : badge(it.k, it.c);
       return '<div role="listitem" class="cmp-card" data-cat="' + it.c + '">'
         + '<div class="cmp-main"><div class="cmp-logo">' + logo + '</div>'
@@ -4194,14 +4205,18 @@
         + '<span class="cmp-check">' + CHECK + '</span>'
         + '</div>';
     }).join('');
+    wraps.forEach(function(w) { w.innerHTML = cardsHTML; });
     window.filterCompliance = function(btn, cat) {
       var list = btn.closest('[role="tablist"]');
       if (list) list.querySelectorAll('[role="tab"]').forEach(function(t) { t.setAttribute('aria-selected', 'false'); });
       btn.setAttribute('aria-selected', 'true');
-      wrap.querySelectorAll('.cmp-card').forEach(function(card) {
+      var scope = btn.closest('.collapsible-content') || btn.closest('section') || document;
+      var scroll = scope.querySelector('.cmp-scroll');
+      if (!scroll) return;
+      scroll.querySelectorAll('.cmp-card').forEach(function(card) {
         card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
       });
-      wrap.scrollLeft = 0;
+      scroll.scrollLeft = 0;
     };
   })();
 </script>

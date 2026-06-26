@@ -385,15 +385,26 @@
     .opps-search input{font-family:var(--font);font-size:12px;color:var(--text-1);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;width:210px;outline:none;transition:border-color .15s;}
     .opps-search input:focus{border-color:var(--teal-300);}
     .opps-split{display:grid;grid-template-columns:2.2fr 1fr;gap:16px;align-items:stretch;}
-    .opps-feed{position:relative;overflow:hidden;border-radius:16px;padding:20px 22px;height:306px;display:flex;flex-direction:column;justify-content:flex-start;background:var(--white);color:var(--text-1);border:none;box-shadow:0 1px 3px rgba(16,24,22,.05);transition:box-shadow .25s ease;}
-    .opps-feed::after{content:"";position:absolute;right:-80px;top:-70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(2,150,138,.10),transparent 62%);pointer-events:none;opacity:0;transition:opacity .35s ease;}
+    .opps-feed{position:relative;overflow:hidden;border-radius:16px;padding:0;height:306px;display:flex;flex-direction:row;align-items:stretch;background:var(--white);color:var(--text-1);border:none;box-shadow:0 1px 3px rgba(16,24,22,.05);transition:box-shadow .25s ease;}
+    .opps-feed::after{content:"";position:absolute;right:-80px;top:-70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(2,150,138,.10),transparent 62%);pointer-events:none;opacity:0;transition:opacity .35s ease;z-index:0;}
     .opps-feed:hover{box-shadow:0 10px 30px rgba(16,24,22,.08);}
     .opps-feed:hover::after{opacity:1;}
-    .opps-feed>*{position:relative;z-index:1;}
+    /* Left image panel (≈32%) */
+    .opps-feed-img{position:relative;flex:0 0 32%;overflow:hidden;background:linear-gradient(150deg,#04332f 0%,#021a24 100%);}
+    .opps-feed-img svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
+    .opps-feed-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,14,18,.30) 0%,rgba(2,14,18,.05) 40%,rgba(2,14,18,.40) 100%);pointer-events:none;}
+    .opps-feed-img .opps-cat{position:absolute;top:14px;left:14px;z-index:2;color:#fff;background:rgba(2,14,18,.5);border-color:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+    .opps-feed-img .opps-cat .ocdot{width:6px;height:6px;border-radius:50%;background:var(--cc);flex-shrink:0;}
+    .opps-feed-match{position:absolute;bottom:14px;left:14px;z-index:2;display:inline-flex;align-items:baseline;gap:4px;font-size:10.5px;color:rgba(255,255,255,.7);letter-spacing:.02em;}
+    .opps-feed-match b{font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
+    /* Right content panel (≈68%) */
+    .opps-feed-main{position:relative;z-index:1;flex:1;min-width:0;padding:20px 22px;display:flex;flex-direction:column;justify-content:flex-start;}
     .opps-feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;}
-    .opps-feed-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .opps-feed-tags{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0;}
     .opps-cat{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;}
-    .opps-src{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--text-3);}
+    .opps-src{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--text-3);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .opps-src svg{flex-shrink:0;}
+    .opps-live{flex-shrink:0;}
     .opps-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--teal-700);background:var(--teal-50);padding:2px 8px;border-radius:20px;border:1px solid var(--teal-100);}
     .opps-live .ping{position:relative;display:inline-flex;width:6px;height:6px;}
     .opps-live .ping span{position:absolute;inset:0;border-radius:50%;background:var(--teal-500);}
@@ -415,7 +426,7 @@
     .opps-impact b{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--teal-700);background:var(--teal-50);border:1px solid var(--teal-100);padding:2px 7px;border-radius:5px;}
     .opps-explore{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--teal-600);background:none;border:none;cursor:pointer;font-family:var(--font);transition:gap .15s,color .15s;}
     .opps-explore:hover{gap:8px;color:var(--teal-700);}
-    .opps-feed-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;}
+    .opps-feed-empty{flex:1;display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;}
     .opps-stack{position:relative;height:306px;}
     .opps-stack-scroll{display:flex;flex-direction:column;gap:10px;height:100%;overflow-y:auto;padding-right:4px;scrollbar-width:thin;}
     .opps-stack-scroll::-webkit-scrollbar{width:5px;}.opps-stack-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
@@ -5344,6 +5355,35 @@ function App() {
   }
   function dossierOf(it){return it.doss||('### Overview\n'+it.desc+'\n#### Why it surfaced\n* Source: '+it.src+'.\n* '+it.cat+' opportunity · '+it.rel+'% relevance fit.');}
 
+  /* Contextual scientific motif for the featured-card image panel (per category, generated — dark bg + teal accents, no stock photos). */
+  function feedArt(cat){
+    var M={
+      Technology:'<g fill="none" stroke="#58C9C2" stroke-width="1.1" opacity=".42">'
+        +'<path d="M-12 64 C50 44 150 84 212 60"/><path d="M-12 112 C50 92 150 132 212 108"/>'
+        +'<path d="M-12 160 C50 140 150 180 212 156"/><path d="M-12 208 C50 188 150 228 212 204"/>'
+        +'<path d="M-12 256 C50 236 150 276 212 252"/></g>'
+        +'<g><circle cx="56" cy="72" r="5" fill="#96DDA5" opacity=".9"/><circle cx="124" cy="102" r="4" fill="#58C9C2" opacity=".8"/>'
+        +'<circle cx="150" cy="162" r="6" fill="#96DDA5" opacity=".85"/><circle cx="70" cy="152" r="3.5" fill="#58C9C2" opacity=".7"/>'
+        +'<circle cx="100" cy="212" r="5" fill="#7fe3da" opacity=".85"/><circle cx="40" cy="248" r="4" fill="#58C9C2" opacity=".7"/>'
+        +'<circle cx="152" cy="250" r="3.5" fill="#96DDA5" opacity=".7"/></g>',
+      Product:'<g fill="none" stroke="#58C9C2" stroke-width="1.1" opacity=".4"><circle cx="92" cy="150" r="34"/><circle cx="92" cy="150" r="58"/><circle cx="92" cy="150" r="82"/></g>'
+        +'<circle cx="92" cy="150" r="15" fill="#02968A" opacity=".5"/>'
+        +'<g fill="#96DDA5"><circle cx="92" cy="150" r="4"/><circle cx="128" cy="120" r="3" opacity=".8"/><circle cx="58" cy="182" r="3" opacity=".75"/>'
+        +'<circle cx="142" cy="200" r="3.5" opacity=".7"/><circle cx="50" cy="102" r="2.5" opacity=".6"/><circle cx="120" cy="218" r="2.5" opacity=".6"/></g>',
+      Market:'<g stroke="#0b433f" stroke-width="1" opacity=".7"><line x1="-10" y1="92" x2="210" y2="92"/><line x1="-10" y1="152" x2="210" y2="152"/><line x1="-10" y1="212" x2="210" y2="212"/></g>'
+        +'<polyline fill="none" stroke="#58C9C2" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="8,232 48,202 86,216 122,150 160,172 196,96" opacity=".95"/>'
+        +'<path d="M180 102 l16 -7 -3 12" fill="none" stroke="#96DDA5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
+        +'<g fill="#96DDA5"><circle cx="48" cy="202" r="3.5"/><circle cx="122" cy="150" r="3.5"/><circle cx="196" cy="96" r="4.5"/></g>',
+      Distribution:'<g stroke="#0b5f56" stroke-width="1.1" opacity=".55" fill="none"><line x1="44" y1="82" x2="120" y2="122"/><line x1="120" y1="122" x2="72" y2="202"/><line x1="120" y1="122" x2="168" y2="192"/><line x1="72" y1="202" x2="150" y2="250"/></g>'
+        +'<path d="M44 82 C92 94 104 162 72 202 C62 232 122 242 150 250" fill="none" stroke="#58C9C2" stroke-width="1.8" stroke-dasharray="2 6" stroke-linecap="round" opacity=".9"/>'
+        +'<g fill="#021a24" stroke="#96DDA5" stroke-width="1.6"><circle cx="44" cy="82" r="5"/><circle cx="120" cy="122" r="6.5"/><circle cx="72" cy="202" r="5"/><circle cx="168" cy="192" r="4.5"/><circle cx="150" cy="250" r="5"/></g>'
+    };
+    var gid='oart-'+cat;
+    return '<svg viewBox="0 0 200 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'
+      +'<defs><radialGradient id="'+gid+'" cx="30%" cy="20%" r="90%"><stop offset="0" stop-color="#0c5c52" stop-opacity=".6"/><stop offset="1" stop-color="#021a24" stop-opacity="0"/></radialGradient></defs>'
+      +'<rect width="200" height="320" fill="url(#'+gid+')"/>'+(M[cat]||M.Technology)+'</svg>';
+  }
+
   /* ── shared drawer ── */
   var backdrop=document.getElementById('opps-backdrop'),drawer=document.getElementById('opps-drawer');
   function openDrawer(it){
@@ -5384,14 +5424,18 @@ function App() {
     function byId(id){return (DATA[st.state]||[]).filter(function(x){return x.id===id;})[0];}
     function feedHTML(it){
       var c=CAT[it.cat];
-      return '<div class="opps-feed-top"><div class="opps-feed-tags">'
-        +'<span class="opps-cat" style="color:'+c.l+';border-color:'+hexa(c.l,.25)+';background:'+c.bg+'">'+ICOMPASS+it.cat+'</span>'
+      return '<div class="opps-feed-img">'+feedArt(it.cat)
+        +'<span class="opps-cat" style="--cc:'+c.dot+'"><span class="ocdot"></span>'+it.cat+'</span>'
+        +'<span class="opps-feed-match"><b>'+it.rel+'%</b> Match</span></div>'
+        +'<div class="opps-feed-main">'
+        +'<div class="opps-feed-top"><div class="opps-feed-tags">'
         +'<span class="opps-src">'+ISLIDERS+it.src+'</span>'
         +'<span class="opps-live"><span class="ping"><span class="a"></span><span></span></span>Live</span></div>'
         +'<div class="opps-actbtns"><button type="button" class="opps-iconbtn star'+(st.fav[it.id]?' on':'')+'" data-act="star" aria-label="Save">'+ISTAR+'</button><button type="button" class="opps-iconbtn" data-act="dismiss" aria-label="Dismiss">'+ICX+'</button></div></div>'
         +'<div class="opps-feed-mid" data-act="explore"><div class="opps-feed-title">'+it.title+'</div><div class="opps-feed-subt">'+it.subt+'</div><div class="opps-feed-desc">'+it.desc+'</div></div>'
         +'<div><div class="opps-metrics">'+it.mets.map(function(m){return '<div class="opps-metric"><div class="l">'+m[0]+'</div><div class="v">'+m[1]+'</div></div>';}).join('')+'</div>'
-        +'<div class="opps-feed-foot"><span class="opps-impact">Impact: <b>'+it.impact+'</b></span><button type="button" class="opps-explore" data-act="explore">Explore Technical Dossier '+IARR+'</button></div></div>';
+        +'<div class="opps-feed-foot"><span class="opps-impact">Impact: <b>'+it.impact+'</b></span><button type="button" class="opps-explore" data-act="explore">Explore Technical Dossier '+IARR+'</button></div></div>'
+        +'</div>';
     }
     function render(){
       levelEl.textContent=LEVEL[st.state];

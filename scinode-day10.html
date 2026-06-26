@@ -391,36 +391,42 @@
     .opps-feed:hover::after{opacity:1;}
     /* Left image panel (≈32%) */
     .opps-feed-img{position:relative;flex:0 0 32%;overflow:hidden;background:linear-gradient(150deg,#04332f 0%,#021a24 100%);}
-    .opps-feed-img svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
-    .opps-feed-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,14,18,.30) 0%,rgba(2,14,18,.05) 40%,rgba(2,14,18,.40) 100%);pointer-events:none;}
+    .opps-feed-img svg.opps-feed-art{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;}
+    .opps-feed-photo{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;z-index:1;}
+    .opps-feed-img::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(2,14,18,.35) 0%,rgba(2,14,18,.08) 38%,rgba(2,14,18,.55) 100%);pointer-events:none;}
     .opps-feed-img .opps-cat{position:absolute;top:14px;left:14px;z-index:2;color:#fff;background:rgba(2,14,18,.5);border-color:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-    .opps-feed-img .opps-cat .ocdot{width:6px;height:6px;border-radius:50%;background:var(--cc);flex-shrink:0;}
-    .opps-feed-match{position:absolute;bottom:14px;left:14px;z-index:2;display:inline-flex;align-items:baseline;gap:4px;font-size:10.5px;color:rgba(255,255,255,.7);letter-spacing:.02em;}
-    .opps-feed-match b{font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
+    .opps-feed-img .opps-cat .ocico{display:inline-flex;color:var(--cc);}
+    .opps-feed-match{position:absolute;bottom:14px;left:14px;z-index:2;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:12px;background:rgba(2,14,18,.42);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);border:1px solid rgba(255,255,255,.1);}
+    .opps-match-top{display:flex;align-items:center;gap:7px;}
+    .opps-match-pct{font-size:20px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+    .opps-match-ring{width:22px;height:22px;flex-shrink:0;display:block;}
+    .opps-match-lbl{font-size:9px;line-height:1.25;color:rgba(255,255,255,.62);max-width:86px;letter-spacing:.01em;}
     /* Right content panel (≈68%) */
     .opps-feed-main{position:relative;z-index:1;flex:1;min-width:0;padding:20px 22px;display:flex;flex-direction:column;justify-content:flex-start;}
     .opps-feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;}
     .opps-feed-tags{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0;}
     .opps-cat{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;}
-    .opps-src{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--text-3);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .opps-tdiv{width:1px;height:13px;background:var(--border);flex-shrink:0;}
+    .opps-src{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text-2);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .opps-src svg{flex-shrink:0;}
-    .opps-live{flex-shrink:0;}
-    .opps-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--teal-700);background:var(--teal-50);padding:2px 8px;border-radius:20px;border:1px solid var(--teal-100);}
+    .opps-live{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--teal-600);background:none;padding:0;border:none;}
     .opps-live .ping{position:relative;display:inline-flex;width:6px;height:6px;}
     .opps-live .ping span{position:absolute;inset:0;border-radius:50%;background:var(--teal-500);}
     .opps-live .ping .a{animation:oppsping 1.8s cubic-bezier(0,0,.2,1) infinite;opacity:.75;}
-    .opps-actbtns{display:flex;gap:4px;flex-shrink:0;}
-    .opps-iconbtn{width:26px;height:26px;border-radius:7px;border:none;background:var(--page-bg);color:var(--text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-    .opps-iconbtn:hover{background:#eceef1;color:var(--text-1);}
-    .opps-iconbtn.star.on{color:var(--gold);}
+    .opps-actbtns{display:flex;gap:6px;flex-shrink:0;}
+    .opps-iconbtn{width:30px;height:30px;border-radius:9px;border:1px solid var(--border);background:var(--white);color:var(--text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+    .opps-iconbtn:hover{background:var(--page-bg);border-color:var(--text-3);color:var(--text-1);}
+    .opps-iconbtn.star.on{color:var(--gold);border-color:var(--gold);}
     .opps-feed-mid{cursor:pointer;}
     .opps-feed-title{font-family:var(--font);font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--text-1);margin-bottom:6px;transition:color .2s;}
     .opps-feed-mid:hover .opps-feed-title{color:var(--teal-700);}
-    .opps-feed-subt{font-size:12px;color:var(--text-2);margin-bottom:8px;}
+    .opps-feed-subt{font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:7px;line-height:1.4;}
     .opps-feed-desc{font-size:12px;color:var(--text-3);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-    .opps-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:11px 12px;margin:16px 0 0;background:var(--page-bg);border:none;border-radius:8px;}
-    .opps-metric .l{font-size:10px;color:var(--text-3);line-height:1.2;margin-bottom:3px;}
-    .opps-metric .v{font-size:13px;font-weight:600;color:var(--text-1);font-variant-numeric:tabular-nums;}
+    .opps-metrics{display:grid;grid-template-columns:repeat(3,1fr);padding:11px 0 0;margin:13px 0 0;background:none;border:none;border-top:1px solid var(--border);border-radius:0;}
+    .opps-metric{padding:0 14px;border-left:1px solid var(--border);}
+    .opps-metric:first-child{padding-left:0;border-left:none;}
+    .opps-metric .l{font-size:10px;color:var(--text-3);line-height:1.2;margin-bottom:4px;}
+    .opps-metric .v{font-size:15px;font-weight:700;color:var(--text-1);font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
     .opps-feed-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
     .opps-impact{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--text-2);}
     .opps-impact b{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--teal-700);background:var(--teal-50);border:1px solid var(--teal-100);padding:2px 7px;border-radius:5px;}
@@ -5355,7 +5361,21 @@ function App() {
   }
   function dossierOf(it){return it.doss||('### Overview\n'+it.desc+'\n#### Why it surfaced\n* Source: '+it.src+'.\n* '+it.cat+' opportunity · '+it.rel+'% relevance fit.');}
 
-  /* Contextual scientific motif for the featured-card image panel (per category, generated — dark bg + teal accents, no stock photos). */
+  /* Contextual scientific photo per category for the featured-card image panel (dark, teal-toned).
+     The generated SVG motif (feedArt) sits behind as a graceful fallback if a photo fails to load. */
+  var PHOTO={
+    Technology:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=520&h=640&fit=crop&q=80&auto=format',
+    Product:'https://images.unsplash.com/photo-1532187643603-ba119ca4109e?w=520&h=640&fit=crop&q=80&auto=format',
+    Market:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=520&h=640&fit=crop&q=80&auto=format',
+    Distribution:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=520&h=640&fit=crop&q=80&auto=format'
+  };
+  function matchRing(rel){
+    var r=9,c=2*Math.PI*r,off=c*(1-rel/100);
+    return '<svg class="opps-match-ring" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'
+      +'<circle cx="12" cy="12" r="9" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2.4"/>'
+      +'<circle cx="12" cy="12" r="9" fill="none" stroke="#58C9C2" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 12 12)"/></svg>';
+  }
+  /* Contextual scientific motif for the featured-card image panel (per category, generated — dark bg + teal accents). */
   function feedArt(cat){
     var M={
       Technology:'<g fill="none" stroke="#58C9C2" stroke-width="1.1" opacity=".42">'
@@ -5379,7 +5399,7 @@ function App() {
         +'<g fill="#021a24" stroke="#96DDA5" stroke-width="1.6"><circle cx="44" cy="82" r="5"/><circle cx="120" cy="122" r="6.5"/><circle cx="72" cy="202" r="5"/><circle cx="168" cy="192" r="4.5"/><circle cx="150" cy="250" r="5"/></g>'
     };
     var gid='oart-'+cat;
-    return '<svg viewBox="0 0 200 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'
+    return '<svg class="opps-feed-art" viewBox="0 0 200 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'
       +'<defs><radialGradient id="'+gid+'" cx="30%" cy="20%" r="90%"><stop offset="0" stop-color="#0c5c52" stop-opacity=".6"/><stop offset="1" stop-color="#021a24" stop-opacity="0"/></radialGradient></defs>'
       +'<rect width="200" height="320" fill="url(#'+gid+')"/>'+(M[cat]||M.Technology)+'</svg>';
   }
@@ -5425,11 +5445,13 @@ function App() {
     function feedHTML(it){
       var c=CAT[it.cat];
       return '<div class="opps-feed-img">'+feedArt(it.cat)
-        +'<span class="opps-cat" style="--cc:'+c.dot+'"><span class="ocdot"></span>'+it.cat+'</span>'
-        +'<span class="opps-feed-match"><b>'+it.rel+'%</b> Match</span></div>'
+        +'<div class="opps-feed-photo" style="background-image:url('+PHOTO[it.cat]+')" aria-hidden="true"></div>'
+        +'<span class="opps-cat" style="--cc:'+c.dot+'"><span class="ocico">'+ICOMPASS+'</span>'+it.cat+'</span>'
+        +'<span class="opps-feed-match"><span class="opps-match-top"><span class="opps-match-pct">'+it.rel+'%</span>'+matchRing(it.rel)+'</span><span class="opps-match-lbl">Match to your portfolio</span></span></div>'
         +'<div class="opps-feed-main">'
         +'<div class="opps-feed-top"><div class="opps-feed-tags">'
-        +'<span class="opps-src">'+ISLIDERS+it.src+'</span>'
+        +'<span class="opps-src">'+it.src+'</span>'
+        +'<span class="opps-tdiv"></span>'
         +'<span class="opps-live"><span class="ping"><span class="a"></span><span></span></span>Live</span></div>'
         +'<div class="opps-actbtns"><button type="button" class="opps-iconbtn star'+(st.fav[it.id]?' on':'')+'" data-act="star" aria-label="Save">'+ISTAR+'</button><button type="button" class="opps-iconbtn" data-act="dismiss" aria-label="Dismiss">'+ICX+'</button></div></div>'
         +'<div class="opps-feed-mid" data-act="explore"><div class="opps-feed-title">'+it.title+'</div><div class="opps-feed-subt">'+it.subt+'</div><div class="opps-feed-desc">'+it.desc+'</div></div>'

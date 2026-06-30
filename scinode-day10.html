@@ -385,7 +385,7 @@
     .opps-search input{font-family:var(--font);font-size:12px;color:var(--text-1);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;width:210px;outline:none;transition:border-color .15s;}
     .opps-search input:focus{border-color:var(--teal-300);}
     .opps-split{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:stretch;}
-    .opps-feed{position:relative;overflow:hidden;border-radius:16px;padding:0;height:306px;display:flex;flex-direction:row;align-items:stretch;background:var(--white);color:var(--text-1);border:none;box-shadow:0 1px 3px rgba(16,24,22,.05);transition:box-shadow .25s ease;}
+    .opps-feed{position:relative;overflow:hidden;border-radius:16px;padding:0;height:462px;display:flex;flex-direction:row;align-items:stretch;background:var(--white);color:var(--text-1);border:none;box-shadow:0 1px 3px rgba(16,24,22,.05);transition:box-shadow .25s ease;}
     .opps-feed::after{content:"";position:absolute;right:-80px;top:-70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(2,150,138,.10),transparent 62%);pointer-events:none;opacity:0;transition:opacity .35s ease;z-index:0;}
     .opps-feed:hover{box-shadow:0 10px 30px rgba(16,24,22,.08);}
     .opps-feed:hover::after{opacity:1;}
@@ -422,6 +422,13 @@
     .opps-feed-mid:hover .opps-feed-title{color:var(--teal-700);}
     .opps-feed-subt{font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:6px;line-height:1.4;}
     .opps-feed-desc{font-size:12px;color:var(--text-3);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    /* "Why this is a good fit" panel — personalized rationale, between narrative and specs */
+    .opps-why{margin:12px 0 0;padding:10px 13px;background:var(--teal-50);border:1px solid var(--teal-100);border-radius:12px;}
+    .opps-why-hd{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--teal-700);margin-bottom:7px;}
+    .opps-why-ico{display:inline-flex;color:var(--teal-600);}
+    .opps-why-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:6px;}
+    .opps-why-list li{display:flex;align-items:center;gap:7px;font-size:11.5px;line-height:1.3;color:var(--text-1);}
+    .opps-why-list li svg{flex-shrink:0;margin-top:.5px;color:var(--teal-500);}
     .opps-metrics{display:grid;grid-template-columns:repeat(3,1fr);padding:10px 0 0;margin:12px 0 0;background:none;border:none;border-top:1px solid var(--border);border-radius:0;}
     .opps-metric{padding:0 14px;border-left:1px solid var(--border);}
     .opps-metric:first-child{padding-left:0;border-left:none;}
@@ -433,7 +440,7 @@
     .opps-explore{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--teal-600);background:none;border:none;cursor:pointer;font-family:var(--font);transition:gap .15s,color .15s;}
     .opps-explore:hover{gap:8px;color:var(--teal-700);}
     .opps-feed-empty{flex:1;display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;}
-    .opps-stack{position:relative;height:306px;}
+    .opps-stack{position:relative;height:462px;}
     .opps-stack-scroll{display:flex;flex-direction:column;gap:10px;height:100%;overflow-y:auto;padding-right:4px;scrollbar-width:thin;}
     .opps-stack-scroll::-webkit-scrollbar{width:5px;}.opps-stack-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
     .opps-cand{position:relative;overflow:hidden;flex-shrink:0;display:block;background:var(--white);border:none;border-radius:14px;padding:8px 14px;cursor:pointer;text-align:left;font-family:var(--font);box-shadow:0 1px 3px rgba(16,24,22,.06);transition:transform .22s ease,box-shadow .22s ease,background .22s ease;}
@@ -5311,6 +5318,19 @@ function App() {
     Market:catSvg('<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>'),
     Distribution:catSvg('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>')
   };
+  /* "Why this is a good fit" — personalized rationale bullets per recommendation type. */
+  var WHY={
+    Product:['Matches your product portfolio','Suitable for your formulation requirements','Available for sampling and sourcing','Supports your sustainability goals'],
+    Technology:['Addresses challenges in your formulations','Relevant to your current product category','Can improve product performance','Technical consultation is available'],
+    Market:['Based on trends in your industry','Growing demand in your target segment','Identified from market intelligence','Can help prioritize future product development'],
+    Distribution:['Relevant to your target geography','Matches your product category','Identifies potential expansion opportunities',"Supported by Scinode's ecosystem"]
+  };
+  var ISPARK='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>';
+  var ICHKSM='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+  function whyHTML(cat){
+    var rows=(WHY[cat]||WHY.Product).map(function(t){return '<li>'+ICHKSM+'<span>'+t+'</span></li>';}).join('');
+    return '<div class="opps-why"><div class="opps-why-hd"><span class="opps-why-ico">'+ISPARK+'</span>Why this is a good fit</div><ul class="opps-why-list">'+rows+'</ul></div>';
+  }
   var ACTIONS={
     Product:{p:'Dispatch a free evaluation sample to your registered facility.',label:'Shipping address',val:'100 BioTech Parkway, Pune 411057',btn:'Submit Sample Request',ok:'Sample request submitted',okmsg:'A 50 g evaluation sample will be dispatched to your facility within 3 working days. Tracking will appear in Requests.'},
     Market:{p:'Lock current spot pricing and build a request for quote through Scinode sourcing.',label:'Target volume (kg / month)',val:'500',btn:'Build RFQ at Current Spot',ok:'RFQ drafted',okmsg:'Your RFQ has been drafted against current spot pricing and routed to Scinode sourcing. A response window opens within 48 hours.'},
@@ -5469,6 +5489,7 @@ function App() {
         +'<span class="opps-live"><span class="ping"><span class="a"></span><span></span></span>Live</span></div>'
         +'<div class="opps-actbtns"><button type="button" class="opps-iconbtn star'+(st.fav[it.id]?' on':'')+'" data-act="star" aria-label="Save">'+ISTAR+'</button><button type="button" class="opps-iconbtn" data-act="dismiss" aria-label="Dismiss">'+ICX+'</button></div></div>'
         +'<div class="opps-feed-mid" data-act="explore"><div class="opps-feed-title">'+it.title+'</div><div class="opps-feed-subt">'+it.subt+'</div><div class="opps-feed-desc">'+it.desc+'</div></div>'
+        +whyHTML(it.cat)
         +'<div><div class="opps-metrics">'+it.mets.map(function(m){return '<div class="opps-metric"><div class="l">'+m[0]+'</div><div class="v">'+m[1]+'</div></div>';}).join('')+'</div>'
         +'<div class="opps-feed-foot"><span class="opps-impact">Impact: <b>'+it.impact+'</b></span><button type="button" class="opps-explore" data-act="explore">'+(CTA[it.cat]||'See How Scinode Can Help')+' '+IARR+'</button></div></div>'
         +'</div>';

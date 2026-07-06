@@ -372,6 +372,19 @@
     .cmp-sub{font-size:12px;font-weight:500;color:var(--text-2);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .cmp-check{flex-shrink:0;color:var(--teal-500);display:flex;}
 
+    /* Scinode Secure banner (Compliance & Trust) — enterprise trust framework above the tabs */
+    .secure-banner{display:flex;align-items:center;gap:22px;flex-wrap:wrap;background:linear-gradient(160deg,#F2FBF8 0%,#E9F6F0 100%);border:1px solid #D7EBE4;border-radius:16px;padding:20px 24px;margin-bottom:16px;}
+    .secure-brand{display:flex;align-items:center;gap:14px;flex:0 0 252px;max-width:100%;}
+    .secure-shield{color:var(--teal-600);flex-shrink:0;display:flex;}
+    .secure-brand-name{font-size:16px;font-weight:700;color:var(--navy-500);line-height:1.2;letter-spacing:-.01em;}
+    .secure-brand-desc{font-size:12px;color:#5E7A85;line-height:1.4;margin:4px 0 8px;}
+    .secure-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--teal-500);background:none;border:none;padding:0;font-family:var(--font);cursor:pointer;transition:color .15s,gap .15s;}
+    .secure-link:hover{color:var(--teal-600);gap:8px;}
+    .secure-pillars{flex:1;min-width:0;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+    .secure-pillar{flex:1 1 92px;min-width:84px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;}
+    .secure-pico{width:56px;height:56px;border-radius:50%;background:#E1F2EB;color:var(--teal-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .secure-pname{font-size:12px;font-weight:600;color:var(--navy-500);line-height:1.3;}
+
     /* ═══ Opportunities for Your Business — Variation D: Live Signal Split ═══ */
     .opps-hd{align-items:flex-start;}
     .opps-level{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--teal-700);background:var(--teal-50);border:1px solid var(--teal-100);padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:8px;letter-spacing:.01em;}
@@ -2145,14 +2158,15 @@
             </section>
 </div>
       <div style="padding:16px 20px;">
-        <section aria-label="Compliance and certifications">
+        <section aria-label="Compliance and trust">
               <div class="sec-hdr">
-                <div><div class="sec-title">Compliance &amp; Certifications</div><div class="sec-sub">Verified standards across factory, product, documentation and regulatory</div></div>
+                <div><div class="sec-title">Compliance &amp; Trust</div><div class="sec-sub">Verified standards and enterprise-grade protection across your engagements</div></div>
                 <div class="hscroll-controls">
                   <button type="button" class="btn btn-icon-sm" onclick="hscroll('compliance',-1)" aria-label="Scroll compliance left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
                   <button type="button" class="btn btn-icon-sm" onclick="hscroll('compliance',1)" aria-label="Scroll compliance right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
                 </div>
               </div>
+              <div class="secure-mount"></div>
               <div class="tabs-list" role="tablist" aria-label="Filter compliance by category">
                 <button type="button" role="tab" aria-selected="true" class="tabs-trigger" onclick="filterCompliance(this,'all')">All</button>
                 <button type="button" role="tab" aria-selected="false" class="tabs-trigger" onclick="filterCompliance(this,'Factory')">Factory</button>
@@ -3014,10 +3028,11 @@
             </div>
             <div class="collapsible">
               <button type="button" class="collapsible-trigger" aria-expanded="false" aria-controls="d1-col-mfg" onclick="toggleCollapsible(this)">
-                <span class="collap-title">Compliance &amp; Certifications</span>
+                <span class="collap-title">Compliance &amp; Trust</span>
                 <svg class="chev" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div id="d1-col-mfg" class="collapsible-content" data-state="closed" role="region" style="padding:12px 20px;">
+                <div class="secure-mount"></div>
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
                   <div class="tabs-list" role="tablist" aria-label="Filter compliance by category" style="margin-bottom:12px;">
                     <button type="button" role="tab" aria-selected="true" class="tabs-trigger" onclick="filterCompliance(this,'all')">All</button>
@@ -3791,10 +3806,11 @@
             </div>
             <div class="collapsible">
               <button type="button" class="collapsible-trigger" aria-expanded="false" aria-controls="d10-col-mfg" onclick="toggleCollapsible(this)">
-                <span class="collap-title">Compliance &amp; Certifications</span>
+                <span class="collap-title">Compliance &amp; Trust</span>
                 <svg class="chev" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div id="d10-col-mfg" class="collapsible-content" data-state="closed" role="region" style="padding:12px 20px;">
+                <div class="secure-mount"></div>
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
                   <div class="tabs-list" role="tablist" aria-label="Filter compliance by category" style="margin-bottom:12px;">
                     <button type="button" role="tab" aria-selected="true" class="tabs-trigger" onclick="filterCompliance(this,'all')">All</button>
@@ -4414,6 +4430,35 @@
       scroll.scrollLeft = 0;
     };
   })();
+</script>
+
+<!-- Scinode Secure banner (Compliance & Trust) — 5 PRD core principles as trust pillars -->
+<script>
+(function(){
+  var mounts = document.querySelectorAll('.secure-mount');
+  if (!mounts.length) return;
+  var SHIELD = '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>';
+  var ARR = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  function ico(p){ return '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'; }
+  var PILLARS = [
+    {n:'Intellectual Property Protection', i:ico('<rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>')},
+    {n:'Business &amp; Commercial Protection', i:ico('<rect x="3" y="7.5" width="18" height="13" rx="2.2"/><path d="M8.5 7.5V6A1.5 1.5 0 0 1 10 4.5h4A1.5 1.5 0 0 1 15.5 6v1.5"/><path d="M3 12.5h18"/>')},
+    {n:'Controlled Collaboration', i:ico('<circle cx="9" cy="8" r="3.2"/><path d="M3.6 19a5.4 5.4 0 0 1 10.8 0"/><path d="M16 5.4a3 3 0 0 1 0 5.5"/><path d="M20.4 19a5.4 5.4 0 0 0-3-4.8"/>')},
+    {n:'Legal &amp; Governance', i:ico('<path d="M12 4v16"/><path d="M7.5 20h9"/><path d="M8 4.5h8"/><path d="M4 12a2.5 2.5 0 0 0 5 0l-2.5-5.2z"/><path d="M15 12a2.5 2.5 0 0 0 5 0l-2.5-5.2z"/>')},
+    {n:'Platform Security', i:ico('<path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/>')}
+  ];
+  var pillarsHTML = PILLARS.map(function(p){
+    return '<div class="secure-pillar"><span class="secure-pico">'+p.i+'</span><span class="secure-pname">'+p.n+'</span></div>';
+  }).join('');
+  var html = '<div class="secure-banner">'
+    + '<div class="secure-brand"><span class="secure-shield">'+SHIELD+'</span>'
+    + '<div><div class="secure-brand-name">Scinode Secure</div>'
+    + '<div class="secure-brand-desc">Enterprise trust framework protecting every request, proposal and project.</div>'
+    + '<button type="button" class="secure-link">View Trust Center '+ARR+'</button></div></div>'
+    + '<div class="secure-pillars">'+pillarsHTML+'</div>'
+    + '</div>';
+  mounts.forEach(function(m){ m.innerHTML = html; });
+})();
 </script>
 
 <!-- Scinode Ecosystem art + data + components -->

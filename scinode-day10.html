@@ -6,6 +6,7 @@
   <title>Scinode Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/scinode.css" />
+  <script src="assets/scinode.js"></script>
 
   <!-- Scinode Ecosystem: React + Babel (How We Execute Complex Science) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -3110,29 +3111,7 @@
     if (el) el.scrollBy({ left: dir * 200, behavior: 'smooth' });
   }
 
-  function openModal() {
-    document.getElementById('create-request-modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal() {
-    document.getElementById('create-request-modal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function handleModalBackdropClick(e) {
-    if (e.target === document.getElementById('create-request-modal')) closeModal();
-  }
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
-  });
-
-  function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const topNav = document.getElementById('top-nav');
-    const main = document.querySelector('.main');
-    sidebar.classList.toggle('collapsed');
-    topNav.classList.toggle('sb-collapsed');
-    main.classList.toggle('sb-collapsed');
-  }
+  /* Shell utilities (toggleSidebar, modal open/close/backdrop + Escape) moved to assets/scinode.js */
 
   function switchDay(day) {
     const days = [0, 1, 10, 30];
@@ -3149,39 +3128,7 @@
     window.scrollTo(0, 0);
   }
 
-  /* ── Horizontal scroll ── */
-  function hscroll(id, dir) {
-    const el = document.getElementById(id + '-scroll');
-    if (el) el.scrollBy({ left: dir * 240, behavior: 'smooth' });
-  }
-
-  /* ── Accordion ── */
-  function toggleAccordion(trigger) {
-    const expanded = trigger.getAttribute('aria-expanded') === 'true';
-    trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    const content = document.getElementById(trigger.getAttribute('aria-controls'));
-    if (content) content.setAttribute('data-state', expanded ? 'closed' : 'open');
-  }
-
-  /* ── Collapsible ── */
-  function toggleCollapsible(trigger) {
-    const expanded = trigger.getAttribute('aria-expanded') === 'true';
-    trigger.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    const content = document.getElementById(trigger.getAttribute('aria-controls'));
-    if (content) content.setAttribute('data-state', expanded ? 'closed' : 'open');
-  }
-
-  /* ── Filter Tabs ── */
-  function switchTab(tab) {
-    const list = tab.closest('[role="tablist"]');
-    if (!list) return;
-    list.querySelectorAll('[role="tab"]').forEach(t => {
-      t.setAttribute('aria-selected', 'false');
-      t.classList.remove('active');
-    });
-    tab.setAttribute('aria-selected', 'true');
-    tab.classList.add('active');
-  }
+  /* hscroll, toggleAccordion, toggleCollapsible, switchTab moved to assets/scinode.js */
 
   /* ── Scira entry point ── every exploration flow routes to Scira (Philosophy §4).
      Prototype: surfaces the query in the hero search and scrolls to it. */

@@ -1,44 +1,68 @@
 # Scinode Dashboard Prototype
 
 ## Overview
-A single-file HTML prototype (`scinode-day10.html`) for the Scinode platform dashboard — an AI-powered execution platform for chemistry, manufacturing, and R&D workflows. Served locally at `localhost:8899` via Python HTTP server.
+A no-build HTML prototype for the Scinode platform — an AI-powered execution platform for chemistry, manufacturing, and R&D workflows. Originally a single file; now a **multi-page** app: one full Dashboard page plus one lightweight page per sidebar module, all sharing extracted CSS/JS. Served locally at `localhost:8899` via a Python HTTP server.
 
-## Architecture
-- **Single file**: ~4800 lines of HTML/CSS/JS with inline React (via CDN) for the Ecosystem Capabilities section
-- **No build step**: Static HTML served directly; React loaded via `unpkg` CDN (React 18 + Babel standalone)
-- **Server**: `python3 -m http.server 8899` (or similar) from `/Users/priyabratadevi`
+## File structure
+```
+/Users/priyabratadevi/
+  assets/
+    scinode.css        ← shared design system (tokens, layout, all components) — ~1110 lines
+    scinode.js         ← shared SHELL behaviors (loaded in <head> on every page)
+    certs/             ← certification logo images
+  scinode-day10.html   ← Dashboard (the big, feature-rich page; day states live here)
+  manufacturing.html   ┐
+  rnd.html             │  module pages — each = shared shell + placeholder <main>,
+  products.html        ├  link assets/scinode.css + assets/scinode.js, NO dashboard-
+  scira.html           │  specific JS. ~140 lines each. Built out later, one at a time.
+  projects.html        │
+  requests.html        ┘
+  CLAUDE.md
+```
+- **No build step**: static files served directly. Dashboard's Ecosystem section uses inline React 18 + Babel via `unpkg` CDN (dashboard only).
+- **Server**: `python3 -m http.server 8899` from `/Users/priyabratadevi`. Dashboard = `localhost:8899/scinode-day10.html`. Note: `/` shows a directory listing (no `index.html` yet).
 
-## Day State System
-The dashboard has 4 progressive states toggled via a pill switcher in the top nav:
-- **Day 0** — Onboarding: empty-state activity cards, use case carousel ("What you can build with Scinode"), ecosystem capabilities, certifications
-- **Day 1** — Early usage: 2x2 conversion matrix, recent activity, first requests, suggested next steps
-- **Day 10** — Active usage (default): 5-card conversion matrix (47 requests), activity feed, action required, active projects with progress bars, labs/manufacturers/products horizontal scrollers, Scira Intelligence cards, ecosystem section
-- **Day 30** — Power user: expanded conversion matrix with spend KPI ($1.21M), spend breakdown chart, manufacturer performance scorecards (SynLab, ChemWorks, ReactChem), 8 active projects, milestone timeline, network view
+## Shared shell (assets/scinode.js)
+Global functions used by every page — do NOT redefine these per page:
+`toggleSidebar`, `openModal` / `closeModal` / `handleModalBackdropClick` (+ Escape-to-close), `hscroll`, `toggleAccordion`, `toggleCollapsible`, `switchTab`. All are null-safe (no-op if the target element isn't on the page).
 
-Switching is done via `switchDay(n)` which toggles visibility of `#day0`, `#day1`, `#day10`, `#day30` divs.
+## Dashboard-specific JS (inline in scinode-day10.html only)
+`switchDay` (day states), `openScira` (hero-coupled), `ecoScroll` + hero showcase carousel, the compliance module (`badge`/`filterCompliance`), the Scinode Secure banner injector (`.secure-mount`), the scinode-art generator + `SCINODE` data, the React Ecosystem app, and the Opportunities engine (`initOpps`, `openDrawer`, …). None of this belongs on module pages.
 
-## Typography
-- **Section headers**: Poppins (600/700 weight) — `.sec-title`, `.sec-eyebrow`, `.modal-title`, `.hero-headline`, `.perf-name`, `.spend-total-num`, `.tbl th`, etc.
-- **All other text**: Outfit — body copy, card titles, KPI labels, descriptions, badges, buttons, sidebar, nav
-- CSS variables: `--font: 'Outfit', sans-serif` and `--font-heading: 'Poppins', sans-serif`
-- Note: `--font` is declared in two `:root` blocks (line ~16 and line ~950) — both must be kept in sync
+## Sidebar navigation (shared markup, one active item per page)
+- **Workspace**: Dashboard → `scinode-day10.html`, Manufacturing → `manufacturing.html`, R&D → `rnd.html`, Products → `products.html`
+- **Intelligence**: Ask Scira → `scira.html`
+- **Operations**: Projects → `projects.html`, Requests → `requests.html`
+- **Known duplication**: the sidebar + top-nav markup is copy-pasted into all 7 pages. A nav change means touching every page (use a script). Possible future DRY: inject the shell from `scinode.js` via a `<div id="app-shell">` + `data-page` marker so nav lives in one place.
 
-## Design System
-- **Colors**: Teal primary (`--teal-500: #02968A`), Navy accents (`--navy-500: #043E54`), Sage/Gold/Indigo for highlights
-- **Layout**: Fixed sidebar (220px, collapsible to 56px) + fixed top nav (56px) + scrollable main content
-- **Components**: KPI cards, project cards with progress bars, activity cards, action cards, horizontal scroll carousels, accordion/collapsible sections, modal (Create Request), tab filters, step-dot progress indicators, manufacturer performance cards with star ratings
+## Day State System (Dashboard only)
+`switchDay(n)` toggles visibility of `#day0`/`#day1`/`#day10`/`#day30`. Default is Day 10.
+- **Day 0** — Onboarding: empty-state activity cards, "What you can build with Scinode" carousel, **Recommended for You**, ecosystem, **Compliance & Trust**
+- **Day 1** — Early usage: 2×2 conversion matrix, recent activity, first requests, suggested next steps
+- **Day 10** — Active usage (default): 5-card conversion matrix (47 requests), activity feed, action required, active projects, horizontal scrollers, Scira Intelligence, ecosystem
+- **Day 30** — Power user: expanded matrix + spend KPI, spend breakdown, manufacturer scorecards, milestone timeline, network view
 
-## Key Sections
-- **Hero**: Dark gradient banner with animated typing search bar and rotating insight cards (project delivery, market update, R&D milestone)
-- **Conversion Matrix**: Pipeline funnel KPIs (Submitted → Conversation → Quote → Converted → Active)
-- **Ecosystem Capabilities**: React-rendered R&D + Manufacturing columns with services, technologies, and facilities
-- **Scira Intelligence**: AI-generated insight cards with contextual recommendations
-- **Create Request Modal**: 6-card grid (R&D, CMO, CDMO, Quote, Sample, Consultation)
+## Typography — strict
+- **Poppins (600/700)**: ONLY hero headlines and section headers (`.sec-title`, `.sec-eyebrow`, `.modal-title`, `.hero-headline`, `.perf-name`, etc.). `--font-heading: 'Poppins'`.
+- **Outfit**: EVERYTHING else — body, card titles/content, KPI labels, badges, buttons, sidebar, nav. `--font: 'Outfit'`. When in doubt, use Outfit; Poppins is reserved for headers only.
+- Tokens live in `assets/scinode.css`; the Ecosystem React section has a second inline `<style id="eco-styles">` block.
 
-## Interactive Features
-- Sidebar collapse/expand (`toggleSidebar()`)
-- Day state switching (`switchDay()`)
-- Horizontal scroll with arrow buttons (`hscroll()`)
-- Accordion and collapsible sections (`toggleAccordion()`, `toggleCollapsible()`)
-- Modal open/close with backdrop click and Escape key
-- Tab filtering on request tables (`switchTab()`)
+## Design system
+- Load the **`scinode-design-system`** skill before any visual/color/mockup decision — it's the source of truth.
+- Colors: Teal `--teal-500:#02968A`, Navy `--navy-500:#043E54`, Sage `#96DDA5`, Gold `#E5D62E`, Indigo `#6366F1`.
+- Cards: white surface, **no visible border**, subtle shadow, 12px radius (Stripe/Linear feel).
+- Layout: fixed sidebar (220px, collapsible ~56px) + fixed top nav + scrollable `.main`; `.content` provides horizontal gutters.
+- Brand logo gradient (`#016358 → #182133`) is **logo-only** per the design system — the ONE exception is the Scinode Secure banner background (applied deliberately at the user's request, with white/sage foreground for legibility).
+
+## Notable Dashboard sections
+- **Hero**: dark gradient banner, animated typing search, rotating insight cards.
+- **Recommended for You** (Opportunities engine): featured card (headline + one benefit-led `lead` line + "Why this is a good fit" panel + specs + per-category CTA) with a hover-to-preview signal rail (category icons, 120ms delay). Reversible block between `OPPS:start`/`OPPS:end` markers. Featured card hugs its content (no fixed height) with the rail pinning section height.
+- **Compliance & Trust**: certification carousel with tabs (All/Factory/Product/Documentation/Regulatory) + a **Scinode Secure** banner above the tabs (5 PRD principles as trust pillars, injected into `.secure-mount` in each day state). Tabs/cards unchanged when editing the banner.
+- **Ecosystem Capabilities**: React-rendered R&D + Manufacturing columns.
+- **Create Request Modal**: 6-card grid; opened from the top-nav button via shared `openModal()`.
+
+## Conventions & workflow
+- **Reversible blocks**: wrap large optional sections in `<!-- X:start -->` / `<!-- X:end -->` comment markers (see `OPPS:`) so they can be removed cleanly.
+- **One module per file**: build/edit a module in its own page; it can't break the others. Module pages carry no dashboard JS.
+- **Verify in the browser preview** after changes: reload, check the console (no errors), and screenshot. Preview evals race async navigation — after `location.href = …`, re-query once the page settles. Resize to 1280px for a realistic desktop width (native preview viewport can be narrow).
+- **Git**: the working tree is `/Users/priyabratadevi`; the git repo is `/Users/priyabratadevi/scinode-dashboard/`. Copy changed/new files into that repo before `git add`/`commit`. Commit each milestone with a descriptive message. **Never push** unless explicitly asked (currently many commits ahead of `origin/main`, intentionally unpushed).

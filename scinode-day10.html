@@ -593,9 +593,9 @@
   </div>
   <div class="nav-center">
     <div class="day-toggle" role="tablist" aria-label="Dashboard day state">
-      <button type="button" role="tab" aria-selected="false" onclick="switchDay(0)">Day 0</button>
+      <button type="button" role="tab" aria-selected="true" class="active" onclick="switchDay(0)">Day 0</button>
       <button type="button" role="tab" aria-selected="false" onclick="switchDay(1)">Day 1</button>
-      <button type="button" role="tab" aria-selected="true" class="active" onclick="switchDay(10)">Day 10</button>
+      <button type="button" role="tab" aria-selected="false" onclick="switchDay(10)">Day 10</button>
       <button type="button" role="tab" aria-selected="false" onclick="switchDay(30)">Day 30</button>
     </div>
   </div>
@@ -974,7 +974,7 @@
        DAY 0 extras
        HWE + BFR expanded
   ══════════════ -->
-  <div id="day0" class="hidden">
+  <div id="day0">
     <h1 class="sr-only">Scinode Dashboard — Getting Started</h1>
     <div class="content">
       <section>
@@ -2158,7 +2158,7 @@
        DAY 10 extras
        All Day 10 sections + HWE/BFR collapsed
   ══════════════ -->
-  <div id="day10">
+  <div id="day10" class="hidden">
     <h1 class="sr-only">Scinode Dashboard — Active Projects</h1>
     <div class="content">
       <!-- ── Conversion Matrix ── -->
@@ -3659,7 +3659,7 @@
   }
   window.openScira = openScira;
 
-  switchDay(10);
+  switchDay(0);
 
   /* ── Showcase carousel auto-scroll (slide count + dots derived from DOM — reusable) ── */
   (function() {

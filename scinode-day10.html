@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Scinode Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260714d" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260724a" />
   <script src="assets/scinode.js"></script>
 
   <!-- Scinode Ecosystem: React + Babel (How We Execute Complex Science) -->
@@ -682,7 +682,7 @@
             <span class="hero-headline-teal">manufacturing idea to life</span>
           </div>
   
-          <div class="hero-search">
+          <div class="hero-search" onclick="var i=this.querySelector('.hero-input'); if(i) i.focus();">
             <span class="hero-search-icon">
               <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
@@ -697,10 +697,10 @@
             </button>
           </div>
 
-          <div class="hero-trust-line">
+          <button type="button" class="hero-trust-line" onclick="openTrustCenter()" aria-label="Protected by Scinode Secure — view Trust Center">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>
             Protected by Scinode Secure
-          </div>
+          </button>
         </div>
 
         <!-- Right: 3-card auto-scrolling showcase carousel -->
@@ -1244,7 +1244,6 @@
               </div>
               <div class="secure-mount"></div>
               <div class="cmp-grid" id="compliance-grid" role="list" aria-label="Compliance categories"><!-- rendered by JS --></div>
-              <button type="button" class="cmp-trust-cta" onclick="openTrustCenter()">Explore the full Trust Center <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
             </section>
       </div>
       <div style="height:24px"></div>
@@ -1467,535 +1466,6 @@
               </table>
             </div>
           </section>
-          <!-- Labs Viewed Recently -->
-          <section>
-            <div class="sec-hdr"><div><div class="sec-title">Labs Viewed Recently</div><div class="sec-sub">Facilities in your workflow</div></div><div class="hscroll-controls"><button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-labs',-1)" aria-label="Scroll left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-labs',1)" aria-label="Scroll right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div></div>
-            <div class="hscroll scroll-area" id="d1-labs-scroll" role="region" aria-label="Recently viewed labs">
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e6f7f6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1576091160550-112173f7f869?w=360&h=160&fit=crop&q=80" alt="SynLab Pharma" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">SynLab Pharma</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ICH Q7</span>
-                  </div>
-
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">API Synthesis</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Scale-up</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="ChemWorks India" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">ChemWorks India</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 14001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">FSSAI</span>
-                  </div>
-
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Custom Synthesis</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Purification</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+1</span>
-                    </div>
-                  </div>
-
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e6f7f6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1576091160691-112d4754d541?w=360&h=160&fit=crop&q=80" alt="BioTech Solutions" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">BioTech Solutions</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 13485</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+2</span>
-                  </div>
-
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">R&D Services</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Assays</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=360&h=160&fit=crop&q=80" alt="Precision Labs EU" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Precision Labs EU</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇨🇭 CH</div>
-                  </div>
-
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 17025</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">CE Mark</span>
-                  </div>
-
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Analytics</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">QA Testing</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e6f7f6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="Advanced Synthesis" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Advanced Synthesis</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇩🇪 DE</div>
-                  </div>
-
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+1</span>
-                  </div>
-
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Flow Chemistry</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">HT Screening</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="facility-view-more" aria-label="View all labs">
-                <div class="facility-view-title">View all labs</div>
-                <div class="facility-view-arrow"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
-              </div>
-            </div>
-          </section>
-          <!-- Manufacturers Viewed Recently -->
-          <section>
-            <div class="sec-hdr"><div><div class="sec-title">Manufacturers Viewed Recently</div><div class="sec-sub">CDMO & CMO facilities you work with</div></div><div class="hscroll-controls"><button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-mfr',-1)" aria-label="Scroll left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-mfr',1)" aria-label="Scroll right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div></div>
-            <div class="hscroll scroll-area" id="d1-mfr-scroll" role="region" aria-label="Recently viewed manufacturers">
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="State-of-the-Art Pharmaceutical Plant" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">703</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">State-of-the-Art Pharmaceutical Plant</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">FDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">USFDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+7</span>
-                  </div>
-                  
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Hydrogenation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Nitration</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+1</span>
-                    </div>
-                  </div>
-                  
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #cde9f8 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1573879672675-47bdbad56e78?w=360&h=160&fit=crop&q=80" alt="Advanced Chemical Manufacturing Facility" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">500</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Advanced Chemical Manufacturing Facility</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">FDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 14001</span>
-                  </div>
-                  
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Oxidation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Reduction</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+1</span>
-                    </div>
-                  </div>
-                  
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e8f4d9 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="Specialty Chemicals Production Hub" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">450</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Specialty Chemicals Production Hub</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇬🇧 UK</div>
-                  </div>
-                  
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 14001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+1</span>
-                  </div>
-                  
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Esterification</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Polymerization</span>
-                    </div>
-                  </div>
-                  
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092335784-8013026cd37d?w=360&h=160&fit=crop&q=80" alt="European CDMO AG" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">600</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">European CDMO AG</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇦🇹 AT</div>
-                  </div>
-                  
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">cGMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">EU Compliant</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+5</span>
-                  </div>
-                  
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Halogenation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Alkylation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-                  
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d4e8f0 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092162692-8644ffc40c2b?w=360&h=160&fit=crop&q=80" alt="PureTech Pharma Solutions" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">550</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">PureTech Pharma Solutions</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇺🇸 US</div>
-                  </div>
-                  
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">USFDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">cGMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">USP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+6</span>
-                  </div>
-                  
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Grignard</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Organometallics</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+3</span>
-                    </div>
-                  </div>
-                  
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-view-more" aria-label="View all manufacturers" style="min-width:280px;flex-shrink:0;background:#e6f7f6;border:1px solid #b3e8e4;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-direction:column;gap:8px;padding:20px;">
-                <div style="font-size:13px;font-weight:600;color:#02968a;">View all manufacturers</div>
-                <div style="width:20px;height:20px;border-radius:6px;background:#02968a;display:flex;align-items:center;justify-content:center;color:white;">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Products Viewed Recently -->
-          <section>
-            <div class="sec-hdr"><div><div class="sec-title">Products Viewed Recently</div><div class="sec-sub">Chemicals & materials from your browsing history</div></div><div class="hscroll-controls"><button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-products',-1)" aria-label="Scroll left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="btn btn-icon-sm" onclick="hscroll('d1-products',1)" aria-label="Scroll right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div></div>
-            <div class="hscroll scroll-area" id="d1-products-scroll" role="region" aria-label="Recently viewed products">
-
-              <!-- Product 1: 3-Nitro-5-Acetyl Iminodibenzyl -->
-              <div class="product-card" role="article" aria-label="3-Nitro-5-Acetyl Iminodibenzyl">
-                <div class="pc-img-wrap">
-                  <img src="https://www.figma.com/api/mcp/asset/8766bac5-c616-42a5-89ce-fc7591e4abbc" alt="3-Nitro-5-Acetyl Iminodibenzyl structure" style="max-width:100%;max-height:125px;object-fit:contain;"/>
-                </div>
-                <div class="pc-body">
-                  <div class="pc-fields">
-                    <div class="pc-field pc-field-name">
-                      <span class="pc-label">Product Name</span>
-                      <span class="pc-value">3-Nitro-5-Acetyl Iminodibenzyl</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">CAS Number</span>
-                      <span class="pc-value">602-41-5</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">Category</span>
-                      <span class="pc-value">Pharmaceutical Activities & Precursors</span>
-                    </div>
-                  </div>
-                  <div class="pc-actions">
-                    <button class="pc-wishlist" aria-label="Save to wishlist">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                    </button>
-                    <button class="pc-quote">
-                      Request Quote <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Product 2: N-Acetyl-L-Cysteine -->
-              <div class="product-card" role="article" aria-label="N-Acetyl-L-Cysteine">
-                <div class="pc-img-wrap">
-                  <svg width="140" height="100" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <line x1="20" y1="50" x2="40" y2="38" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="40" y1="38" x2="60" y2="50" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="60" y1="50" x2="80" y2="38" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="80" y1="38" x2="100" y2="50" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="100" y1="50" x2="120" y2="38" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="60" y1="50" x2="60" y2="70" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="80" y1="38" x2="80" y2="22" stroke="#94a3b8" stroke-width="1.5"/>
-  <circle cx="20" cy="50" r="3.5" fill="#64748b"/>
-  <circle cx="60" cy="50" r="3.5" fill="#64748b"/>
-  <circle cx="100" cy="50" r="3.5" fill="#64748b"/>
-  <circle cx="120" cy="38" r="3.5" fill="#02968a" opacity="0.7"/>
-  <circle cx="80" cy="22" r="3.5" fill="#02968a" opacity="0.7"/>
-  <circle cx="60" cy="70" r="3.5" fill="#64748b"/>
-  <text x="14" y="46" font-size="8" fill="#64748b" font-family="monospace">S</text>
-  <text x="54" y="83" font-size="8" fill="#64748b" font-family="monospace">OH</text>
-  <text x="113" y="35" font-size="8" fill="#02968a" font-family="monospace">O</text>
-  <text x="75" y="19" font-size="8" fill="#02968a" font-family="monospace">NH</text>
-</svg>
-                </div>
-                <div class="pc-body">
-                  <div class="pc-fields">
-                    <div class="pc-field pc-field-name">
-                      <span class="pc-label">Product Name</span>
-                      <span class="pc-value">N-Acetyl-L-Cysteine</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">CAS Number</span>
-                      <span class="pc-value">616-91-1</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">Category</span>
-                      <span class="pc-value">Amino Acids & Derivatives</span>
-                    </div>
-                  </div>
-                  <div class="pc-actions">
-                    <button class="pc-wishlist" aria-label="Save to wishlist">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                    </button>
-                    <button class="pc-quote">
-                      Request Quote <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Product 3: Sodium Borohydride -->
-              <div class="product-card" role="article" aria-label="Sodium Borohydride">
-                <div class="pc-img-wrap">
-                  <svg width="140" height="100" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <line x1="70" y1="50" x2="50" y2="32" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="70" y1="50" x2="90" y2="32" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="70" y1="50" x2="50" y2="68" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="70" y1="50" x2="90" y2="68" stroke="#94a3b8" stroke-width="1.5"/>
-  <circle cx="70" cy="50" r="8" fill="#e6f7f6" stroke="#02968a" stroke-width="1.5"/>
-  <text x="64" y="54" font-size="9" fill="#02968a" font-weight="600" font-family="monospace">B</text>
-  <circle cx="50" cy="32" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
-  <text x="46" y="36" font-size="8" fill="#64748b" font-family="monospace">H</text>
-  <circle cx="90" cy="32" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
-  <text x="86" y="36" font-size="8" fill="#64748b" font-family="monospace">H</text>
-  <circle cx="50" cy="68" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
-  <text x="46" y="72" font-size="8" fill="#64748b" font-family="monospace">H</text>
-  <circle cx="90" cy="68" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
-  <text x="86" y="72" font-size="8" fill="#64748b" font-family="monospace">H</text>
-  <text x="22" y="54" font-size="9" fill="#043e54" font-weight="600" font-family="monospace">Na⁺</text>
-  <text x="102" y="54" font-size="9" fill="#94a3b8" font-family="monospace">⁻</text>
-</svg>
-                </div>
-                <div class="pc-body">
-                  <div class="pc-fields">
-                    <div class="pc-field pc-field-name">
-                      <span class="pc-label">Product Name</span>
-                      <span class="pc-value">Sodium Borohydride</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">CAS Number</span>
-                      <span class="pc-value">16940-66-2</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">Category</span>
-                      <span class="pc-value">Reducing Agents & Hydrides</span>
-                    </div>
-                  </div>
-                  <div class="pc-actions">
-                    <button class="pc-wishlist" aria-label="Save to wishlist">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                    </button>
-                    <button class="pc-quote">
-                      Request Quote <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Product 4: Dichloromethane (DCM) -->
-              <div class="product-card" role="article" aria-label="Dichloromethane (DCM)">
-                <div class="pc-img-wrap">
-                  <svg width="140" height="100" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <line x1="70" y1="50" x2="40" y2="35" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="70" y1="50" x2="100" y2="35" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="70" y1="50" x2="58" y2="70" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="70" y1="50" x2="82" y2="70" stroke="#94a3b8" stroke-width="1.5"/>
-  <circle cx="70" cy="50" r="7" fill="#e6f7f6" stroke="#02968a" stroke-width="1.5"/>
-  <text x="64" y="54" font-size="9" fill="#02968a" font-weight="600" font-family="monospace">C</text>
-  <circle cx="40" cy="35" r="8" fill="#eef2ff" stroke="#4338ca" stroke-width="1.2"/>
-  <text x="35" y="39" font-size="8.5" fill="#4338ca" font-weight="600" font-family="monospace">Cl</text>
-  <circle cx="100" cy="35" r="8" fill="#eef2ff" stroke="#4338ca" stroke-width="1.2"/>
-  <text x="95" y="39" font-size="8.5" fill="#4338ca" font-weight="600" font-family="monospace">Cl</text>
-  <circle cx="58" cy="70" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
-  <text x="54" y="74" font-size="8" fill="#64748b" font-family="monospace">H</text>
-  <circle cx="82" cy="70" r="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
-  <text x="78" y="74" font-size="8" fill="#64748b" font-family="monospace">H</text>
-</svg>
-                </div>
-                <div class="pc-body">
-                  <div class="pc-fields">
-                    <div class="pc-field pc-field-name">
-                      <span class="pc-label">Product Name</span>
-                      <span class="pc-value">Dichloromethane (DCM)</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">CAS Number</span>
-                      <span class="pc-value">75-09-2</span>
-                    </div>
-                    <div class="pc-field">
-                      <span class="pc-label">Category</span>
-                      <span class="pc-value">Solvents & Carrier Fluids</span>
-                    </div>
-                  </div>
-                  <div class="pc-actions">
-                    <button class="pc-wishlist" aria-label="Save to wishlist">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                    </button>
-                    <button class="pc-quote">
-                      Request Quote <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- View all -->
-              <div class="facility-view-more" aria-label="View all products" style="min-width:260px;width:260px;flex-shrink:0;background:#e6f7f6;border:1px solid #b3e8e4;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-direction:column;gap:8px;padding:20px;">
-                <div style="font-size:13px;font-weight:600;color:#018e7e;">View all products</div>
-                <div style="width:20px;height:20px;border-radius:6px;background:#018e7e;display:flex;align-items:center;justify-content:center;color:white;">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </div>
-              </div>
-
-            </div>
-          </section>
 
         <div class="collapsible">
           <button type="button" class="collapsible-trigger" aria-expanded="false"
@@ -2142,7 +1612,6 @@
               <div id="d1-col-mfg" class="collapsible-content" data-state="closed" role="region" style="padding:12px 20px;">
                 <div class="secure-mount"></div>
                 <div class="cmp-grid" id="d1-compliance-grid" role="list" aria-label="Compliance categories"></div>
-                <button type="button" class="cmp-trust-cta" onclick="openTrustCenter()">Explore the full Trust Center <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
               </div>
             </div>
           </div>
@@ -2444,303 +1913,6 @@
               </table>
             </div>
           </section>
-          <!-- Labs Viewed Recently -->
-          <section>
-            <div class="sec-hdr"><div><div class="sec-title">Labs Viewed Recently</div><div class="sec-sub">Facilities in your workflow</div></div><div class="hscroll-controls"><button type="button" class="btn btn-icon-sm" onclick="hscroll('d10-labs',-1)" aria-label="Scroll left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="btn btn-icon-sm" onclick="hscroll('d10-labs',1)" aria-label="Scroll right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div></div>
-            <div class="hscroll scroll-area" id="d10-labs-scroll" role="region" aria-label="Recently viewed labs">
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e6f7f6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1576091160550-112173f7f869?w=360&h=160&fit=crop&q=80" alt="SynLab Pharma" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">SynLab Pharma</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ICH Q7</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">API Synthesis</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Scale-up</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="ChemWorks India" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">ChemWorks India</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 14001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">FSSAI</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Custom Synthesis</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Purification</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+1</span>
-                    </div>
-                  </div>
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e6f7f6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1576091160691-112d4754d541?w=360&h=160&fit=crop&q=80" alt="BioTech Solutions" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">BioTech Solutions</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 13485</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+2</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">R&D Services</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Assays</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=360&h=160&fit=crop&q=80" alt="Precision Labs EU" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Precision Labs EU</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇨🇭 CH</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 17025</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">CE Mark</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Analytics</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">QA Testing</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e6f7f6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="Advanced Synthesis" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Advanced Synthesis</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇩🇪 DE</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+1</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Techniques</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Flow Chemistry</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">HT Screening</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-                  <div style="margin-top:auto;">
-                    <button style="width:100%;padding:8px 12px;background:transparent;color:var(--text-2);border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:inherit;" onmouseover="this.style.borderColor='#CBD5E1';this.style.color='var(--text-1)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)'">View details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-view-more" aria-label="View all labs">
-                <div class="facility-view-title">View all labs</div>
-                <div class="facility-view-arrow"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
-              </div>
-            </div>
-          </section>
-          <!-- Manufacturers Viewed Recently -->
-          <section>
-            <div class="sec-hdr"><div><div class="sec-title">Manufacturers Viewed Recently</div><div class="sec-sub">CDMO & CMO facilities you work with</div></div><div class="hscroll-controls"><button type="button" class="btn btn-icon-sm" onclick="hscroll('d10-mfr',-1)" aria-label="Scroll left"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="btn btn-icon-sm" onclick="hscroll('d10-mfr',1)" aria-label="Scroll right"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div></div>
-            <div class="hscroll scroll-area" id="d10-mfr-scroll" role="region" aria-label="Recently viewed manufacturers">
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="State-of-the-Art Pharmaceutical Plant" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">703</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">State-of-the-Art Pharmaceutical Plant</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">FDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">USFDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+7</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Hydrogenation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Nitration</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+1</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #cde9f8 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1573879672675-47bdbad56e78?w=360&h=160&fit=crop&q=80" alt="Advanced Chemical Manufacturing Facility" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">500</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Advanced Chemical Manufacturing Facility</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇮🇳 IN</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">FDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 14001</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Oxidation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Reduction</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+1</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #e8f4d9 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=360&h=160&fit=crop&q=80" alt="Specialty Chemicals Production Hub" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">450</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">Specialty Chemicals Production Hub</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇬🇧 UK</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 9001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">ISO 14001</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+1</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Esterification</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Polymerization</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d1e9e6 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092335784-8013026cd37d?w=360&h=160&fit=crop&q=80" alt="European CDMO AG" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">600</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">European CDMO AG</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇦🇹 AT</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">cGMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">GMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">EU Compliant</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+5</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Halogenation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Alkylation</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+2</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-card">
-                <div class="facility-image-container" style="background:linear-gradient(135deg, #d4e8f0 0%, #b3dcd5 100%);height:140px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-                  <img src="https://images.unsplash.com/photo-1581092162692-8644ffc40c2b?w=360&h=160&fit=crop&q=80" alt="PureTech Pharma Solutions" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0.9;"/>
-                  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(209,233,230,0.3) 0%, rgba(179,220,213,0.3) 100%);"></div>
-                  <div class="capacity-badge" style="position:absolute;bottom:10px;left:10px;background:rgba(30,41,59,0.85);color:white;padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;z-index:10;backdrop-filter:blur(4px);">
-                    <span style="display:block;line-height:1.2;font-size:16px;">550</span>
-                    <span style="display:block;font-size:10px;opacity:0.95;">KL</span>
-                  </div>
-                  <div style="position:absolute;top:10px;right:10px;background:#02968a;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></div>
-                </div>
-                <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;flex:1;">PureTech Pharma Solutions</div>
-                    <div style="font-size:11px;font-weight:500;color:#1e293b;white-space:nowrap;">🇺🇸 US</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                    <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">USFDA</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">cGMP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">USP</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:500;">+6</span>
-                  </div>
-                  <div>
-                    <div style="font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;">Key Reactions</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                      <span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Grignard</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">Organometallics</span><span style="background:#e6f7f6;color:#016358;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:500;">+3</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px;margin-top:auto;">
-                    <button style="flex:1;padding:10px 12px;background:#02968a;color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Enquiry</button>
-                    <button style="flex:1;padding:10px 12px;background:transparent;color:#02968a;border:1px solid #02968a;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;">Details</button>
-                  </div>
-                </div>
-              </div>
-              <div class="facility-view-more" aria-label="View all manufacturers" style="min-width:280px;flex-shrink:0;background:#e6f7f6;border:1px solid #b3e8e4;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-direction:column;gap:8px;padding:20px;">
-                <div style="font-size:13px;font-weight:600;color:#02968a;">View all manufacturers</div>
-                <div style="width:20px;height:20px;border-radius:6px;background:#02968a;display:flex;align-items:center;justify-content:center;color:white;">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </div>
-              </div>
-            </div>
-          </section>
           <section class="intel-wrap">
             <div class="intel-hdr"><div class="pulse"></div><span class="intel-title">Scira Intelligence</span><span class="intel-sub">Insights from your active projects</span></div>
             <div class="intel-cards">
@@ -2915,7 +2087,6 @@
               <div id="d10-col-mfg" class="collapsible-content" data-state="closed" role="region" style="padding:12px 20px;">
                 <div class="secure-mount"></div>
                 <div class="cmp-grid" id="d10-compliance-grid" role="list" aria-label="Compliance categories"></div>
-                <button type="button" class="cmp-trust-cta" onclick="openTrustCenter()">Explore the full Trust Center <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
               </div>
             </div>
           </div>
@@ -3305,11 +2476,15 @@
 <style id="trust-styles">
   .hero-p5-layer{position:absolute;inset:0;z-index:0;pointer-events:none;}
   .hero-p5-layer canvas{display:block;}
-  .hero-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:#96DDA5;font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:0;opacity:.85;}
+  .hero-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:#96DDA5;font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:0;opacity:.85;background:none;border:none;padding:0;cursor:pointer;transition:opacity .15s ease;}
+  .hero-trust-line:hover,.hero-trust-line:focus-visible{opacity:1;text-decoration:underline;}
+  .hero-trust-line:focus-visible{outline:2px solid #96DDA5;outline-offset:3px;border-radius:4px;}
   .hero-trust-line svg{flex-shrink:0;}
   .trust-modal .modal-box{max-width:960px;padding:34px 38px 30px;border-radius:20px;background:radial-gradient(1100px 480px at 88% -10%,rgba(2,150,138,.16),transparent 60%),linear-gradient(165deg,#182133 0%,#0F2A24 45%,#021C26 100%);box-shadow:0 24px 70px rgba(0,0,0,.5);}
   .trust-modal .modal-close{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.75);}
   .trust-modal .modal-close:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24);color:#fff;}
+  .tc-ribbon{display:flex;align-items:center;justify-content:center;gap:8px;margin:-34px -38px 24px;padding:11px 20px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#016358,#182133);color:#fff;font-size:12.5px;font-weight:600;letter-spacing:.01em;}
+  .tc-ribbon svg{color:#96DDA5;flex-shrink:0;}
   .tc-head-row{display:flex;align-items:flex-start;gap:14px;}
   .tc-shield{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#016358 0%,#182133 100%);color:#96DDA5;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(2,150,138,.25);}
   .tc-eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#96DDA5;margin-bottom:6px;}
@@ -3345,6 +2520,9 @@
   .tc-lifecycle-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
   .tc-lifecycle-connector-h{width:16px;height:1px;background:rgba(255,255,255,.18);flex-shrink:0;}
   .tc-lifecycle-step-done{color:#96DDA5;background:rgba(150,221,165,.1);border-color:rgba(150,221,165,.28);}
+  .tc-tree-root{display:flex;align-items:center;gap:8px;color:#96DDA5;font-size:13px;font-weight:600;margin-bottom:14px;}
+  .tc-flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;row-gap:14px;}
+  .tc-flow-arrow{display:flex;align-items:center;color:rgba(255,255,255,.35);flex-shrink:0;}
   .tc-continuous{margin-top:20px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,.08);width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;}
   .tc-continuous-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);}
   .tc-wf-signals{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
@@ -3386,6 +2564,8 @@
   .tc-light .tc-lifecycle{background:linear-gradient(160deg,#FFFFFF 0%,#F4FBFA 100%);border-color:var(--border);}
   .tc-light .tc-lifecycle-connector-h{background:var(--border-h);}
   .tc-light .tc-lifecycle-step-done{color:var(--teal-600);background:var(--teal-50);border-color:transparent;}
+  .tc-light .tc-tree-root{color:var(--teal-600);}
+  .tc-light .tc-flow-arrow{color:var(--text-3);}
   .tc-light .tc-continuous{border-color:var(--border);}
   .tc-light .tc-continuous-label{color:var(--text-3);}
   .tc-light .tc-wf-signal{color:var(--teal-600);background:#fff;border-color:var(--teal-100);}
@@ -3393,11 +2573,14 @@
 
 <div class="modal-backdrop trust-modal" id="trust-center-modal" role="dialog" aria-modal="true" aria-labelledby="trust-modal-title" onclick="handleTrustBackdropClick(event)">
   <div class="modal-box">
+    <div class="tc-ribbon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>
+      Scinode Secure — Protecting Every Stage of Collaboration
+    </div>
     <div class="modal-header">
       <div class="tc-head-row">
         <span class="tc-shield"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg></span>
         <div>
-          <div class="tc-eyebrow">The Enterprise Trust Framework</div>
           <div class="modal-title" id="trust-modal-title">How Scinode Secure Protects Your Collaboration</div>
         </div>
       </div>
@@ -3412,10 +2595,10 @@
       </div>
     </div>
 
-    <div class="tc-intro">Every interaction on Scinode is designed to protect your intellectual property, business information, and research collaboration. From your first request to project completion, enterprise-grade controls ensure your documents, proposals, technical discussions, and project data remain secure, governed, and accessible only to authorized stakeholders.</div>
+    <div class="tc-intro">Every interaction on Scinode is designed to protect your intellectual property, business information, and research collaboration. From your first request to project completion, enterprise-grade controls ensure your documents, requests, technical discussions, and project data remain secure, governed, and accessible only to authorized stakeholders.</div>
     <hr class="tc-divider">
 
-    <div class="tc-sec-eyebrow">The Five Pillars of Enterprise Trust</div>
+    <div class="tc-sec-eyebrow">The Five Pillars of Trust</div>
     <div class="tc-grid">
       <div class="tc-card">
         <div class="tc-card-head">
@@ -3436,9 +2619,9 @@
           <span class="tc-ico">02</span>
           <div class="tc-card-title">Protect Your Business</div>
         </div>
-        <div class="tc-card-desc">Commercial conversations deserve the same level of protection as technical discussions. Keep proposals, quotations, pricing, and agreements confidential throughout your engagement with verified partners.</div>
+        <div class="tc-card-desc">Commercial conversations deserve the same level of protection as technical discussions. Keep requests, quotations, pricing, and agreements confidential throughout your engagement with verified partners.</div>
         <ul class="tc-list">
-          <li>Proposal Confidentiality</li>
+          <li>Requests Confidentiality</li>
           <li>Commercial Governance</li>
           <li>Pricing Protection</li>
           <li>Controlled Quotations</li>
@@ -3464,7 +2647,7 @@
           <span class="tc-ico">04</span>
           <div class="tc-card-title">Govern Every Engagement</div>
         </div>
-        <div class="tc-card-desc">Maintain transparency and accountability across every approval, agreement, and collaboration with enterprise governance that supports secure decision-making and complete auditability.</div>
+        <div class="tc-card-desc">Maintain transparency and accountability across every approval, agreement, and collaboration with governance that supports secure decision-making and complete auditability.</div>
         <ul class="tc-list">
           <li>NDA Management</li>
           <li>Digital Approvals</li>
@@ -3476,37 +2659,38 @@
       <div class="tc-card tc-card-full">
         <div class="tc-card-head">
           <span class="tc-ico">05</span>
-          <div class="tc-card-title">Enterprise Platform Security</div>
+          <div class="tc-card-title">End-to-End Platform Security</div>
         </div>
-        <div class="tc-card-desc">Protect your data throughout its lifecycle with enterprise-grade infrastructure, secure authentication, encryption, continuous monitoring, and resilient platform operations.</div>
+        <div class="tc-card-desc">Safeguard your data from creation to storage with advanced encryption, secure access controls, continuous monitoring, reliable backups, and resilient infrastructure.</div>
         <ul class="tc-list">
-          <li>Encryption in Transit &amp; at Rest</li>
-          <li>Secure Authentication</li>
-          <li>Continuous Monitoring</li>
-          <li>Backup &amp; Recovery</li>
-          <li>High Platform Availability</li>
+          <li>Data Encryption</li>
+          <li>Secure Identity &amp; Access</li>
+          <li>Infrastructure Monitoring</li>
+          <li>Automated Backup &amp; Recovery</li>
+          <li>Always-On Platform</li>
         </ul>
       </div>
     </div>
 
     <div class="tc-sec-eyebrow">Embedded Across Every Collaboration</div>
-    <div class="tc-sec-desc">Scinode Secure protects every interaction between you and Scinode, ensuring your research, documents, commercial information, and project collaboration remain secure throughout the engagement lifecycle.</div>
     <div class="tc-lifecycle">
-      <div class="tc-lifecycle-row">
-        <span class="tc-sits-pill">Request</span>
-        <span class="tc-lifecycle-connector-h"></span>
-        <span class="tc-sits-pill">Proposal</span>
-        <span class="tc-lifecycle-connector-h"></span>
-        <span class="tc-sits-pill">R&amp;D Execution</span>
-        <span class="tc-lifecycle-connector-h"></span>
-        <span class="tc-sits-pill">Manufacturing Execution</span>
+      <div class="tc-tree-root">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>
+        Scinode Secure
       </div>
-      <div class="tc-sits-line"></div>
-      <div class="tc-lifecycle-row">
-        <span class="tc-sits-pill">Documentation &amp; Tech Pack</span>
-        <span class="tc-lifecycle-connector-h"></span>
+      <div class="tc-flow">
+        <span class="tc-sits-pill">Request</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Proposal</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">R&amp;D Execution</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
         <span class="tc-sits-pill">Technology Transfer</span>
-        <span class="tc-lifecycle-connector-h"></span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Documentation &amp; Tech Pack</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Manufacturing Execution</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
         <span class="tc-sits-pill tc-lifecycle-step-done">Delivery</span>
       </div>
       <div class="tc-continuous">
@@ -3522,7 +2706,7 @@
     </div>
 
     <div class="tc-sec-eyebrow">Protected Throughout Your Journey</div>
-    <div class="tc-sec-desc">From your first request to final delivery, Scinode Secure protects every interaction with enterprise-grade security, governed collaboration, and controlled access—ensuring your intellectual property, business information, and project data remain protected throughout the lifecycle.</div>
+    <div class="tc-sec-desc">From your first request to final delivery, Scinode Secure protects every interaction with end to end platform security, governed collaboration, and controlled access—ensuring your intellectual property, business information, and project data remain protected throughout the lifecycle.</div>
     <div class="tc-workflow">
       <div class="tc-wf-row">
         <span class="tc-wf-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
@@ -3551,8 +2735,8 @@
       <div class="tc-wf-row">
         <span class="tc-wf-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
         <div>
-          <div class="tc-wf-title">Evaluate Proposals &amp; Commercial Discussions</div>
-          <div class="tc-wf-desc">Review proposals, quotations, and commercial terms with complete confidentiality, governed workflows, and secure engagement with verified partners.</div>
+          <div class="tc-wf-title">Evaluate Requests &amp; Commercial Discussions</div>
+          <div class="tc-wf-desc">Review quotations and commercial terms with complete confidentiality, governed workflows, and secure engagement with verified partners.</div>
           <div class="tc-wf-signals">
             <span class="tc-wf-signal">Proposal Confidentiality</span>
             <span class="tc-wf-signal">Commercial Protection</span>

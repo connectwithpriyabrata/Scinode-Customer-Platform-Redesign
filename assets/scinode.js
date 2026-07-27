@@ -123,7 +123,11 @@ const ICON_PATHS = {
   Calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
   Clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
   Download: '<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
-  ExternalLink: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
+  ExternalLink: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  CircleHelp: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  Mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  Phone: '<path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/>',
+  Copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>'
 };
 
 /* ICONOGRAPHY.md Section 8 semantic registry — one concept, one Lucide icon.
@@ -149,7 +153,9 @@ const ICON_REGISTRY = {
   close: 'X', 'chevron-right': 'ChevronRight', 'chevron-left': 'ChevronLeft',
   'chevron-down': 'ChevronDown', 'chevron-up': 'ChevronUp', 'arrow-right': 'ArrowRight',
   filter: 'SlidersHorizontal', calendar: 'Calendar', clock: 'Clock',
-  download: 'Download', 'external-link': 'ExternalLink'
+  download: 'Download', 'external-link': 'ExternalLink',
+  /* Help & Support */
+  'help-support': 'CircleHelp', email: 'Mail', phone: 'Phone', copy: 'Copy'
 };
 
 /* Section 6 semantic colors — status roles only (Success/Warning/Error/Info).
@@ -221,4 +227,121 @@ function FeatureIcon(name, opts) {
   const hue = FEATURE_HUES[opts.hue] || FEATURE_HUES.teal;
   const icon = AppIcon(name, { size: iconSize, color: hue.fg });
   return '<span class="feature-icon" style="width:' + size + 'px;height:' + size + 'px;border-radius:' + radius + ';background:' + hue.bg + ';color:' + hue.fg + ';display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">' + icon + '</span>';
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Help & Support drawer — shared across every page. The drawer markup is
+   injected once (lazily, on first open) instead of duplicated per page,
+   since the sidebar trigger is the only piece that has to live in each
+   page's static HTML. Structured for future channels (phone, chat, KB,
+   tickets, expert booking) without changing this layout. */
+const SUPPORT_EMAIL = 'scinode@scimplify.com';
+let helpDrawerLastFocus = null;
+
+function ensureHelpDrawer() {
+  if (document.getElementById('help-drawer')) return;
+  const wrap = document.createElement('div');
+  wrap.innerHTML =
+    '<div class="help-drawer-backdrop" id="help-drawer-backdrop" onclick="closeHelpDrawer()"></div>' +
+    '<div class="help-drawer" id="help-drawer" role="dialog" aria-modal="true" aria-labelledby="help-drawer-title">' +
+      '<div class="help-drawer-head">' +
+        '<div>' +
+          '<div class="help-drawer-title" id="help-drawer-title">Help &amp; Support</div>' +
+          '<div class="help-drawer-sub">Need assistance with Scinode?<br><br>Our team can help with platform usage, requests, projects, and technical issues.</div>' +
+        '</div>' +
+        '<button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
+      '</div>' +
+      '<div class="help-drawer-body">' +
+        '<div class="help-card">' +
+          '<span class="help-card-icon">' + AppIcon('email', { size: 18, color: 'var(--teal-600)' }) + '</span>' +
+          '<div class="help-card-info">' +
+            '<div class="help-card-title">Email Support</div>' +
+            '<div class="help-card-value">' + SUPPORT_EMAIL + '</div>' +
+            '<div class="help-card-meta">Typical response: Within 1 business day</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="help-actions">' +
+          '<a class="btn btn-default" href="mailto:' + SUPPORT_EMAIL + '">Compose Email</a>' +
+          '<button type="button" class="btn btn-outline" onclick="copySupportEmail()">Copy Email</button>' +
+        '</div>' +
+        '<div class="help-divider"></div>' +
+        '<div class="help-card help-card-disabled" aria-disabled="true">' +
+          '<span class="help-card-icon">' + AppIcon('phone', { size: 18 }) + '</span>' +
+          '<div class="help-card-info">' +
+            '<div class="help-card-title">Call Support</div>' +
+            '<div class="help-card-meta">Coming Soon</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="help-divider"></div>' +
+        '<div class="help-card">' +
+          '<span class="help-card-icon">' + AppIcon('clock', { size: 18, color: 'var(--teal-600)' }) + '</span>' +
+          '<div class="help-card-info">' +
+            '<div class="help-card-title">Business Hours</div>' +
+            '<div class="help-card-meta">Monday – Saturday</div>' +
+            '<div class="help-card-meta">9:00 AM – 6:00 PM IST</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="help-divider"></div>' +
+        '<div class="help-section-label">Resources</div>' +
+        '<div class="help-resource-row" aria-disabled="true"><span class="help-resource-icon">' + AppIcon('documentation', { size: 15 }) + '</span>Getting Started</div>' +
+        '<div class="help-resource-row" aria-disabled="true"><span class="help-resource-icon">' + AppIcon('documentation', { size: 15 }) + '</span>FAQs</div>' +
+        '<div class="help-resource-row" aria-disabled="true"><span class="help-resource-icon">' + AppIcon('documentation', { size: 15 }) + '</span>Release Notes</div>' +
+      '</div>' +
+    '</div>';
+  while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+}
+
+function openHelpDrawer() {
+  ensureHelpDrawer();
+  helpDrawerLastFocus = document.activeElement;
+  document.getElementById('help-drawer-backdrop').classList.add('open');
+  document.getElementById('help-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const closeBtn = document.querySelector('#help-drawer .help-drawer-close');
+  if (closeBtn) closeBtn.focus();
+}
+function closeHelpDrawer() {
+  const backdrop = document.getElementById('help-drawer-backdrop');
+  const drawer = document.getElementById('help-drawer');
+  if (!drawer || !drawer.classList.contains('open')) return;
+  backdrop.classList.remove('open');
+  drawer.classList.remove('open');
+  document.body.style.overflow = '';
+  if (helpDrawerLastFocus && helpDrawerLastFocus.focus) helpDrawerLastFocus.focus();
+}
+function copySupportEmail() {
+  function done() { showToast('Email copied'); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(SUPPORT_EMAIL).then(done, done);
+  } else {
+    done();
+  }
+}
+document.addEventListener('keydown', function (e) {
+  const drawer = document.getElementById('help-drawer');
+  if (!drawer || !drawer.classList.contains('open')) return;
+  if (e.key === 'Escape') { closeHelpDrawer(); return; }
+  if (e.key === 'Tab') {
+    const focusables = drawer.querySelectorAll('a[href], button:not([disabled])');
+    if (!focusables.length) return;
+    const first = focusables[0], last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+
+/* ── Shared toast (used by Help & Support; available to any page) ── */
+function showToast(text) {
+  let wrap = document.getElementById('sc-toast');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'sc-toast';
+    wrap.className = 'sc-toast';
+    document.body.appendChild(wrap);
+  }
+  const el = document.createElement('div');
+  el.className = 'sc-toast-item';
+  el.textContent = text;
+  wrap.appendChild(el);
+  setTimeout(function () { el.remove(); }, 2200);
 }

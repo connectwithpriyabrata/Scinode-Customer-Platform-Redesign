@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Scinode — Manufacturing</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260727a" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260731j" />
   <script src="assets/scinode.js"></script>
 </head>
 <body>
@@ -84,11 +84,440 @@
 
 <main class="main" role="main">
   <div class="content" style="padding-top:24px;">
-    <div class="sec-hdr"><div><div class="sec-title">Manufacturing</div><div class="sec-sub">Your manufacturing ecosystem and partners</div></div></div>
-    <div style="background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-nested);padding:52px 24px;text-align:center;margin-top:14px;">
-      <div style="font-family:var(--font);font-size:15px;font-weight:600;color:var(--text-1);">Manufacturing module</div>
-      <div style="font-size:13px;color:var(--text-2);margin-top:6px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.5;">This page is scaffolded on the shared shell. Content will be built in the next step.</div>
+
+    <div class="mfg-breadcrumb">Dashboard <span class="mfg-breadcrumb-sep">&rsaquo;</span> <span class="mfg-breadcrumb-current">Manufacturing Partners</span></div>
+
+    <div class="mfg-hero">
+      <div class="mfg-hero-title">Built for Your Scale</div>
+      <div class="mfg-hero-sub">Manufacture your molecule with full visibility, tracking execution at every step with complete transparency.</div>
     </div>
+
+    <div class="mfg-searchbar">
+      <div class="mfg-search-input-wrap">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="mfg-search-input" placeholder="Search by name, chemistry, or capability...">
+      </div>
+      <button type="button" class="mfg-search-submit" aria-label="Search"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      <button type="button" class="mfg-tool-btn"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search Tools</button>
+      <button type="button" class="mfg-tool-btn"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Filters</button>
+    </div>
+
+    <div class="mfg-list-hdr">
+      <div class="mfg-list-title">List of Manufacturers <span class="mfg-list-count">(500)</span></div>
+    </div>
+
+    <div class="mfg-list">
+
+      <!-- Card 1 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Vacuum_Column.jpg" alt="Industrial vacuum distillation column" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">96 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">Plant with 50 L Brine Plant and high vacuum distillation</div>
+            <div class="mfg-card-loc">Karnataka, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">amination</span><span class="mfg-tag">reduction</span><span class="mfg-tag">oxidation</span><span class="mfg-tag">bromination</span><span class="mfg-tag">alkylation</span><span class="mfg-tag mfg-tag-more">+6</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">3450 Sq. M Warehouse</span><span class="mfg-tag">1440 Sq.M Solvent Drum Storage Capacity</span><span class="mfg-tag">350 KL Solvent Bulk Storage Capacity Gas Cylinder Storage Space</span><span class="mfg-tag">PESO Approved</span><span class="mfg-tag">High Vacuum Distillation</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row"></div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/MUIC_Lab_Drying_Rack_2.jpg" alt="Laboratory glassware drying rack" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">222 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">ISO 9001 certified plant with 96 L Tray dryers</div>
+            <div class="mfg-card-loc">Karnataka, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">reduction</span><span class="mfg-tag">oxidation</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">Facility For High Temp. Reactions Up To +3000°C</span><span class="mfg-tag">Distillation Capability</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Fume_hood_MB.jpg" alt="Chemistry reflux and distillation apparatus setup" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">81 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">State-GMP &amp; ISO 9001 certified plant with 2 L ANFD</div>
+            <div class="mfg-card-loc">Andhra Pradesh, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">esterification</span><span class="mfg-tag">condensation</span><span class="mfg-tag">reduction</span><span class="mfg-tag">hydrogenation</span><span class="mfg-tag">chlorination</span><span class="mfg-tag mfg-tag-more">+6</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">R&amp;D Fume Hoods (4)</span><span class="mfg-tag">5 Projects</span><span class="mfg-tag">Air Handling Unit (Class 1 Lakh)</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/gmp.png" alt="GMP"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/halal.png" alt="Halal"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/halal.png" alt="Halal"></span>
+              <span class="mfg-cert-more">+1</span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Laboratory_apparatus_for_reactions_with_fluorine_gas.jpg" alt="Laboratory reaction apparatus in fume hood" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">160 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">ISO 9001 certified plant with 44 L MEE</div>
+            <div class="mfg-card-loc">Andhra Pradesh, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">chlorination</span><span class="mfg-tag">phosgene</span><span class="mfg-tag">bromination</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">High Temperature Reactions</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/Industrial_storage_tanks.jpg" alt="Industrial chemical storage tanks" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">65 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">Halal &amp; Kosher certified plant with 53 L Brine Plant</div>
+            <div class="mfg-card-loc">Karnataka, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">reduction</span><span class="mfg-tag">oxidation</span><span class="mfg-tag">nitration</span><span class="mfg-tag">grignard</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">Scrubber 750 CFM</span><span class="mfg-tag">Brine Compressor 53 TR</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/halal.png" alt="Halal"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/halal.png" alt="Halal"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/ce.png" alt="CE"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-more">+1</span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Conical_flask_(Erlenmeyer_flask).jpg" alt="Chemistry laboratory glassware flasks" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">109 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">State-GMP &amp; ISO 9001 certified plant with 20 L MEE</div>
+            <div class="mfg-card-loc">Karnataka, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">amination</span><span class="mfg-tag">reduction</span><span class="mfg-tag">chlorination</span><span class="mfg-tag">oxidation</span><span class="mfg-tag">bromination</span><span class="mfg-tag mfg-tag-more">+4</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">3 Air Handling Units (AHU)</span><span class="mfg-tag">6000 CFM</span><span class="mfg-tag">3500 CFM</span><span class="mfg-tag">1000 CFM</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/gmp.png" alt="GMP"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Laboratory_Glasswares.jpg" alt="Laboratory glassware and measuring cylinders" loading="lazy">
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">ISO 9001 certified plant with Pilot Plant Assemblies</div>
+            <div class="mfg-card-loc">Maharashtra, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">suzuki coupling</span><span class="mfg-tag">esterification</span><span class="mfg-tag">acylation</span><span class="mfg-tag">amination</span><span class="mfg-tag">chlorination</span><span class="mfg-tag mfg-tag-more">+11</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">High Vacuum Distillation Facility</span><span class="mfg-tag">Imidazole</span><span class="mfg-tag">Pilot Plant Assemblies — 7 Nos. (20L &amp; 200L), Fully Equipped Analytical Lab with 3 Fume Hoods</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Pipes_in_the_water_treatment_plant_of_an_abandoned_steel_factory_in_Oupeye,_Belgium_(DSCF3276).jpg" alt="Industrial water treatment plant piping" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">104 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">HACCP &amp; Halal certified plant with 4 L AHU</div>
+            <div class="mfg-card-loc">Gujarat, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">reduction</span><span class="mfg-tag">bromination</span><span class="mfg-tag">hydrolysis</span><span class="mfg-tag">alkylation</span><span class="mfg-tag">chlorosulfonation</span><span class="mfg-tag mfg-tag-more">+4</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-caps-row">
+            <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UNIQUE CAPABILITIES</span>
+            <span class="mfg-tag">Purified Water Plant — 500 Lit/hr</span><span class="mfg-tag">Digital Weighing Balance</span><span class="mfg-tag">Digital pH Meter, Chiral Resolution</span>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/halal.png" alt="Halal"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/ce.png" alt="CE"></span>
+              <span class="mfg-cert-more">+4</span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/IPPRAS1.jpg" alt="Industrial filtration and reactor vessels" loading="lazy">
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">State-GMP &amp; ISO 9001 certified plant with Leaf Filter, Candy Filter</div>
+            <div class="mfg-card-loc">Andhra Pradesh, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">suzuki coupling</span><span class="mfg-tag">reduction</span><span class="mfg-tag">hydrogenation</span><span class="mfg-tag">sonogashira</span><span class="mfg-tag">oxidation</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/gmp.png" alt="GMP"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+              <span class="mfg-cert-icon"><img src="assets/certs/who.png" alt="WHO"></span>
+              <span class="mfg-cert-more">+1</span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 10 -->
+      <div class="mfg-card">
+        <div class="mfg-thumb">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Jacketed_vessels.jpg" alt="Jacketed chemical reactor vessels" loading="lazy">
+          <div class="mfg-capacity-badge"><span class="mfg-capacity-num">22 KL</span><span class="mfg-capacity-label">TOTAL REACTOR CAPACITY</span></div>
+          <div class="mfg-flag" aria-label="India" title="India">IN</div>
+        </div>
+        <div class="mfg-body">
+          <div>
+            <div class="mfg-card-title">ISO 9001 certified plant with 22 KL reactors</div>
+            <div class="mfg-card-loc">Gujarat, India</div>
+          </div>
+          <div class="mfg-attr-row">
+            <div class="mfg-attr-group">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.34a2 2 0 0 1-.4 1.2L5.4 17.6A2 2 0 0 0 7 21h10a2 2 0 0 0 1.6-3.4l-4.2-7.06a2 2 0 0 1-.4-1.2V3"/></svg>KEY REACTIONS</span>
+              <span class="mfg-tag">reduction</span><span class="mfg-tag">oxidation</span>
+            </div>
+            <div class="mfg-attr-group mfg-attr-group-industries">
+              <span class="mfg-attr-label"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>KEY INDUSTRIES</span>
+              <span class="mfg-tag mfg-tag-industry"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Pharmaceutical</span>
+            </div>
+          </div>
+          <div class="mfg-card-footer">
+            <div class="mfg-cert-row">
+              <span class="mfg-cert-icon"><img src="assets/certs/iso.png" alt="ISO"></span>
+            </div>
+            <div class="mfg-actions">
+              <button type="button" class="mfg-btn-ghost">Send Enquiry <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button type="button" class="mfg-btn-primary">Show Details <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mfg-pagination">
+      <button type="button" class="mfg-page-nav" disabled>&lsaquo; Previous</button>
+      <button type="button" class="mfg-page-num active">1</button>
+      <button type="button" class="mfg-page-num">2</button>
+      <button type="button" class="mfg-page-num">3</button>
+      <button type="button" class="mfg-page-num">4</button>
+      <button type="button" class="mfg-page-num">5</button>
+      <span class="mfg-page-ellipsis">&hellip;</span>
+      <button type="button" class="mfg-page-num">53</button>
+      <button type="button" class="mfg-page-nav">Next &rsaquo;</button>
+    </div>
+
   </div>
 </main>
 

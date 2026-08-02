@@ -127,7 +127,8 @@ const ICON_PATHS = {
   CircleHelp: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
   Mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
   Phone: '<path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/>',
-  Copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>'
+  Copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  UserCheck: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/>'
 };
 
 /* ICONOGRAPHY.md Section 8 semantic registry — one concept, one Lucide icon.
@@ -155,7 +156,8 @@ const ICON_REGISTRY = {
   filter: 'SlidersHorizontal', calendar: 'Calendar', clock: 'Clock',
   download: 'Download', 'external-link': 'ExternalLink',
   /* Help & Support */
-  'help-support': 'CircleHelp', email: 'Mail', phone: 'Phone', copy: 'Copy'
+  'help-support': 'CircleHelp', email: 'Mail', phone: 'Phone', copy: 'Copy',
+  'expert-guidance': 'UserCheck'
 };
 
 /* Section 6 semantic colors — status roles only (Success/Warning/Error/Info).

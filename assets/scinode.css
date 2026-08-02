@@ -706,26 +706,94 @@
     .act-scira-compact .scira-main{flex:none;justify-content:flex-start;}
     .act-scira-compact .act-va-title{font-size:15.5px;margin-bottom:6px;}
     .act-scira-compact .act-va-sub{font-size:11.5px;}
-    .scira-cta-link{margin-top:auto;padding:10px 0 0;align-self:flex-start;display:inline-flex;align-items:center;gap:5px;background:none;border:none;color:#fff;font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;transition:gap .15s;}
-    .scira-cta-link:hover{gap:8px;}
+    .scira-cta-btn{margin-top:14px;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
+      background:var(--teal-500);color:#fff;border:none;border-radius:var(--radius-sm);
+      padding:9px 16px;font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;
+      transition:background .15s,gap .15s;}
+    .scira-cta-btn:hover{background:var(--teal-600);gap:8px;}
+    /* Row variant (5-across exploratory layout): only trims spacing so the card's natural height
+       sits close to the workflow cards' — content, colors, typography and the gradient are untouched. */
+    .act-scira-row{padding:14px 16px;}
+    .act-scira-row .scira-top{margin-bottom:8px;}
+    .act-scira-row .act-va-title{margin-bottom:3px;}
+    .act-scira-row .scira-cta-btn{padding:7px 14px;}
+    /* Grid variant's Scira card (3rd column): this is the ONLY card in the row that stretches
+       (grid default align-items:stretch) to match whichever of columns 1/2 ends up taller — the
+       workflow cards themselves size to their own content. justify-content:space-between spans
+       that stretched height across the top badge row / text block / CTA so the CTA lands at the
+       bottom without needing a fixed height anywhere. Type sizes stay as .act-scira-compact sets
+       them; padding/margins are tightened further here because the workflow columns are now
+       compact enough (176px) that this card's own content — title + subtitle wrap to 2 lines
+       each at this column width — needs every spare px to fit without exceeding that height.
+       Must come after .act-scira-compact in source order to win. */
+    .act-scira-fill{justify-content:space-between;padding:12px 16px;}
+    .act-scira-fill .scira-main{flex:none;justify-content:flex-start;}
+    .act-scira-fill .scira-top{margin-bottom:6px;}
+    .act-scira-fill .scira-cta-btn{padding:6px 16px;margin-top:0;}
     /* Day 0 — Your Activity: EXPERIMENT (Direction 3 modified) — Featured objective + supporting rows.
-       Reversible: toggle the .hidden class between #activity-experiment and #activity-classic. */
-    .activity-grid-exp{grid-template-columns:7fr 3fr;}
-    /* Capability rail — independent, non-interactive showcase cards (replaces the old featured objective + prompt carousel).
-       .cap-rail and .act-scira-compact are direct grid items of .activity-grid-exp, so the grid's default align-items:stretch
-       forces them to identical height — the pagination dots live outside the grid entirely and never affect that height. */
-    .cap-rail{display:flex;align-items:stretch;gap:18px;overflow-x:auto;min-width:0;padding-bottom:2px;scrollbar-width:thin;}
-    .cap-rail::-webkit-scrollbar{height:6px;}
-    .cap-rail::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-    .cap-card{flex:0 0 calc((100% - 54px)/3.3);box-sizing:border-box;background:var(--white);border-radius:var(--radius-lg);padding:20px;display:flex;flex-direction:column;box-shadow:var(--shadow-card);}
-    .cap-cat{display:flex;align-items:center;gap:7px;margin-bottom:14px;}
-    .cap-cat-ico{width:28px;height:28px;border-radius:var(--radius-sm);background:var(--teal-50);display:flex;align-items:center;justify-content:center;color:var(--teal-500);flex-shrink:0;}
-    .cap-cat-label{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--teal-600);}
-    .cap-title{font-size:14.5px;font-weight:600;color:var(--text-1);line-height:1.35;margin-bottom:8px;}
-    .cap-industry{margin-top:auto;font-size:11px;color:var(--text-3);}
-    .cap-dots{display:flex;justify-content:center;gap:6px;margin-top:14px;}
-    .cap-dot{width:6px;height:6px;border-radius:3px;background:var(--border-h);display:inline-block;transition:width .2s,background .2s;}
-    .cap-dot.on{width:16px;background:var(--teal-500);}
+       Reversible: toggle the .hidden class between #activity-experiment and #activity-classic.
+       Two comparable sub-layouts live side by side here (toggled via setWorkflowLayout, see JS):
+       #wf-layout-grid (3 equal columns, default) and #wf-layout-row (5-across). Only one is un-hidden
+       at a time. */
+    .activity-grid-exp{grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    /* Row variant — 5 equal-width cards (4 workflow launchers + the Scira card) in one row.
+       Grid's default align-items:stretch makes every card exactly the same height — the Scira
+       card's own compact spacing (.act-scira-row below) keeps its natural height close to the
+       workflow cards' so nothing has to stretch far to match. */
+    .workflow-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;min-width:0;}
+    .workflow-card{text-align:left;background:var(--white);border:1px solid transparent;border-radius:var(--radius-lg);
+      padding:14px 16px;display:flex;flex-direction:column;box-shadow:var(--shadow-card);cursor:pointer;
+      font-family:var(--font);transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease;}
+    .workflow-card:hover{box-shadow:var(--shadow-hero);border-color:var(--teal-100);transform:translateY(-2px);}
+    .workflow-card:focus-visible{outline:2px solid var(--teal-500);outline-offset:2px;}
+    .workflow-head{display:flex;align-items:flex-start;gap:11px;}
+    .workflow-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--teal-50);color:var(--teal-500);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .workflow-head-text{min-width:0;}
+    .workflow-title{font-size:13.5px;font-weight:600;color:var(--text-1);line-height:1.3;margin-bottom:3px;}
+    .workflow-desc{font-size:11.5px;color:var(--text-2);line-height:1.45;}
+    .workflow-cta{margin-top:10px;display:inline-flex;align-items:center;gap:5px;color:var(--teal-500);
+      font-size:12.5px;font-weight:600;opacity:0;transition:opacity .15s ease,gap .15s;}
+    .workflow-card:hover .workflow-cta,.workflow-card:focus-visible .workflow-cta{opacity:1;gap:8px;}
+    /* Grid view only (scoped by #wf-layout-grid — leaves the row view's cards untouched).
+       Column 3 (the Scira card, see .act-scira-fill above) is the only thing in the row that
+       stretches to match whichever of columns 1/2 ends up taller; columns 1/2 themselves
+       (.wf-col, align-self:start) never stretch to match each other.
+       "Start a Manufacturing Project" wraps to 2 lines (the others don't), so heading/
+       subheading are squeezed here (no title margin, tighter line-heights) specifically so the
+       32px icon — not the text — ends up as the height floor for every card, making the
+       shrink-to-icon+title-only state land at the same 74px regardless of title length.
+       102px is the resting default sized (with safety margin) to the tallest card's real
+       content (Manufacturing); hovering a card grows it to 126px (revealing the "Ask Scira"
+       CTA, sized to the same worst case) while its column partner shrinks to 74px — a
+       symmetric ±24px swap, so the
+       pair's combined height never changes and column 3 never reflows. A bottom card's hover
+       reads as expanding upward (top card gives way above it); a top card's hover reads as
+       expanding downward. */
+    #wf-layout-grid .wf-col{display:flex;flex-direction:column;gap:10px;align-self:start;}
+    #wf-layout-grid .workflow-head{gap:9px;}
+    #wf-layout-grid .workflow-title{margin-bottom:0;line-height:1.15;}
+    #wf-layout-grid .workflow-card{position:relative;padding:20px;justify-content:flex-start;overflow:hidden;
+      transition:flex-basis .22s ease-out,box-shadow .2s ease-out,border-color .2s ease-out,transform .2s ease-out;}
+    #wf-layout-grid .wf-col .workflow-card{flex:0 0 102px;}
+    #wf-layout-grid .wf-col .workflow-card:hover,
+    #wf-layout-grid .wf-col .workflow-card:focus-visible{flex-basis:126px;}
+    #wf-layout-grid .wf-col:has(.wf-card-top:hover) .wf-card-bottom,
+    #wf-layout-grid .wf-col:has(.wf-card-top:focus-visible) .wf-card-bottom,
+    #wf-layout-grid .wf-col:has(.wf-card-bottom:hover) .wf-card-top,
+    #wf-layout-grid .wf-col:has(.wf-card-bottom:focus-visible) .wf-card-top{flex-basis:74px;}
+    #wf-layout-grid .workflow-desc{max-height:26px;opacity:1;overflow:hidden;line-height:1.3;margin-top:2px;
+      transition:max-height .2s ease-out,opacity .15s ease-out,margin-top .2s ease-out;}
+    #wf-layout-grid .wf-col:has(.wf-card-top:hover) .wf-card-bottom .workflow-desc,
+    #wf-layout-grid .wf-col:has(.wf-card-top:focus-visible) .wf-card-bottom .workflow-desc,
+    #wf-layout-grid .wf-col:has(.wf-card-bottom:hover) .wf-card-top .workflow-desc,
+    #wf-layout-grid .wf-col:has(.wf-card-bottom:focus-visible) .wf-card-top .workflow-desc{max-height:0;opacity:0;margin-top:0;}
+    /* margin-left aligns the CTA under the title/description text column, not under the icon
+       (32px icon + 9px head gap = 41px), per explicit request. */
+    #wf-layout-grid .workflow-cta{opacity:0;max-height:0;margin-top:0;margin-left:41px;overflow:hidden;
+      transition:opacity .2s ease-out,max-height .2s ease-out,margin-top .2s ease-out;}
+    #wf-layout-grid .workflow-card:hover .workflow-cta,#wf-layout-grid .workflow-card:focus-visible .workflow-cta{
+      opacity:1;max-height:24px;margin-top:10px;}
 
     /* ── DAY 10 ── */
     .cmd-bar{background:var(--navy-500);height:68px;padding:0 28px;display:flex;align-items:center;gap:18px;}
@@ -1275,6 +1343,7 @@ body.sbv1 .sb-help,body.sbv2 .sb-help{border-top-color:var(--border);}
 .sc-toast{position:fixed;top:calc(var(--topnav) + 16px);right:20px;z-index:120;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
 .sc-toast-item{background:var(--navy-500);color:#fff;font-family:var(--font);font-size:12px;font-weight:500;padding:11px 14px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:340px;animation:scToastIn .2s ease;}
 @keyframes scToastIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
 /* ── Manufacturing — Manufacturers List ── */
 .mfg-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2);}
 .mfg-breadcrumb-sep{color:var(--text-3);}
@@ -1338,8 +1407,8 @@ body.sbv1 .sb-help,body.sbv2 .sb-help{border-top-color:var(--border);}
 .mfg-cert-more{width:26px;height:26px;border-radius:50%;background:var(--page-bg);color:var(--text-2);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
 .mfg-actions{display:flex;gap:10px;margin-left:auto;flex-shrink:0;}
-.mfg-btn-ghost{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--teal-500);color:var(--teal-600);border-radius:var(--radius-sm);padding:9px 16px;font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;}
-.mfg-btn-ghost:hover{background:var(--teal-50);}
+.mfg-btn-secondary{display:flex;align-items:center;gap:6px;background:#D0E6E2;border:none;color:#025047;border-radius:var(--radius-sm);padding:9px 16px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.mfg-btn-secondary:hover{background:#BEDCD6;}
 .mfg-btn-primary{display:flex;align-items:center;gap:6px;background:var(--teal-500);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;}
 .mfg-btn-primary:hover{background:var(--teal-600);}
 

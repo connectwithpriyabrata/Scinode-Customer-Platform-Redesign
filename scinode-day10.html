@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Scinode Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260727a" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260731s" />
   <script src="assets/scinode.js"></script>
 
   <!-- Scinode Ecosystem: React + Babel (How We Execute Complex Science) -->
@@ -981,43 +981,122 @@
       <section>
             <!-- ═══ EXPERIMENT: Direction 3 (modified) — Featured objective + supporting rows.
                  ROLLBACK: add class "hidden" to #activity-experiment below and remove it from #activity-classic. ═══ -->
-            <div class="sec-hdr"><div><div class="sec-title">What Scira can build for you today</div><div class="sec-sub">Discover execution opportunities across R&amp;D, manufacturing and commercialization.</div></div></div>
-            <div id="activity-experiment" class="activity-grid activity-grid-exp">
-              <!-- Left (70%): capability rail -->
-              <div class="cap-rail" id="cap-rail">
-                  <div class="cap-card">
-                    <div class="cap-cat"><span class="cap-cat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg></span><span class="cap-cat-label">Formulation R&amp;D</span></div>
-                    <div class="cap-title">Improve cosmetic emulsion stability</div>
-                    <div class="cap-industry">Personal care</div>
+            <div class="sec-hdr">
+              <div><div class="sec-title">What Scira can build for you today</div><div class="sec-sub">Choose a guided workflow or ask Scira to help you solve your next scientific challenge.</div></div>
+              <div class="sbv-toggle" role="tablist" aria-label="Workflow section layout compare" title="Layout comparison — dev only">
+                <button type="button" role="tab" aria-selected="true" class="active" data-wf-layout="grid" onclick="setWorkflowLayout('grid')">Grid</button>
+                <button type="button" role="tab" aria-selected="false" data-wf-layout="row" onclick="setWorkflowLayout('row')">Row</button>
+              </div>
+            </div>
+            <div id="activity-experiment">
+              <!-- GRID variant (default): 3 equal columns — col1 (R&D + Manufacturing), col2 (CDMO + Expert
+                   Guidance), col3 (Scira card, stretched to match). See .activity-grid-exp / .wf-col in
+                   scinode.css for the height-matching mechanics. -->
+              <div id="wf-layout-grid" class="activity-grid activity-grid-exp">
+                  <div class="wf-col">
+                    <button type="button" class="workflow-card wf-card-top" onclick="openScira('I want to start a new R&amp;D project. Help me turn my idea into a structured research plan.')">
+                      <div class="workflow-head">
+                        <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></svg></span>
+                        <div class="workflow-head-text">
+                          <div class="workflow-title">Start an R&amp;D Project</div>
+                          <div class="workflow-desc">Build your research plan.</div>
+                        </div>
+                      </div>
+                      <span class="workflow-cta">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                    </button>
+                    <button type="button" class="workflow-card wf-card-bottom" onclick="openScira('I want to start a manufacturing project. Help me plan production, scale-up, and manufacturing execution.')">
+                      <div class="workflow-head">
+                        <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h.01"/><path d="M16 16h.01"/><path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M8 16h.01"/></svg></span>
+                        <div class="workflow-head-text">
+                          <div class="workflow-title">Start a Manufacturing Project</div>
+                          <div class="workflow-desc">Execute your manufacturing plan.</div>
+                        </div>
+                      </div>
+                      <span class="workflow-cta">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                    </button>
                   </div>
-                  <div class="cap-card">
-                    <div class="cap-cat"><span class="cap-cat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v17.5A2.5 2.5 0 0 1 6.5 22A2.5 2.5 0 0 1 4 19.5V2"/><path d="M20 2v17.5a2.5 2.5 0 0 1-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5V2"/><path d="M3 2h7"/><path d="M14 2h7"/><path d="M9 16H4"/><path d="M20 16h-5"/></svg></span><span class="cap-cat-label">Bioprocessing</span></div>
-                    <div class="cap-title">Optimize fermentation yield</div>
-                    <div class="cap-industry">Nutraceuticals</div>
+                  <div class="wf-col">
+                    <button type="button" class="workflow-card wf-card-top" onclick="openScira('I want to start a CDMO project. Help me develop, optimize, and scale my product with end-to-end CDMO support.')">
+                      <div class="workflow-head">
+                        <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg></span>
+                        <div class="workflow-head-text">
+                          <div class="workflow-title">Start a CDMO Project</div>
+                          <div class="workflow-desc">Develop and scale your product.</div>
+                        </div>
+                      </div>
+                      <span class="workflow-cta">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                    </button>
+                    <button type="button" class="workflow-card wf-card-bottom" onclick="openScira('I need expert guidance on my scientific or manufacturing challenge. Help me determine the best execution pathway.')">
+                      <div class="workflow-head">
+                        <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span>
+                        <div class="workflow-head-text">
+                          <div class="workflow-title">Get Expert Guidance</div>
+                          <div class="workflow-desc">Get tailored scientific advice.</div>
+                        </div>
+                      </div>
+                      <span class="workflow-cta">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                    </button>
                   </div>
-                  <div class="cap-card">
-                    <div class="cap-cat"><span class="cap-cat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></span><span class="cap-cat-label">Process scale-up</span></div>
-                    <div class="cap-title">Scale an API process</div>
-                    <div class="cap-industry">Pharma</div>
+                <!-- Scira card — content/styling unchanged; act-scira-fill only redistributes internal
+                     spacing (centers the text block, pins the CTA to the bottom) now that this column
+                     stretches to match the full height of columns 1 and 2. -->
+                <div class="act-card view-all act-scira act-scira-compact act-scira-fill" style="background:linear-gradient(135deg,#043E54 0%,#021C26 100%);border-color:transparent;">
+                  <div class="scira-glow" aria-hidden="true"></div>
+                  <div class="scira-top">
+                    <span class="scira-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg></span>
+                    <span class="scira-eyebrow">Scira Intelligence</span>
                   </div>
-                  <div class="cap-card">
-                    <div class="cap-cat"><span class="cap-cat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span><span class="cap-cat-label">Technology transfer</span></div>
-                    <div class="cap-title">Transfer laboratory process</div>
-                    <div class="cap-industry">CDMO</div>
+                  <div class="scira-main">
+                    <div class="act-va-title" style="color:#fff;">Lay out your execution pathway with Scira</div>
+                    <div class="act-va-sub" style="color:rgba(255,255,255,0.6);">Explore molecules, manufacturers or R&amp;D needs with Scira</div>
                   </div>
-                  <div class="cap-card">
-                    <div class="cap-cat"><span class="cap-cat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg></span><span class="cap-cat-label">Materials engineering</span></div>
-                    <div class="cap-title">Engineer advanced materials</div>
-                    <div class="cap-industry">Industrial</div>
-                  </div>
-                  <div class="cap-card">
-                    <div class="cap-cat"><span class="cap-cat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg></span><span class="cap-cat-label">Analytical R&amp;D</span></div>
-                    <div class="cap-title">Validate analytical methods</div>
-                    <div class="cap-industry">Quality &amp; compliance</div>
-                  </div>
+                  <button type="button" class="scira-cta-btn" onclick="openScira('')">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
                 </div>
-              <!-- Right (30%): Scira card — compact rhythm (Version 1) to match the capability rail's natural height -->
-              <div class="act-card view-all act-scira act-scira-compact" style="background:linear-gradient(135deg,#043E54 0%,#021C26 100%);border-color:transparent;">
+              </div>
+              <!-- ROW variant: 5 equal-width, equal-height cards in a single row — 4 workflow launchers + the existing Scira card -->
+              <div id="wf-layout-row" class="workflow-row hidden">
+                  <button type="button" class="workflow-card" onclick="openScira('I want to start a new R&amp;D project. Help me turn my idea into a structured research plan.')">
+                    <div class="workflow-head">
+                      <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></svg></span>
+                      <div class="workflow-head-text">
+                        <div class="workflow-title">Start an R&amp;D Project</div>
+                        <div class="workflow-desc">Build your research plan.</div>
+                      </div>
+                    </div>
+                    <span class="workflow-cta">Start <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                  </button>
+                  <button type="button" class="workflow-card" onclick="openScira('I want to start a CDMO project. Help me develop, optimize, and scale my product with end-to-end CDMO support.')">
+                    <div class="workflow-head">
+                      <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg></span>
+                      <div class="workflow-head-text">
+                        <div class="workflow-title">Start a CDMO Project</div>
+                        <div class="workflow-desc">Develop and scale your product.</div>
+                      </div>
+                    </div>
+                    <span class="workflow-cta">Start <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                  </button>
+                  <button type="button" class="workflow-card" onclick="openScira('I want to start a manufacturing project. Help me plan production, scale-up, and manufacturing execution.')">
+                    <div class="workflow-head">
+                      <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h.01"/><path d="M16 16h.01"/><path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M8 16h.01"/></svg></span>
+                      <div class="workflow-head-text">
+                        <div class="workflow-title">Start a Manufacturing Project</div>
+                        <div class="workflow-desc">Execute your manufacturing plan.</div>
+                      </div>
+                    </div>
+                    <span class="workflow-cta">Start <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                  </button>
+                  <button type="button" class="workflow-card" onclick="openScira('I need expert guidance on my scientific or manufacturing challenge. Help me determine the best execution pathway.')">
+                    <div class="workflow-head">
+                      <span class="workflow-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span>
+                      <div class="workflow-head-text">
+                        <div class="workflow-title">Get Expert Guidance</div>
+                        <div class="workflow-desc">Get tailored scientific advice.</div>
+                      </div>
+                    </div>
+                    <span class="workflow-cta">Start <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>
+                  </button>
+              <!-- Scira card — unchanged content/styling; act-scira-row only trims spacing to match the row's shorter height -->
+              <div class="act-card view-all act-scira act-scira-compact act-scira-row" style="background:linear-gradient(135deg,#043E54 0%,#021C26 100%);border-color:transparent;">
                 <div class="scira-glow" aria-hidden="true"></div>
                 <div class="scira-top">
                   <span class="scira-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg></span>
@@ -1027,10 +1106,10 @@
                   <div class="act-va-title" style="color:#fff;">Lay out your execution pathway with Scira</div>
                   <div class="act-va-sub" style="color:rgba(255,255,255,0.6);">Explore molecules, manufacturers or R&amp;D needs with Scira</div>
                 </div>
-                <button type="button" class="scira-cta-link" onclick="openScira('')">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+                <button type="button" class="scira-cta-btn" onclick="openScira('')">Ask Scira <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+              </div>
               </div>
             </div>
-            <div class="cap-dots" id="cap-dots"></div>
             <!-- ═══ CLASSIC: previous 60/40 design — preserved for rollback (hidden) ═══ -->
             <div id="activity-classic" class="activity-grid activity-grid-2 hidden">
               <!-- Card 1: Popular Searches Today — two-row auto-scroll carousel; every item opens Scira -->
@@ -1193,6 +1272,141 @@
                       <div class="usecase-sub">Electronic and precision grade chemicals</div>
                       <div class="usecase-cta">
                         <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop semiconductor materials">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop agrochemical solutions">
+                    <div class="usecase-bg" style="background:#182410;background-image:url(https://upload.wikimedia.org/wikipedia/commons/d/d6/View_south_across_a_vast_crop_of_wheat_-_geograph.org.uk_-_1349412.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-4.4-3.6-8-8-8h2a8 8 0 0 1 8 8Z"/><path d="M14 20c0-4.4 3.6-8 8-8h-2a8 8 0 0 0-8 8Z"/><path d="M7 16c3.3 0 6-2.7 6-6V4a6 6 0 0 0-6 6c0 2 .7 3.8 2 5.2"/></svg></div>
+                      <div class="usecase-title">Develop agrochemical solutions</div>
+                      <div class="usecase-sub">Crop protection chemicals, fertilizers, and agricultural formulations</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop agrochemical solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Create flavors & fragrance products">
+                    <div class="usecase-bg" style="background:#241f1a;background-image:url(https://upload.wikimedia.org/wikipedia/commons/9/95/AW_Lavender_steam_distillation.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                      <div class="usecase-title">Create flavors &amp; fragrance products</div>
+                      <div class="usecase-sub">Food flavors, aroma chemicals, perfumes, and fragrances</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Create flavors & fragrance products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop industrial chemical products">
+                    <div class="usecase-bg" style="background:#10181c;background-image:url(https://upload.wikimedia.org/wikipedia/commons/f/f5/Industrial_storage_tanks.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg></div>
+                      <div class="usecase-title">Develop industrial chemical products</div>
+                      <div class="usecase-sub">Process chemicals, additives, solvents, and intermediates</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop industrial chemical products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop dyes & pigment solutions">
+                    <div class="usecase-bg" style="background:#241210;background-image:url(https://upload.wikimedia.org/wikipedia/commons/5/5a/Lycopene_powder.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+                      <div class="usecase-title">Develop dyes &amp; pigment solutions</div>
+                      <div class="usecase-sub">Colorants, pigments, inks, coatings, and textile chemicals</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop dyes & pigment solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Build oleochemical products">
+                    <div class="usecase-bg" style="background:#101a0e;background-image:url(https://upload.wikimedia.org/wikipedia/commons/a/a0/Kimanis_Sabah_Palm-oil-fruits-of-Kimanis-Estate-02.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+                      <div class="usecase-title">Build oleochemical products</div>
+                      <div class="usecase-sub">Fatty acids, glycerin, surfactants, and bio-based chemicals</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Build oleochemical products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop flame retardant solutions">
+                    <div class="usecase-bg" style="background:#1a0e04;background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/b8/86_105_271_Natural_Gas_%28154107777%29.jpeg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+                      <div class="usecase-title">Develop flame retardant solutions</div>
+                      <div class="usecase-sub">Fire-resistant additives for plastics, textiles, and coatings</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop flame retardant solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop metallurgy chemicals">
+                    <div class="usecase-bg" style="background:#140800;background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/b8/In-stream_inoculation_addition_while_molten_cast_iron_is_poured_to_a_green_sand_mold_in_a_foundry_in_Bangladesh.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                      <div class="usecase-title">Develop metallurgy chemicals</div>
+                      <div class="usecase-sub">Metal extraction, refining, surface treatment, and processing</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop metallurgy chemicals">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop elemental derivatives">
+                    <div class="usecase-bg" style="background:#1a1608;background-image:url(https://upload.wikimedia.org/wikipedia/commons/7/70/Native_sulfur_%28Vodinskoe_Deposit%3B_quarry_near_Samara%2C_Russia%29_10.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></svg></div>
+                      <div class="usecase-title">Develop elemental derivatives</div>
+                      <div class="usecase-sub">Boron, sulfur, phosphorus, silicon, and specialty derivatives</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop elemental derivatives">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop critical metal solutions">
+                    <div class="usecase-bg" style="background:#0e1a18;background-image:url(https://upload.wikimedia.org/wikipedia/commons/0/05/Salar_de_Atacama%2C_Chile_ESA386674.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+                      <div class="usecase-title">Develop critical metal solutions</div>
+                      <div class="usecase-sub">Lithium, cobalt, rare earths, battery, and electronic materials</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop critical metal solutions">
                           Start request
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
                         </button>
@@ -1588,6 +1802,141 @@
                       <div class="usecase-sub">Electronic and precision grade chemicals</div>
                       <div class="usecase-cta">
                         <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop semiconductor materials">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop agrochemical solutions">
+                    <div class="usecase-bg" style="background:#182410;background-image:url(https://upload.wikimedia.org/wikipedia/commons/d/d6/View_south_across_a_vast_crop_of_wheat_-_geograph.org.uk_-_1349412.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-4.4-3.6-8-8-8h2a8 8 0 0 1 8 8Z"/><path d="M14 20c0-4.4 3.6-8 8-8h-2a8 8 0 0 0-8 8Z"/><path d="M7 16c3.3 0 6-2.7 6-6V4a6 6 0 0 0-6 6c0 2 .7 3.8 2 5.2"/></svg></div>
+                      <div class="usecase-title">Develop agrochemical solutions</div>
+                      <div class="usecase-sub">Crop protection chemicals, fertilizers, and agricultural formulations</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop agrochemical solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Create flavors & fragrance products">
+                    <div class="usecase-bg" style="background:#241f1a;background-image:url(https://upload.wikimedia.org/wikipedia/commons/9/95/AW_Lavender_steam_distillation.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                      <div class="usecase-title">Create flavors &amp; fragrance products</div>
+                      <div class="usecase-sub">Food flavors, aroma chemicals, perfumes, and fragrances</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Create flavors & fragrance products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop industrial chemical products">
+                    <div class="usecase-bg" style="background:#10181c;background-image:url(https://upload.wikimedia.org/wikipedia/commons/f/f5/Industrial_storage_tanks.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg></div>
+                      <div class="usecase-title">Develop industrial chemical products</div>
+                      <div class="usecase-sub">Process chemicals, additives, solvents, and intermediates</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop industrial chemical products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop dyes & pigment solutions">
+                    <div class="usecase-bg" style="background:#241210;background-image:url(https://upload.wikimedia.org/wikipedia/commons/5/5a/Lycopene_powder.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+                      <div class="usecase-title">Develop dyes &amp; pigment solutions</div>
+                      <div class="usecase-sub">Colorants, pigments, inks, coatings, and textile chemicals</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop dyes & pigment solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Build oleochemical products">
+                    <div class="usecase-bg" style="background:#101a0e;background-image:url(https://upload.wikimedia.org/wikipedia/commons/a/a0/Kimanis_Sabah_Palm-oil-fruits-of-Kimanis-Estate-02.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+                      <div class="usecase-title">Build oleochemical products</div>
+                      <div class="usecase-sub">Fatty acids, glycerin, surfactants, and bio-based chemicals</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Build oleochemical products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop flame retardant solutions">
+                    <div class="usecase-bg" style="background:#1a0e04;background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/b8/86_105_271_Natural_Gas_%28154107777%29.jpeg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+                      <div class="usecase-title">Develop flame retardant solutions</div>
+                      <div class="usecase-sub">Fire-resistant additives for plastics, textiles, and coatings</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop flame retardant solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop metallurgy chemicals">
+                    <div class="usecase-bg" style="background:#140800;background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/b8/In-stream_inoculation_addition_while_molten_cast_iron_is_poured_to_a_green_sand_mold_in_a_foundry_in_Bangladesh.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                      <div class="usecase-title">Develop metallurgy chemicals</div>
+                      <div class="usecase-sub">Metal extraction, refining, surface treatment, and processing</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop metallurgy chemicals">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop elemental derivatives">
+                    <div class="usecase-bg" style="background:#1a1608;background-image:url(https://upload.wikimedia.org/wikipedia/commons/7/70/Native_sulfur_%28Vodinskoe_Deposit%3B_quarry_near_Samara%2C_Russia%29_10.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></svg></div>
+                      <div class="usecase-title">Develop elemental derivatives</div>
+                      <div class="usecase-sub">Boron, sulfur, phosphorus, silicon, and specialty derivatives</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop elemental derivatives">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop critical metal solutions">
+                    <div class="usecase-bg" style="background:#0e1a18;background-image:url(https://upload.wikimedia.org/wikipedia/commons/0/05/Salar_de_Atacama%2C_Chile_ESA386674.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+                      <div class="usecase-title">Develop critical metal solutions</div>
+                      <div class="usecase-sub">Lithium, cobalt, rare earths, battery, and electronic materials</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop critical metal solutions">
                           Start request
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
                         </button>
@@ -2063,6 +2412,141 @@
                       <div class="usecase-sub">Electronic and precision grade chemicals</div>
                       <div class="usecase-cta">
                         <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop semiconductor materials">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop agrochemical solutions">
+                    <div class="usecase-bg" style="background:#182410;background-image:url(https://upload.wikimedia.org/wikipedia/commons/d/d6/View_south_across_a_vast_crop_of_wheat_-_geograph.org.uk_-_1349412.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-4.4-3.6-8-8-8h2a8 8 0 0 1 8 8Z"/><path d="M14 20c0-4.4 3.6-8 8-8h-2a8 8 0 0 0-8 8Z"/><path d="M7 16c3.3 0 6-2.7 6-6V4a6 6 0 0 0-6 6c0 2 .7 3.8 2 5.2"/></svg></div>
+                      <div class="usecase-title">Develop agrochemical solutions</div>
+                      <div class="usecase-sub">Crop protection chemicals, fertilizers, and agricultural formulations</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop agrochemical solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Create flavors & fragrance products">
+                    <div class="usecase-bg" style="background:#241f1a;background-image:url(https://upload.wikimedia.org/wikipedia/commons/9/95/AW_Lavender_steam_distillation.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                      <div class="usecase-title">Create flavors &amp; fragrance products</div>
+                      <div class="usecase-sub">Food flavors, aroma chemicals, perfumes, and fragrances</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Create flavors & fragrance products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop industrial chemical products">
+                    <div class="usecase-bg" style="background:#10181c;background-image:url(https://upload.wikimedia.org/wikipedia/commons/f/f5/Industrial_storage_tanks.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg></div>
+                      <div class="usecase-title">Develop industrial chemical products</div>
+                      <div class="usecase-sub">Process chemicals, additives, solvents, and intermediates</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop industrial chemical products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop dyes & pigment solutions">
+                    <div class="usecase-bg" style="background:#241210;background-image:url(https://upload.wikimedia.org/wikipedia/commons/5/5a/Lycopene_powder.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+                      <div class="usecase-title">Develop dyes &amp; pigment solutions</div>
+                      <div class="usecase-sub">Colorants, pigments, inks, coatings, and textile chemicals</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop dyes & pigment solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Build oleochemical products">
+                    <div class="usecase-bg" style="background:#101a0e;background-image:url(https://upload.wikimedia.org/wikipedia/commons/a/a0/Kimanis_Sabah_Palm-oil-fruits-of-Kimanis-Estate-02.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+                      <div class="usecase-title">Build oleochemical products</div>
+                      <div class="usecase-sub">Fatty acids, glycerin, surfactants, and bio-based chemicals</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Build oleochemical products">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop flame retardant solutions">
+                    <div class="usecase-bg" style="background:#1a0e04;background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/b8/86_105_271_Natural_Gas_%28154107777%29.jpeg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+                      <div class="usecase-title">Develop flame retardant solutions</div>
+                      <div class="usecase-sub">Fire-resistant additives for plastics, textiles, and coatings</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop flame retardant solutions">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop metallurgy chemicals">
+                    <div class="usecase-bg" style="background:#140800;background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/b8/In-stream_inoculation_addition_while_molten_cast_iron_is_poured_to_a_green_sand_mold_in_a_foundry_in_Bangladesh.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                      <div class="usecase-title">Develop metallurgy chemicals</div>
+                      <div class="usecase-sub">Metal extraction, refining, surface treatment, and processing</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop metallurgy chemicals">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop elemental derivatives">
+                    <div class="usecase-bg" style="background:#1a1608;background-image:url(https://upload.wikimedia.org/wikipedia/commons/7/70/Native_sulfur_%28Vodinskoe_Deposit%3B_quarry_near_Samara%2C_Russia%29_10.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></svg></div>
+                      <div class="usecase-title">Develop elemental derivatives</div>
+                      <div class="usecase-sub">Boron, sulfur, phosphorus, silicon, and specialty derivatives</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop elemental derivatives">
+                          Start request
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="usecase-card" role="article" tabindex="0" aria-label="Develop critical metal solutions">
+                    <div class="usecase-bg" style="background:#0e1a18;background-image:url(https://upload.wikimedia.org/wikipedia/commons/0/05/Salar_de_Atacama%2C_Chile_ESA386674.jpg);background-size:cover;background-position:center" aria-hidden="true"></div>
+                    <div class="usecase-overlay" aria-hidden="true"></div>
+                    <div class="usecase-body">
+                      <div class="usecase-icon" aria-hidden="true"><svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+                      <div class="usecase-title">Develop critical metal solutions</div>
+                      <div class="usecase-sub">Lithium, cobalt, rare earths, battery, and electronic materials</div>
+                      <div class="usecase-cta">
+                        <button type="button" class="usecase-cta-btn" aria-label="Start request for Develop critical metal solutions">
                           Start request
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
                         </button>
@@ -2851,6 +3335,22 @@
       b.setAttribute('aria-selected', active ? 'true' : 'false');
     });
   }
+
+  /* ── "What Scira can build for you today" — dev-only compare toggle between the
+     2x2 grid layout and the 5-across row layout. Both variants stay in the DOM;
+     this only flips which one is hidden. ── */
+  function setWorkflowLayout(v) {
+    var grid = document.getElementById('wf-layout-grid');
+    var row = document.getElementById('wf-layout-row');
+    if (grid) grid.classList.toggle('hidden', v !== 'grid');
+    if (row) row.classList.toggle('hidden', v !== 'row');
+    document.querySelectorAll('[data-wf-layout]').forEach(function (b) {
+      var active = b.getAttribute('data-wf-layout') === v;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  }
+  window.setWorkflowLayout = setWorkflowLayout;
 
   /* hscroll, toggleAccordion, toggleCollapsible, switchTab moved to assets/scinode.js */
 
@@ -4253,24 +4753,6 @@ function App() {
     });
   }
   [].forEach.call(document.querySelectorAll('.opps'),initOpps);
-})();
-</script>
-<script>
-(function(){
-  var rail=document.getElementById('cap-rail'),dotsEl=document.getElementById('cap-dots');
-  if(!rail||!dotsEl)return;
-  var cards=rail.querySelectorAll('.cap-card');
-  dotsEl.innerHTML=[].map.call(cards,function(c,i){return '<span class="cap-dot" data-i="'+i+'"></span>';}).join('');
-  var dots=dotsEl.querySelectorAll('.cap-dot');
-  function update(){
-    var maxScroll=rail.scrollWidth-rail.clientWidth;
-    var idx=maxScroll>0?Math.round((rail.scrollLeft/maxScroll)*(cards.length-1)):0;
-    idx=Math.max(0,Math.min(idx,cards.length-1));
-    [].forEach.call(dots,function(d,i){d.classList.toggle('on',i===idx);});
-  }
-  rail.addEventListener('scroll',update);
-  window.addEventListener('resize',update);
-  update();
 })();
 </script>
 </body>

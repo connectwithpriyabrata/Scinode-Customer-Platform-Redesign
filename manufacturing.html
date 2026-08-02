@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Scinode — Manufacturing</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260731s" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260731t" />
   <script src="assets/scinode.js"></script>
 </head>
 <body>
@@ -87,10 +87,28 @@
 
     <div class="mfg-breadcrumb">Dashboard <span class="mfg-breadcrumb-sep">&rsaquo;</span> <span class="mfg-breadcrumb-current">Manufacturing Partners</span></div>
 
-    <div class="mfg-hero">
+    <div class="mfg-gradient-switcher" role="tablist" aria-label="Banner gradient preview">
+      <span class="mfg-gradient-switch-label">Banner palette</span>
+      <button type="button" class="mfg-gradient-switch-btn active" data-grad="current" onclick="setHeroGradient('current',this)">Current</button>
+      <button type="button" class="mfg-gradient-switch-btn" data-grad="emerald" onclick="setHeroGradient('emerald',this)">Emerald Fade</button>
+      <button type="button" class="mfg-gradient-switch-btn" data-grad="meadow" onclick="setHeroGradient('meadow',this)">Meadow Gold</button>
+      <button type="button" class="mfg-gradient-switch-btn" data-grad="spectrum" onclick="setHeroGradient('spectrum',this)">Deep Spectrum</button>
+    </div>
+
+    <div class="mfg-hero" id="mfg-hero" data-gradient="current">
       <div class="mfg-hero-title">Built for Your Scale</div>
       <div class="mfg-hero-sub">Manufacture your molecule with full visibility, tracking execution at every step with complete transparency.</div>
     </div>
+
+    <script>
+      function setHeroGradient(name, btn){
+        var hero = document.getElementById('mfg-hero');
+        if(!hero) return;
+        hero.setAttribute('data-gradient', name);
+        document.querySelectorAll('.mfg-gradient-switch-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+      }
+    </script>
 
     <div class="mfg-searchbar">
       <div class="mfg-search-input-wrap">

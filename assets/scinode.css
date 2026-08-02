@@ -1355,6 +1355,24 @@ body.sbv1 .sb-help,body.sbv2 .sb-help{border-top-color:var(--border);}
 .mfg-hero-title{position:relative;z-index:1;font-family:var(--font-heading);font-size:21px;font-weight:600;color:#fff;letter-spacing:-0.01em;margin-bottom:6px;}
 .mfg-hero-sub{position:relative;z-index:1;font-size:12.5px;color:rgba(255,255,255,.65);line-height:1.5;white-space:nowrap;}
 
+.mfg-hero[data-gradient="emerald"]{background:linear-gradient(135deg,#02968A 0%,#96DDA5 100%);}
+.mfg-hero[data-gradient="meadow"]{background:linear-gradient(135deg,#96DDA5 0%,#E5D62E 100%);}
+.mfg-hero[data-gradient="spectrum"]{background:linear-gradient(135deg,#016358 0%,#043E54 50%,#182133 100%);}
+.mfg-hero[data-gradient="emerald"]::before,
+.mfg-hero[data-gradient="meadow"]::before{display:none;}
+.mfg-hero[data-gradient="emerald"]::after,
+.mfg-hero[data-gradient="meadow"]::after{background:rgba(4,50,67,.06);}
+.mfg-hero[data-gradient="emerald"] .mfg-hero-title,
+.mfg-hero[data-gradient="meadow"] .mfg-hero-title{color:var(--navy-500);}
+.mfg-hero[data-gradient="emerald"] .mfg-hero-sub,
+.mfg-hero[data-gradient="meadow"] .mfg-hero-sub{color:rgba(4,50,67,.72);}
+
+.mfg-gradient-switcher{display:inline-flex;align-items:center;gap:4px;background:var(--white);border:0.5px solid var(--border);border-radius:var(--radius-full);padding:4px;margin-bottom:12px;box-shadow:var(--shadow-card);}
+.mfg-gradient-switch-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;padding:0 10px 0 8px;}
+.mfg-gradient-switch-btn{border:none;background:transparent;font-family:var(--font);font-size:12px;font-weight:600;color:var(--text-2);padding:7px 14px;border-radius:var(--radius-full);cursor:pointer;transition:background .15s ease,color .15s ease;white-space:nowrap;}
+.mfg-gradient-switch-btn:hover{color:var(--navy-500);}
+.mfg-gradient-switch-btn.active{background:var(--navy-500);color:#fff;}
+
 .mfg-searchbar{display:flex;align-items:center;gap:10px;}
 .mfg-search-input-wrap{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:var(--white);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;box-shadow:var(--shadow-nested);transition:border-color .15s;}
 .mfg-search-input-wrap:focus-within{border-color:var(--teal-100);}

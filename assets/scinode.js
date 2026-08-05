@@ -128,7 +128,10 @@ const ICON_PATHS = {
   Mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
   Phone: '<path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/>',
   Copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
-  UserCheck: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/>'
+  UserCheck: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/>',
+  MessageSquare: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  Image: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+  Mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>'
 };
 
 /* ICONOGRAPHY.md Section 8 semantic registry — one concept, one Lucide icon.
@@ -157,7 +160,7 @@ const ICON_REGISTRY = {
   download: 'Download', 'external-link': 'ExternalLink',
   /* Help & Support */
   'help-support': 'CircleHelp', email: 'Mail', phone: 'Phone', copy: 'Copy',
-  'expert-guidance': 'UserCheck'
+  'expert-guidance': 'UserCheck', feedback: 'MessageSquare', image: 'Image', mic: 'Mic'
 };
 
 /* Section 6 semantic colors — status roles only (Success/Warning/Error/Info).
@@ -247,13 +250,15 @@ function ensureHelpDrawer() {
     '<div class="help-drawer-backdrop" id="help-drawer-backdrop" onclick="closeHelpDrawer()"></div>' +
     '<div class="help-drawer" id="help-drawer" role="dialog" aria-modal="true" aria-labelledby="help-drawer-title">' +
       '<div class="help-drawer-head">' +
-        '<div>' +
+        '<div class="help-drawer-head-left" id="help-head-left">' +
           '<div class="help-drawer-title" id="help-drawer-title">Help &amp; Support</div>' +
           '<div class="help-drawer-sub">Need assistance with Scinode?<br><br>Our team can help with platform usage, requests, projects, and technical issues.</div>' +
         '</div>' +
         '<button type="button" class="help-drawer-close" onclick="closeHelpDrawer()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
       '</div>' +
-      '<div class="help-drawer-body">' +
+      '<div class="help-drawer-body" id="help-drawer-body">' +
+
+        '<div id="help-view-main">' +
         '<div class="help-card">' +
           '<span class="help-card-icon">' + AppIcon('email', { size: 18, color: 'var(--teal-600)' }) + '</span>' +
           '<div class="help-card-info">' +
@@ -284,10 +289,48 @@ function ensureHelpDrawer() {
           '</div>' +
         '</div>' +
         '<div class="help-divider"></div>' +
+        '<div class="help-card">' +
+          '<span class="help-card-icon">' + AppIcon('feedback', { size: 18, color: 'var(--teal-600)' }) + '</span>' +
+          '<div class="help-card-info">' +
+            '<div class="help-card-title">Share Your Feedback</div>' +
+            '<div class="help-card-meta">Tell us about your experience with Scinode</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="help-actions">' +
+          '<button type="button" class="btn btn-default" style="flex:1;justify-content:center;" onclick="helpShowView(\'feedback\')">Submit Feedback</button>' +
+        '</div>' +
+        '<div class="help-divider"></div>' +
         '<div class="help-section-label">Resources</div>' +
         '<div class="help-resource-row" aria-disabled="true"><span class="help-resource-icon">' + AppIcon('documentation', { size: 15 }) + '</span>Getting Started</div>' +
         '<div class="help-resource-row" aria-disabled="true"><span class="help-resource-icon">' + AppIcon('documentation', { size: 15 }) + '</span>FAQs</div>' +
         '<div class="help-resource-row" aria-disabled="true"><span class="help-resource-icon">' + AppIcon('documentation', { size: 15 }) + '</span>Release Notes</div>' +
+        '</div>' +
+
+        '<div id="help-view-feedback" style="display:none;">' +
+          '<label class="help-fb-label" for="help-fb-text">Your feedback <span style="color:#EF4444;">*</span></label>' +
+          '<textarea id="help-fb-text" class="help-fb-textarea" rows="5" placeholder="Tell us what\'s working well or what we could improve..." oninput="helpValidateFeedback()"></textarea>' +
+          '<div class="help-fb-attach-row">' +
+            '<button type="button" class="help-fb-attach-btn" onclick="document.getElementById(\'help-fb-image-input\').click()">' + AppIcon('image', { size: 15 }) + 'Add Image</button>' +
+            '<input type="file" id="help-fb-image-input" accept="image/*" multiple style="display:none;" onchange="helpHandleImageSelect(event)">' +
+            '<button type="button" class="help-fb-attach-btn" id="help-fb-audio-btn" onclick="helpToggleRecording()">' + AppIcon('mic', { size: 15 }) + '<span id="help-fb-audio-btn-label">Add Audio</span></button>' +
+          '</div>' +
+          '<div class="help-fb-chip-wrap" id="help-fb-image-chips"></div>' +
+          '<div class="help-fb-chip-wrap" id="help-fb-audio-chip"></div>' +
+          '<button type="button" class="btn btn-default help-fb-submit" id="help-fb-submit-btn" onclick="helpSubmitFeedback()" disabled>Submit Feedback</button>' +
+        '</div>' +
+
+        '<div id="help-view-ack" style="display:none;">' +
+          '<div class="help-fb-ack">' +
+            StatusIcon('success', { size: 'feature' }) +
+            '<div class="help-fb-ack-title">Thanks for your feedback!</div>' +
+            '<div class="help-fb-ack-sub">We\'ve received your feedback and our team will review it shortly. Your input helps us make Scinode better.</div>' +
+            '<div class="help-fb-ack-actions">' +
+              '<button type="button" class="btn btn-default" onclick="helpShowView(\'main\')">Back to Help &amp; Support</button>' +
+              '<button type="button" class="btn btn-outline" onclick="closeHelpDrawer()">Close</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
       '</div>' +
     '</div>';
   while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
@@ -296,6 +339,7 @@ function ensureHelpDrawer() {
 function openHelpDrawer() {
   ensureHelpDrawer();
   helpDrawerLastFocus = document.activeElement;
+  helpShowView('main');
   document.getElementById('help-drawer-backdrop').classList.add('open');
   document.getElementById('help-drawer').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -309,6 +353,10 @@ function closeHelpDrawer() {
   backdrop.classList.remove('open');
   drawer.classList.remove('open');
   document.body.style.overflow = '';
+  if (helpMediaRecorder && helpMediaRecorder.state === 'recording') helpMediaRecorder.stop();
+  if (helpMediaStream) { helpMediaStream.getTracks().forEach(function (t) { t.stop(); }); helpMediaStream = null; }
+  helpResetFeedbackForm();
+  helpShowView('main');
   if (helpDrawerLastFocus && helpDrawerLastFocus.focus) helpDrawerLastFocus.focus();
 }
 function copySupportEmail() {
@@ -318,6 +366,158 @@ function copySupportEmail() {
   } else {
     done();
   }
+}
+
+/* ── Help drawer: view switching (main / feedback form / acknowledgement) ── */
+function helpShowView(view) {
+  ensureHelpDrawer();
+  const headLeft = document.getElementById('help-head-left');
+  if (view === 'feedback') {
+    headLeft.innerHTML =
+      '<div class="help-head-row">' +
+        '<button type="button" class="help-drawer-back" onclick="helpShowView(\'main\')" aria-label="Back to Help & Support">' + AppIcon('chevron-left', { size: 18 }) + '</button>' +
+        '<div class="help-drawer-title">Submit Feedback</div>' +
+      '</div>' +
+      '<div class="help-drawer-sub">Tell us what\'s working, what isn\'t, or what you\'d like to see next.</div>';
+  } else if (view === 'ack') {
+    headLeft.innerHTML = '<div class="help-drawer-title">Submit Feedback</div>';
+  } else {
+    headLeft.innerHTML =
+      '<div class="help-drawer-title" id="help-drawer-title">Help &amp; Support</div>' +
+      '<div class="help-drawer-sub">Need assistance with Scinode?<br><br>Our team can help with platform usage, requests, projects, and technical issues.</div>';
+  }
+  ['main', 'feedback', 'ack'].forEach(function (v) {
+    const el = document.getElementById('help-view-' + v);
+    if (el) el.style.display = (v === view) ? 'block' : 'none';
+  });
+  const body = document.getElementById('help-drawer-body');
+  if (body) body.scrollTop = 0;
+}
+
+/* ── Help drawer: feedback form state ── */
+let helpImageFiles = [];
+let helpAudioBlobUrl = null;
+let helpMediaRecorder = null;
+let helpMediaChunks = [];
+let helpMediaStream = null;
+let helpRecordTimer = null;
+let helpRecordSeconds = 0;
+
+function helpValidateFeedback() {
+  const text = document.getElementById('help-fb-text');
+  const btn = document.getElementById('help-fb-submit-btn');
+  if (!text || !btn) return;
+  btn.disabled = text.value.trim().length === 0;
+}
+
+function helpHandleImageSelect(e) {
+  const files = Array.prototype.slice.call(e.target.files || []);
+  files.forEach(function (file) {
+    if (!/^image\//.test(file.type)) return;
+    helpImageFiles.push({ file: file, url: URL.createObjectURL(file) });
+  });
+  e.target.value = '';
+  helpRenderImageChips();
+}
+function helpRenderImageChips() {
+  const wrap = document.getElementById('help-fb-image-chips');
+  if (!wrap) return;
+  wrap.innerHTML = helpImageFiles.map(function (item, i) {
+    return '<div class="help-fb-chip help-fb-chip-image">' +
+      '<img src="' + item.url + '" alt="Attached image">' +
+      '<button type="button" class="help-fb-chip-remove" onclick="helpRemoveImage(' + i + ')" aria-label="Remove image">' + AppIcon('close', { size: 11 }) + '</button>' +
+    '</div>';
+  }).join('');
+}
+function helpRemoveImage(index) {
+  const item = helpImageFiles[index];
+  if (item) URL.revokeObjectURL(item.url);
+  helpImageFiles.splice(index, 1);
+  helpRenderImageChips();
+}
+
+function helpFormatTime(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+function helpSetRecordingUI(recording) {
+  const btn = document.getElementById('help-fb-audio-btn');
+  const label = document.getElementById('help-fb-audio-btn-label');
+  if (!btn || !label) return;
+  btn.classList.toggle('recording', recording);
+  if (recording) {
+    label.textContent = 'Recording… 0:00';
+  } else {
+    label.textContent = 'Add Audio';
+    if (helpRecordTimer) { clearInterval(helpRecordTimer); helpRecordTimer = null; }
+  }
+}
+function helpToggleRecording() {
+  if (helpMediaRecorder && helpMediaRecorder.state === 'recording') {
+    helpMediaRecorder.stop();
+    return;
+  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showToast('Microphone not available in this browser');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+    helpMediaStream = stream;
+    helpMediaChunks = [];
+    helpMediaRecorder = new MediaRecorder(stream);
+    helpMediaRecorder.ondataavailable = function (e) { if (e.data.size > 0) helpMediaChunks.push(e.data); };
+    helpMediaRecorder.onstop = function () {
+      const blob = new Blob(helpMediaChunks, { type: 'audio/webm' });
+      if (helpAudioBlobUrl) URL.revokeObjectURL(helpAudioBlobUrl);
+      helpAudioBlobUrl = URL.createObjectURL(blob);
+      if (helpMediaStream) helpMediaStream.getTracks().forEach(function (t) { t.stop(); });
+      helpMediaStream = null;
+      helpRenderAudioChip();
+      helpSetRecordingUI(false);
+    };
+    helpMediaRecorder.start();
+    helpRecordSeconds = 0;
+    helpSetRecordingUI(true);
+    helpRecordTimer = setInterval(function () {
+      helpRecordSeconds++;
+      const label = document.getElementById('help-fb-audio-btn-label');
+      if (label) label.textContent = 'Recording… ' + helpFormatTime(helpRecordSeconds);
+    }, 1000);
+  }).catch(function () {
+    showToast('Microphone access was denied or unavailable');
+  });
+}
+function helpRenderAudioChip() {
+  const wrap = document.getElementById('help-fb-audio-chip');
+  if (!wrap) return;
+  if (!helpAudioBlobUrl) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML =
+    '<div class="help-fb-chip help-fb-chip-audio">' +
+      '<audio controls src="' + helpAudioBlobUrl + '"></audio>' +
+      '<button type="button" class="help-fb-chip-remove" onclick="helpRemoveAudio()" aria-label="Remove recording">' + AppIcon('close', { size: 11 }) + '</button>' +
+    '</div>';
+}
+function helpRemoveAudio() {
+  if (helpAudioBlobUrl) { URL.revokeObjectURL(helpAudioBlobUrl); helpAudioBlobUrl = null; }
+  helpRenderAudioChip();
+}
+
+function helpSubmitFeedback() {
+  const btn = document.getElementById('help-fb-submit-btn');
+  if (btn && btn.disabled) return;
+  if (helpMediaRecorder && helpMediaRecorder.state === 'recording') helpMediaRecorder.stop();
+  helpShowView('ack');
+  helpResetFeedbackForm();
+}
+function helpResetFeedbackForm() {
+  const text = document.getElementById('help-fb-text');
+  if (text) text.value = '';
+  helpImageFiles.forEach(function (item) { URL.revokeObjectURL(item.url); });
+  helpImageFiles = [];
+  helpRenderImageChips();
+  helpRemoveAudio();
+  helpSetRecordingUI(false);
+  helpValidateFeedback();
 }
 document.addEventListener('keydown', function (e) {
   const drawer = document.getElementById('help-drawer');

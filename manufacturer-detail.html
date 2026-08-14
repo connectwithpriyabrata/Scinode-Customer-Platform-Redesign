@@ -8,8 +8,8 @@
   <meta http-equiv="Expires" content="0" />
   <title>Scinode — Manufacturing Partner Details</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260731y" />
-  <script src="assets/scinode.js?v=20260731y"></script>
+  <link rel="stylesheet" href="assets/scinode.css?v=20260801b" />
+  <script src="assets/scinode.js?v=20260801b"></script>
 </head>
 <body>
 
@@ -387,9 +387,97 @@
           </div>
         </div>
         <div class="mdet-panel" id="mdet-panel-reactors" style="display:none">
-          <div class="mdet-card mdet-placeholder">
-            <div class="mdet-placeholder-title">Reactors</div>
-            <div class="mdet-placeholder-sub">Full reactors tab content will be added soon.</div>
+          <div class="mdet-rf-unique">
+            <div class="sec-title" style="margin-bottom:2px;">Unique Capabilities</div>
+            <div class="mdet-card">
+              <div class="mdet-cap-row" style="border-bottom:none;padding-bottom:2px;">
+                <div class="mdet-cap-thumb" style="background-image:url(https://upload.wikimedia.org/wikipedia/commons/f/f5/Industrial_storage_tanks.jpg);">
+                  <div class="mdet-cap-badge"><span class="mdet-cap-badge-num">2 items</span><span class="mdet-cap-badge-label">Unique Capabilities</span></div>
+                </div>
+                <div class="mdet-cap-body">
+                  <div class="mdet-bullet-list">
+                    <div class="mdet-bullet-item">3450 Sq. M Warehouse - 1440 Sq.M Solvent Drum Storage Capacity - 350 KL Solvent Bulk Storage Capacity Gas Cylinder Storage space - PESO Approve</div>
+                    <div class="mdet-bullet-item">high vacuum distillation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-title" style="margin-bottom:14px;">Reactor Infrastructure</div>
+          <div class="mdet-rf-filters" role="tablist" aria-label="Reactor type">
+            <button type="button" class="mdet-rf-filter active" onclick="mdetSwitchReactorType('ms-glass',this)">Mild Steel Glass Lined Reactor <span class="mdet-rf-filter-qty">Qty: 8</span></button>
+            <button type="button" class="mdet-rf-filter" onclick="mdetSwitchReactorType('ss-316',this)">SS-316 Reactor <span class="mdet-rf-filter-qty">Qty: 9</span></button>
+          </div>
+
+          <div class="mdet-rf-grid" id="mdet-rf-grid-ms-glass">
+            <div class="mdet-rf-card">
+              <div class="mdet-rf-badges"><span class="mdet-rf-badge-qty">QTY: 1</span><span class="mdet-rf-badge-cap">CAPACITY: 0.25 KL</span></div>
+              <div class="mdet-rf-name">Mild Steel Glass Lined Reactor</div>
+              <div class="mdet-rf-fields">
+                <div><div class="mdet-rf-field-label">Material of Construction (MOC)</div><div class="mdet-rf-field-value">MS-Glass Lined</div></div>
+                <div><div class="mdet-rf-field-label">Type</div><div class="mdet-rf-field-value">Mild Steel Glass Lined Reactor</div></div>
+              </div>
+              <button type="button" class="mdet-rf-toggle" aria-expanded="false" aria-controls="mdet-rf-detail-1" onclick="toggleAccordion(this)"><svg class="chev" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="mdet-rf-toggle-label-show">Show details</span><span class="mdet-rf-toggle-label-hide">Hide details</span></button>
+              <div class="mdet-rf-detail" id="mdet-rf-detail-1" data-state="closed"><div><div class="mdet-rf-field-label">Temp. Range</div><div class="mdet-rf-field-value">-</div></div><div><div class="mdet-rf-field-label">Pressure Range</div><div class="mdet-rf-field-value">-</div></div></div>
+            </div>
+            <div class="mdet-rf-card">
+              <div class="mdet-rf-badges"><span class="mdet-rf-badge-qty">QTY: 1</span><span class="mdet-rf-badge-cap">CAPACITY: 0.63 KL</span></div>
+              <div class="mdet-rf-name">Mild Steel Glass Lined Reactor</div>
+              <div class="mdet-rf-fields">
+                <div><div class="mdet-rf-field-label">Material of Construction (MOC)</div><div class="mdet-rf-field-value">MS-Glass Lined</div></div>
+                <div><div class="mdet-rf-field-label">Type</div><div class="mdet-rf-field-value">Mild Steel Glass Lined Reactor</div></div>
+              </div>
+              <button type="button" class="mdet-rf-toggle" aria-expanded="false" aria-controls="mdet-rf-detail-2" onclick="toggleAccordion(this)"><svg class="chev" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="mdet-rf-toggle-label-show">Show details</span><span class="mdet-rf-toggle-label-hide">Hide details</span></button>
+              <div class="mdet-rf-detail" id="mdet-rf-detail-2" data-state="closed"><div><div class="mdet-rf-field-label">Temp. Range</div><div class="mdet-rf-field-value">-</div></div><div><div class="mdet-rf-field-label">Pressure Range</div><div class="mdet-rf-field-value">-</div></div></div>
+            </div>
+            <div class="mdet-rf-card">
+              <div class="mdet-rf-badges"><span class="mdet-rf-badge-qty">QTY: 1</span><span class="mdet-rf-badge-cap">CAPACITY: 1.6 KL</span></div>
+              <div class="mdet-rf-name">Mild Steel Glass Lined Reactor</div>
+              <div class="mdet-rf-fields">
+                <div><div class="mdet-rf-field-label">Material of Construction (MOC)</div><div class="mdet-rf-field-value">MS-Glass Lined</div></div>
+                <div><div class="mdet-rf-field-label">Type</div><div class="mdet-rf-field-value">Mild Steel Glass Lined Reactor</div></div>
+              </div>
+              <button type="button" class="mdet-rf-toggle" aria-expanded="false" aria-controls="mdet-rf-detail-3" onclick="toggleAccordion(this)"><svg class="chev" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="mdet-rf-toggle-label-show">Show details</span><span class="mdet-rf-toggle-label-hide">Hide details</span></button>
+              <div class="mdet-rf-detail" id="mdet-rf-detail-3" data-state="closed"><div><div class="mdet-rf-field-label">Temp. Range</div><div class="mdet-rf-field-value">-</div></div><div><div class="mdet-rf-field-label">Pressure Range</div><div class="mdet-rf-field-value">-</div></div></div>
+            </div>
+            <div class="mdet-rf-card">
+              <div class="mdet-rf-badges"><span class="mdet-rf-badge-qty">QTY: 2</span><span class="mdet-rf-badge-cap">CAPACITY: 3 KL</span></div>
+              <div class="mdet-rf-name">Mild Steel Glass Lined Reactor</div>
+              <div class="mdet-rf-fields">
+                <div><div class="mdet-rf-field-label">Material of Construction (MOC)</div><div class="mdet-rf-field-value">MS-Glass Lined</div></div>
+                <div><div class="mdet-rf-field-label">Type</div><div class="mdet-rf-field-value">Mild Steel Glass Lined Reactor</div></div>
+              </div>
+              <button type="button" class="mdet-rf-toggle" aria-expanded="false" aria-controls="mdet-rf-detail-4" onclick="toggleAccordion(this)"><svg class="chev" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="mdet-rf-toggle-label-show">Show details</span><span class="mdet-rf-toggle-label-hide">Hide details</span></button>
+              <div class="mdet-rf-detail" id="mdet-rf-detail-4" data-state="closed"><div><div class="mdet-rf-field-label">Temp. Range</div><div class="mdet-rf-field-value">-</div></div><div><div class="mdet-rf-field-label">Pressure Range</div><div class="mdet-rf-field-value">-</div></div></div>
+            </div>
+            <div class="mdet-rf-card">
+              <div class="mdet-rf-badges"><span class="mdet-rf-badge-qty">QTY: 1</span><span class="mdet-rf-badge-cap">CAPACITY: 6.3 KL</span></div>
+              <div class="mdet-rf-name">Mild Steel Glass Lined Reactor</div>
+              <div class="mdet-rf-fields">
+                <div><div class="mdet-rf-field-label">Material of Construction (MOC)</div><div class="mdet-rf-field-value">MS-Glass Lined</div></div>
+                <div><div class="mdet-rf-field-label">Type</div><div class="mdet-rf-field-value">Mild Steel Glass Lined Reactor</div></div>
+              </div>
+              <button type="button" class="mdet-rf-toggle" aria-expanded="false" aria-controls="mdet-rf-detail-5" onclick="toggleAccordion(this)"><svg class="chev" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="mdet-rf-toggle-label-show">Show details</span><span class="mdet-rf-toggle-label-hide">Hide details</span></button>
+              <div class="mdet-rf-detail" id="mdet-rf-detail-5" data-state="closed"><div><div class="mdet-rf-field-label">Temp. Range</div><div class="mdet-rf-field-value">-</div></div><div><div class="mdet-rf-field-label">Pressure Range</div><div class="mdet-rf-field-value">-</div></div></div>
+            </div>
+            <div class="mdet-rf-card">
+              <div class="mdet-rf-badges"><span class="mdet-rf-badge-qty">QTY: 2</span><span class="mdet-rf-badge-cap">CAPACITY: 8 KL</span></div>
+              <div class="mdet-rf-name">Mild Steel Glass Lined Reactor</div>
+              <div class="mdet-rf-fields">
+                <div><div class="mdet-rf-field-label">Material of Construction (MOC)</div><div class="mdet-rf-field-value">MS-Glass Lined</div></div>
+                <div><div class="mdet-rf-field-label">Type</div><div class="mdet-rf-field-value">Mild Steel Glass Lined Reactor</div></div>
+              </div>
+              <button type="button" class="mdet-rf-toggle" aria-expanded="false" aria-controls="mdet-rf-detail-6" onclick="toggleAccordion(this)"><svg class="chev" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="mdet-rf-toggle-label-show">Show details</span><span class="mdet-rf-toggle-label-hide">Hide details</span></button>
+              <div class="mdet-rf-detail" id="mdet-rf-detail-6" data-state="closed"><div><div class="mdet-rf-field-label">Temp. Range</div><div class="mdet-rf-field-value">-</div></div><div><div class="mdet-rf-field-label">Pressure Range</div><div class="mdet-rf-field-value">-</div></div></div>
+            </div>
+          </div>
+
+          <div class="mdet-rf-grid" id="mdet-rf-grid-ss-316" style="display:none">
+            <div class="mdet-card mdet-placeholder" style="grid-column:1 / -1;">
+              <div class="mdet-placeholder-title">SS-316 Reactor</div>
+              <div class="mdet-placeholder-sub">Full specifications for this reactor type will be added soon.</div>
+            </div>
           </div>
         </div>
         <div class="mdet-panel" id="mdet-panel-equipments" style="display:none">
@@ -434,7 +522,7 @@
         <div class="mdet-qa-card">
           <div class="mdet-qa-card-title">Start Your CDMO Project</div>
           <div class="mdet-qa-card-desc">Define requirements, timelines, and scale before confirmation</div>
-          <a href="#" class="mdet-qa-link" onclick="openModal(); return false;">Request CDMO <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
+          <a href="#" class="mdet-qa-link" onclick="openCdmoRequestModal(); return false;">Request CDMO <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
         </div>
       </div>
 
@@ -460,7 +548,7 @@
           <div class="modal-card-title">Kick off a new R&amp;D Project</div>
           <div class="modal-card-desc">Initiate research with expert support for route scouting, optimization, or scale-up.</div>
         </div>
-        <button type="button" class="modal-card-cta">Request R&amp;D Project <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+        <button type="button" class="modal-card-cta" onclick="openRdRequestModal()">Request R&amp;D Project <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
       </div>
       <div class="modal-card">
         <div>
@@ -474,7 +562,7 @@
           <div class="modal-card-title">Start Your CDMO Project</div>
           <div class="modal-card-desc">Define &amp; manage end-to-end development &amp; manufacturing through dedicated CDMO.</div>
         </div>
-        <button type="button" class="modal-card-cta">Request CDMO <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+        <button type="button" class="modal-card-cta" onclick="openCdmoRequestModal()">Request CDMO <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
       </div>
       <!-- Row 2 -->
       <div class="modal-card">
@@ -482,7 +570,7 @@
           <div class="modal-card-title">Request for Quote</div>
           <div class="modal-card-desc">Share your requirements to receive pricing, timelines, and feasibility assessments.</div>
         </div>
-        <button type="button" class="modal-card-cta">Request a Quote <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+        <button type="button" class="modal-card-cta" onclick="openRfqRequestModal()">Request a Quote <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
       </div>
       <div class="modal-card">
         <div>
@@ -524,6 +612,15 @@
     ['legal','qms','raw','mfg','hse'].forEach(function(n){
       var p = document.getElementById('mdet-audit-panel-'+n);
       if (p) p.style.display = (n === name) ? 'block' : 'none';
+    });
+  }
+
+  function mdetSwitchReactorType(type, btn){
+    document.querySelectorAll('.mdet-rf-filter').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    ['ms-glass','ss-316'].forEach(function(t){
+      var el = document.getElementById('mdet-rf-grid-' + t);
+      if (el) el.style.display = (t === type) ? 'grid' : 'none';
     });
   }
 </script>

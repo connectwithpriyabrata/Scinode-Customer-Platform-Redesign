@@ -626,8 +626,10 @@ function secureTriggerAt(typeKey, stageIdx){
 }
 
 /* Accumulated Collaboration Requirements for a request, up to (and including) stage `uptoIdx`.
-   NDA/NCDS default 'Pending' until customer-uploaded (req.secureUploads[code]); MSA is
-   Admin-managed and reads 'Signed' as soon as its stage is reached. */
+   NDA/NCDS are customer-uploaded: 'Pending' until req.secureUploads[code] holds a
+   {name,size,uploadedAt} doc, then 'Uploaded' — the customer owns that upload and can
+   view/replace/remove it. MSA is Admin-managed: reads 'Signed' as soon as its stage is
+   reached, with a synthetic doc for viewing; customers cannot delete/replace it. */
 function buildSecureRequirements(req, typeKey, uptoIdx){
   var triggers = SECURE_STAGE_TRIGGERS[typeKey];
   if (!triggers) return [];
@@ -640,17 +642,28 @@ function buildSecureRequirements(req, typeKey, uptoIdx){
       if (seen[code]) return;
       seen[code] = true;
       var def = SECURE_REQUIREMENT_DEFS[code];
-      var status = code === 'MSA' ? 'Signed' : (uploads[code] ? 'Uploaded' : 'Pending');
-      out.push({ code:code, purpose:def.purpose, status:status });
+      if (code === 'MSA'){
+        out.push({ code:code, purpose:def.purpose, status:'Signed', ownedByCustomer:false, doc:{ name:'MSA_Agreement.pdf' } });
+      } else {
+        var doc = uploads[code] || null;
+        out.push({ code:code, purpose:def.purpose, status: doc ? 'Uploaded' : 'Pending', ownedByCustomer:true, doc:doc });
+      }
     });
   }
   return out;
 }
 
-function saveSecureUpload(id, code){
+function saveSecureUpload(id, code, doc){
   var existing = (getRequestOverrides()[id] || {}).secureUploads || {};
   var uploads = Object.assign({}, existing);
-  uploads[code] = true;
+  uploads[code] = doc;
+  saveRequestOverride(id, { secureUploads: uploads });
+}
+
+function removeSecureUpload(id, code){
+  var existing = (getRequestOverrides()[id] || {}).secureUploads || {};
+  var uploads = Object.assign({}, existing);
+  delete uploads[code];
   saveRequestOverride(id, { secureUploads: uploads });
 }
 

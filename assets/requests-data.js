@@ -550,9 +550,13 @@ function buildRdDetail(req){
 }
 
 /* Full merged dataset: user-submitted (localStorage) + seeded base + procedural fill,
-   with per-type rich content attached and any saved stage-progress overrides re-applied. */
+   with per-type rich content attached and any saved stage-progress overrides re-applied.
+   User-submitted requests are flagged isUserSubmitted so Scinode Secure never seeds fake
+   demo document history onto a request the current user actually created (see
+   seedDemoSecureVersions). */
 function getAllRequests(){
-  var list = loadUserRequests().concat(BASE_REQUESTS).concat(generateRemainingRequests());
+  var userReqs = loadUserRequests().map(function(r){ r.isUserSubmitted = true; return r; });
+  var list = userReqs.concat(BASE_REQUESTS).concat(generateRemainingRequests());
   var overrides = getRequestOverrides();
   return list.map(function(req){
     if (req.type === 'RFQ') req.rfq = buildRfqDetail(req);
@@ -571,24 +575,21 @@ function getAllRequests(){
    Not a request stage — a security/governance layer shown alongside the existing
    stage timeline. Collaboration Requirements (NDA/NCDS/MSA) are introduced at
    specific stages per type (SECURE_STAGE_TRIGGERS) and accumulate as the request
-   progresses. NDA/NCDS require the customer to upload a signed copy (tracked via
-   the override layer, same pattern as saveRequestOverride); MSA is Admin-managed
-   and shows as already Signed once its stage is reached. */
+   progresses. Each requirement carries an immutable version history rather than a
+   single overwritable document (see buildSecureRequirements) so every upload/
+   replace/review action is preserved, per the Scinode Secure dev spec's document
+   review workflow (Pending Upload -> Under Review -> Approved/Rejected). */
 var SECURE_PILLARS = [
-  { code:'ip', title:'Intellectual Property Protection', desc:'Protect research, technical know-how, formulations, and proprietary documentation through secure collaboration and controlled information sharing.' },
-  { code:'biz', title:'Business & Commercial Protection', desc:'Commercial proposals, quotations, pricing discussions, and agreements remain confidential throughout engagement.' },
-  { code:'collab', title:'Controlled Collaboration', desc:'Only authorized users can access project information through role-based permissions and controlled visibility.' },
-  { code:'legal', title:'Legal & Governance', desc:'Maintain governed collaboration through agreements, approvals, audit history, and compliance workflows.' },
-  { code:'platform', title:'Platform Security', desc:'Authentication, encryption, monitoring, and infrastructure continuously protect platform data.' }
-];
-var SECURE_BOTTOM_SIGNALS = [
-  'Intellectual Property Protected', 'Commercial Information Protected', 'Controlled Collaboration', 'Governance',
-  'Platform Security', 'Secure Document Sharing', 'Agreement Management', 'Role-Based Access', 'Complete Audit Trail', 'Infrastructure'
+  { code:'ip', title:'IP Protection', desc:'Protect your research, formulations, technical know-how, and proprietary documents through encrypted collaboration and controlled access.' },
+  { code:'collab', title:'Secure Collaboration', desc:'Collaborate securely with authorized stakeholders using role-based permissions and controlled document visibility.' },
+  { code:'legal', title:'Legal Controls', desc:'Govern collaboration through NDAs, MSAs, and other required legal agreements before sensitive information is shared.' },
+  { code:'data', title:'Protected Data Exchange', desc:'Share technical documents, specifications, reports, and supporting files securely with version control and encrypted storage.' },
+  { code:'security', title:'Security & Encryption', desc:'Encryption, authentication, audit logs, and continuous monitoring to protect your project data.' }
 ];
 var SECURE_REQUIREMENT_DEFS = {
-  NDA:  { purpose:'Before Technical Discussion', action:'Upload' },
-  NCDS: { purpose:'Commercial Proposal',         action:'Upload' },
-  MSA:  { purpose:'Project Execution',           action:'View' }
+  NDA:  { purpose:'Before Technical Discussion', label:'Non-Disclosure Agreement (NDA)' },
+  NCDS: { purpose:'Commercial Proposal',         label:'Non-Circumvention & Non-Disclosure (NCDS)' },
+  MSA:  { purpose:'Project Execution',           label:'Master Service Agreement (MSA)' }
 };
 /* Per-type: stage index (within that type's own LOG_STAGES) -> requirements first introduced
    there, plus the "why you're seeing this" reason shown in the Timeline Secure Card. */
@@ -625,11 +626,44 @@ function secureTriggerAt(typeKey, stageIdx){
   return (triggers && triggers[stageIdx]) || null;
 }
 
+/* Deterministic demo version history for a requirement that has no real upload yet,
+   shown only on seeded/procedural sample requests (never on a request the current
+   user actually submitted — see isUserSubmitted in getAllRequests). Exists purely so
+   the document review workflow (Under Review / Approved / Rejected) and version
+   history are visible in the prototype without a real backend/admin reviewer. */
+function seedDemoSecureVersions(req, code){
+  var seed = rfqSeed(req.id + code);
+  var baseDate = req.createdDate || req.lastUpdated || '2026-06-01';
+  function ts(daysAfterBase, offset){
+    var d = new Date(baseDate + 'T00:00:00');
+    d.setDate(d.getDate() + daysAfterBase);
+    d.setHours(9 + ((seed + offset) % 8), ((seed + offset) * 7) % 60, 0, 0);
+    return d.toISOString();
+  }
+  var fileBase = code + '_Agreement';
+  var bucket = seed % 5;
+  if (bucket === 0) return [];
+  if (bucket === 1){
+    return [{ version:'v1', status:'Under Review', fileName: fileBase + '_v1.pdf', uploadedBy:'You', uploadedAt: ts(1, 0), changeNote:'', reviewComment:'' }];
+  }
+  if (bucket === 2){
+    return [{ version:'v1', status:'Approved', fileName: fileBase + '_v1.pdf', uploadedBy:'You', uploadedAt: ts(1, 0), changeNote:'', reviewComment:'Reviewed and approved. No further action required.' }];
+  }
+  if (bucket === 3){
+    return [{ version:'v1', status:'Rejected', fileName: fileBase + '_v1.pdf', uploadedBy:'You', uploadedAt: ts(1, 0), changeNote:'', reviewComment:'Missing authorized signature. Please re-upload a signed copy.' }];
+  }
+  return [
+    { version:'v1', status:'Rejected', fileName: fileBase + '_v1.pdf', uploadedBy:'You', uploadedAt: ts(1, 0), changeNote:'', reviewComment:'Missing authorized signature. Please re-upload a signed copy.' },
+    { version:'v2', status:'Approved', fileName: fileBase + '_v2.pdf', uploadedBy:'You', uploadedAt: ts(4, 3), changeNote:'Re-uploaded with signature.', reviewComment:'Signature verified. Approved.' }
+  ];
+}
+
 /* Accumulated Collaboration Requirements for a request, up to (and including) stage `uptoIdx`.
-   NDA/NCDS are customer-uploaded: 'Pending' until req.secureUploads[code] holds a
-   {name,size,uploadedAt} doc, then 'Uploaded' — the customer owns that upload and can
-   view/replace/remove it. MSA is Admin-managed: reads 'Signed' as soon as its stage is
-   reached, with a synthetic doc for viewing; customers cannot delete/replace it. */
+   Each requirement carries a full version array (oldest first) rather than a single
+   document — nothing is ever overwritten or deleted, matching the dev spec's immutable
+   versioning rule. `status`/`doc` reflect the latest (current) version. NDA/NCDS are
+   customer-uploaded and go through review (Pending Upload -> Under Review -> Approved/
+   Rejected). MSA is Admin-managed: always a single Approved version, view-only. */
 function buildSecureRequirements(req, typeKey, uptoIdx){
   var triggers = SECURE_STAGE_TRIGGERS[typeKey];
   if (!triggers) return [];
@@ -642,28 +676,38 @@ function buildSecureRequirements(req, typeKey, uptoIdx){
       if (seen[code]) return;
       seen[code] = true;
       var def = SECURE_REQUIREMENT_DEFS[code];
+      var versions;
       if (code === 'MSA'){
-        out.push({ code:code, purpose:def.purpose, status:'Signed', ownedByCustomer:false, doc:{ name:'MSA_Agreement.pdf' } });
+        versions = [{ version:'v1', status:'Approved', fileName:'MSA_Agreement.pdf', uploadedBy:'Scinode Team', uploadedAt:(req.lastUpdated || req.createdDate || '2026-06-01') + 'T10:00:00', changeNote:'', reviewComment:'' }];
       } else {
-        var doc = uploads[code] || null;
-        out.push({ code:code, purpose:def.purpose, status: doc ? 'Uploaded' : 'Pending', ownedByCustomer:true, doc:doc });
+        var stored = uploads[code];
+        if (stored && stored.versions && stored.versions.length) versions = stored.versions;
+        else if (!req.isUserSubmitted) versions = seedDemoSecureVersions(req, code);
+        else versions = [];
       }
+      var current = versions.length ? versions[versions.length - 1] : null;
+      out.push({
+        code: code,
+        purpose: def.purpose,
+        label: def.label,
+        ownedByCustomer: code !== 'MSA',
+        status: current ? current.status : 'Pending Upload',
+        versions: versions,
+        doc: current
+      });
     });
   }
   return out;
 }
 
-function saveSecureUpload(id, code, doc){
+/* Persists the full (already-appended) version array for a requirement — the caller
+   is expected to have read the current effective versions from buildSecureRequirements,
+   appended the new version, and passed the whole array back here. Nothing is deleted;
+   there is intentionally no "remove" counterpart. */
+function saveSecureVersions(id, code, versions){
   var existing = (getRequestOverrides()[id] || {}).secureUploads || {};
   var uploads = Object.assign({}, existing);
-  uploads[code] = doc;
-  saveRequestOverride(id, { secureUploads: uploads });
-}
-
-function removeSecureUpload(id, code){
-  var existing = (getRequestOverrides()[id] || {}).secureUploads || {};
-  var uploads = Object.assign({}, existing);
-  delete uploads[code];
+  uploads[code] = { versions: versions };
   saveRequestOverride(id, { secureUploads: uploads });
 }
 

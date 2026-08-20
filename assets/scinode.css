@@ -1829,17 +1829,28 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .rdreq-upload-filename{font-family:var(--font);font-size:13px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rdreq-upload-help{font-size:11px;color:var(--text-3);margin-top:7px;}
 
-.rdreq-call-panel{background:var(--page-bg);border-radius:var(--radius-md);padding:20px 22px;display:grid;grid-template-columns:1fr 0.5px 1fr;gap:22px;align-items:start;}
-.rdreq-call-divider{background:var(--border);height:100%;align-self:stretch;}
-.rdreq-call-title{font-family:var(--font-heading);font-size:16px;font-weight:600;color:var(--text-1);}
-.rdreq-call-sub{font-size:11.5px;color:var(--text-2);margin-top:4px;line-height:1.5;}
-.rdreq-call-meta-row{display:flex;align-items:center;gap:10px;margin-top:14px;}
-.rdreq-call-meta-row svg{color:var(--text-2);flex-shrink:0;}
-.rdreq-call-meta-text{font-family:var(--font);font-size:13px;font-weight:500;color:var(--text-1);}
-.rdreq-call-badge{background:var(--sage);color:var(--navy-500);font-size:11px;font-weight:700;padding:2px 10px;border-radius:var(--radius-full);}
-.rdreq-call-desc{font-size:12.5px;color:var(--text-2);margin-top:14px;line-height:1.6;}
+/* Scinode Secure — "Secure this Request" section shared by the R&D and CDMO
+   request-creation modals (see scinodeSecureSectionHtml in scinode.js). */
+.rdreq-secure-section{background:var(--secure-50);border:0.5px solid var(--secure-200);border-radius:var(--radius-md);padding:16px 18px;}
+.rdreq-secure-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.rdreq-secure-head-left{display:flex;align-items:center;gap:10px;min-width:0;}
+.rdreq-secure-icon{width:32px;height:32px;border-radius:8px;background:var(--secure-100);color:var(--secure-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rdreq-secure-title{font-family:var(--font);font-size:13.5px;font-weight:700;color:var(--text-1);}
+.rdreq-secure-sub{font-family:var(--font);font-size:11px;color:var(--text-2);margin-top:1px;}
+.ssinfo-trigger{background:none;border:none;padding:2px;margin-left:2px;color:var(--text-3,#94A3B8);cursor:pointer;display:inline-flex;align-items:center;flex-shrink:0;}
+.ssinfo-trigger:hover,.ssinfo-trigger:focus-visible{color:var(--secure-600);}
+.rdreq-secure-toggle-wrap{display:inline-flex;cursor:pointer;flex-shrink:0;}
+.rdreq-secure-toggle-input{position:absolute;opacity:0;width:1px;height:1px;}
+.rdreq-secure-toggle{display:inline-flex;align-items:center;width:36px;height:20px;border-radius:999px;background:var(--border-h);padding:2px;transition:background .15s;}
+.rdreq-secure-toggle-wrap.on .rdreq-secure-toggle{background:var(--secure-600);}
+.rdreq-secure-toggle-input:focus-visible ~ .rdreq-secure-toggle{outline:2px solid var(--secure-600);outline-offset:2px;}
+.rdreq-secure-toggle-knob{width:16px;height:16px;border-radius:50%;background:#fff;transition:margin-left .15s;}
+.rdreq-secure-toggle-wrap.on .rdreq-secure-toggle-knob{margin-left:16px;}
+.ssinfo-tip{position:fixed;width:280px;background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 12px 32px rgba(0,0,0,.16);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .14s,transform .14s,visibility .14s;z-index:500;text-align:left;pointer-events:none;}
+.ssinfo-tip.open{opacity:1;visibility:visible;transform:translateY(0);}
+.ssinfo-tip-title{font-family:var(--font);font-size:12px;font-weight:700;color:var(--text-1);margin-bottom:5px;}
+.ssinfo-tip-body{font-family:var(--font);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 
-.rdreq-call-fields{display:flex;flex-direction:column;gap:16px;}
 .rdreq-field-row{display:flex;gap:12px;}
 .rdreq-field-col{flex:1;min-width:0;}
 .rdreq-input-wrap{display:flex;align-items:center;gap:8px;background:var(--white);border:0.5px solid var(--border-h);border-radius:var(--radius-sm);padding:9px 12px;transition:border-color .15s;}
@@ -1847,15 +1858,21 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .rdreq-input-wrap:focus-within{border-color:var(--teal-500);border-width:1.5px;}
 .rdreq-input-wrap svg{color:var(--text-3);flex-shrink:0;}
 .rdreq-input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:var(--font);font-size:13px;color:var(--text-1);}
-.rdreq-timezone-row{display:flex;align-items:center;gap:9px;}
-.rdreq-timezone-row svg{color:var(--text-2);flex-shrink:0;}
-.rdreq-timezone-text{font-size:12.5px;font-weight:500;color:var(--text-1);}
 
 /* Extended request-modal primitives — added for the CDMO modal, reusable by
    any future request-type modal (textarea field, conditional quantity row). */
 .rdreq-textarea-wrap{align-items:flex-start;}
 .rdreq-textarea{flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:var(--font);font-size:13px;color:var(--text-1);resize:vertical;min-height:76px;line-height:1.5;}
 .rdreq-quantity-extra{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+
+/* Quantity & cost repeatable list (R&D catalog-objective fields) */
+.rdreq-qc-row{display:grid;grid-template-columns:1fr 0.8fr 1fr 0.8fr auto;gap:12px;align-items:end;}
+.rdreq-qc-row .mfg-btn-secondary{height:38px;}
+.rdreq-qc-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.rdreq-qc-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--page-bg);border-radius:var(--radius-sm);padding:8px 12px;}
+.rdreq-qc-item span{font-family:var(--font);font-size:12.5px;font-weight:500;color:var(--text-1);}
+.rdreq-qc-item button{background:none;border:none;color:var(--text-3);cursor:pointer;flex-shrink:0;display:flex;padding:2px;}
+.rdreq-qc-item button:hover{color:#DC2626;}
 
 /* Uploaded-file confirmation card (RFQ modal — shown once a file is chosen) */
 .rdreq-file-card{background:#fff;border:0.5px solid var(--border-h);border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;gap:24px;width:278px;max-width:100%;}
@@ -1884,8 +1901,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 
 @media (max-width:720px){
   .rdreq-objective-grid{grid-template-columns:1fr;}
-  .rdreq-call-panel{grid-template-columns:1fr;}
-  .rdreq-call-divider{display:none;}
+  .rdreq-qc-row{grid-template-columns:1fr 1fr;}
   .rdreq-field-row{flex-direction:column;}
   .rdreq-footer{flex-direction:column;}
   .rdreq-submit-btn{min-width:0;}

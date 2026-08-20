@@ -102,6 +102,20 @@
   </div>
 </div>
 
+<div class="secure-hist-backdrop" id="secure-hist-backdrop" onclick="closeSecureVersionHistory()"></div>
+<div class="secure-hist-drawer" id="secure-hist-drawer" role="dialog" aria-modal="true" aria-labelledby="secure-hist-title">
+  <div class="secure-hist-head">
+    <div>
+      <div class="secure-hist-eyebrow" id="secure-hist-eyebrow">Version History</div>
+      <div class="secure-hist-title" id="secure-hist-title"></div>
+    </div>
+    <button type="button" class="modal-close" onclick="closeSecureVersionHistory()" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+  <div class="secure-hist-body" id="secure-hist-body"></div>
+</div>
+
 <style>
   .rfqdet-back{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text-2);text-decoration:none;margin-bottom:16px;transition:color .12s;}
   .rfqdet-back:hover{color:var(--teal-600);}
@@ -260,9 +274,19 @@
      Active/Uploaded/Signed states use --success-* (green), never teal or indigo. */
 
   /* Single identity pill sits inline among the other pills in the dark Request
-     Details banner, matching that row's existing solid-chip pattern (Status/Type). */
+     Details banner, matching that row's existing solid-chip pattern (Status/Type).
+     Pill stays Secure Indigo (identity) in both states; the pill container and
+     label text stay static — in the Active state only the icon breathes (slow
+     opacity pulse), same restrained cadence as the Dashboard's own Scinode Secure
+     motion (secPulse/secFloat in scinode.css) and the existing helpPulse breathing
+     pattern, rather than a fast/urgent blink, per the Secure design system's
+     "confidence, not urgency" motion guidance. */
   .secure-id-pill{display:inline-flex;align-items:center;gap:6px;background:var(--secure-100);color:var(--secure-700);font-family:var(--font);font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;border:none;transition:opacity .12s;}
   .secure-id-pill:hover{opacity:.85;}
+  .secure-id-icon{display:inline-flex;}
+  .secure-id-pill.active .secure-id-icon{animation:secureIdPulse 2.2s ease-in-out infinite;}
+  @keyframes secureIdPulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+  @media (prefers-reduced-motion:reduce){ .secure-id-pill.active .secure-id-icon{animation:none;} }
 
   .rfqdet-side-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;}
 
@@ -278,15 +302,26 @@
   .secure-req-table td{padding:8px 6px;color:var(--text-1);border-bottom:1px solid var(--page-bg);vertical-align:middle;}
   .secure-req-table tr:last-child td{border-bottom:none;}
   .secure-req-badge{font-family:var(--font);font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;}
-  .secure-req-badge.warn{background:rgba(229,214,46,.28);color:#5C4A00;}
+  .secure-req-badge.neutral{background:var(--page-bg);color:var(--text-2);}
+  .secure-req-badge.warn{background:var(--status-warning-bg);color:var(--status-warning-fg);}
   .secure-req-badge.ok{background:var(--success-100);color:var(--success-700);}
+  .secure-req-badge.danger{background:var(--status-error-bg);color:var(--status-error-fg);}
+  .secure-req-reject-reason{font-family:var(--font);font-size:10.5px;color:var(--status-error-fg);line-height:1.5;margin-top:3px;}
   .secure-req-action{background:none;border:none;color:var(--secure-600);font-family:var(--font);font-size:11.5px;font-weight:700;cursor:pointer;padding:0;white-space:nowrap;}
   .secure-req-action-ghost{color:var(--text-2);}
-  .secure-req-action-danger{color:#DC2626;}
   .secure-req-action-none{color:var(--text-3,#94A3B8);font-family:var(--font);font-size:11.5px;}
   .secure-req-action-group{display:inline-flex;align-items:center;gap:10px;}
-  .secure-req-doc-name{font-family:var(--font);font-size:10.5px;color:var(--text-2);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;margin-left:auto;}
+  .secure-req-hist-link{background:none;border:none;color:var(--secure-600);font-family:var(--font);font-size:10.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap;text-decoration:underline;text-underline-offset:2px;}
   .secure-req-note{font-family:var(--font);font-size:10px;color:var(--text-3,#94A3B8);margin-top:10px;line-height:1.5;}
+  .secure-req-summary{font-family:var(--font);font-size:10.5px;font-weight:600;color:var(--text-2);margin-bottom:10px;}
+
+  .secure-upload-draft{background:var(--secure-50);border:0.5px solid var(--secure-200);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+  .secure-upload-draft-file{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:11.5px;font-weight:600;color:var(--navy-500);}
+  .secure-upload-draft-file svg{color:var(--secure-600);flex-shrink:0;}
+  .secure-upload-draft-note{width:100%;min-height:52px;resize:vertical;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:var(--font);font-size:11.5px;color:var(--text-1);background:#fff;}
+  .secure-upload-draft-note:focus{outline:none;border-color:var(--secure-300);}
+  .secure-upload-draft-actions{display:flex;justify-content:flex-end;gap:8px;}
+  .secure-upload-draft-actions .mfg-btn-primary,.secure-upload-draft-actions .mfg-btn-secondary{padding:7px 13px;font-size:11.5px;}
 
   .secure-card{background:var(--secure-50);border:0.5px solid var(--secure-200);border-radius:12px;padding:16px;margin-top:4px;}
   .secure-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
@@ -307,6 +342,28 @@
   .secure-card .secure-req-table{background:#fff;border-radius:8px;}
   .secure-card .secure-req-table th,.secure-card .secure-req-table td{padding:8px 10px;}
 
+  /* Version History drawer — right-side sliding panel, opened from either the
+     Timeline card or the Vault panel. Fixed/body-level so .rfqdet-card's
+     overflow:hidden can't clip it, same rationale as .secure-why-tip above. */
+  .secure-hist-backdrop{position:fixed;inset:0;background:rgba(4,20,28,.32);opacity:0;visibility:hidden;transition:opacity .18s,visibility .18s;z-index:600;}
+  .secure-hist-backdrop.open{opacity:1;visibility:visible;}
+  .secure-hist-drawer{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:92vw;background:#fff;box-shadow:-16px 0 40px rgba(4,62,84,.16);z-index:601;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease;}
+  .secure-hist-drawer.open{transform:translateX(0);}
+  .secure-hist-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:20px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .secure-hist-eyebrow{font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--secure-700);margin-bottom:4px;}
+  .secure-hist-title{font-family:var(--font-heading);font-size:15px;font-weight:600;color:var(--navy-500);}
+  .secure-hist-body{flex:1;overflow-y:auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:12px;}
+  .secure-hist-prev-label{font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3,#94A3B8);margin:6px 0 -2px;}
+  .secure-hist-card{background:var(--page-bg);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+  .secure-hist-card.current{background:var(--secure-50);border:0.5px solid var(--secure-200);}
+  .secure-hist-current-tag{font-family:var(--font);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--secure-700);}
+  .secure-hist-card-top{display:flex;align-items:center;gap:8px;}
+  .secure-hist-version{font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--navy-500);}
+  .secure-hist-meta{font-family:var(--font);font-size:10.5px;color:var(--text-2);}
+  .secure-hist-note,.secure-hist-comment{font-family:var(--font);font-size:11px;color:var(--text-2);line-height:1.5;}
+  .secure-hist-note span,.secure-hist-comment span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3,#94A3B8);margin-bottom:2px;}
+  .secure-hist-actions{display:flex;gap:14px;margin-top:2px;}
+
   /* Trust modal — visually relatable to the Dashboard's Trust Center modal
      (dark gradient box, ribbon strip, shield badge, card grid, footer). */
   /* Light variant — matches the Dashboard Trust Center's "Light" mode: white/mint
@@ -322,6 +379,7 @@
   .tc2-ribbon svg{color:var(--secure-300);flex-shrink:0;}
   .tc2-head-row{display:flex;align-items:flex-start;gap:14px;}
   .tc2-shield{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#016358 0%,#182133 100%);color:var(--secure-300);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(79,70,229,.25);}
+  .tc2-identity-label{font-family:var(--font);font-size:11px;font-weight:700;color:var(--secure-700);letter-spacing:.01em;margin-bottom:2px;}
   .tc2-intro{font-family:var(--font);font-size:12.5px;color:var(--text-2);line-height:1.65;margin:14px 0 22px;}
   .tc2-divider{height:1px;background:var(--border);border:0;margin:0 0 22px;}
   .tc2-eyebrow{font-family:var(--font);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--secure-700);margin-bottom:14px;}
@@ -333,9 +391,6 @@
   .tc2-ico svg{width:12px;height:12px;}
   .tc2-card-title{font-family:var(--font);font-size:12px;font-weight:700;color:var(--navy-500);line-height:1.3;}
   .tc2-card-desc{font-family:var(--font);font-size:11px;line-height:1.55;color:var(--text-2);}
-  .tc2-signals{display:flex;flex-wrap:wrap;gap:8px;}
-  .tc2-signal-chip{display:inline-flex;align-items:center;gap:6px;background:var(--secure-100);border:0.5px solid transparent;color:var(--secure-700);font-family:var(--font);font-size:11px;font-weight:600;padding:6px 11px;border-radius:999px;white-space:nowrap;}
-  .tc2-signal-chip svg{color:var(--secure-600);flex-shrink:0;}
   .tc2-footer{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
   .tc2-powered{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:11px;font-weight:600;color:var(--secure-700);}
   @media (max-width:600px){ .tc2-grid{grid-template-columns:1fr;} }
@@ -433,15 +488,61 @@
   var ICON_SHIELD_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>';
   var ICON_INFO = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
   var ICON_LOCK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
-  var ICON_BRIEFCASE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
   var ICON_USERS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
   var ICON_SCALE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="m7 21 5-1 5 1"/><path d="M5 7 2 13a3 3 0 0 0 6 0L5 7Z"/><path d="M19 7l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/><path d="M9 3h6"/></svg>';
-  var SECURE_PILLAR_ICONS = { ip:ICON_LOCK, biz:ICON_BRIEFCASE, collab:ICON_USERS, legal:ICON_SCALE, platform:ICON_SHIELD };
+  var SECURE_PILLAR_ICONS = { ip:ICON_LOCK, collab:ICON_USERS, legal:ICON_SCALE, data:ICON_DOC, security:ICON_SHIELD_CHECK };
+
+  /* typeKey used throughout the Secure data model is exactly req.type, and every
+     type's own *_LOG_STAGES array (defined in requests-data.js) gives the stage
+     count needed to fetch a requirement's full/current version set regardless of
+     which stage row triggered the action. */
+  var SECURE_TYPE_STAGE_LENGTHS = {
+    'RFQ': RFQ_LOG_STAGES.length,
+    'Sample Request': RFS_LOG_STAGES.length,
+    'Consultation': CONSULT_LOG_STAGES.length,
+    'Manufacturing Project': CMO_LOG_STAGES.length,
+    'CDMO Project': CDMO_LOG_STAGES.length,
+    'R&D Project': RD_LOG_STAGES.length
+  };
+
+  function formatDateTime(iso){
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = d.getHours(), ampm = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
+    var min = ('0' + d.getMinutes()).slice(-2);
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ' • ' + h12 + ':' + min + ' ' + ampm;
+  }
+
+  function secureStatusPillHtml(status){
+    var cls = status === 'Approved' ? 'ok' : status === 'Rejected' ? 'danger' : status === 'Under Review' ? 'warn' : 'neutral';
+    return '<span class="secure-req-badge ' + cls + '">' + esc(status) + '</span>';
+  }
+
+  /* Transient "file chosen, awaiting Submit" state for the upload-with-change-note
+     mini form — never persisted; cleared on Submit/Cancel. Keyed by "reqId|code". */
+  var secureUploadDrafts = {};
+
+  /* Active once Secure has actually been triggered for this request — either the
+     customer opted in on the creation form ("Secure this Request", recorded as a
+     'Scinode Secure' specification entry), or the timeline has reached a stage
+     that introduces real Collaboration Requirements (buildSecureRequirements). */
+  function secureIsActive(req, typeKey, currentIdx){
+    var formOptIn = (req.specifications || []).some(function(s){ return s.label === 'Scinode Secure'; });
+    if (formOptIn) return true;
+    return buildSecureRequirements(req, typeKey, currentIdx).length > 0;
+  }
 
   /* Single pill lives inline among the other pills in the dark Request Details
-     banner (Request ID / Status / Type); clicking it opens the Trust modal below. */
-  function secureBadgeHtml(){
-    return '<button type="button" class="secure-id-pill" onclick="openSecureModal()">' + ICON_SHIELD_CHECK + ' Scinode Secure Active</button>';
+     banner (Request ID / Status / Type); clicking it opens the Trust modal below,
+     in both states. */
+  function secureBadgeHtml(req, typeKey, currentIdx){
+    var active = secureIsActive(req, typeKey, currentIdx);
+    var label = active ? 'Scinode Secure Active' : 'Scinode Secure';
+    return '<button type="button" class="secure-id-pill' + (active ? ' active' : '') + '" onclick="openSecureModal()">' +
+      '<span class="secure-id-icon">' + ICON_SHIELD_CHECK + '</span> ' + label +
+    '</button>';
   }
 
   window.openSecureModal = function(){
@@ -459,64 +560,173 @@
   window.handleSecureModalBackdropClick = function(e){
     if (e.target === document.getElementById('secure-modal')) closeSecureModal();
   };
+
+  /* Version History drawer — right-side panel, opened from either the view-only
+     Vault row or the functional Timeline row for the same requirement/code. */
+  window.openSecureVersionHistory = function(reqId, code){
+    var req = getAllRequests().find(function(r){ return r.id === reqId; });
+    if (!req) return;
+    var stagesLen = SECURE_TYPE_STAGE_LENGTHS[req.type] || 20;
+    var r = buildSecureRequirements(req, req.type, stagesLen - 1).filter(function(x){ return x.code === code; })[0];
+    if (!r) return;
+    document.getElementById('secure-hist-eyebrow').textContent = 'Version History';
+    document.getElementById('secure-hist-title').textContent = r.label || r.code;
+    var versions = r.versions.slice().reverse();
+    var body;
+    if (!versions.length){
+      body = '<div class="secure-req-empty">No document has been uploaded for this requirement yet.</div>';
+    } else {
+      var current = versions[0], older = versions.slice(1);
+      body = secureHistCardHtml(current, true) +
+        '<div class="secure-hist-prev-label">Previous Versions</div>' +
+        (older.length
+          ? older.map(function(v){ return secureHistCardHtml(v, false); }).join('')
+          : '<div class="secure-req-empty">No previous versions available. Future uploads or replacements will appear here automatically.</div>');
+    }
+    document.getElementById('secure-hist-body').innerHTML = body;
+    document.getElementById('secure-hist-drawer').classList.add('open');
+    document.getElementById('secure-hist-backdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeSecureVersionHistory = function(){
+    var d = document.getElementById('secure-hist-drawer');
+    var b = document.getElementById('secure-hist-backdrop');
+    if (d) d.classList.remove('open');
+    if (b) b.classList.remove('open');
+    document.body.style.overflow = '';
+  };
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') closeSecureModal();
+    if (e.key !== 'Escape') return;
+    closeSecureModal();
+    closeSecureVersionHistory();
   });
+
+  function secureHistCardHtml(v, isCurrent){
+    return '<div class="secure-hist-card' + (isCurrent ? ' current' : '') + '">' +
+      (isCurrent ? '<div class="secure-hist-current-tag">Current Version</div>' : '') +
+      '<div class="secure-hist-card-top"><span class="secure-hist-version">' + esc(v.version) + '</span>' + secureStatusPillHtml(v.status) + '</div>' +
+      '<div class="secure-hist-meta">Uploaded by ' + esc(v.uploadedBy) + ' · ' + formatDateTime(v.uploadedAt) + '</div>' +
+      (v.changeNote ? '<div class="secure-hist-note"><span>Change Note</span>' + esc(v.changeNote) + '</div>' : '') +
+      (v.reviewComment ? '<div class="secure-hist-comment"><span>Review Comments</span>' + esc(v.reviewComment) + '</div>' : '') +
+      '<div class="secure-hist-actions">' +
+        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(v.fileName) + '\')">View</button>' +
+        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureDownloadDoc(\'' + esc(v.fileName) + '\')">Download</button>' +
+      '</div>' +
+    '</div>';
+  }
 
   /* View-only row for the right sidebar panel — a consolidated read view of every
      Scinode Secure document across the whole request, whichever stage introduced it
-     and whoever uploaded it (customer or Admin). No upload/delete here by design. */
-  function secureReqRowViewOnlyHtml(r){
-    var badgeClass = r.status === 'Pending' ? 'warn' : 'ok';
-    var actionHtml = r.doc
-      ? '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc.name) + '\')">View</button>'
+     and whoever uploaded it (customer or Admin). No upload here by design; every row
+     still links out to the same version history drawer as the functional row. */
+  function secureReqRowViewOnlyHtml(reqId, r){
+    var actionHtml = r.status === 'Approved'
+      ? '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc.fileName) + '\')">View</button>'
       : '<span class="secure-req-action-none">—</span>';
+    var historyHtml = r.versions.length
+      ? '<button type="button" class="secure-req-hist-link" onclick="openSecureVersionHistory(\'' + esc(reqId) + '\',\'' + r.code + '\')">History</button>'
+      : '';
     return '<tr><td>' + r.code + '</td><td>' + esc(r.purpose) + '</td>' +
-      '<td><span class="secure-req-badge ' + badgeClass + '">' + esc(r.status) + '</span></td>' +
-      '<td style="text-align:right;">' + actionHtml + '</td></tr>';
+      '<td>' + secureStatusPillHtml(r.status) + '</td>' +
+      '<td style="text-align:right;">' + actionHtml + (historyHtml ? ' ' + historyHtml : '') + '</td></tr>';
   }
 
-  /* Functional row for the Timeline Secure Card — the customer can Upload a pending
-     requirement, or once uploaded, View / Update (replace) / Delete their own document.
-     Admin-managed requirements (MSA) are View-only; the customer never uploaded it. */
+  /* Functional row for the Timeline Secure Card. Action depends on the requirement's
+     document-review status: Pending Upload -> Upload; Under Review -> no action
+     (awaiting Scinode); Approved -> View/Download; Rejected -> Upload New Version
+     (old version preserved, never deleted — see saveSecureVersions). Admin-managed
+     requirements (MSA) are always View-only; the customer never uploaded it. */
   function secureReqRowFunctionalHtml(reqId, r){
-    var badgeClass = r.status === 'Pending' ? 'warn' : 'ok';
+    var draftKey = reqId + '|' + r.code;
+    var draftFile = secureUploadDrafts[draftKey];
     var inputId = 'secure-file-' + reqId + '-' + r.code;
+    var noteId = 'secure-note-' + reqId + '-' + r.code;
     var hiddenInput = '<input type="file" id="' + inputId + '" style="display:none" onchange="secureFileChosen(\'' + esc(reqId) + '\',\'' + r.code + '\', this)">';
-    var actionHtml;
-    if (r.status === 'Pending'){
-      actionHtml = '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">Upload</button>' + hiddenInput;
-    } else if (!r.ownedByCustomer){
-      actionHtml = '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc.name) + '\')">View</button>';
-    } else {
-      actionHtml = '<div class="secure-req-action-group">' +
-        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc.name) + '\')">View</button>' +
-        '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">Update</button>' +
-        '<button type="button" class="secure-req-action secure-req-action-danger" onclick="secureDeleteRequirement(\'' + esc(reqId) + '\',\'' + r.code + '\')">Delete</button>' +
-      '</div>' + hiddenInput;
+
+    if (draftFile){
+      return '<tr><td colspan="5"><div class="secure-upload-draft">' +
+        '<div class="secure-upload-draft-file">' + ICON_DOC + esc(draftFile.name) + '</div>' +
+        '<textarea class="secure-upload-draft-note" id="' + noteId + '" placeholder="Optional change note"></textarea>' +
+        '<div class="secure-upload-draft-actions">' +
+          '<button type="button" class="mfg-btn-secondary" onclick="secureCancelUpload(\'' + esc(reqId) + '\',\'' + r.code + '\')">Cancel</button>' +
+          '<button type="button" class="mfg-btn-primary" onclick="secureConfirmUpload(\'' + esc(reqId) + '\',\'' + r.code + '\')">Submit for Review</button>' +
+        '</div>' +
+      '</div></td></tr>';
     }
-    return '<tr><td>' + r.code + '</td><td>' + esc(r.purpose) + '</td>' +
-      '<td><span class="secure-req-badge ' + badgeClass + '">' + esc(r.status) + '</span></td>' +
-      '<td style="text-align:right;">' +
-        (r.doc && r.status !== 'Pending' ? '<div class="secure-req-doc-name">' + esc(r.doc.name) + '</div>' : '') +
-        actionHtml +
-      '</td></tr>';
+
+    var viewBtn = '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc && r.doc.fileName) + '\')">View</button>';
+    var downloadBtn = '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureDownloadDoc(\'' + esc(r.doc && r.doc.fileName) + '\')">Download</button>';
+    var historyBtn = r.versions.length
+      ? '<button type="button" class="secure-req-hist-link" onclick="openSecureVersionHistory(\'' + esc(reqId) + '\',\'' + r.code + '\')">History</button>'
+      : '';
+    var actionHtml;
+    if (!r.ownedByCustomer){
+      actionHtml = viewBtn + downloadBtn;
+    } else if (r.status === 'Pending Upload'){
+      actionHtml = '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">Upload</button>' + hiddenInput;
+    } else if (r.status === 'Under Review'){
+      actionHtml = '<span class="secure-req-action-none">Awaiting review</span>';
+    } else if (r.status === 'Approved'){
+      actionHtml = viewBtn + downloadBtn;
+    } else {
+      actionHtml = '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">Upload New Version</button>' + hiddenInput;
+    }
+
+    var rejectReasonHtml = (r.status === 'Rejected' && r.doc && r.doc.reviewComment)
+      ? '<div class="secure-req-reject-reason">' + esc(r.doc.reviewComment) + '</div>' : '';
+
+    return '<tr><td>' + r.code + '</td><td>' + esc(r.purpose) + rejectReasonHtml + '</td>' +
+      '<td>' + secureStatusPillHtml(r.status) + '</td>' +
+      '<td>' + (r.doc ? esc(r.doc.version) : '<span class="secure-req-action-none">—</span>') + '</td>' +
+      '<td style="text-align:right;"><div class="secure-req-action-group">' + actionHtml + historyBtn + '</div></td></tr>';
   }
 
   window.secureFileChosen = function(reqId, code, inputEl){
     var file = inputEl.files && inputEl.files[0];
     if (!file) return;
-    saveSecureUpload(reqId, code, { name: file.name, size: Math.max(1, Math.round(file.size / 1024)) + ' KB', uploadedAt: new Date().toISOString().slice(0, 10) });
-    rfqToast(code + ' uploaded successfully.');
+    var maxBytes = 10 * 1024 * 1024;
+    if (file.size > maxBytes){
+      rfqToast('File exceeds the 10 MB limit');
+      inputEl.value = '';
+      return;
+    }
+    secureUploadDrafts[reqId + '|' + code] = file;
     init();
   };
-  window.secureDeleteRequirement = function(reqId, code){
-    removeSecureUpload(reqId, code);
-    rfqToast(code + ' document removed.');
+  window.secureCancelUpload = function(reqId, code){
+    delete secureUploadDrafts[reqId + '|' + code];
+    init();
+  };
+  window.secureConfirmUpload = function(reqId, code){
+    var draftKey = reqId + '|' + code;
+    var file = secureUploadDrafts[draftKey];
+    if (!file) return;
+    var noteEl = document.getElementById('secure-note-' + reqId + '-' + code);
+    var note = noteEl ? noteEl.value.trim() : '';
+    var req = getAllRequests().find(function(r){ return r.id === reqId; });
+    if (!req) return;
+    var stagesLen = SECURE_TYPE_STAGE_LENGTHS[req.type] || 20;
+    var existing = buildSecureRequirements(req, req.type, stagesLen - 1).filter(function(r){ return r.code === code; })[0];
+    var versions = (existing ? existing.versions : []).slice();
+    versions.push({
+      version: 'v' + (versions.length + 1),
+      status: 'Under Review',
+      fileName: file.name,
+      uploadedBy: 'You',
+      uploadedAt: new Date().toISOString(),
+      changeNote: note,
+      reviewComment: ''
+    });
+    saveSecureVersions(reqId, code, versions);
+    delete secureUploadDrafts[draftKey];
+    rfqToast(code + ' submitted for review.');
     init();
   };
   window.secureViewDoc = function(fileName){
     rfqToast('Viewing ' + fileName + '…');
+  };
+  window.secureDownloadDoc = function(fileName){
+    rfqToast('Downloading ' + fileName + '…');
   };
 
   /* Right side panel: "Scinode Secure Vault" — a view-only, consolidated record of
@@ -527,12 +737,23 @@
      alongside each type's own side content. */
   function secureRightPanelHtml(req, typeKey, currentIdx){
     var requirements = buildSecureRequirements(req, typeKey, currentIdx);
-    var bodyHtml = requirements.length ? (
-      '<table class="secure-req-table"><thead><tr><th>Requirement</th><th>Purpose</th><th>Status</th><th></th></tr></thead><tbody>' +
-        requirements.map(function(r){ return secureReqRowViewOnlyHtml(r); }).join('') +
-      '</tbody></table>' +
-      '<div class="secure-req-note">View-only — a consolidated record of every Scinode Secure document across this request. Upload or manage documents from the relevant stage in the timeline.</div>'
-    ) : '<div class="secure-req-empty">No Scinode Secure documents yet for this request.</div>';
+    var bodyHtml;
+    if (requirements.length){
+      var counts = {};
+      requirements.forEach(function(r){ counts[r.status] = (counts[r.status] || 0) + 1; });
+      var summaryParts = [];
+      ['Approved','Under Review','Rejected','Pending Upload'].forEach(function(s){
+        if (counts[s]) summaryParts.push(counts[s] + ' ' + s);
+      });
+      bodyHtml =
+        '<div class="secure-req-summary">' + esc(summaryParts.join(' · ')) + '</div>' +
+        '<table class="secure-req-table"><thead><tr><th>Requirement</th><th>Purpose</th><th>Status</th><th></th></tr></thead><tbody>' +
+          requirements.map(function(r){ return secureReqRowViewOnlyHtml(req.id, r); }).join('') +
+        '</tbody></table>' +
+        '<div class="secure-req-note">View-only — a consolidated record of every Scinode Secure document across this request. Upload or manage documents from the relevant stage in the timeline.</div>';
+    } else {
+      bodyHtml = '<div class="secure-req-empty">No Scinode Secure documents yet for this request.</div>';
+    }
     return '<div class="secure-req-card">' +
       '<div class="secure-req-title-row">' +
         '<div class="secure-req-title">Scinode Secure Vault</div>' +
@@ -558,7 +779,7 @@
       '</div>' +
       '<div class="secure-card-desc">Collaborate confidently in an encrypted, permission-controlled workspace designed to protect intellectual property, formulations, technical documents, and confidential project data.</div>' +
       '<div class="secure-req-title" style="margin-top:14px;">Collaboration Requirements</div>' +
-      '<table class="secure-req-table"><thead><tr><th>Requirement</th><th>Purpose</th><th>Status</th><th></th></tr></thead><tbody>' +
+      '<table class="secure-req-table"><thead><tr><th>Requirement</th><th>Purpose</th><th>Status</th><th>Version</th><th>Actions</th></tr></thead><tbody>' +
         requirements.map(function(r){ return secureReqRowFunctionalHtml(req.id, r); }).join('') +
       '</tbody></table>' +
     '</div>';
@@ -618,21 +839,16 @@
         '<div class="tc2-card-desc">' + esc(p.desc) + '</div>' +
       '</div>';
     }).join('');
-    var signalChips = SECURE_BOTTOM_SIGNALS.map(function(label){
-      return '<span class="tc2-signal-chip">' + ICON_CHECK + esc(label) + '</span>';
-    }).join('');
     body.innerHTML =
       '<div class="tc2-ribbon">' + ICON_SHIELD + ' Scinode Secure — Trust Framework Active</div>' +
       '<div class="tc2-head-row">' +
         '<span class="tc2-shield">' + ICON_SHIELD + '</span>' +
-        '<div class="modal-title" id="secure-modal-title">Scinode Secure protects every interaction throughout your collaboration journey.</div>' +
+        '<div><div class="tc2-identity-label">Scinode Secure</div><div class="modal-title" id="secure-modal-title">Secure Every Collaboration.</div></div>' +
       '</div>' +
-      '<div class="tc2-intro">End to end security, governance, controlled collaboration, and legal protection help safeguard your intellectual property, commercial information, documents, and project data from request creation through project completion.</div>' +
+      '<div class="tc2-intro">Encrypted collaboration and governed access protect your intellectual property, technical documents, and project data throughout every stage of collaboration.</div>' +
       '<hr class="tc2-divider">' +
-      '<div class="tc2-eyebrow">Trust Framework Enabled</div>' +
+      '<div class="tc2-eyebrow">Category &amp; Description</div>' +
       '<div class="tc2-grid">' + pillarCards + '</div>' +
-      '<div class="tc2-eyebrow" style="margin-top:26px;">Protected Throughout Your Journey</div>' +
-      '<div class="tc2-signals">' + signalChips + '</div>' +
       '<div class="tc2-footer"><span class="tc2-powered">' + ICON_SHIELD + ' Powered by Scinode Secure</span></div>';
   }
   renderSecureModalContent();
@@ -777,7 +993,7 @@
             '</span>' +
             '<span class="rfqdet-status" style="background:' + sm.bg + ';color:' + sm.text + ';">' + esc(req.status) + '</span>' +
             '<span class="rfqdet-type">' + esc(typeLabel) + '</span>' +
-            secureBadgeHtml() +
+            secureBadgeHtml(req, req.type, secureCurrentIdx) +
           '</div>' +
           stepperHtml(req) +
         '</div>' +

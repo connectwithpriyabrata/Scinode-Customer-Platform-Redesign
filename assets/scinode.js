@@ -43,6 +43,14 @@ const RDREQ_OBJECTIVES = [
   { value: 'Process Optimisation & Validation', desc: 'Improve an existing process and confirm it works as required' },
   { value: 'Analytical & Quality Testing', desc: 'Testing, characterization, method development or validation' }
 ];
+/* Product Development / Process Optimisation & Validation / Analytical & Quality Testing
+   share the same catalog-style field set (see rdreq-catalog-fields below); Exploratory R&D
+   is the only objective with the Problem Statement flow. */
+const RDREQ_CATALOG_OBJECTIVES = ['Product Development', 'Process Optimisation & Validation', 'Analytical & Quality Testing'];
+const RDREQ_END_USES = ['Cosmetics & Personal Care', 'Pharmaceuticals', 'Food & Beverage', 'Agrochemicals', 'Industrial & Specialty Chemicals'];
+const RDREQ_QC_UNITS = ['gm', 'kg', 'mg', 'mL', 'L'];
+const RDREQ_QC_CURRENCIES = ['USD', 'EUR', 'INR', 'GBP'];
+let rdreqQcEntries = [];
 let rdreqUploadedFile = null;
 let rdreqLastFocus = null;
 
@@ -52,7 +60,7 @@ function ensureRdRequestModal() {
   const objectiveCards = RDREQ_OBJECTIVES.map(function (o, i) {
     return '<label class="rdreq-objective-card">' +
       '<div class="rdreq-objective-top">' +
-        '<input type="radio" name="rdreq-objective" class="rdreq-objective-radio" value="' + o.value + '"' + (i === 0 ? ' id="rdreq-objective-first"' : '') + ' onchange="rdreqValidate()">' +
+        '<input type="radio" name="rdreq-objective" class="rdreq-objective-radio" value="' + o.value + '"' + (i === 0 ? ' id="rdreq-objective-first"' : '') + ' onchange="rdreqUpdateConditionalFields()">' +
         '<span class="rdreq-objective-title">' + o.value + '</span>' +
       '</div>' +
       '<div class="rdreq-objective-desc">' + o.desc + '</div>' +
@@ -64,8 +72,8 @@ function ensureRdRequestModal() {
       '<div class="modal-box rdreq-box">' +
         '<div class="rdreq-header">' +
           '<div>' +
-            '<div class="modal-title" id="rdreq-title">Kick off a new R&amp;D Project</div>' +
-            '<div class="modal-subtitle">Share your molecule requirements to receive proposals from qualified partners and manufacturers.</div>' +
+            '<div class="modal-title" id="rdreq-title">Kick off a new R&amp;D Request</div>' +
+            '<div class="modal-subtitle">Start your request journey with seamless updates and visibility</div>' +
           '</div>' +
           '<button type="button" class="modal-close" onclick="closeRdRequestModal()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
         '</div>' +
@@ -74,6 +82,80 @@ function ensureRdRequestModal() {
           '<div>' +
             '<div class="rdreq-field-label">What is your Objective? <span class="rdreq-req">*</span></div>' +
             '<div class="rdreq-objective-grid">' + objectiveCards + '</div>' +
+          '</div>' +
+          '<div id="rdreq-exploratory-fields" style="display:none;">' +
+            '<div>' +
+              '<div class="rdreq-field-label">Provide Your Problem Statement <span class="rdreq-req">*</span></div>' +
+              '<div class="rdreq-input-wrap rdreq-textarea-wrap"><textarea class="rdreq-textarea" id="rdreq-problem-statement" placeholder="Tell us in brief about your problem statement" oninput="rdreqValidate()"></textarea></div>' +
+              '<div class="rdreq-upload-help">Be as specific as possible to help us assess feasibility quickly.</div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Timeline (If any)</div>' +
+              '<div class="rdreq-input-wrap"><input type="text" class="rdreq-input" id="rdreq-timeline" placeholder="Type your timeline preference"></div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Do you know the product or molecule?</div>' +
+              '<div class="rdreq-objective-grid" style="grid-template-columns:max-content max-content;">' +
+                '<label class="rdreq-objective-card" style="padding:10px 16px;">' +
+                  '<div class="rdreq-objective-top"><input type="radio" name="rdreq-product-known" class="rdreq-objective-radio" value="Yes"><span class="rdreq-objective-title">Yes</span></div>' +
+                '</label>' +
+                '<label class="rdreq-objective-card" style="padding:10px 16px;">' +
+                  '<div class="rdreq-objective-top"><input type="radio" name="rdreq-product-known" class="rdreq-objective-radio" value="No"><span class="rdreq-objective-title">No</span></div>' +
+                '</label>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div id="rdreq-catalog-fields" style="display:none;">' +
+            '<div>' +
+              '<div class="rdreq-field-label">Select the intended end use <span class="rdreq-req">*</span></div>' +
+              '<div class="rdreq-input-wrap"><select class="rdreq-input" id="rdreq-end-use" onchange="rdreqValidate()">' +
+                '<option value="" selected disabled>Select an option</option>' +
+                RDREQ_END_USES.map(function (u) { return '<option value="' + u + '">' + u + '</option>'; }).join('') +
+              '</select></div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Product Name <span class="rdreq-req">*</span></div>' +
+              '<div class="rdreq-input-wrap"><select class="rdreq-input" id="rdreq-product-name" onchange="rdreqProductChanged()">' +
+                '<option value="" selected disabled>Search Products...</option>' +
+                RFQREQ_PRODUCTS.map(function (p) { return '<option value="' + p.name + '">' + p.name + ' (CAS NO : ' + p.cas + ')</option>'; }).join('') +
+              '</select></div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">CAS No</div>' +
+              '<div class="rdreq-input-wrap"><input type="text" class="rdreq-input" id="rdreq-cas-no" placeholder="Enter CAS number"></div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Requirement Type</div>' +
+              '<div class="rdreq-objective-grid" style="grid-template-columns:max-content max-content;">' +
+                '<label class="rdreq-objective-card" style="padding:10px 16px;">' +
+                  '<div class="rdreq-objective-top"><input type="radio" name="rdreq-requirement-type" class="rdreq-objective-radio" value="One time"><span class="rdreq-objective-title">One time</span></div>' +
+                '</label>' +
+                '<label class="rdreq-objective-card" style="padding:10px 16px;">' +
+                  '<div class="rdreq-objective-top"><input type="radio" name="rdreq-requirement-type" class="rdreq-objective-radio" value="Recurring"><span class="rdreq-objective-title">Recurring</span></div>' +
+                '</label>' +
+              '</div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Quantity &amp; cost</div>' +
+              '<div class="rdreq-qc-row">' +
+                '<div><div class="rdreq-field-label rdreq-field-label-sm">Quantity</div><div class="rdreq-input-wrap"><input type="number" min="0" class="rdreq-input" id="rdreq-qc-qty" placeholder="0"></div></div>' +
+                '<div><div class="rdreq-field-label rdreq-field-label-sm">Unit</div><div class="rdreq-input-wrap"><select class="rdreq-input" id="rdreq-qc-unit">' + RDREQ_QC_UNITS.map(function (u) { return '<option value="' + u + '">' + u + '</option>'; }).join('') + '</select></div></div>' +
+                '<div><div class="rdreq-field-label rdreq-field-label-sm">Cost</div><div class="rdreq-input-wrap"><input type="number" min="0" class="rdreq-input" id="rdreq-qc-cost" placeholder="0"></div></div>' +
+                '<div><div class="rdreq-field-label rdreq-field-label-sm">Currency</div><div class="rdreq-input-wrap"><select class="rdreq-input" id="rdreq-qc-currency">' + RDREQ_QC_CURRENCIES.map(function (c) { return '<option value="' + c + '">' + c + '</option>'; }).join('') + '</select></div></div>' +
+                '<button type="button" class="mfg-btn-secondary" id="rdreq-qc-add-btn" onclick="rdreqAddQuantityCost()">Add <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>' +
+              '</div>' +
+              '<div class="rdreq-upload-help">Select upto 5 Quantity</div>' +
+              '<div class="rdreq-qc-list" id="rdreq-qc-list"></div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Timeline (if any)</div>' +
+              '<div class="rdreq-input-wrap"><input type="text" class="rdreq-input" id="rdreq-catalog-timeline" placeholder="e.g. 2 weeks"></div>' +
+            '</div>' +
+            '<div style="margin-top:18px;">' +
+              '<div class="rdreq-field-label">Comments (if any)</div>' +
+              '<div class="rdreq-input-wrap rdreq-textarea-wrap"><textarea class="rdreq-textarea" id="rdreq-comments" placeholder="I am looking to develop a molecule..."></textarea></div>' +
+              '<div class="rdreq-upload-help">Be as specific as possible to help us assess feasibility quickly.</div>' +
+            '</div>' +
           '</div>' +
           '<div>' +
             '<div class="rdreq-field-label">Upload supporting files</div>' +
@@ -85,29 +167,7 @@ function ensureRdRequestModal() {
             '</label>' +
             '<div class="rdreq-upload-help">Supports PDF, DOCX, PNG up to 10 MB</div>' +
           '</div>' +
-          '<div class="rdreq-call-panel">' +
-            '<div>' +
-              '<div class="rdreq-call-title">Schedule a free call with our Experts</div>' +
-              '<div class="rdreq-call-sub">Schedule a call to discuss your requirements based on your suitable time</div>' +
-              '<div class="rdreq-call-meta-row">' + AppIcon('clock', { size: 15 }) + '<span class="rdreq-call-meta-text">30 min</span><span class="rdreq-call-badge">Complementary</span></div>' +
-              '<div class="rdreq-call-meta-row">' + AppIcon('video', { size: 15 }) + '<span class="rdreq-call-meta-text">Video call details will be shared upon booking</span></div>' +
-              '<div class="rdreq-call-desc">In this session, we\'ll review your objectives and map out a roadmap for your R&amp;D Project</div>' +
-            '</div>' +
-            '<div class="rdreq-call-divider"></div>' +
-            '<div class="rdreq-call-fields">' +
-              '<div class="rdreq-field-row">' +
-                '<div class="rdreq-field-col">' +
-                  '<div class="rdreq-field-label rdreq-field-label-sm">Date <span class="rdreq-req">*</span></div>' +
-                  '<div class="rdreq-input-wrap">' + AppIcon('calendar', { size: 15 }) + '<input type="date" class="rdreq-input" id="rdreq-date" onchange="rdreqValidate()"></div>' +
-                '</div>' +
-                '<div class="rdreq-field-col">' +
-                  '<div class="rdreq-field-label rdreq-field-label-sm">Time <span class="rdreq-req">*</span></div>' +
-                  '<div class="rdreq-input-wrap">' + AppIcon('clock', { size: 15 }) + '<input type="time" class="rdreq-input" id="rdreq-time" onchange="rdreqValidate()"></div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="rdreq-timezone-row">' + AppIcon('clock', { size: 14 }) + '<span class="rdreq-timezone-text">Timezone: Asia/Kolkata</span></div>' +
-            '</div>' +
-          '</div>' +
+          scinodeSecureSectionHtml('rdreq') +
         '</div>' +
         '<div class="rdreq-footer">' +
           '<button type="button" class="mfg-btn-secondary rdreq-close-btn" onclick="closeRdRequestModal()">Close ' + AppIcon('close', { size: 14 }) + '</button>' +
@@ -148,13 +208,77 @@ function rdreqSelectedObjective() {
   const checked = document.querySelector('input[name="rdreq-objective"]:checked');
   return checked ? checked.value : null;
 }
+/* Exploratory R&D shows Problem Statement / Timeline / "Do you know the product?".
+   Product Development / Process Optimisation & Validation / Analytical & Quality
+   Testing show the catalog-style field set (end use, product, CAS, requirement type,
+   quantity & cost, timeline, comments) — every RDREQ_OBJECTIVES value falls into one
+   of these two sets. */
+function rdreqUpdateConditionalFields() {
+  const objective = rdreqSelectedObjective();
+  const isExploratory = objective === 'Exploratory R&D';
+  const isCatalog = RDREQ_CATALOG_OBJECTIVES.indexOf(objective) !== -1;
+  const exploratoryFields = document.getElementById('rdreq-exploratory-fields');
+  const catalogFields = document.getElementById('rdreq-catalog-fields');
+  if (exploratoryFields) exploratoryFields.style.display = isExploratory ? '' : 'none';
+  if (catalogFields) catalogFields.style.display = isCatalog ? '' : 'none';
+  rdreqValidate();
+}
 function rdreqValidate() {
   const btn = document.getElementById('rdreq-submit-btn');
   if (!btn) return;
-  const date = document.getElementById('rdreq-date');
-  const time = document.getElementById('rdreq-time');
-  const valid = !!rdreqSelectedObjective() && !!(date && date.value) && !!(time && time.value);
+  const objective = rdreqSelectedObjective();
+  let valid;
+  if (objective === 'Exploratory R&D') {
+    const ps = document.getElementById('rdreq-problem-statement');
+    valid = !!(ps && ps.value.trim());
+  } else if (RDREQ_CATALOG_OBJECTIVES.indexOf(objective) !== -1) {
+    const endUse = document.getElementById('rdreq-end-use');
+    const product = document.getElementById('rdreq-product-name');
+    valid = !!(endUse && endUse.value) && !!(product && product.value);
+  } else {
+    valid = false;
+  }
   btn.disabled = !valid;
+}
+function rdreqProductChanged() {
+  const productEl = document.getElementById('rdreq-product-name');
+  const casEl = document.getElementById('rdreq-cas-no');
+  const match = RFQREQ_PRODUCTS.find(function (p) { return p.name === (productEl && productEl.value); });
+  if (casEl && match) casEl.value = match.cas;
+  rdreqValidate();
+}
+function rdreqRenderQcList() {
+  const list = document.getElementById('rdreq-qc-list');
+  if (!list) return;
+  list.innerHTML = rdreqQcEntries.map(function (entry, i) {
+    const costText = entry.cost ? ' · ' + entry.cost + ' ' + entry.currency : '';
+    return '<div class="rdreq-qc-item"><span>' + entry.qty + ' ' + entry.unit + costText + '</span>' +
+      '<button type="button" onclick="rdreqRemoveQuantityCost(' + i + ')" aria-label="Remove">' + AppIcon('close', { size: 12 }) + '</button></div>';
+  }).join('');
+  const addBtn = document.getElementById('rdreq-qc-add-btn');
+  if (addBtn) addBtn.disabled = rdreqQcEntries.length >= 5;
+}
+function rdreqAddQuantityCost() {
+  if (rdreqQcEntries.length >= 5) { showToast('You can add up to 5 quantity entries'); return; }
+  const qtyEl = document.getElementById('rdreq-qc-qty');
+  const unitEl = document.getElementById('rdreq-qc-unit');
+  const costEl = document.getElementById('rdreq-qc-cost');
+  const currencyEl = document.getElementById('rdreq-qc-currency');
+  const qty = qtyEl ? parseFloat(qtyEl.value) : NaN;
+  if (!qty || qty <= 0) { showToast('Enter a quantity greater than 0'); return; }
+  rdreqQcEntries.push({
+    qty: qty,
+    unit: unitEl ? unitEl.value : '',
+    cost: costEl && costEl.value ? parseFloat(costEl.value) : 0,
+    currency: currencyEl ? currencyEl.value : ''
+  });
+  if (qtyEl) qtyEl.value = '';
+  if (costEl) costEl.value = '';
+  rdreqRenderQcList();
+}
+function rdreqRemoveQuantityCost(idx) {
+  rdreqQcEntries.splice(idx, 1);
+  rdreqRenderQcList();
 }
 function rdreqHandleFile(e) {
   const file = e.target.files && e.target.files[0];
@@ -179,20 +303,30 @@ function rdreqReset() {
   rdreqUploadedFile = null;
   const fn = document.getElementById('rdreq-filename');
   if (fn) fn.textContent = 'No file chosen';
-  const d = document.getElementById('rdreq-date');
-  if (d) d.value = '';
-  const t = document.getElementById('rdreq-time');
-  if (t) t.value = '';
-  rdreqValidate();
-}
-function rdreqFormatTime(t) {
-  const parts = t.split(':');
-  let h = parseInt(parts[0], 10);
-  const m = parts[1];
-  const suffix = h >= 12 ? 'PM' : 'AM';
-  let h12 = h % 12;
-  if (h12 === 0) h12 = 12;
-  return h12 + ':' + m + ' ' + suffix;
+  const ps = document.getElementById('rdreq-problem-statement');
+  if (ps) ps.value = '';
+  const tl = document.getElementById('rdreq-timeline');
+  if (tl) tl.value = '';
+  document.querySelectorAll('input[name="rdreq-product-known"]').forEach(function (r) { r.checked = false; });
+  const endUse = document.getElementById('rdreq-end-use');
+  if (endUse) endUse.value = '';
+  const product = document.getElementById('rdreq-product-name');
+  if (product) product.value = '';
+  const cas = document.getElementById('rdreq-cas-no');
+  if (cas) cas.value = '';
+  document.querySelectorAll('input[name="rdreq-requirement-type"]').forEach(function (r) { r.checked = false; });
+  const qcQty = document.getElementById('rdreq-qc-qty');
+  if (qcQty) qcQty.value = '';
+  const qcCost = document.getElementById('rdreq-qc-cost');
+  if (qcCost) qcCost.value = '';
+  rdreqQcEntries = [];
+  rdreqRenderQcList();
+  const catalogTimeline = document.getElementById('rdreq-catalog-timeline');
+  if (catalogTimeline) catalogTimeline.value = '';
+  const comments = document.getElementById('rdreq-comments');
+  if (comments) comments.value = '';
+  rdreqSecureReset('rdreq');
+  rdreqUpdateConditionalFields();
 }
 function saveUserRequest(req) {
   const KEY = 'scinodeUserRequests';
@@ -203,50 +337,106 @@ function saveUserRequest(req) {
 }
 function submitRdRequest() {
   const objective = rdreqSelectedObjective();
-  const dateEl = document.getElementById('rdreq-date');
-  const timeEl = document.getElementById('rdreq-time');
-  const date = dateEl ? dateEl.value : '';
-  const time = timeEl ? timeEl.value : '';
-  if (!objective || !date || !time) { rdreqValidate(); return; }
+  if (!objective) { rdreqValidate(); return; }
 
   const objMeta = RDREQ_OBJECTIVES.find(function (o) { return o.value === objective; });
   const objDesc = objMeta ? objMeta.desc : '';
-  const timeLabel = rdreqFormatTime(time);
   const today = new Date();
   const iso = today.toISOString().slice(0, 10);
   const id = 'RD-' + today.getFullYear() + '-' + Date.now().toString().slice(-5);
 
-  const specs = [
-    { label: 'Objective Type', value: objective },
-    { label: 'Scheduled Call', value: date + ' · ' + timeLabel + ' IST' }
-  ];
-  if (rdreqUploadedFile) specs.push({ label: 'Supporting File', value: rdreqUploadedFile.name });
+  if (objective === 'Exploratory R&D') {
+    const psEl = document.getElementById('rdreq-problem-statement');
+    const problemStatement = psEl ? psEl.value.trim() : '';
+    if (!problemStatement) { rdreqValidate(); return; }
+    const timelineEl = document.getElementById('rdreq-timeline');
+    const timelinePref = timelineEl ? timelineEl.value.trim() : '';
+    const productKnownEl = document.querySelector('input[name="rdreq-product-known"]:checked');
+    const productKnown = productKnownEl ? productKnownEl.value : '';
 
-  const newRequest = {
-    id: id,
-    type: 'R&D Project',
-    status: 'Active',
-    objective: objective + ' — ' + objDesc + '.',
-    productName: objective,
-    casNumber: 'N/A',
-    stage: 'Talk to Expert',
-    progress: 15,
-    expert: { name: 'Vinayak Verma', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', title: 'Principal Formulation Scientist' },
-    lastUpdated: iso,
-    createdDate: iso,
-    problemStatement: 'New R&D request submitted via Scinode. Objective: ' + objDesc + '. A discovery call has been scheduled for ' + date + ' at ' + timeLabel + ' (Asia/Kolkata) to review requirements.' + (rdreqUploadedFile ? ' Supporting file attached: ' + rdreqUploadedFile.name + '.' : ''),
-    specifications: specs,
-    timeline: [
-      { label: 'Request Submitted', status: 'completed', date: iso, description: 'R&D request submitted via Scinode.' },
-      { label: 'Talk to Expert', status: 'current', date: date, description: 'Discovery call scheduled at ' + timeLabel + ' IST.' },
-      { label: 'Feasibility Study', status: 'upcoming' },
-      { label: 'Proposal Prepared', status: 'upcoming' }
-    ]
-  };
+    const expSpecs = [{ label: 'Objective Type', value: objective }];
+    if (timelinePref) expSpecs.push({ label: 'Timeline', value: timelinePref });
+    if (productKnown) expSpecs.push({ label: 'Product/Molecule Known', value: productKnown });
+    if (rdreqUploadedFile) expSpecs.push({ label: 'Supporting File', value: rdreqUploadedFile.name });
+    Array.prototype.push.apply(expSpecs, scinodeSecureSpecsFor('rdreq'));
 
-  saveUserRequest(newRequest);
-  closeRdRequestModal();
-  showToast('R&D request submitted — view it under Requests');
+    const newExploratoryRequest = {
+      id: id,
+      type: 'R&D Project',
+      status: 'Active',
+      objective: objective + ' — ' + objDesc + '.',
+      productName: objective,
+      casNumber: 'N/A',
+      stage: 'Requirement Submitted',
+      progress: 5,
+      expert: { name: 'Vinayak Verma', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', title: 'Principal Formulation Scientist' },
+      lastUpdated: iso,
+      createdDate: iso,
+      problemStatement: problemStatement,
+      specifications: expSpecs,
+      timeline: [
+        { label: 'Request Submitted', status: 'completed', date: iso, description: 'R&D request submitted via Scinode.' }
+      ]
+    };
+
+    saveUserRequest(newExploratoryRequest);
+    closeRdRequestModal();
+    showToast('R&D request submitted — view it under Requests');
+    return;
+  }
+
+  if (RDREQ_CATALOG_OBJECTIVES.indexOf(objective) !== -1) {
+    const endUseEl = document.getElementById('rdreq-end-use');
+    const endUse = endUseEl ? endUseEl.value : '';
+    const productEl = document.getElementById('rdreq-product-name');
+    const productName = productEl ? productEl.value : '';
+    if (!endUse || !productName) { rdreqValidate(); return; }
+    const casEl = document.getElementById('rdreq-cas-no');
+    const casNumber = casEl && casEl.value.trim() ? casEl.value.trim() : 'N/A';
+    const reqTypeEl = document.querySelector('input[name="rdreq-requirement-type"]:checked');
+    const requirementType = reqTypeEl ? reqTypeEl.value : '';
+    const catalogTimelineEl = document.getElementById('rdreq-catalog-timeline');
+    const catalogTimelinePref = catalogTimelineEl ? catalogTimelineEl.value.trim() : '';
+    const commentsEl = document.getElementById('rdreq-comments');
+    const comments = commentsEl ? commentsEl.value.trim() : '';
+
+    const catSpecs = [
+      { label: 'Objective Type', value: objective },
+      { label: 'Intended End Use', value: endUse }
+    ];
+    if (requirementType) catSpecs.push({ label: 'Requirement Type', value: requirementType });
+    rdreqQcEntries.forEach(function (entry, i) {
+      const costText = entry.cost ? ' · ' + entry.cost + ' ' + entry.currency : '';
+      catSpecs.push({ label: 'Quantity ' + (i + 1), value: entry.qty + ' ' + entry.unit + costText });
+    });
+    if (catalogTimelinePref) catSpecs.push({ label: 'Timeline', value: catalogTimelinePref });
+    if (rdreqUploadedFile) catSpecs.push({ label: 'Supporting File', value: rdreqUploadedFile.name });
+    Array.prototype.push.apply(catSpecs, scinodeSecureSpecsFor('rdreq'));
+
+    const newCatalogRequest = {
+      id: id,
+      type: 'R&D Project',
+      status: 'Active',
+      objective: objective + ' — ' + objDesc + '.',
+      productName: productName,
+      casNumber: casNumber,
+      stage: 'Requirement Submitted',
+      progress: 5,
+      expert: { name: 'Vinayak Verma', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', title: 'Principal Formulation Scientist' },
+      lastUpdated: iso,
+      createdDate: iso,
+      problemStatement: comments || ('New R&D request for ' + productName + ' (' + endUse + ').'),
+      specifications: catSpecs,
+      timeline: [
+        { label: 'Request Submitted', status: 'completed', date: iso, description: 'R&D request submitted via Scinode.' }
+      ]
+    };
+
+    saveUserRequest(newCatalogRequest);
+    closeRdRequestModal();
+    showToast('R&D request submitted — view it under Requests');
+    return;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -345,29 +535,7 @@ function ensureCdmoRequestModal() {
             '</label>' +
             '<div class="rdreq-upload-help">Supports PDF, DOCX, PNG up to 10 MB</div>' +
           '</div>' +
-          '<div class="rdreq-call-panel">' +
-            '<div>' +
-              '<div class="rdreq-call-title">Schedule a free call with our Experts</div>' +
-              '<div class="rdreq-call-sub">Schedule a call to discuss your requirements based on your suitable time</div>' +
-              '<div class="rdreq-call-meta-row">' + AppIcon('clock', { size: 15 }) + '<span class="rdreq-call-meta-text">30 min</span><span class="rdreq-call-badge">Complementary</span></div>' +
-              '<div class="rdreq-call-meta-row">' + AppIcon('video', { size: 15 }) + '<span class="rdreq-call-meta-text">Video call details will be shared upon booking</span></div>' +
-              '<div class="rdreq-call-desc">In this session, we\'ll review your objectives and map out a roadmap for your Manufacturing Project</div>' +
-            '</div>' +
-            '<div class="rdreq-call-divider"></div>' +
-            '<div class="rdreq-call-fields">' +
-              '<div class="rdreq-field-row">' +
-                '<div class="rdreq-field-col">' +
-                  '<div class="rdreq-field-label rdreq-field-label-sm">Date <span class="rdreq-req">*</span></div>' +
-                  '<div class="rdreq-input-wrap">' + AppIcon('calendar', { size: 15 }) + '<input type="date" class="rdreq-input" id="cdmoreq-date" onchange="cdmoreqValidate()"></div>' +
-                '</div>' +
-                '<div class="rdreq-field-col">' +
-                  '<div class="rdreq-field-label rdreq-field-label-sm">Time <span class="rdreq-req">*</span></div>' +
-                  '<div class="rdreq-input-wrap">' + AppIcon('clock', { size: 15 }) + '<input type="time" class="rdreq-input" id="cdmoreq-time" onchange="cdmoreqValidate()"></div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="rdreq-timezone-row">' + AppIcon('clock', { size: 14 }) + '<span class="rdreq-timezone-text">Timezone: Asia/Kolkata</span></div>' +
-            '</div>' +
-          '</div>' +
+          scinodeSecureSectionHtml('cdmoreq') +
         '</div>' +
         '<div class="rdreq-footer">' +
           '<button type="button" class="mfg-btn-secondary rdreq-close-btn" onclick="closeCdmoRequestModal()">Close ' + AppIcon('close', { size: 14 }) + '</button>' +
@@ -419,13 +587,10 @@ function cdmoreqValidate() {
   const productName = document.getElementById('cdmoreq-product-name');
   const casNo = document.getElementById('cdmoreq-cas-no');
   const processDetails = document.getElementById('cdmoreq-process-details');
-  const date = document.getElementById('cdmoreq-date');
-  const time = document.getElementById('cdmoreq-time');
   const valid = !!cdmoreqSelectedLookingFor() &&
     !!(productName && productName.value.trim()) &&
     !!(casNo && casNo.value.trim()) &&
-    !!(processDetails && processDetails.value.trim()) &&
-    !!(date && date.value) && !!(time && time.value);
+    !!(processDetails && processDetails.value.trim());
   btn.disabled = !valid;
 }
 function cdmoreqHandleFile(e) {
@@ -450,7 +615,7 @@ function cdmoreqReset() {
   cdmoreqQuantityMode = 'one-time';
   const extra = document.getElementById('cdmoreq-quantity-extra');
   if (extra) extra.style.display = 'none';
-  ['cdmoreq-product-name', 'cdmoreq-cas-no', 'cdmoreq-process-details', 'cdmoreq-target-qty', 'cdmoreq-date', 'cdmoreq-time'].forEach(function (id) {
+  ['cdmoreq-product-name', 'cdmoreq-cas-no', 'cdmoreq-process-details', 'cdmoreq-target-qty'].forEach(function (id) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -459,6 +624,7 @@ function cdmoreqReset() {
   cdmoreqUploadedFile = null;
   const fn = document.getElementById('cdmoreq-filename');
   if (fn) fn.textContent = 'No file chosen';
+  rdreqSecureReset('cdmoreq');
   cdmoreqValidate();
 }
 function submitCdmoRequest() {
@@ -466,13 +632,8 @@ function submitCdmoRequest() {
   const productName = document.getElementById('cdmoreq-product-name').value.trim();
   const casNo = document.getElementById('cdmoreq-cas-no').value.trim();
   const processDetails = document.getElementById('cdmoreq-process-details').value.trim();
-  const dateEl = document.getElementById('cdmoreq-date');
-  const timeEl = document.getElementById('cdmoreq-time');
-  const date = dateEl ? dateEl.value : '';
-  const time = timeEl ? timeEl.value : '';
-  if (!lookingFor || !productName || !casNo || !processDetails || !date || !time) { cdmoreqValidate(); return; }
+  if (!lookingFor || !productName || !casNo || !processDetails) { cdmoreqValidate(); return; }
 
-  const timeLabel = rdreqFormatTime(time);
   const today = new Date();
   const iso = today.toISOString().slice(0, 10);
   const id = 'CDMO-' + today.getFullYear() + '-' + Date.now().toString().slice(-5);
@@ -482,10 +643,10 @@ function submitCdmoRequest() {
 
   const specs = [
     { label: 'Looking For', value: lookingFor },
-    { label: 'Quantity', value: qtyNote },
-    { label: 'Scheduled Call', value: date + ' · ' + timeLabel + ' IST' }
+    { label: 'Quantity', value: qtyNote }
   ];
   if (cdmoreqUploadedFile) specs.push({ label: 'Supporting File', value: cdmoreqUploadedFile.name });
+  Array.prototype.push.apply(specs, scinodeSecureSpecsFor('cdmoreq'));
 
   const newRequest = {
     id: id,
@@ -502,11 +663,7 @@ function submitCdmoRequest() {
     problemStatement: processDetails + ' ' + qtyNote,
     specifications: specs,
     timeline: [
-      { label: 'Request Submitted', status: 'completed', date: iso, description: 'CDMO request submitted via Scinode.' },
-      { label: 'Talk to our expert', status: 'current', date: date, description: 'Discovery call scheduled at ' + timeLabel + ' IST.' },
-      { label: 'Lab & Plant Match', status: 'upcoming' },
-      { label: 'Proposal Ready', status: 'upcoming' },
-      { label: 'Request Closed', status: 'upcoming' }
+      { label: 'Request Submitted', status: 'completed', date: iso, description: 'CDMO request submitted via Scinode.' }
     ]
   };
 
@@ -514,6 +671,149 @@ function submitCdmoRequest() {
   closeCdmoRequestModal();
   showToast('CDMO request submitted — view it under Requests');
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Scinode Secure — "Secure Collaboration" section, shared by the R&D and
+   CDMO request modals. Displayed just before Submit: a "Secure this
+   Request" toggle (default off) that reveals an optional NDA/Agreement
+   upload + note. Keyed by `prefix` ('rdreq' / 'cdmoreq') so element ids
+   stay unique per modal. */
+let scinodeSecureUploadedFiles = {};
+
+function scinodeSecureSectionHtml(prefix) {
+  return '<div class="rdreq-secure-section">' +
+    '<div class="rdreq-secure-head">' +
+      '<div class="rdreq-secure-head-left">' +
+        '<span class="rdreq-secure-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>' +
+        '<div><div class="rdreq-secure-title">Secure this Request</div><div class="rdreq-secure-sub">Initiate this request under Scinode Secure</div></div>' +
+        '<button type="button" class="ssinfo-trigger" aria-label="About Scinode Secure" tabindex="0">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<label class="rdreq-secure-toggle-wrap">' +
+        '<input type="checkbox" class="rdreq-secure-toggle-input" id="' + prefix + '-secure-toggle" onchange="rdreqSecureToggle(\'' + prefix + '\')">' +
+        '<span class="rdreq-secure-toggle"><span class="rdreq-secure-toggle-knob"></span></span>' +
+      '</label>' +
+    '</div>' +
+    '<div id="' + prefix + '-secure-fields" style="display:none;">' +
+      '<div style="margin-top:14px;">' +
+        '<div class="rdreq-field-label rdreq-field-label-sm">Upload NDA / Agreement</div>' +
+        '<label class="rdreq-upload-label">' +
+          AppIcon('upload', { size: 16 }) +
+          '<span class="rdreq-upload-btn-text">Choose File</span>' +
+          '<span class="rdreq-upload-filename" id="' + prefix + '-secure-filename">No file chosen</span>' +
+          '<input type="file" id="' + prefix + '-secure-file-input" accept=".pdf,.docx,.jpg,.jpeg,.png" style="display:none;" onchange="rdreqSecureHandleFile(\'' + prefix + '\', event)">' +
+        '</label>' +
+        '<div class="rdreq-upload-help">Supports PDF, DOCX, JPG, JPEG, PNG. Optional — you can submit without uploading.</div>' +
+      '</div>' +
+      '<div style="margin-top:14px;">' +
+        '<div class="rdreq-field-label rdreq-field-label-sm">Additional Note</div>' +
+        '<div class="rdreq-input-wrap rdreq-textarea-wrap"><textarea class="rdreq-textarea" id="' + prefix + '-secure-note" placeholder="Any context related to the uploaded agreement or confidentiality requirements"></textarea></div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function rdreqSecureToggle(prefix) {
+  const toggle = document.getElementById(prefix + '-secure-toggle');
+  const fields = document.getElementById(prefix + '-secure-fields');
+  const wrap = toggle ? toggle.closest('.rdreq-secure-toggle-wrap') : null;
+  const on = !!(toggle && toggle.checked);
+  if (wrap) wrap.classList.toggle('on', on);
+  if (fields) fields.style.display = on ? '' : 'none';
+  if (!on) {
+    scinodeSecureUploadedFiles[prefix] = null;
+    const fn = document.getElementById(prefix + '-secure-filename');
+    if (fn) fn.textContent = 'No file chosen';
+    const fileInput = document.getElementById(prefix + '-secure-file-input');
+    if (fileInput) fileInput.value = '';
+  }
+}
+function rdreqSecureHandleFile(prefix, e) {
+  const file = e.target.files && e.target.files[0];
+  const nameEl = document.getElementById(prefix + '-secure-filename');
+  if (!file) { scinodeSecureUploadedFiles[prefix] = null; if (nameEl) nameEl.textContent = 'No file chosen'; return; }
+  const maxBytes = 10 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    showToast('File exceeds the 10 MB limit');
+    e.target.value = '';
+    scinodeSecureUploadedFiles[prefix] = null;
+    if (nameEl) nameEl.textContent = 'No file chosen';
+    return;
+  }
+  scinodeSecureUploadedFiles[prefix] = file;
+  if (nameEl) nameEl.textContent = file.name;
+}
+function rdreqSecureReset(prefix) {
+  const toggle = document.getElementById(prefix + '-secure-toggle');
+  if (toggle) toggle.checked = false;
+  const wrap = toggle ? toggle.closest('.rdreq-secure-toggle-wrap') : null;
+  if (wrap) wrap.classList.remove('on');
+  const fields = document.getElementById(prefix + '-secure-fields');
+  if (fields) fields.style.display = 'none';
+  const fileInput = document.getElementById(prefix + '-secure-file-input');
+  if (fileInput) fileInput.value = '';
+  scinodeSecureUploadedFiles[prefix] = null;
+  const fn = document.getElementById(prefix + '-secure-filename');
+  if (fn) fn.textContent = 'No file chosen';
+  const note = document.getElementById(prefix + '-secure-note');
+  if (note) note.value = '';
+}
+/* Specs to fold into the submitted request's `specifications` array, if the
+   toggle for this modal is on. Called by each submitXxxRequest(). */
+function scinodeSecureSpecsFor(prefix) {
+  const toggle = document.getElementById(prefix + '-secure-toggle');
+  if (!toggle || !toggle.checked) return [];
+  const file = scinodeSecureUploadedFiles[prefix];
+  const noteEl = document.getElementById(prefix + '-secure-note');
+  const note = noteEl ? noteEl.value.trim() : '';
+  const out = [{ label: 'Scinode Secure', value: file ? 'Requested — NDA uploaded (' + file.name + ')' : 'Requested — NDA to follow' }];
+  if (note) out.push({ label: 'Secure Note', value: note });
+  return out;
+}
+
+/* Info (ⓘ) tooltip — rendered into document.body (not nested in the trigger)
+   so it isn't clipped by .modal-box's overflow-y:auto. Delegated so it works
+   for both modals without per-instance wiring. */
+function ensureScinodeSecureInfoTooltip() {
+  let tip = document.getElementById('scinode-secure-info-tooltip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'scinode-secure-info-tooltip';
+    tip.className = 'ssinfo-tip';
+    tip.innerHTML = '<div class="ssinfo-tip-title">Scinode Secure</div>' +
+      '<div class="ssinfo-tip-body">Start your collaboration securely from day one. If you already have an NDA or confidentiality agreement, you can upload it now. Otherwise, our team will work with you to complete the required legal and confidentiality process before sensitive information is exchanged.</div>';
+    document.body.appendChild(tip);
+  }
+  return tip;
+}
+function showScinodeSecureInfoTooltip(trigger) {
+  const tip = ensureScinodeSecureInfoTooltip();
+  const r = trigger.getBoundingClientRect();
+  tip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 296)) + 'px';
+  tip.style.top = (r.bottom + 8) + 'px';
+  tip.classList.add('open');
+}
+function hideScinodeSecureInfoTooltip() {
+  const tip = document.getElementById('scinode-secure-info-tooltip');
+  if (tip) tip.classList.remove('open');
+}
+document.addEventListener('mouseover', function (e) {
+  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
+  if (t) showScinodeSecureInfoTooltip(t);
+});
+document.addEventListener('mouseout', function (e) {
+  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
+  if (t) hideScinodeSecureInfoTooltip();
+});
+document.addEventListener('focusin', function (e) {
+  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
+  if (t) showScinodeSecureInfoTooltip(t);
+});
+document.addEventListener('focusout', function (e) {
+  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
+  if (t) hideScinodeSecureInfoTooltip();
+});
 
 /* ══════════════════════════════════════════════════════════════════════
    RFQ Request modal — replaces the generic Create Request modal when the

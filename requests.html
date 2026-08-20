@@ -249,7 +249,7 @@
 <!-- Toast -->
 <div class="rq-toast" id="rq-toast"></div>
 
-<!-- REQSEC:start — Requests-module "Scinode Secure" trust modal, opened from the hero's "Protected by Scinode Secure" link. Visual language mirrors the Dashboard Trust Center (scinode-day10.html), light theme only. -->
+<!-- REQSEC:start — Requests-module "Scinode Secure" trust modal, opened from the hero's "Protected by Scinode Secure" link. Content is identical to the Dashboard Trust Center modal (scinode-day10.html #trust-center-modal), rendered light-theme only (no dark/light toggle here). -->
 <style id="reqsec-styles">
   .rq-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:#96DDA5;font-family:var(--font);font-size:12px;font-weight:500;background:none;border:none;padding:0;cursor:pointer;opacity:.85;transition:opacity .15s ease;}
   .rq-trust-line:hover,.rq-trust-line:focus-visible{opacity:1;text-decoration:underline;}
@@ -257,64 +257,59 @@
   .rq-trust-line svg{flex-shrink:0;}
 
   .reqsec-modal .modal-box{max-width:900px;padding:32px 36px 28px;border-radius:20px;background:linear-gradient(160deg,#FFFFFF 0%,#F4FBFA 45%,#EFFAF6 100%);box-shadow:0 24px 60px rgba(4,62,84,.18);}
-  .reqsec-ribbon{display:flex;align-items:center;justify-content:center;gap:8px;margin:-32px -36px 22px;padding:11px 20px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#016358,#182133);color:#fff;font-family:var(--font);font-size:12.5px;font-weight:600;letter-spacing:.01em;}
-  .reqsec-ribbon svg{color:#96DDA5;flex-shrink:0;}
-  .reqsec-head-row{display:flex;align-items:flex-start;gap:14px;}
-  .reqsec-shield{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#016358 0%,#182133 100%);color:#96DDA5;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(2,150,138,.25);}
-  .reqsec-eyebrow{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-600);margin-bottom:6px;}
+  .reqsec-modal .tc-ribbon{display:flex;align-items:center;justify-content:center;gap:8px;margin:-32px -36px 22px;padding:11px 20px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#016358,#182133);color:#fff;font-family:var(--font);font-size:12.5px;font-weight:600;letter-spacing:.01em;}
+  .reqsec-modal .tc-ribbon svg{color:#96DDA5;flex-shrink:0;}
+  .reqsec-modal .tc-head-row{display:flex;align-items:flex-start;gap:14px;}
+  .reqsec-modal .tc-shield{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#016358 0%,#182133 100%);color:#96DDA5;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(2,150,138,.25);}
   .reqsec-modal .modal-title{font-size:23px;color:var(--navy-500);letter-spacing:-0.02em;line-height:1.3;}
-  .reqsec-intro{font-family:var(--font);font-size:13.5px;color:var(--text-2);line-height:1.65;margin:16px 0 14px;max-width:760px;}
-  .reqsec-divider{height:1px;background:var(--border);border:0;margin:0 0 24px;}
-  .reqsec-sec-eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-600);margin-bottom:16px;white-space:nowrap;}
-  .reqsec-sec-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--teal-100),rgba(226,232,240,0));}
+  .reqsec-modal .tc-intro{font-family:var(--font);font-size:13.5px;color:var(--text-2);line-height:1.65;margin:16px 0 24px;max-width:760px;}
+  .reqsec-modal .tc-divider{height:1px;background:var(--border);border:0;margin:0 0 26px;}
+  .reqsec-modal .tc-sec-eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-600);margin-bottom:16px;white-space:nowrap;}
+  .reqsec-modal .tc-sec-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--teal-100),rgba(226,232,240,0));}
+  .reqsec-modal .tc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:30px;}
+  .reqsec-modal .tc-card-full{grid-column:1/-1;}
+  .reqsec-modal .tc-card{background:#fff;border-radius:16px;padding:18px 20px;box-shadow:var(--shadow-card);transition:box-shadow .15s,border-color .15s;border:0.5px solid transparent;}
+  .reqsec-modal .tc-card:hover{box-shadow:var(--shadow-hero);border-color:var(--border);}
+  .reqsec-modal .tc-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .reqsec-modal .tc-ico{font-family:var(--font);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--teal-600);background:var(--teal-50);border-radius:7px;padding:3px 8px;letter-spacing:.02em;flex-shrink:0;}
+  .reqsec-modal .tc-card-title{font-family:var(--font);font-size:15px;font-weight:600;color:var(--navy-500);line-height:1.3;letter-spacing:-0.01em;}
+  .reqsec-modal .tc-card-desc{font-family:var(--font);font-size:12.5px;line-height:1.6;color:var(--text-2);margin-bottom:13px;}
+  .reqsec-modal .tc-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
+  .reqsec-modal .tc-list li{font-family:var(--font);font-size:11px;font-weight:500;color:var(--teal-600);background:var(--teal-50);border-radius:999px;padding:4px 10px;white-space:nowrap;}
+  .reqsec-modal .tc-lifecycle{background:linear-gradient(160deg,#FFFFFF 0%,#F4FBFA 100%);border:0.5px solid var(--border);border-radius:18px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:2px;margin-bottom:30px;}
+  .reqsec-modal .tc-tree-root{display:flex;align-items:center;gap:8px;color:var(--teal-600);font-family:var(--font);font-size:13px;font-weight:600;margin-bottom:14px;}
+  .reqsec-modal .tc-flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;row-gap:14px;}
+  .reqsec-modal .tc-sits-pill{font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--navy-500);background:#fff;border:0.5px solid transparent;border-radius:999px;padding:7px 16px;box-shadow:0 1px 2px rgba(4,62,84,.06);}
+  .reqsec-modal .tc-flow-arrow{display:flex;align-items:center;color:var(--text-3);flex-shrink:0;}
+  .reqsec-modal .tc-continuous{margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border);width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .reqsec-modal .tc-continuous-label{font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);}
+  .reqsec-modal .tc-sits-core-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;}
+  .reqsec-modal .tc-sits-core-tag{font-family:var(--font);font-size:11px;font-weight:500;color:var(--teal-600);background:#fff;border:0.5px solid transparent;border-radius:999px;padding:4px 10px;}
+  .reqsec-modal .tc-sec-desc{font-family:var(--font);font-size:13px;color:var(--text-2);line-height:1.6;margin:0 0 20px;max-width:680px;}
+  .reqsec-modal .tc-workflow{display:flex;flex-direction:column;gap:8px;margin-bottom:30px;}
+  .reqsec-modal .tc-wf-row{display:flex;align-items:flex-start;gap:12px;background:#fff;border:0.5px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .reqsec-modal .tc-wf-check{width:22px;height:22px;border-radius:50%;background:var(--teal-50);color:var(--teal-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .reqsec-modal .tc-wf-title{font-family:var(--font);font-size:13px;font-weight:600;color:var(--navy-500);margin-bottom:2px;}
+  .reqsec-modal .tc-wf-desc{font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.5;}
+  .reqsec-modal .tc-wf-signals{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .reqsec-modal .tc-wf-signal{font-family:var(--font);font-size:10.5px;font-weight:500;color:var(--teal-600);background:#fff;border:0.5px solid var(--teal-100);border-radius:999px;padding:3px 9px;white-space:nowrap;}
+  .reqsec-modal .tc-footer{margin-top:0;padding-top:20px;border-top:1px solid var(--border);}
+  .reqsec-modal .tc-powered{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:11px;font-weight:600;color:var(--teal-600);white-space:nowrap;margin-top:14px;}
 
-  .reqsec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:26px;}
-  .reqsec-card-full{grid-column:1/-1;}
-  .reqsec-card{background:#fff;border-radius:14px;padding:16px 18px;box-shadow:var(--shadow-card);}
-  .reqsec-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-  .reqsec-ico{font-family:var(--font);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--teal-600);background:var(--teal-50);border-radius:7px;padding:3px 8px;letter-spacing:.02em;flex-shrink:0;}
-  .reqsec-card-title{font-family:var(--font);font-size:14px;font-weight:600;color:var(--navy-500);line-height:1.3;letter-spacing:-0.01em;}
-  .reqsec-card-desc{font-family:var(--font);font-size:12px;line-height:1.6;color:var(--text-2);}
-
-  .reqsec-journey-grid{display:grid;grid-template-columns:1fr 1fr;border:0.5px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:26px;}
-  .reqsec-journey-col{padding:18px 20px;background:#fff;}
-  .reqsec-journey-col + .reqsec-journey-col{border-left:0.5px solid var(--border);}
-  .reqsec-journey-title{font-family:var(--font);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;}
-  .reqsec-step{display:flex;align-items:center;gap:10px;position:relative;padding-bottom:16px;}
-  .reqsec-step:last-child{padding-bottom:0;}
-  .reqsec-step::before{content:'';position:absolute;left:9px;top:20px;bottom:-4px;width:1px;background:var(--border);}
-  .reqsec-step:last-child::before{display:none;}
-  .reqsec-step-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font);font-size:9px;font-weight:700;z-index:1;}
-  .reqsec-step-dot.num{background:var(--page-bg);color:var(--text-2);}
-  .reqsec-step-dot.check{background:var(--teal-50);color:var(--teal-600);}
-  .reqsec-step-label{font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--navy-500);}
-
-  .reqsec-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-bottom:26px;}
-  .reqsec-check-item{display:flex;align-items:flex-start;gap:9px;font-family:var(--font);font-size:12.5px;color:var(--text-2);line-height:1.5;}
-  .reqsec-check-item svg{color:var(--teal-600);flex-shrink:0;margin-top:2px;}
-
-  .reqsec-control-sub{font-family:var(--font);font-size:12.5px;color:var(--text-2);margin-bottom:14px;}
-  .reqsec-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
-  .reqsec-list li{font-family:var(--font);font-size:11px;font-weight:500;color:var(--teal-600);background:var(--teal-50);border-radius:999px;padding:4px 10px;white-space:nowrap;}
-
-  .reqsec-footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
-  .reqsec-powered{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:11px;font-weight:600;color:var(--teal-600);white-space:nowrap;}
-
-  @media (max-width:720px){ .reqsec-grid{grid-template-columns:1fr;} .reqsec-journey-grid{grid-template-columns:1fr;} .reqsec-journey-col + .reqsec-journey-col{border-left:0;border-top:0.5px solid var(--border);} .reqsec-check-grid{grid-template-columns:1fr;} }
+  @media (max-width:720px){ .reqsec-modal .tc-grid{grid-template-columns:1fr;} }
 </style>
 
 <div class="modal-backdrop reqsec-modal" id="reqsec-modal" role="dialog" aria-modal="true" aria-labelledby="reqsec-modal-title" onclick="handleReqSecBackdropClick(event)">
   <div class="modal-box">
-    <div class="reqsec-ribbon">
+    <div class="tc-ribbon">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>
-      Scinode Secure — Protecting Every Request You Share
+      Scinode Secure — Protecting Every Stage of Collaboration
     </div>
     <div class="modal-header">
-      <div class="reqsec-head-row">
-        <span class="reqsec-shield"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg></span>
+      <div class="tc-head-row">
+        <span class="tc-shield"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg></span>
         <div>
-          <div class="reqsec-eyebrow">Requests · Scinode Secure</div>
-          <div class="modal-title" id="reqsec-modal-title">How Scinode Secure Protects What You Share</div>
+          <div class="modal-title" id="reqsec-modal-title">How Scinode Secure Protects Your Collaboration</div>
         </div>
       </div>
       <button type="button" class="modal-close" onclick="closeRequestsSecureModal()" aria-label="Close">
@@ -322,71 +317,110 @@
       </button>
     </div>
 
-    <div class="reqsec-intro">Whether you're sharing a new molecule, a process, customer specifications, a formulation, manufacturing requirements, pricing expectations, or proprietary documents — every request submitted through Scinode is protected by Scinode Secure, our trust framework designed to safeguard your intellectual property, commercial information, and collaboration throughout the project lifecycle.</div>
-    <hr class="reqsec-divider">
+    <div class="tc-intro">Every interaction on Scinode is designed to protect your intellectual property, business information, and research collaboration. From your first request to project completion, enterprise-grade controls ensure your documents, requests, technical discussions, and project data remain secure, governed, and accessible only to authorized stakeholders.</div>
+    <hr class="tc-divider">
 
-    <div class="reqsec-sec-eyebrow">The Five Pillars of Trust</div>
-    <div class="reqsec-grid">
-      <div class="reqsec-card">
-        <div class="reqsec-card-head"><span class="reqsec-ico">01</span><div class="reqsec-card-title">Your Innovation — IP Protection</div></div>
-        <div class="reqsec-card-desc">Scientific know-how, formulations, process information, and technical documents stay protected from the moment you share them.</div>
+    <div class="tc-sec-eyebrow">The Five Pillars of Trust</div>
+    <div class="tc-grid">
+      <div class="tc-card">
+        <div class="tc-card-head"><span class="tc-ico">01</span><div class="tc-card-title">Protect Your Intellectual Property</div></div>
+        <div class="tc-card-desc">Your research is your competitive advantage. Protect scientific know-how, formulations, technical documents, and proprietary processes from the very first interaction through secure collaboration and controlled information sharing.</div>
+        <ul class="tc-list"><li>NDA-First Collaboration</li><li>Controlled Visibility</li><li>Secure Document Sharing</li><li>Protected Tech Pack Access</li><li>Secure Knowledge Transfer</li></ul>
       </div>
-      <div class="reqsec-card">
-        <div class="reqsec-card-head"><span class="reqsec-ico">02</span><div class="reqsec-card-title">Your Business — Commercial Protection</div></div>
-        <div class="reqsec-card-desc">Proposals, quotations, pricing, and commercial discussions remain strictly confidential.</div>
+      <div class="tc-card">
+        <div class="tc-card-head"><span class="tc-ico">02</span><div class="tc-card-title">Protect Your Business</div></div>
+        <div class="tc-card-desc">Commercial conversations deserve the same level of protection as technical discussions. Keep requests, quotations, pricing, and agreements confidential throughout your engagement with verified partners.</div>
+        <ul class="tc-list"><li>Requests Confidentiality</li><li>Commercial Governance</li><li>Pricing Protection</li><li>Controlled Quotations</li><li>Contract Lifecycle Management</li></ul>
       </div>
-      <div class="reqsec-card">
-        <div class="reqsec-card-head"><span class="reqsec-ico">03</span><div class="reqsec-card-title">Your Collaboration — Controlled Access</div></div>
-        <div class="reqsec-card-desc">Information is shared only with authorized teams through permission-based access.</div>
+      <div class="tc-card">
+        <div class="tc-card-head"><span class="tc-ico">03</span><div class="tc-card-title">Collaborate with Control</div></div>
+        <div class="tc-card-desc">Work confidently across teams, partners, and stakeholders while maintaining complete control over who can access, review, and contribute to your projects.</div>
+        <ul class="tc-list"><li>Role-Based Access</li><li>Granular Permissions</li><li>Approval Workflows</li><li>Project-Level Access</li><li>Organization-Level Visibility</li></ul>
       </div>
-      <div class="reqsec-card">
-        <div class="reqsec-card-head"><span class="reqsec-ico">04</span><div class="reqsec-card-title">Your Agreements — Legal &amp; Governance</div></div>
-        <div class="reqsec-card-desc">Every collaboration runs under governed agreements, approvals, and legal workflows.</div>
+      <div class="tc-card">
+        <div class="tc-card-head"><span class="tc-ico">04</span><div class="tc-card-title">Govern Every Engagement</div></div>
+        <div class="tc-card-desc">Maintain transparency and accountability across every approval, agreement, and collaboration with governance that supports secure decision-making and complete auditability.</div>
+        <ul class="tc-list"><li>NDA Management</li><li>Digital Approvals</li><li>Legal Agreements</li><li>Approval History</li><li>Audit Trails</li></ul>
       </div>
-      <div class="reqsec-card reqsec-card-full">
-        <div class="reqsec-card-head"><span class="reqsec-ico">05</span><div class="reqsec-card-title">Your Data — Platform Security</div></div>
-        <div class="reqsec-card-desc">End-to-end platform security protects your data throughout the collaboration lifecycle.</div>
+      <div class="tc-card tc-card-full">
+        <div class="tc-card-head"><span class="tc-ico">05</span><div class="tc-card-title">End-to-End Platform Security</div></div>
+        <div class="tc-card-desc">Safeguard your data from creation to storage with advanced encryption, secure access controls, continuous monitoring, reliable backups, and resilient infrastructure.</div>
+        <ul class="tc-list"><li>Data Encryption</li><li>Secure Identity &amp; Access</li><li>Infrastructure Monitoring</li><li>Automated Backup &amp; Recovery</li><li>Always-On Platform</li></ul>
       </div>
     </div>
 
-    <div class="reqsec-sec-eyebrow">What Happens After You Submit</div>
-    <div class="reqsec-journey-grid">
-      <div class="reqsec-journey-col">
-        <div class="reqsec-journey-title">Your Request Journey</div>
-        <div class="reqsec-step"><span class="reqsec-step-dot num">1</span><span class="reqsec-step-label">Share Requirement</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot num">2</span><span class="reqsec-step-label">Technical Review</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot num">3</span><span class="reqsec-step-label">Expert Assignment</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot num">4</span><span class="reqsec-step-label">Proposal &amp; Feasibility</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot num">5</span><span class="reqsec-step-label">Execution</span></div>
+    <div class="tc-sec-eyebrow">Embedded Across Every Collaboration</div>
+    <div class="tc-lifecycle">
+      <div class="tc-tree-root">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>
+        Scinode Secure
       </div>
-      <div class="reqsec-journey-col">
-        <div class="reqsec-journey-title">How Scinode Secure Protects It</div>
-        <div class="reqsec-step"><span class="reqsec-step-dot check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="reqsec-step-label">Requirement Protected</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="reqsec-step-label">Controlled Visibility</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="reqsec-step-label">Verified Experts Only</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="reqsec-step-label">Governed Collaboration</span></div>
-        <div class="reqsec-step"><span class="reqsec-step-dot check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="reqsec-step-label">Secure Project Workspace</span></div>
+      <div class="tc-flow">
+        <span class="tc-sits-pill">Request</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Proposal</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">R&amp;D Execution</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Technology Transfer</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Documentation &amp; Tech Pack</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill">Manufacturing Execution</span>
+        <span class="tc-flow-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+        <span class="tc-sits-pill tc-lifecycle-step-done">Delivery</span>
+      </div>
+      <div class="tc-continuous">
+        <div class="tc-continuous-label">Continuous Protection Through</div>
+        <div class="tc-sits-core-tags">
+          <span class="tc-sits-core-tag">Intellectual Property Protection</span>
+          <span class="tc-sits-core-tag">Business &amp; Commercial Protection</span>
+          <span class="tc-sits-core-tag">Controlled Collaboration</span>
+          <span class="tc-sits-core-tag">Enterprise Governance</span>
+          <span class="tc-sits-core-tag">Platform Security</span>
+        </div>
       </div>
     </div>
 
-    <div class="reqsec-sec-eyebrow">Why Organizations Trust Scinode</div>
-    <div class="reqsec-check-grid">
-      <div class="reqsec-check-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Reviewed only by authorized scientific and manufacturing experts</div>
-      <div class="reqsec-check-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Intellectual property protected through evaluation and execution</div>
-      <div class="reqsec-check-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Commercial discussions and quotations stay confidential</div>
-      <div class="reqsec-check-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Documents shared through controlled access — not email chains</div>
-      <div class="reqsec-check-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Every collaboration happens within a governed workspace</div>
-      <div class="reqsec-check-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Protected from your first request through manufacturing</div>
+    <div class="tc-sec-eyebrow">Protected Throughout Your Journey</div>
+    <div class="tc-sec-desc">From your first request to final delivery, Scinode Secure protects every interaction with end to end platform security, governed collaboration, and controlled access—ensuring your intellectual property, business information, and project data remain protected throughout the lifecycle.</div>
+    <div class="tc-workflow">
+      <div class="tc-wf-row">
+        <span class="tc-wf-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
+        <div>
+          <div class="tc-wf-title">Submit an R&amp;D or Manufacturing Request</div>
+          <div class="tc-wf-desc">Share your research requirements with confidence through NDA-first collaboration, controlled visibility, and secure information sharing from the very first interaction.</div>
+          <div class="tc-wf-signals"><span class="tc-wf-signal">NDA Protected</span><span class="tc-wf-signal">Controlled Visibility</span><span class="tc-wf-signal">Secure Requirement Sharing</span></div>
+        </div>
+      </div>
+      <div class="tc-wf-row">
+        <span class="tc-wf-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
+        <div>
+          <div class="tc-wf-title">Collaborate on Your Project</div>
+          <div class="tc-wf-desc">Work seamlessly across research, execution, and documentation while maintaining secure collaboration, controlled access, and protected knowledge exchange.</div>
+          <div class="tc-wf-signals"><span class="tc-wf-signal">Controlled Collaboration</span><span class="tc-wf-signal">Permission-Based Access</span><span class="tc-wf-signal">Protected Knowledge Transfer</span></div>
+        </div>
+      </div>
+      <div class="tc-wf-row">
+        <span class="tc-wf-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
+        <div>
+          <div class="tc-wf-title">Evaluate Requests &amp; Commercial Discussions</div>
+          <div class="tc-wf-desc">Review quotations and commercial terms with complete confidentiality, governed workflows, and secure engagement with verified partners.</div>
+          <div class="tc-wf-signals"><span class="tc-wf-signal">Proposal Confidentiality</span><span class="tc-wf-signal">Commercial Protection</span><span class="tc-wf-signal">Verified Partners</span></div>
+        </div>
+      </div>
+      <div class="tc-wf-row">
+        <span class="tc-wf-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
+        <div>
+          <div class="tc-wf-title">Collaborate with Scira</div>
+          <div class="tc-wf-desc">Leverage AI with confidence. Scira only accesses the project context and information you explicitly authorize, ensuring secure, permission-based AI assistance.</div>
+          <div class="tc-wf-signals"><span class="tc-wf-signal">Authorized AI Access</span><span class="tc-wf-signal">Controlled Context</span><span class="tc-wf-signal">Secure AI Collaboration</span></div>
+        </div>
+      </div>
     </div>
 
-    <div class="reqsec-sec-eyebrow">Your Information. Your Control.</div>
-    <div class="reqsec-control-sub">You decide what you share. Scinode Secure helps ensure that every submission benefits from:</div>
-    <ul class="reqsec-list">
-      <li>Controlled Project Visibility</li><li>Secure Document Handling</li><li>Commercial Confidentiality</li><li>Permission-Based Collaboration</li><li>Governed Agreements</li><li>Platform Security</li>
-    </ul>
-
-    <div class="reqsec-footer">
-      <div class="reqsec-powered"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>Powered by Scinode Secure</div>
+    <div class="tc-footer">
+      <div class="tc-powered"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>Powered by Scinode Secure</div>
     </div>
   </div>
 </div>

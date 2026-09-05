@@ -1993,6 +1993,9 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-result-note{font-family:var(--font);font-size:11.5px;color:var(--text-2);background:var(--page-bg);border-radius:var(--radius-sm);padding:10px 14px;margin-top:18px;text-align:left;}
 .af-result-note b{color:var(--text-1);}
 .af-result .af-submit{max-width:260px;}
+.af-result-ghost-row{display:flex;gap:24px;justify-content:center;margin-top:16px;}
+.af-result-ghost-btn{background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}
+.af-result-ghost-btn:hover{text-decoration:underline;}
 
 .af-devbar{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:500;background:var(--navy-500);border-radius:20px;box-shadow:var(--shadow-hero);padding:7px 9px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;max-width:calc(100vw - 24px);justify-content:center;}
 .af-devbar-group{display:flex;background:rgba(255,255,255,.08);border-radius:var(--radius-full);padding:3px;gap:2px;}

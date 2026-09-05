@@ -23,8 +23,8 @@
   <div class="af-devbar-group">
     <button id="af-dev-platform-atoms" class="active" onclick="afSetPlatform('atoms')">ATOMS</button>
     <button id="af-dev-platform-ions" onclick="afSetPlatform('ions')">IONS</button>
-    <button disabled title="Built in the next phase">Customers</button>
-    <button disabled title="Built in the next phase">Deep Research</button>
+    <button id="af-dev-platform-customers" onclick="afSetPlatform('customers')">Customers</button>
+    <button id="af-dev-platform-deepresearch" onclick="afSetPlatform('deepresearch')">Deep Research</button>
   </div>
   <div class="af-devbar-sep"></div>
   <span class="af-devbar-label">Screen</span>
@@ -299,6 +299,10 @@
           <div class="af-result-body" id="af-result-body"></div>
           <div class="af-result-note" id="af-result-note"></div>
           <button type="button" class="af-submit hidden" id="af-result-cta"></button>
+          <div class="af-result-ghost-row hidden" id="af-result-ghost-row">
+            <button type="button" class="af-result-ghost-btn" id="af-result-ghost-1" onclick="afDeepResearchGhost('Complete Profile')">Complete Profile</button>
+            <button type="button" class="af-result-ghost-btn" id="af-result-ghost-2" onclick="afDeepResearchGhost('Create Team')">Create Team</button>
+          </div>
         </div>
       </div>
 
@@ -334,16 +338,36 @@
       company: 'Meridian Labs',
       name: 'Priya Nair',
       emailByDomain: { verified: 'priya@meridianlabs.com', 'new': 'priya@newlab.com', public: 'priya@gmail.com' }
+    },
+    customers: {
+      label: 'Scinode for Customers',
+      headline: 'Source chemistry products and manage requests in one place.',
+      pageSub: 'Customer workspace',
+      accountNoun: 'Scinode',
+      company: 'Nova Specialty Chemicals',
+      name: 'Ananya Verma',
+      emailByDomain: { verified: 'ananya@novaspecialty.com', 'new': 'ananya@newbuyer.com', public: 'ananya@gmail.com' }
+    },
+    deepresearch: {
+      label: 'Deep Research',
+      headline: 'Turn your research questions into answers, instantly.',
+      pageSub: 'Researcher workspace',
+      accountNoun: 'Deep Research',
+      company: 'Caltech Chemistry Lab',
+      name: 'Dr. Ananya Rao',
+      emailByDomain: { verified: 'ananya.rao@caltech.edu', 'new': 'ananya.rao@newlab.edu', public: 'ananya.rao@gmail.com' }
     }
   };
   var AF_ECOSYSTEM_SUB = 'One account gets you into every Scinode platform — ATOMS, IONS, Scinode for Customers, and Deep Research.';
 
   function afSetPlatform(p) {
-    // Customers / Deep Research aren't wired up yet — see IDENTITY_ACCESS_SPEC.md.
     if (!AF_PLATFORM[p]) return;
     afState.platform = p;
     afState.domain = 'verified';
     afState.source = 'direct';
+    // Switching platform while sitting on a result screen would otherwise leave
+    // stale content (e.g. Deep Research's welcome copy) under the new brand panel.
+    if (afState.screen === 'result') afShowScreen('signup');
     afRender();
   }
 
@@ -474,8 +498,22 @@
     var body = document.getElementById('af-result-body');
     var note = document.getElementById('af-result-note');
     var cta = document.getElementById('af-result-cta');
+    var ghostRow = document.getElementById('af-result-ghost-row');
+    ghostRow.classList.add('hidden');
 
-    if (reason === 'activated') {
+    if (reason === 'activated' && afState.platform === 'deepresearch') {
+      // First-login experience is Deep Research-specific (IDENTITY_ACCESS_SPEC.md §2.7):
+      // the user can start research immediately — profile/team are optional, not blockers.
+      icon.className = 'af-result-icon af-success';
+      icon.innerHTML = AF_ICON_CHECK;
+      title.textContent = 'Welcome to Deep Research';
+      body.textContent = "You're verified and ready to go — no additional review needed.";
+      note.innerHTML = 'Completing your profile or creating a team is optional and never blocks access — you can do either anytime after login.';
+      cta.classList.remove('hidden');
+      cta.textContent = 'Start Research →';
+      cta.onclick = function () { afShowScreen('signup'); afSetDomain('verified'); afSetSource('direct'); };
+      ghostRow.classList.remove('hidden');
+    } else if (reason === 'activated') {
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = "You're all set!";
@@ -505,6 +543,11 @@
     }
 
     afShowScreen('result');
+  }
+
+  function afDeepResearchGhost(action) {
+    var note = document.getElementById('af-result-note');
+    note.innerHTML = '<b>' + action + '</b> is an optional post-login step — available anytime, never blocks access. Not built out in this phase.';
   }
 
   afRender();

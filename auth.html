@@ -31,6 +31,8 @@
   <div class="af-devbar-group">
     <button id="af-dev-screen-signup" class="active" onclick="afShowScreen('signup')">Sign Up</button>
     <button id="af-dev-screen-signin" onclick="afShowScreen('signin')">Sign In</button>
+    <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
+    <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
   </div>
   <span id="af-devbar-signup-only" style="display:contents;">
     <div class="af-devbar-sep"></div>
@@ -291,17 +293,41 @@
         </form>
       </div>
 
-      <!-- ══════════ RESULT (pending review / activated / signed in) ══════════ -->
+      <!-- ══════════ RESULT (pending review / activated / rejected / signed in) ══════════ -->
       <div class="af-screen hidden" id="af-screen-result">
         <div class="af-result">
           <div class="af-result-icon" id="af-result-icon"></div>
           <div class="af-result-title" id="af-result-title"></div>
           <div class="af-result-body" id="af-result-body"></div>
           <div class="af-result-note" id="af-result-note"></div>
+          <ul class="af-result-bullets hidden" id="af-result-bullets"></ul>
           <button type="button" class="af-submit hidden" id="af-result-cta"></button>
+          <div class="af-result-subtext hidden" id="af-result-subtext"></div>
           <div class="af-result-ghost-row hidden" id="af-result-ghost-row">
-            <button type="button" class="af-result-ghost-btn" id="af-result-ghost-1" onclick="afDeepResearchGhost('Complete Profile')">Complete Profile</button>
-            <button type="button" class="af-result-ghost-btn" id="af-result-ghost-2" onclick="afDeepResearchGhost('Create Team')">Create Team</button>
+            <div class="af-result-ghost-item">
+              <button type="button" class="af-result-ghost-btn" onclick="afDeepResearchGhost('Complete Profile')">Complete Profile</button>
+              <div class="af-result-ghost-caption">Add a few details to personalize your workspace.</div>
+            </div>
+            <div class="af-result-ghost-item">
+              <button type="button" class="af-result-ghost-btn" onclick="afDeepResearchGhost('Create Team')">Create Team</button>
+              <div class="af-result-ghost-caption">Build a team when you're ready to collaborate.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ VERIFY EMAIL (Phase 1 direct-signup step, before Company/User resolution) ══════════ -->
+      <div class="af-screen hidden" id="af-screen-verify">
+        <div class="af-result">
+          <div class="af-result-icon af-pending" id="af-verify-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <div class="af-result-title">Verify your email</div>
+          <div class="af-result-body">We sent a verification link to <b id="af-verify-email">you@company.com</b>.</div>
+          <div class="af-result-note" id="af-verify-note">Verify your email to finish setting up your ATOMS account.</div>
+          <button type="button" class="af-submit" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
+          <div class="af-result-ghost-row">
+            <button type="button" class="af-result-ghost-btn" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
           </div>
         </div>
       </div>
@@ -318,8 +344,8 @@
 
   var AF_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
-  // Everything that varies by platform — see IDENTITY_ACCESS_SPEC.md §Platforms.
-  // Only ATOMS + IONS are wired up so far; Customers + Deep Research come next.
+  // Everything that varies by platform — see IDENTITY_ACCESS_SPEC.md §Platforms
+  // and "Phase 1 - User Management.pdf" (pending/approved copy, §15 &amp; §30.1).
   var AF_PLATFORM = {
     atoms: {
       label: 'ATOMS',
@@ -328,7 +354,15 @@
       accountNoun: 'ATOMS',
       company: 'Acme Manufacturing',
       name: 'Rahul Mehta',
-      emailByDomain: { verified: 'rahul@acme.com', 'new': 'rahul@newcompany.com', public: 'rahul@gmail.com' }
+      emailByDomain: { verified: 'rahul@acme.com', 'new': 'rahul@newcompany.com', public: 'rahul@gmail.com' },
+      pendingTitle: 'Your ATOMS workspace is almost ready',
+      pendingBody: "We're verifying your company details and access. Once approved, you can start using Scinode for Manufacturers.",
+      pendingBullets: [
+        'Generate Demand for your product catalogue',
+        'Match with demand opportunities relevant to your industry/capabilities',
+        'Unlock RnD intelligence and product intelligence to grow your business'
+      ],
+      approvedSubtext: 'Start boosting your plant capacity utilization.'
     },
     ions: {
       label: 'IONS',
@@ -337,7 +371,15 @@
       accountNoun: 'IONS',
       company: 'Meridian Labs',
       name: 'Priya Nair',
-      emailByDomain: { verified: 'priya@meridianlabs.com', 'new': 'priya@newlab.com', public: 'priya@gmail.com' }
+      emailByDomain: { verified: 'priya@meridianlabs.com', 'new': 'priya@newlab.com', public: 'priya@gmail.com' },
+      pendingTitle: 'Your IONS workspace is almost ready',
+      pendingBody: "We're verifying your company details and access. Once approved, you can start using Scinode for Researchers.",
+      pendingBullets: [
+        'Discover relevant R&amp;D opportunities based on your capabilities',
+        'Unlock RnD intelligence to help assess the best path to molecule development',
+        'Get access to Market intelligence of your products to help grow your business'
+      ],
+      approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.'
     },
     customers: {
       label: 'Scinode for Customers',
@@ -346,7 +388,15 @@
       accountNoun: 'Scinode',
       company: 'Nova Specialty Chemicals',
       name: 'Ananya Verma',
-      emailByDomain: { verified: 'ananya@novaspecialty.com', 'new': 'ananya@newbuyer.com', public: 'ananya@gmail.com' }
+      emailByDomain: { verified: 'ananya@novaspecialty.com', 'new': 'ananya@newbuyer.com', public: 'ananya@gmail.com' },
+      pendingTitle: 'Your Scinode workspace is almost ready',
+      pendingBody: "We're verifying your company details and access. Once approved, you'll be able to explore the Scinode ecosystem and manage your requests and project activity from one place.",
+      pendingBullets: [
+        'Discover diverse set of manufacturers and R&amp;D capabilities of Scinode',
+        'Raise and track requests for your Compliance, Manufacturing, Quality and Development requirements',
+        "Track your order after placing it till it's delivered to your location"
+      ],
+      approvedSubtext: 'Start exploring the Scinode ecosystem.'
     },
     deepresearch: {
       label: 'Deep Research',
@@ -355,7 +405,15 @@
       accountNoun: 'Deep Research',
       company: 'Caltech Chemistry Lab',
       name: 'Dr. Ananya Rao',
-      emailByDomain: { verified: 'ananya.rao@caltech.edu', 'new': 'ananya.rao@newlab.edu', public: 'ananya.rao@gmail.com' }
+      emailByDomain: { verified: 'ananya.rao@caltech.edu', 'new': 'ananya.rao@newlab.edu', public: 'ananya.rao@gmail.com' },
+      pendingTitle: 'Your research workspace is almost ready',
+      pendingBody: "We're verifying your company details and access. Once approved, you can start researching the best routes for your product development journey.",
+      pendingBullets: [
+        'Search compounds, routes, literature and patents in one place.',
+        'Get ranked routes, feasibility, cost and IP-risk insights.',
+        'Calculate scale-up, materials, conditions and save every result.'
+      ],
+      approvedSubtext: 'Start your first research workflow.'
     }
   };
   var AF_ECOSYSTEM_SUB = 'One account gets you into every Scinode platform — ATOMS, IONS, Scinode for Customers, and Deep Research.';
@@ -365,9 +423,9 @@
     afState.platform = p;
     afState.domain = 'verified';
     afState.source = 'direct';
-    // Switching platform while sitting on a result screen would otherwise leave
-    // stale content (e.g. Deep Research's welcome copy) under the new brand panel.
-    if (afState.screen === 'result') afShowScreen('signup');
+    // Switching platform while sitting on a result/verify screen would otherwise
+    // leave stale content (e.g. Deep Research's welcome copy) under the new brand panel.
+    if (afState.screen === 'result' || afState.screen === 'verify') afShowScreen('signup');
     afRender();
   }
 
@@ -421,6 +479,7 @@
     document.getElementById('af-signup-h1').textContent = 'Create your ' + meta.accountNoun + ' account';
     document.getElementById('af-signup-sub').innerHTML = meta.pageSub;
     document.getElementById('af-signin-sub').textContent = 'Access your ' + meta.accountNoun + ' workspace';
+    document.getElementById('af-verify-note').textContent = 'Verify your email to finish setting up your ' + meta.accountNoun + ' account.';
 
     // Company name — locked field, Enterprise SSO button, Sign In org panel.
     document.getElementById('af-company-locked-value').textContent = meta.company;
@@ -458,7 +517,7 @@
   }
 
   function afShowScreen(name) {
-    ['signup', 'signin', 'result'].forEach(function (n) {
+    ['signup', 'signin', 'result', 'verify'].forEach(function (n) {
       var el = document.getElementById('af-screen-' + n);
       if (el) el.classList.toggle('hidden', n !== name);
     });
@@ -481,9 +540,50 @@
     document.getElementById('af-signin-password').required = !afState.signinSSO;
   }
 
+  // Set once a direct signup is submitted, read back when "I've verified —
+  // Continue" is clicked on the Verify Email screen.
+  var afPendingResultReason = null;
+
   function afSubmitSignup(e) {
     if (e) e.preventDefault();
-    afShowResult(afState.domain === 'verified' ? 'activated' : 'pending');
+    var reason = afState.domain === 'verified' ? 'activated' : 'pending';
+    if (afState.source === 'direct') {
+      // Phase 1 authentication is Email → Password → Email Verification
+      // (Phase 1 - User Management.pdf §"Phase 1 authentication") — SSO auth
+      // already verifies the identity, so only the direct path stops here.
+      afPendingResultReason = reason;
+      var emailInput = document.getElementById('af-section3-email');
+      afShowVerify(emailInput && emailInput.value ? emailInput.value : null);
+    } else {
+      afShowResult(reason);
+    }
+  }
+
+  function afShowVerify(email) {
+    var meta = AF_PLATFORM[afState.platform];
+    document.getElementById('af-verify-email').textContent = email || meta.emailByDomain[afState.domain] || 'you@company.com';
+    document.getElementById('af-resend-btn').textContent = 'Resend verification email';
+    afShowScreen('verify');
+  }
+
+  // Devbar quick-jump — lets reviewers preview this screen without submitting
+  // the form first. Falls back to the current scenario's example email.
+  function afPreviewVerify() {
+    if (afPendingResultReason === null) {
+      afPendingResultReason = afState.domain === 'verified' ? 'activated' : 'pending';
+    }
+    afShowVerify(null);
+  }
+
+  function afVerifyEmailContinue() {
+    afShowResult(afPendingResultReason || (afState.domain === 'verified' ? 'activated' : 'pending'));
+    afPendingResultReason = null;
+  }
+
+  function afResendVerification() {
+    var btn = document.getElementById('af-resend-btn');
+    btn.textContent = 'Verification email resent ✓';
+    setTimeout(function () { btn.textContent = 'Resend verification email'; }, 2500);
   }
 
   function afSubmitSignin(e) {
@@ -497,17 +597,23 @@
     var title = document.getElementById('af-result-title');
     var body = document.getElementById('af-result-body');
     var note = document.getElementById('af-result-note');
+    var bullets = document.getElementById('af-result-bullets');
     var cta = document.getElementById('af-result-cta');
+    var subtext = document.getElementById('af-result-subtext');
     var ghostRow = document.getElementById('af-result-ghost-row');
     ghostRow.classList.add('hidden');
+    bullets.classList.add('hidden');
+    bullets.innerHTML = '';
+    subtext.classList.add('hidden');
+    subtext.textContent = '';
 
     if (reason === 'activated' && afState.platform === 'deepresearch') {
-      // First-login experience is Deep Research-specific (IDENTITY_ACCESS_SPEC.md §2.7):
-      // the user can start research immediately — profile/team are optional, not blockers.
+      // First-login experience is Deep Research-specific (IDENTITY_ACCESS_SPEC.md §2.7,
+      // Phase 1 - User Management.pdf §36): start immediately, profile/team are optional.
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = 'Welcome to Deep Research';
-      body.textContent = "You're verified and ready to go — no additional review needed.";
+      body.textContent = 'Your research workspace is ready to explore.';
       note.innerHTML = 'Completing your profile or creating a team is optional and never blocks access — you can do either anytime after login.';
       cta.classList.remove('hidden');
       cta.textContent = 'Start Research →';
@@ -517,19 +623,34 @@
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = "You're all set!";
-      body.textContent = 'Your account is verified and ready to go — no additional review needed.';
+      body.textContent = 'Your account is ready. Welcome to ' + meta.accountNoun + '.';
       note.innerHTML = '<b>' + meta.company + '</b> is a verified organization, so your account was activated immediately. No company-routing admin approval required.';
       cta.classList.remove('hidden');
       cta.textContent = 'Continue to ' + meta.accountNoun + ' →';
       cta.onclick = function () { afShowScreen('signup'); afSetDomain('verified'); afSetSource('direct'); };
+      if (meta.approvedSubtext) { subtext.textContent = meta.approvedSubtext; subtext.classList.remove('hidden'); }
     } else if (reason === 'pending') {
       icon.className = 'af-result-icon af-pending';
       icon.innerHTML = AF_ICON_CLOCK;
-      title.textContent = 'Thanks — verifying your company';
-      body.textContent = 'Our team will verify your company and review your access before activating your account.';
+      title.textContent = meta.pendingTitle;
+      body.textContent = meta.pendingBody;
       note.innerHTML = afState.domain === 'public'
         ? "<b>Public email domain</b> — we couldn't confirm your company automatically, so this goes through admin approval."
         : "<b>New company</b> — this domain isn't in our records yet, so an admin will verify it before activating your account.";
+      cta.classList.add('hidden');
+      if (meta.pendingBullets && meta.pendingBullets.length) {
+        bullets.innerHTML = '<div class="af-result-note" style="margin-top:16px;margin-bottom:-6px;background:none;padding:0;font-weight:600;color:var(--text-1);">Coming next:</div>' +
+          meta.pendingBullets.map(function (b) { return '<li>' + b + '</li>'; }).join('');
+        bullets.classList.remove('hidden');
+      }
+    } else if (reason === 'rejected') {
+      // Phase 1 - User Management.pdf §30.5 — reached after an admin rejects the
+      // application; keep messaging neutral, never expose internal review reasons.
+      icon.className = 'af-result-icon af-danger';
+      icon.innerHTML = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
+      title.textContent = "We couldn't activate your account";
+      body.textContent = "We couldn't complete your account setup with the information provided.";
+      note.innerHTML = 'If you think this is incorrect, please contact our team at <b>support@scinode.com</b>.';
       cta.classList.add('hidden');
     } else if (reason === 'signin') {
       icon.className = 'af-result-icon af-success';

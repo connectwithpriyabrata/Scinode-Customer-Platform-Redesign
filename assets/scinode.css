@@ -1914,12 +1914,13 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 
 /* ══════════════════════════════════════════════════════════════════════
    AUTH / SIGNUP / SSO (auth.html, invite.html) — pre-login pages, no
-   sidebar/top-nav shell. Floating rounded card (brand panel + form
-   content) centered on a soft backdrop. `.af-` prefix. */
-.af-shell{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:40px;background:radial-gradient(circle at 22% 18%,rgba(2,150,138,.07),transparent 45%),radial-gradient(circle at 82% 85%,rgba(3,50,67,.05),transparent 40%),var(--page-bg);overflow:auto;}
-.af-card-frame{width:100%;max-width:1120px;max-height:calc(100vh - 80px);display:flex;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hero);background:var(--white);}
+   sidebar/top-nav shell. Full-height split composition: rounded, inset
+   brand panel (~50%) + plain, vertically-centered auth panel. `.af-` prefix.
+   Layout only — existing auth UI/copy/logic is unchanged, just relocated
+   into this container (see "Sign up page revamp.pdf"). */
+.af-shell{position:fixed;inset:0;display:flex;background:var(--page-bg);}
 
-.af-brand{flex:0 0 40%;min-width:360px;background:var(--gradient);color:#fff;display:flex;flex-direction:column;padding:40px;position:relative;overflow:hidden;}
+.af-brand{flex:0 0 50%;min-width:360px;margin:16px 0 16px 16px;border-radius:24px;background:var(--gradient);color:#fff;display:flex;flex-direction:column;padding:40px;position:relative;overflow:hidden;}
 .af-brand::before{content:'';position:absolute;top:-90px;right:-70px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(150,221,165,.28),transparent 70%);pointer-events:none;}
 .af-brand::after{content:'';position:absolute;bottom:-110px;left:-70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(2,150,138,.35),transparent 70%);pointer-events:none;}
 .af-brand-decor{position:absolute;inset:0;opacity:.5;pointer-events:none;}
@@ -1930,7 +1931,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-brand-sub{font-family:var(--font);font-size:14px;line-height:1.6;color:rgba(255,255,255,.72);max-width:360px;margin-top:16px;}
 .af-brand-foot{font-family:var(--font);font-size:12px;color:rgba(255,255,255,.45);position:relative;z-index:1;margin-top:auto;padding-top:32px;}
 
-.af-content{flex:1;min-width:0;overflow-y:auto;display:flex;justify-content:center;padding:64px 32px;}
+.af-content{flex:1;min-width:0;overflow-y:auto;display:flex;justify-content:center;padding:64px 48px;background:var(--white);}
 .af-card{width:100%;max-width:440px;margin:auto 0;}
 .af-screen.hidden{display:none!important;}
 
@@ -2018,8 +2019,6 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-devbar-sep{width:1px;height:18px;background:rgba(255,255,255,.15);margin:0 2px;}
 
 @media (max-width:900px){
-  .af-shell{padding:16px;}
-  .af-card-frame{border-radius:16px;max-height:none;}
   .af-brand{display:none;}
   .af-content{padding-top:104px;}
 }

@@ -75,11 +75,11 @@
 
 ---
 
-## Proposed file split for the prototype
+## File split for the prototype
 
-- **`auth.html`** — screens #1–16: signup (all 3 sections + all company-resolution branches), SSO results, sign-in. One file, product-switcher state (ATOMS/IONS/Customers/Deep Research) like `switchDay` in `scinode-day10.html`, plus sub-states for the company-resolution branch and SSO-vs-direct path.
-- **`invite.html`** — screens #17–19: invitation is a distinct entry point (arrives via link, not the platform picker), minimal chrome, no product switcher needed since the invite payload already fixes the platform.
-- Deep Research's first-login welcome (#22) — small addendum, could live at the bottom of `auth.html`'s Deep Research state as the "after signup" terminus.
-- Admin queue/Approve/Reject/Reassign (#23–25) — deferred to the User Management phase, since the doc doesn't specify UI for it.
+- **`auth.html`** ✅ built — screens #1–16 + email verification + rejected state (added per "Phase 1 - User Management.pdf"): signup (all 3 sections + all company-resolution branches), SSO results, sign-in. One file, product-switcher state (ATOMS/IONS/Customers/Deep Research) like `switchDay` in `scinode-day10.html`, plus sub-states for the company-resolution branch and SSO-vs-direct path. Full-height split layout per "Sign up page revamp.pdf". Dev toolbar is collapsible/draggable.
+- **`invite.html`** ✅ built — screens #17–19: invitation landing (company/role/team/inviter, no company search/selection) → authenticate (SSO or email, no platform/company fields) → complete profile (only genuinely missing fields — Name skipped if SSO-provided, Existing-user scenario skips profile entirely) → confirmation. Same platform-switcher + devbar pattern as `auth.html`, same visual system.
+- Deep Research's first-login welcome (#22) — built as part of `auth.html`'s Deep Research "activated" state.
+- Admin queue/Approve/Reject/Reassign (#23–25) — **still not built**, deferred to the User Management phase per user direction (2026-09-08). Only the user-facing pending/rejected messaging exists in `auth.html`.
 
 Not building anything yet — this is the inventory to review before we touch HTML.

@@ -62,6 +62,16 @@
     <span class="af-devbar-label">Sign In</span>
     <div class="af-devbar-group">
       <button id="af-dev-signinsso" onclick="afToggleSigninSSO()">SSO org detected</button>
+      <button id="af-dev-signin-nomembership" onclick="afToggleSigninMembership()">No ATOMS membership</button>
+    </div>
+  </span>
+  <span id="af-devbar-verify-only" class="hidden" style="display:contents;">
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Verify</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-verify-pending" class="active" onclick="afSetVerifyState('pending')">Pending</button>
+      <button id="af-dev-verify-expired" onclick="afSetVerifyState('expired')">Expired</button>
+      <button id="af-dev-verify-verified" onclick="afSetVerifyState('verified')">Verified</button>
     </div>
   </span>
   </div>
@@ -111,7 +121,8 @@
       <!-- ══════════ SIGN UP ══════════ -->
       <div class="af-screen" id="af-screen-signup">
         <div class="af-eyebrow-banner">
-          Already using another Scinode platform? You can use the same account here.
+          <b>Already a part of the Scinode ecosystem?</b><br>
+          Your Scinode account works across the ecosystem. Use your existing account here. No need to create another one.
           <button type="button" onclick="afShowScreen('signin')">Sign In →</button>
         </div>
 
@@ -152,30 +163,35 @@
                 <span id="af-company-locked-value">Acme Manufacturing</span>
               </div>
             </div>
-            <div class="af-field-hint">Identified from your company email</div>
+            <div class="af-field-hint">Your company is already verified. You can continue with your account setup.</div>
           </div>
           <div class="af-field hidden" id="af-company-editable">
             <label>Company Name <span class="af-req">*</span></label>
             <input class="af-input" type="text" id="af-company-editable-input" placeholder="Enter company name" required>
             <div class="af-field-hint">New domain — your company will go through a quick verification before activation.</div>
+            <div class="af-field" style="margin-top:14px;">
+              <label>Company Website</label>
+              <input class="af-input" type="url" id="af-company-website-input" placeholder="https://yourcompany.com">
+            </div>
+            <div class="af-field" style="margin-top:14px;margin-bottom:0;">
+              <label>Country</label>
+              <select class="af-select" id="af-company-country-input">
+                <option value="" selected disabled>Select country</option>
+                <option>India</option>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Germany</option>
+                <option>China</option>
+                <option>Singapore</option>
+                <option>United Arab Emirates</option>
+                <option>Australia</option>
+                <option>Other</option>
+              </select>
+            </div>
           </div>
           <div class="af-field hidden" id="af-company-public">
             <label>Which company do you represent? <span class="af-req">*</span></label>
-            <div class="af-company-search-row">
-              <select class="af-select" id="af-company-public-select" required>
-                <option value="" selected disabled>Search company...</option>
-                <option>Acme Manufacturing</option>
-                <option>Nova Specialty Chemicals</option>
-                <option>Meridian Labs</option>
-              </select>
-            </div>
-            <button type="button" class="af-company-add-link" onclick="document.getElementById('af-public-add-new').classList.toggle('hidden')">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-              Add New Company
-            </button>
-            <div class="af-field hidden" id="af-public-add-new" style="margin-top:10px;">
-              <input class="af-input" type="text" placeholder="Company name">
-            </div>
+            <input class="af-input" type="text" id="af-company-public-input" placeholder="Enter company name" required>
             <div class="af-field-hint">Public email domain — your access will need admin approval either way.</div>
           </div>
 
@@ -187,21 +203,44 @@
 
           <div class="af-field">
             <label>Phone Number <span class="af-req">*</span></label>
-            <input class="af-input" type="tel" placeholder="Enter phone number" required>
+            <div class="af-phone-row">
+              <select class="af-select af-phone-code" id="af-phone-code" aria-label="Country code">
+                <option value="+91" selected>+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
+                <option value="+49">+49</option>
+                <option value="+61">+61</option>
+                <option value="+65">+65</option>
+                <option value="+86">+86</option>
+                <option value="+971">+971</option>
+              </select>
+              <input class="af-input" type="tel" placeholder="Enter phone number" required>
+            </div>
           </div>
 
-          <!-- Industries — ATOMS only -->
+          <!-- Industries — ATOMS only, multi-select -->
           <div class="af-field" id="af-field-industries">
             <label>Industries <span class="af-req">*</span></label>
-            <select class="af-select" id="af-industries-input" required>
-              <option value="" selected disabled>Select industries</option>
-              <option>Pharmaceuticals</option>
-              <option>Specialty Chemicals</option>
-              <option>Agrochemicals</option>
-              <option>Cosmetics &amp; Personal Care</option>
-              <option>Food &amp; Beverage</option>
-              <option>Industrial Chemicals</option>
-            </select>
+            <div class="af-multiselect-row">
+              <select class="af-select" id="af-industries-select">
+                <option value="" selected disabled>Select industries</option>
+                <option>Agrochemicals</option>
+                <option>Beauty &amp; Personal Care</option>
+                <option>Critical Metals</option>
+                <option>Dyes and Pigments</option>
+                <option>Elemental Derivatives</option>
+                <option>Flame Retardants</option>
+                <option>Flavors &amp; Fragrances</option>
+                <option>Food &amp; Nutrition</option>
+                <option>Industrial Chemicals</option>
+                <option>Metallurgy Chemicals</option>
+                <option>Oleochemicals</option>
+                <option>Pharmaceutical</option>
+              </select>
+              <button type="button" class="af-add-btn" onclick="afAddIndustry()">Add</button>
+            </div>
+            <div class="af-chip-row" id="af-industries-chips"></div>
+            <div class="af-field-error hidden" id="af-industries-error">Select at least one industry.</div>
           </div>
 
           <!-- Profile Type — IONS only -->
@@ -250,8 +289,26 @@
             </div>
             <div class="af-field">
               <label>Password <span class="af-req">*</span></label>
-              <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" required>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
             </div>
+            <div class="af-field">
+              <label>Confirm Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password-confirm" placeholder="Re-enter password" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-field-error hidden" id="af-password-match-error">Passwords don't match.</div>
+            </div>
+          </div>
+
+          <div class="af-consent-row">
+            <label class="af-checkbox-label">
+              <input type="checkbox" required>
+              <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+            </label>
           </div>
 
           <button type="submit" class="af-submit" id="af-signup-submit">Create Account</button>
@@ -271,7 +328,10 @@
             </div>
             <div class="af-field">
               <label>Password <span class="af-req">*</span></label>
-              <input class="af-input" type="password" id="af-signin-password" placeholder="Enter your password" required>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-signin-password" placeholder="Enter your password" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-signin-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
             </div>
             <div class="af-link-row"><button type="button">Forgot password?</button></div>
             <button type="submit" class="af-submit">Sign In</button>
@@ -330,11 +390,11 @@
           <div class="af-result-icon af-pending" id="af-verify-icon">
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           </div>
-          <div class="af-result-title">Verify your email</div>
-          <div class="af-result-body">We sent a verification link to <b id="af-verify-email">you@company.com</b>.</div>
+          <div class="af-result-title" id="af-verify-title">Verify your email</div>
+          <div class="af-result-body" id="af-verify-body">We sent a verification link to <b id="af-verify-email">you@company.com</b>.</div>
           <div class="af-result-note" id="af-verify-note">Verify your email to finish setting up your ATOMS account.</div>
-          <button type="button" class="af-submit" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
-          <div class="af-result-ghost-row">
+          <button type="button" class="af-submit" id="af-verify-cta" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
+          <div class="af-result-ghost-row" id="af-verify-resend-row">
             <button type="button" class="af-result-ghost-btn" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
           </div>
         </div>
@@ -443,10 +503,14 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', source: 'direct', signinSSO: false };
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', source: 'direct', signinSSO: false, hasMembership: true };
+  var afIndustries = [];
+  var afVerifyState = 'pending';
 
   var AF_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
   var AF_ICON_CLOCK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+  var AF_ICON_MAIL = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>';
+  var AF_ICON_WARNING = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>';
 
   var AF_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
@@ -464,9 +528,9 @@
       pendingTitle: 'Your ATOMS workspace is almost ready',
       pendingBody: "We're verifying your company details and access. Once approved, you can start using Scinode for Manufacturers.",
       pendingBullets: [
-        'Generate Demand for your product catalogue',
-        'Match with demand opportunities relevant to your industry/capabilities',
-        'Unlock RnD intelligence and product intelligence to grow your business'
+        'Generate demand for your product catalogue',
+        'Match with demand opportunities relevant to your industry and capabilities',
+        'Unlock R&amp;D and product intelligence to grow your business'
       ],
       approvedSubtext: 'Start boosting your plant capacity utilization.'
     },
@@ -529,6 +593,8 @@
     afState.platform = p;
     afState.domain = 'verified';
     afState.source = 'direct';
+    afIndustries = [];
+    afRenderIndustryChips();
     // Switching platform while sitting on a result/verify screen would otherwise
     // leave stale content (e.g. Deep Research's welcome copy) under the new brand panel.
     if (afState.screen === 'result' || afState.screen === 'verify') afShowScreen('signup');
@@ -543,6 +609,42 @@
   function afSetSource(m) {
     afState.source = m;
     afRender();
+  }
+
+  function afAddIndustry() {
+    var select = document.getElementById('af-industries-select');
+    var val = select.value;
+    if (!val || afIndustries.indexOf(val) !== -1) return;
+    afIndustries.push(val);
+    afRenderIndustryChips();
+    select.value = '';
+  }
+
+  function afRemoveIndustry(industry) {
+    afIndustries = afIndustries.filter(function (i) { return i !== industry; });
+    afRenderIndustryChips();
+  }
+
+  function afRenderIndustryChips() {
+    var row = document.getElementById('af-industries-chips');
+    if (!row) return;
+    row.innerHTML = afIndustries.map(function (industry) {
+      return '<span class="af-chip">' + industry +
+        '<button type="button" onclick="afRemoveIndustry(\'' + industry.replace(/'/g, "\\'") + '\')" aria-label="Remove ' + industry + '">' +
+        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
+    }).join('');
+    var error = document.getElementById('af-industries-error');
+    if (error && afIndustries.length) error.classList.add('hidden');
+  }
+
+  function afTogglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    btn.innerHTML = showing
+      ? '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>'
+      : '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="M2 2l20 20"/></svg>';
   }
 
   function afRender() {
@@ -569,11 +671,10 @@
     // in lockstep with visibility rather than relying on display:none alone.
     document.getElementById('af-name-direct-input').required = s.source === 'direct';
     document.getElementById('af-company-editable-input').required = s.domain === 'new';
-    document.getElementById('af-company-public-select').required = s.domain === 'public';
+    document.getElementById('af-company-public-input').required = s.domain === 'public';
     document.getElementById('af-section3-email').required = s.source === 'direct';
     document.getElementById('af-section3-password').required = s.source === 'direct';
     document.getElementById('af-website-input').required = s.platform === 'ions';
-    document.getElementById('af-industries-input').required = s.platform === 'atoms';
     document.getElementById('af-profiletype-input').required = s.platform === 'ions';
     document.getElementById('af-sso-connected-note').classList.toggle('hidden', s.source === 'direct');
     document.getElementById('af-enterprise-btn-wrap').classList.toggle('hidden', s.domain !== 'verified');
@@ -634,6 +735,7 @@
     });
     document.getElementById('af-devbar-signup-only').classList.toggle('hidden', name !== 'signup');
     document.getElementById('af-devbar-signin-only').classList.toggle('hidden', name !== 'signin');
+    document.getElementById('af-devbar-verify-only').classList.toggle('hidden', name !== 'verify');
     window.scrollTo(0, 0);
   }
 
@@ -646,12 +748,39 @@
     document.getElementById('af-signin-password').required = !afState.signinSSO;
   }
 
+  // Existing Scinode identity, but no membership on *this* platform yet — per
+  // "Atoms sign in/up/sso.pdf" §8: shared identity is not automatic platform
+  // access, so this routes to membership creation/pending, not straight in.
+  function afToggleSigninMembership() {
+    afState.hasMembership = !afState.hasMembership;
+    document.getElementById('af-dev-signin-nomembership').classList.toggle('active', !afState.hasMembership);
+  }
+
   // Set once a direct signup is submitted, read back when "I've verified —
   // Continue" is clicked on the Verify Email screen.
   var afPendingResultReason = null;
 
   function afSubmitSignup(e) {
     if (e) e.preventDefault();
+
+    if (afState.platform === 'atoms' && afIndustries.length === 0) {
+      document.getElementById('af-industries-error').classList.remove('hidden');
+      document.getElementById('af-industries-select').focus();
+      return;
+    }
+
+    if (afState.source === 'direct') {
+      var pw = document.getElementById('af-section3-password').value;
+      var pwConfirm = document.getElementById('af-section3-password-confirm').value;
+      var matchError = document.getElementById('af-password-match-error');
+      if (pw !== pwConfirm) {
+        matchError.classList.remove('hidden');
+        document.getElementById('af-section3-password-confirm').focus();
+        return;
+      }
+      matchError.classList.add('hidden');
+    }
+
     var reason = afState.domain === 'verified' ? 'activated' : 'pending';
     if (afState.source === 'direct') {
       // Phase 1 authentication is Email → Password → Email Verification
@@ -667,9 +796,49 @@
 
   function afShowVerify(email) {
     var meta = AF_PLATFORM[afState.platform];
+    afSetVerifyState('pending');
     document.getElementById('af-verify-email').textContent = email || meta.emailByDomain[afState.domain] || 'you@company.com';
     document.getElementById('af-resend-btn').textContent = 'Resend verification email';
     afShowScreen('verify');
+  }
+
+  // Email verification support states — "Atoms sign in/up/sso.pdf" §4 calls out
+  // Successful verification, Resend, Expired link, and Already verified.
+  function afSetVerifyState(state) {
+    afVerifyState = state;
+    var icon = document.getElementById('af-verify-icon');
+    var title = document.getElementById('af-verify-title');
+    var body = document.getElementById('af-verify-body');
+    var cta = document.getElementById('af-verify-cta');
+    var resendRow = document.getElementById('af-verify-resend-row');
+
+    if (state === 'expired') {
+      icon.className = 'af-result-icon af-danger';
+      icon.innerHTML = AF_ICON_WARNING;
+      title.textContent = 'This link has expired';
+      body.textContent = 'Verification links expire after 24 hours for security. Request a new one below.';
+      cta.classList.add('hidden');
+      resendRow.classList.remove('hidden');
+    } else if (state === 'verified') {
+      icon.className = 'af-result-icon af-success';
+      icon.innerHTML = AF_ICON_CHECK;
+      title.textContent = 'Your email is already verified';
+      body.textContent = 'You can continue setting up your account.';
+      cta.classList.remove('hidden');
+      resendRow.classList.add('hidden');
+    } else {
+      icon.className = 'af-result-icon af-pending';
+      icon.innerHTML = AF_ICON_MAIL;
+      title.textContent = 'Verify your email';
+      body.innerHTML = 'We sent a verification link to <b id="af-verify-email">' + (document.getElementById('af-verify-email') ? document.getElementById('af-verify-email').textContent : 'you@company.com') + '</b>.';
+      cta.classList.remove('hidden');
+      resendRow.classList.remove('hidden');
+    }
+
+    ['pending', 'expired', 'verified'].forEach(function (s) {
+      var btn = document.getElementById('af-dev-verify-' + s);
+      if (btn) btn.classList.toggle('active', state === s);
+    });
   }
 
   // Devbar quick-jump — lets reviewers preview this screen without submitting
@@ -694,7 +863,7 @@
 
   function afSubmitSignin(e) {
     if (e) e.preventDefault();
-    afShowResult('signin');
+    afShowResult(afState.hasMembership ? 'signin' : 'signin-no-membership');
   }
 
   function afShowResult(reason) {
@@ -729,7 +898,7 @@
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = "You're all set!";
-      body.textContent = 'Your account is ready. Welcome to ' + meta.accountNoun + '.';
+      body.textContent = 'Your ' + meta.accountNoun + ' account is ready.';
       note.innerHTML = '<b>' + meta.company + '</b> is a verified organization, so your account was activated immediately. No company-routing admin approval required.';
       cta.classList.remove('hidden');
       cta.textContent = 'Continue to ' + meta.accountNoun + ' →';
@@ -767,6 +936,13 @@
       cta.classList.remove('hidden');
       cta.textContent = 'Continue to ' + meta.accountNoun + ' →';
       cta.onclick = function () { afShowScreen('signin'); };
+    } else if (reason === 'signin-no-membership') {
+      icon.className = 'af-result-icon af-pending';
+      icon.innerHTML = AF_ICON_CLOCK;
+      title.textContent = 'Requesting your ' + meta.accountNoun + ' access';
+      body.textContent = "We found your existing Scinode account — no need to sign up again.";
+      note.innerHTML = "A shared Scinode account means <b>shared identity, not automatic platform access</b>. We're setting up your " + meta.accountNoun + ' membership now.';
+      cta.classList.add('hidden');
     }
 
     afShowScreen('result');

@@ -18,7 +18,14 @@
      jump directly to any of the screen states from IDENTITY_ACCESS_SPEC.md
      without needing real backend logic (email domain lookup, SSO, etc).
      ══════════════════════════════════════════════════════════════════════ -->
-<div class="af-devbar" role="toolbar" aria-label="Prototype scenario controls">
+<div class="af-devbar" role="toolbar" aria-label="Prototype scenario controls" id="af-devbar">
+  <div class="af-devbar-handle" id="af-devbar-handle" title="Drag to move" aria-hidden="true">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>
+  </div>
+  <button type="button" class="af-devbar-toggle" id="af-devbar-toggle" onclick="afDevbarToggle()" title="Collapse toolbar" aria-label="Collapse toolbar" aria-expanded="true">
+    <svg id="af-devbar-toggle-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+  <div class="af-devbar-body" id="af-devbar-body">
   <span class="af-devbar-label">Platform</span>
   <div class="af-devbar-group">
     <button id="af-dev-platform-atoms" class="active" onclick="afSetPlatform('atoms')">ATOMS</button>
@@ -57,6 +64,7 @@
       <button id="af-dev-signinsso" onclick="afToggleSigninSSO()">SSO org detected</button>
     </div>
   </span>
+  </div>
 </div>
 
 <div class="af-shell">
@@ -337,6 +345,104 @@
 </div>
 
 <script>
+  // ── Prototype devbar: draggable + collapsible so it never blocks the page
+  // being reviewed. Position and collapsed state persist via localStorage.
+  (function () {
+    var bar = document.getElementById('af-devbar');
+    var handle = document.getElementById('af-devbar-handle');
+    if (!bar || !handle) return;
+
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+    function setPosition(left, top) {
+      left = clamp(left, 4, window.innerWidth - bar.offsetWidth - 4);
+      top = clamp(top, 4, window.innerHeight - bar.offsetHeight - 4);
+      bar.style.left = left + 'px';
+      bar.style.top = top + 'px';
+      bar.style.transform = 'none';
+    }
+
+    var dragging = false, moved = false, startX, startY, startLeft, startTop;
+
+    function startDrag(clientX, clientY) {
+      dragging = true;
+      moved = false;
+      bar.classList.add('af-devbar-dragging');
+      var rect = bar.getBoundingClientRect();
+      startX = clientX; startY = clientY;
+      startLeft = rect.left; startTop = rect.top;
+    }
+
+    function moveDrag(clientX, clientY) {
+      if (!dragging) return;
+      if (Math.abs(clientX - startX) > 2 || Math.abs(clientY - startY) > 2) moved = true;
+      setPosition(startLeft + (clientX - startX), startTop + (clientY - startY));
+    }
+
+    function stopDrag() {
+      if (!dragging) return;
+      dragging = false;
+      bar.classList.remove('af-devbar-dragging');
+      if (moved) {
+        try { localStorage.setItem('afDevbarPos', JSON.stringify({ left: bar.style.left, top: bar.style.top })); } catch (err) {}
+      }
+    }
+
+    // Classic document-level mousedown/mousemove/mouseup drag (works with both
+    // real input and CDP-style automated mouse events — Pointer Events alone
+    // aren't reliably synthesized by every driver).
+    handle.addEventListener('mousedown', function (e) {
+      startDrag(e.clientX, e.clientY);
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', stopDrag);
+
+    handle.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      var t = e.touches[0];
+      moveDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', stopDrag);
+    document.addEventListener('touchcancel', stopDrag);
+
+    // Restore saved position / collapsed state from a previous visit.
+    try {
+      var saved = JSON.parse(localStorage.getItem('afDevbarPos'));
+      if (saved && saved.left && saved.top) { bar.style.left = saved.left; bar.style.top = saved.top; bar.style.transform = 'none'; }
+    } catch (err) {}
+    try {
+      if (localStorage.getItem('afDevbarCollapsed') === '1') {
+        bar.classList.add('af-collapsed');
+        var t = document.getElementById('af-devbar-toggle');
+        t.setAttribute('aria-expanded', 'false');
+        t.title = 'Expand toolbar';
+        t.setAttribute('aria-label', 'Expand toolbar');
+      }
+    } catch (err) {}
+
+    // Keep it on-screen if the viewport shrinks after a manual drag.
+    window.addEventListener('resize', function () {
+      if (!bar.style.left) return;
+      var rect = bar.getBoundingClientRect();
+      setPosition(rect.left, rect.top);
+    });
+  })();
+
+  function afDevbarToggle() {
+    var bar = document.getElementById('af-devbar');
+    var collapsed = bar.classList.toggle('af-collapsed');
+    var toggle = document.getElementById('af-devbar-toggle');
+    toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    toggle.title = collapsed ? 'Expand toolbar' : 'Collapse toolbar';
+    toggle.setAttribute('aria-label', collapsed ? 'Expand toolbar' : 'Collapse toolbar');
+    try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
+  }
+
   var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', source: 'direct', signinSSO: false };
 
   var AF_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';

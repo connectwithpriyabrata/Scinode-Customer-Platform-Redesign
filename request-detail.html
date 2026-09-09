@@ -86,7 +86,13 @@
 
 <main class="main" role="main">
   <div class="content" style="padding-top:24px;">
-    <a href="requests.html" class="rfqdet-back"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0l7 7m-7-7l7-7"/></svg>Back to Requests</a>
+    <div class="rfqdet-toprow">
+      <a href="requests.html" class="rfqdet-back"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0l7 7m-7-7l7-7"/></svg>Back to Requests</a>
+      <div class="sbv-toggle" role="tablist" aria-label="Request Details layout compare" title="Documents tab (new) vs. classic single-page layout — demo comparison, not a saved preference">
+        <button type="button" role="tab" id="rfqdet-layout-classic" class="active" aria-selected="true" onclick="setDocsTabMode(false)">Classic View</button>
+        <button type="button" role="tab" id="rfqdet-layout-new" aria-selected="false" onclick="setDocsTabMode(true)">Documents Tab</button>
+      </div>
+    </div>
     <div id="rfqdet-page"></div>
   </div>
 </main>
@@ -117,6 +123,9 @@
 </div>
 
 <style>
+  .rfqdet-toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .rfqdet-toprow .rfqdet-back{margin-bottom:0;}
+  .rfqdet-toprow .sbv-toggle button{white-space:nowrap;}
   .rfqdet-back{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text-2);text-decoration:none;margin-bottom:16px;transition:color .12s;}
   .rfqdet-back:hover{color:var(--teal-600);}
 
@@ -124,10 +133,17 @@
   .rfqdet-notfound h2{font-family:var(--font-heading);font-size:18px;font-weight:600;color:var(--text-1);margin-bottom:8px;}
   .rfqdet-notfound p{font-family:var(--font);font-size:13px;color:var(--text-2);}
 
-  .rfqdet-card{border-radius:16px;overflow:hidden;box-shadow:var(--shadow-hero);}
-  .rfqdet-banner{position:relative;overflow:hidden;background:radial-gradient(900px 360px at 85% -20%,rgba(2,150,138,.22),transparent 60%),linear-gradient(135deg,#016358 0%,#182133 100%);padding:26px 28px 22px;}
+  /* Request Details is now 3 visually separate frames, stacked with a 24px gap
+     (rather than one continuous card): header (title + ID/status/type/Secure
+     badges), status/progress (stepper), then the tabs+body frame. Each frame owns
+     its own rounding/shadow instead of relying on a shared outer card. */
+  .rfqdet-card{display:flex;flex-direction:column;gap:24px;}
+  .rfqdet-header-frame,.rfqdet-progress-frame{position:relative;overflow:hidden;background:radial-gradient(900px 360px at 85% -20%,rgba(2,150,138,.22),transparent 60%),linear-gradient(135deg,#016358 0%,#182133 100%);border-radius:16px;box-shadow:var(--shadow-hero);}
+  .rfqdet-header-frame{padding:26px 28px;position:sticky;top:var(--topnav);z-index:5;}
+  .rfqdet-progress-frame{padding:22px 28px;}
+  .rfqdet-body-frame{border-radius:16px;overflow:hidden;box-shadow:var(--shadow-hero);}
   .rfqdet-title{font-family:var(--font-heading);font-size:22px;font-weight:600;color:#fff;letter-spacing:-0.01em;margin-bottom:12px;}
-  .rfqdet-badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+  .rfqdet-badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .rfqdet-id{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;color:rgba(255,255,255,.88);}
   .rfqdet-copy{background:rgba(255,255,255,.12);border:0.5px solid rgba(255,255,255,.2);color:#fff;width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s;}
   .rfqdet-copy:hover{background:rgba(255,255,255,.22);}
@@ -157,6 +173,19 @@
   .rfqdet-current-head{display:flex;align-items:center;gap:10px;color:#fff;}
   .rfqdet-current-title{font-family:var(--font);font-size:15px;font-weight:700;color:#fff;}
   .rfqdet-current-date{font-family:var(--font);font-size:11.5px;color:rgba(255,255,255,.75);margin-top:2px;}
+  /* Compact "Secure Active" stage-header indicator — icon-only treatment (Option 1
+     from the stage-header comparison), right-aligned in .rfqdet-current-head. Sits
+     on the solid teal-600 header, so it uses the dark-surface Secure accent
+     (secure-200 -> white) rather than the banner pill's light fill: secure-200
+     holds 4.81:1 against teal-600, white 7.17:1, so contrast stays safe through the
+     whole pulse. Shown on the triggering stage and every stage after it
+     (secureActiveByStage). No text label — meaning is carried by the icon plus its
+     aria-label/tooltip, so it stays unobtrusive next to the stage title/date. */
+  .secure-stage-icon{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;color:var(--secure-200);cursor:default;}
+  .secure-stage-icon svg{width:18px;height:18px;display:block;}
+  .secure-stage-icon.beat{animation:secureStageBeat 2.6s ease-in-out infinite;}
+  @keyframes secureStageBeat{0%,100%{transform:scale(1);color:var(--secure-200);}50%{transform:scale(1.18);color:#fff;}}
+  @media (prefers-reduced-motion:reduce){ .secure-stage-icon.beat{animation:none;} }
   .rfqdet-brief{background:var(--teal-50);border:0.5px solid var(--teal-100);border-radius:10px;padding:16px;}
   .rfqdet-brief-title{font-family:var(--font);font-size:13.5px;font-weight:700;color:var(--text-1);}
   .rfqdet-brief-sub{font-family:var(--font);font-size:11.5px;color:var(--text-2);margin-top:2px;margin-bottom:10px;}
@@ -275,27 +304,52 @@
 
   /* Single identity pill sits inline among the other pills in the dark Request
      Details banner, matching that row's existing solid-chip pattern (Status/Type).
-     Pill stays Secure Indigo (identity) in both states; the pill container and
-     label text stay static — in the Active state only the icon breathes (slow
-     opacity pulse), same restrained cadence as the Dashboard's own Scinode Secure
-     motion (secPulse/secFloat in scinode.css) and the existing helpPulse breathing
-     pattern, rather than a fast/urgent blink, per the Secure design system's
-     "confidence, not urgency" motion guidance. */
-  .secure-id-pill{display:inline-flex;align-items:center;gap:6px;background:var(--secure-100);color:var(--secure-700);font-family:var(--font);font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;border:none;transition:opacity .12s;}
+     Deeper #CCD3F8 fill (a custom step between secure-200 and secure-300, chosen
+     over the light secure-100 tint for a much more distinguishable chip) stays
+     fixed in both states; in the Active state a light sweep crosses the pill while
+     the icon carries its own slow scale + color-deepen pulse underneath, so the
+     two read as one combined "alive" signal rather than two competing animations.
+     The icon pulse stays within the Indigo family (secure-800 -> secure-900)
+     rather than shifting to Success green, which would fail contrast at this
+     lightness. Same restrained cadence as the Dashboard's own Scinode Secure
+     motion (secPulse/secFloat in scinode.css), never a fast/urgent blink, per the
+     Secure design system's "confidence, not urgency" motion guidance. */
+  .secure-id-pill{display:inline-flex;align-items:center;gap:6px;background:var(--secure-200);color:var(--secure-800);font-family:var(--font);font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;border:none;position:relative;overflow:hidden;transition:opacity .12s;}
+  .secure-id-pill.corner{position:absolute;top:26px;right:28px;z-index:2;box-shadow:0 6px 16px rgba(0,0,0,.16);}
   .secure-id-pill:hover{opacity:.85;}
   .secure-id-icon{display:inline-flex;}
-  .secure-id-pill.active .secure-id-icon{animation:secureIdPulse 2.2s ease-in-out infinite;}
-  @keyframes secureIdPulse{0%,100%{opacity:1;}50%{opacity:.5;}}
-  @media (prefers-reduced-motion:reduce){ .secure-id-pill.active .secure-id-icon{animation:none;} }
+  .secure-id-pill.active::after{content:'';position:absolute;top:0;bottom:0;width:46%;background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.65) 50%,rgba(255,255,255,0) 100%);transform:translateX(-160%);animation:secureIdShimmer 3.4s ease-in-out infinite;}
+  .secure-id-pill.active .secure-id-icon{animation:secureIdBeat 2.6s ease-in-out infinite;}
+  @keyframes secureIdShimmer{0%{transform:translateX(-160%);}55%,100%{transform:translateX(220%);}}
+  @keyframes secureIdBeat{0%,100%{transform:scale(1);color:var(--secure-800);}50%{transform:scale(1.18);color:var(--secure-900);}}
+  @media (prefers-reduced-motion:reduce){ .secure-id-pill.active::after,.secure-id-pill.active .secure-id-icon{animation:none;} }
 
   .rfqdet-side-col{width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;}
 
   .secure-req-card{background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow-card);}
   .secure-req-title-row{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
   .secure-req-title{font-family:var(--font-heading);font-size:13.5px;font-weight:600;color:var(--navy-500);}
-  .secure-info-pill{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--secure-100);color:var(--secure-600);border:none;padding:0;cursor:pointer;flex-shrink:0;transition:background .12s;}
+  .trust-eyebrow{font-family:var(--font);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--secure-700);margin-top:1px;}
+  .secure-info-pill{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--secure-100);color:var(--secure-600);border:none;padding:0;cursor:pointer;flex-shrink:0;transition:background .12s;margin-left:8px;}
   .secure-info-pill:hover{background:var(--secure-200);}
   .secure-info-pill svg{width:11px;height:11px;}
+  /* Collapse toggle for the Trust Framework panel. */
+  .secure-vault-toggle{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:none;color:var(--text-2);border:none;padding:0;cursor:pointer;flex-shrink:0;transition:background .12s;}
+  .secure-vault-toggle:hover{background:var(--page-bg);}
+  .secure-vault-toggle svg{transition:transform .18s;}
+  .secure-vault-toggle[aria-expanded="true"] svg{transform:rotate(180deg);}
+  .trust-intro{font-family:var(--font);font-size:11.5px;color:var(--text-2);line-height:1.5;margin-bottom:4px;}
+  .trust-pillar{display:flex;gap:10px;padding:12px 0;border-bottom:0.5px solid var(--page-bg);}
+  .trust-pillar:last-of-type{border-bottom:none;padding-bottom:0;}
+  .trust-pillar-icon{width:28px;height:28px;border-radius:8px;background:var(--secure-50);color:var(--secure-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .trust-pillar-body{min-width:0;}
+  .trust-pillar-title{font-family:var(--font);font-size:12px;font-weight:700;color:var(--text-1);}
+  .trust-pillar-desc{font-family:var(--font);font-size:11px;color:var(--text-2);line-height:1.5;margin-top:2px;}
+  .trust-pillar-status{display:inline-flex;align-items:center;gap:4px;font-family:var(--font);font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-top:7px;white-space:nowrap;}
+  .trust-pillar-status svg{width:10px;height:10px;flex-shrink:0;}
+  .trust-pillar-status.ok{background:var(--success-100);color:var(--success-700);}
+  .trust-pillar-status.warn{background:var(--status-warning-bg);color:var(--status-warning-fg);}
+  .trust-pillar-status.always{background:var(--secure-100);color:var(--secure-700);}
   .secure-req-empty{font-family:var(--font);font-size:11.5px;color:var(--text-2);line-height:1.5;}
   .secure-req-table{width:100%;border-collapse:collapse;font-family:var(--font);font-size:11.5px;}
   .secure-req-table th{text-align:left;font-size:10px;font-weight:600;color:var(--text-2);padding:5px 6px;border-bottom:1px solid var(--border);}
@@ -312,8 +366,6 @@
   .secure-req-action-none{color:var(--text-3,#94A3B8);font-family:var(--font);font-size:11.5px;}
   .secure-req-action-group{display:inline-flex;align-items:center;gap:10px;}
   .secure-req-hist-link{background:none;border:none;color:var(--secure-600);font-family:var(--font);font-size:10.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap;text-decoration:underline;text-underline-offset:2px;}
-  .secure-req-note{font-family:var(--font);font-size:10px;color:var(--text-3,#94A3B8);margin-top:10px;line-height:1.5;}
-  .secure-req-summary{font-family:var(--font);font-size:10.5px;font-weight:600;color:var(--text-2);margin-bottom:10px;}
 
   .secure-upload-draft{background:var(--secure-50);border:0.5px solid var(--secure-200);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;}
   .secure-upload-draft-file{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:11.5px;font-weight:600;color:var(--navy-500);}
@@ -394,6 +446,109 @@
   .tc2-footer{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
   .tc2-powered{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:11px;font-weight:600;color:var(--secure-700);}
   @media (max-width:600px){ .tc2-grid{grid-template-columns:1fr;} }
+
+  /* ── Documents tab (global request document library) ─────────────────────
+     Additive, behind the "Documents Tab" demo toggle (.rfqdet-toprow above);
+     the classic single-page layout is untouched when the toggle is off.
+     Deliberately reuses .mdet-tabs (tab bar) and .secure-req-table (row/badge
+     system) rather than inventing parallel components — see CLAUDE.md "match
+     existing component patterns". */
+  .rfqdet-tabs-row{padding:14px 28px 0;background:var(--page-bg);}
+  .rfqdet-tabs-row .mdet-tabs{margin-bottom:0;}
+  .rfqdet-tab-count{background:var(--page-bg);color:var(--text-2);font-size:10px;font-weight:700;padding:1px 7px;border-radius:var(--radius-full);margin-left:2px;}
+  .mdet-tab.active .rfqdet-tab-count{background:rgba(255,255,255,.22);color:#fff;}
+
+  .rfqdet-tabpanels{flex:1;min-width:0;}
+  .rfqdet-tabpanel{display:none;}
+  .rfqdet-tabpanel.active{display:block;}
+
+  /* Deliberately unboxed: this used to wrap everything (head, controls, table) in
+     its own white/shadowed card sitting on .rfqdet-body's grey canvas — which is
+     itself already inside the white .rfqdet-body-frame, so it read as a card
+     inside a card. Now only the table (the one thing that actually needs a
+     boundary) is a card; the head and controls sit directly on the grey canvas,
+     the same way the Request Journey column's content does. */
+  .rfqdet-docs-panel{display:flex;flex-direction:column;gap:16px;}
+  .rfqdet-docs-title{font-family:var(--font-heading);font-size:17px;font-weight:600;color:var(--text-1);}
+  .rfqdet-docs-sub{font-family:var(--font);font-size:12.5px;color:var(--text-2);margin-top:3px;}
+  .rfqdet-docs-count{font-family:var(--font);font-size:11.5px;color:var(--text-3,#94A3B8);margin-top:2px;}
+  .rfqdet-docs-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .rfqdet-docs-search{flex:1;min-width:180px;max-width:320px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px 12px;}
+  .rfqdet-docs-search svg{color:var(--text-3,#94A3B8);flex-shrink:0;}
+  .rfqdet-docs-search input{border:none;background:none;outline:none;font-family:var(--font);font-size:12.5px;color:var(--text-1);width:100%;}
+  .rfqdet-docs-sort{display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--text-2);background:#fff;border:1px solid var(--border);padding:8px 12px;border-radius:var(--radius-xs);white-space:nowrap;flex-shrink:0;}
+  .rfqdet-docs-sort svg{color:var(--text-3,#94A3B8);}
+
+  .rfqdet-docs-table-card{background:#fff;border-radius:14px;box-shadow:var(--shadow-card);padding:6px 0;}
+  .rfqdet-docs-table-wrap{overflow-x:auto;}
+  .rfqdet-docs-table{min-width:620px;}
+  .rfqdet-docs-table th{padding:10px 16px;}
+  .rfqdet-docs-table td{padding:10px 16px;}
+
+  /* Flat List's "Category" column header — a filter dropdown, not a sort control:
+     clicking it opens a small menu (All/Product/Request/Scinode Secure) that filters
+     the visible rows, independent of the search box above. */
+  .rfqdet-catcol-wrap{position:relative;display:inline-block;}
+  .rfqdet-catcol-head{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;}
+  .rfqdet-catcol-head svg{color:var(--text-3,#94A3B8);flex-shrink:0;}
+  .rfqdet-catcol-menu{position:absolute;top:calc(100% + 6px);left:0;min-width:150px;background:#fff;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.16);padding:6px;display:none;flex-direction:column;gap:1px;z-index:20;}
+  .rfqdet-catcol-menu.open{display:flex;}
+  .rfqdet-catcol-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:none;border:none;padding:7px 9px;border-radius:6px;font-family:var(--font);font-size:12px;font-weight:500;text-transform:none;letter-spacing:normal;color:var(--text-1);text-align:left;cursor:pointer;transition:background .12s;}
+  .rfqdet-catcol-opt:hover{background:var(--page-bg);}
+  .rfqdet-catcol-opt.active{color:var(--teal-700);font-weight:600;}
+  .rfqdet-catcol-opt svg{color:var(--teal-600);flex-shrink:0;}
+  .rfqdet-doc-cell{display:flex;align-items:center;gap:10px;min-width:0;}
+  .rfqdet-doc-icon2{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rfqdet-doc-icon2 svg{width:14px;height:14px;}
+  .rfqdet-doc-icon2.pdf{background:var(--status-error-bg);color:var(--status-error-fg);}
+  .rfqdet-doc-icon2.docx{background:var(--status-info-bg);color:var(--status-info-fg);}
+  .rfqdet-doc-icon2.xlsx{background:var(--success-100);color:var(--success-700);}
+  .rfqdet-doc-icon2.pptx{background:var(--status-warning-bg);color:var(--status-warning-fg);}
+  .rfqdet-doc-cell .rfqdet-doc-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;font-weight:600;color:var(--text-1);}
+  .rfqdet-doc-new-badge{background:var(--success-100);color:var(--success-700);font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:2px;flex-shrink:0;}
+
+  .rfqdet-docs-empty{background:#fff;border-radius:14px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:40px 20px;color:var(--text-2);}
+  .rfqdet-docs-empty svg{color:var(--text-3,#94A3B8);margin-bottom:6px;}
+  .rfqdet-docs-empty-title{font-family:var(--font-heading);font-size:15px;font-weight:600;color:var(--text-1);}
+  .rfqdet-docs-empty-sub{font-family:var(--font);font-size:12.5px;color:var(--text-2);max-width:320px;}
+  .rfqdet-docs-empty .rfqdet-docs-cta-row{justify-content:center;margin-top:6px;}
+
+  /* Documents-tab head now carries the Flat-List/Categorized demo toggle alongside the
+     title, so it needs a row layout; unchanged in the Flat List branch otherwise. */
+  .rfqdet-docs-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .rfqdet-docs-head-row .sbv-toggle button{white-space:nowrap;}
+
+  /* Level-2 category nav — deliberately lighter than the Level-1 .mdet-tabs pill
+     (underline tabs, no filled background) so it reads as a subordinate, local filter
+     rather than competing with Request Journey / Documents above it. */
+  .rfqdet-docs-catnav{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .rfqdet-catnav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:8px 4px;margin-right:18px;font-family:var(--font);font-size:12.5px;font-weight:500;color:var(--text-2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:color .12s,border-color .12s;}
+  .rfqdet-catnav-btn:hover{color:var(--text-1);}
+  .rfqdet-catnav-btn.active{color:var(--teal-700);font-weight:600;border-bottom-color:var(--teal-500);}
+  .rfqdet-catnav-shield{display:inline-flex;color:var(--secure-600);}
+  .rfqdet-catnav-btn.active .rfqdet-catnav-shield{color:var(--secure-700);}
+  .rfqdet-catnav-count{background:var(--page-bg);color:var(--text-2);font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;}
+  .rfqdet-catnav-btn.active .rfqdet-catnav-count{background:var(--teal-50);color:var(--teal-700);}
+
+  /* Category badges — shown inline in the Document cell, only in the All Documents view. */
+  .rfqdet-cat-badge{font-family:var(--font);font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:2px;flex-shrink:0;white-space:nowrap;}
+  .rfqdet-cat-badge.request{background:var(--teal-50);color:var(--teal-700);}
+  .rfqdet-cat-badge.product{background:var(--indigo-50);color:#4338CA;}
+  .rfqdet-cat-badge.secure{background:var(--secure-100);color:var(--secure-700);}
+
+  /* Request category subgroups (Commercial Proposal / Meeting Notes / Purchase Orders) */
+  .rfqdet-docs-request-groups{display:flex;flex-direction:column;gap:20px;}
+  .rfqdet-docs-subgroup{display:flex;flex-direction:column;gap:8px;}
+  .rfqdet-docs-subgroup-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .rfqdet-docs-subgroup-title{font-family:var(--font);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);}
+  .rfqdet-docs-upload-btn-sm{font-size:11.5px;padding:5px 11px;}
+  .rfqdet-docs-cta-row{display:flex;justify-content:flex-end;}
+  .rfqdet-docs-upload-btn{font-size:12px;}
+
+  @media (max-width:600px){
+    .rfqdet-docs-controls{flex-direction:column;align-items:stretch;}
+    .rfqdet-docs-search{max-width:none;}
+  }
 </style>
 
 <script>
@@ -427,9 +582,20 @@
     return '<div class="rfqdet-stepper">' + nodes + '</div>';
   }
 
+  /* Compact "Secure Active" indicator for a timeline stage header — icon-only
+     (Option 1), right-aligned in .rfqdet-current-head. Shown on the triggering
+     stage and every stage after it (see secureActiveByStage), not just the single
+     stage that first introduced Collaboration Requirements. Icon-only means the
+     meaning is carried by aria-label/title rather than visible text. */
+  function secureStagePillHtml(){
+    return '<span class="secure-stage-icon beat" role="img" aria-label="Scinode Secure active from this stage" title="Scinode Secure active from this stage">' +
+      ICON_SHIELD_CHECK +
+    '</span>';
+  }
+
   /* Shared accordion shell: renders the track dots/lines + stage header for every
      stage in `stages`, delegating the stage-specific body to stageBodyFn(i, currentIdx). */
-  function renderStageAccordion(stages, currentIdx, lastUpdated, stageBodyFn){
+  function renderStageAccordion(stages, currentIdx, lastUpdated, stageBodyFn, typeKey){
     var rowsHtml = stages.map(function(label, i){
       var state = i < currentIdx ? 'done' : i === currentIdx ? 'current' : 'upcoming';
       var dotHtml = state === 'done' ? ICON_CHECK : '';
@@ -442,10 +608,12 @@
       if (state === 'upcoming'){
         bodyCell = '<div class="rfqdet-stage-body"><div class="rfqdet-log-row">' + esc(label) + '</div></div>';
       } else {
+        var secureActive = typeKey && secureActiveByStage(typeKey, i);
         bodyCell = '<div class="rfqdet-stage-body">' +
           '<div class="rfqdet-current-card" style="' + (state === 'current' ? '' : 'opacity:.92;') + '">' +
             '<div class="rfqdet-current-head">' + ICON_FILE_CLOCK +
               '<div><div class="rfqdet-current-title">' + esc(label) + '</div><div class="rfqdet-current-date">' + esc(formatDate(lastUpdated)) + '</div></div>' +
+              (secureActive ? secureStagePillHtml() : '') +
             '</div>' +
           '</div>' +
           stageBodyFn(i, currentIdx) +
@@ -490,7 +658,13 @@
   var ICON_LOCK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
   var ICON_USERS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
   var ICON_SCALE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="m7 21 5-1 5 1"/><path d="M5 7 2 13a3 3 0 0 0 6 0L5 7Z"/><path d="M19 7l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/><path d="M9 3h6"/></svg>';
+  var ICON_BRIEFCASE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
   var SECURE_PILLAR_ICONS = { ip:ICON_LOCK, collab:ICON_USERS, legal:ICON_SCALE, data:ICON_DOC, security:ICON_SHIELD_CHECK };
+
+  /* Documents tab icons */
+  var ICON_SEARCH = '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
+  var ICON_SORT = '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10"/><path d="M11 9h7"/><path d="M11 13h4"/><path d="m3 17 3 3 3-3"/><path d="M6 18V4"/></svg>';
+  var ICON_FOLDER_OPEN = '<svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>';
 
   /* typeKey used throughout the Secure data model is exactly req.type, and every
      type's own *_LOG_STAGES array (defined in requests-data.js) gives the stage
@@ -524,6 +698,15 @@
      mini form — never persisted; cleared on Submit/Cancel. Keyed by "reqId|code". */
   var secureUploadDrafts = {};
 
+  /* Collapsed/expanded state of the "Scinode Secure Vault" panel — a plain module
+     var (not localStorage) since it only needs to survive re-renders within this
+     page session, same pattern as secureUploadDrafts above. Defaults open. */
+  var secureVaultCollapsed = false;
+  window.toggleSecureVault = function(){
+    secureVaultCollapsed = !secureVaultCollapsed;
+    init();
+  };
+
   /* Active once Secure has actually been triggered for this request — either the
      customer opted in on the creation form ("Secure this Request", recorded as a
      'Scinode Secure' specification entry), or the timeline has reached a stage
@@ -534,14 +717,15 @@
     return buildSecureRequirements(req, typeKey, currentIdx).length > 0;
   }
 
-  /* Single pill lives inline among the other pills in the dark Request Details
-     banner (Request ID / Status / Type); clicking it opens the Trust modal below,
-     in both states. */
+  /* Pinned to the top-right corner of the Request Details banner (separate from the
+     Request ID / Status / Type badges row) so it stands out as its own signal rather
+     than blending into the badge row; clicking it opens the Trust modal below, in
+     both states. Label stays "Scinode Secure" in both states — active vs. inactive
+     is now communicated entirely by the pill's fill/motion, not by appending text. */
   function secureBadgeHtml(req, typeKey, currentIdx){
     var active = secureIsActive(req, typeKey, currentIdx);
-    var label = active ? 'Scinode Secure Active' : 'Scinode Secure';
-    return '<button type="button" class="secure-id-pill' + (active ? ' active' : '') + '" onclick="openSecureModal()">' +
-      '<span class="secure-id-icon">' + ICON_SHIELD_CHECK + '</span> ' + label +
+    return '<button type="button" class="secure-id-pill corner' + (active ? ' active' : '') + '" onclick="openSecureModal()">' +
+      '<span class="secure-id-icon">' + ICON_SHIELD_CHECK + '</span> Scinode Secure' +
     '</button>';
   }
 
@@ -615,21 +799,6 @@
     '</div>';
   }
 
-  /* View-only row for the right sidebar panel — a consolidated read view of every
-     Scinode Secure document across the whole request, whichever stage introduced it
-     and whoever uploaded it (customer or Admin). No upload here by design; every row
-     still links out to the same version history drawer as the functional row. */
-  function secureReqRowViewOnlyHtml(reqId, r){
-    var actionHtml = r.status === 'Approved'
-      ? '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc.fileName) + '\')">View</button>'
-      : '<span class="secure-req-action-none">—</span>';
-    var historyHtml = r.versions.length
-      ? '<button type="button" class="secure-req-hist-link" onclick="openSecureVersionHistory(\'' + esc(reqId) + '\',\'' + r.code + '\')">History</button>'
-      : '';
-    return '<tr><td>' + r.code + '</td><td>' + esc(r.purpose) + '</td>' +
-      '<td>' + secureStatusPillHtml(r.status) + '</td>' +
-      '<td style="text-align:right;">' + actionHtml + (historyHtml ? ' ' + historyHtml : '') + '</td></tr>';
-  }
 
   /* Functional row for the Timeline Secure Card. Action depends on the requirement's
      document-review status: Pending Upload -> Upload; Under Review -> no action
@@ -656,20 +825,19 @@
 
     var viewBtn = '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(r.doc && r.doc.fileName) + '\')">View</button>';
     var downloadBtn = '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureDownloadDoc(\'' + esc(r.doc && r.doc.fileName) + '\')">Download</button>';
+    var uploadLabel = r.status === 'Pending Upload' ? 'Upload' : 'Upload New Version';
+    var uploadBtn = '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">' + uploadLabel + '</button>' + hiddenInput;
     var historyBtn = r.versions.length
       ? '<button type="button" class="secure-req-hist-link" onclick="openSecureVersionHistory(\'' + esc(reqId) + '\',\'' + r.code + '\')">History</button>'
       : '';
+    /* Upload now stands alongside View/Download/History rather than replacing them —
+       customer-owned requirements always offer a way to (re)upload, regardless of the
+       current document's status. */
     var actionHtml;
     if (!r.ownedByCustomer){
       actionHtml = viewBtn + downloadBtn;
-    } else if (r.status === 'Pending Upload'){
-      actionHtml = '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">Upload</button>' + hiddenInput;
-    } else if (r.status === 'Under Review'){
-      actionHtml = '<span class="secure-req-action-none">Awaiting review</span>';
-    } else if (r.status === 'Approved'){
-      actionHtml = viewBtn + downloadBtn;
     } else {
-      actionHtml = '<button type="button" class="secure-req-action" onclick="document.getElementById(\'' + inputId + '\').click()">Upload New Version</button>' + hiddenInput;
+      actionHtml = (r.doc ? viewBtn + downloadBtn : '') + uploadBtn;
     }
 
     var rejectReasonHtml = (r.status === 'Rejected' && r.doc && r.doc.reviewComment)
@@ -735,31 +903,62 @@
      Trust modal, opened on demand via the info pill rather than taking up permanent
      space in the sidebar. Appended into the existing .rfqdet-side-col flex column,
      alongside each type's own side content. */
-  function secureRightPanelHtml(req, typeKey, currentIdx){
+  /* Trust Framework — replaces the old document-table "Scinode Secure Vault" panel.
+     Unlike the Vault (only rendered once Secure had actually triggered for the
+     request), this is always visible: it's a standing explanation of what Scinode
+     Secure protects, not a record of uploaded documents — the detailed document
+     list now lives in Documents > Scinode Secure (see documentsPanelV2Html). Four
+     pillars are static platform guarantees; only "Legal & Governance" reflects the
+     request's real state (buildSecureRequirements), since it's the one pillar with
+     something for the customer to actually do. */
+  var TRUST_FRAMEWORK_PILLARS = [
+    { icon: ICON_LOCK, title:'Intellectual Property Protection', desc:'Protect research, technical know-how, formulations, and proprietary documentation through secure collaboration and controlled information sharing.' },
+    { icon: ICON_BRIEFCASE, title:'Business & Commercial Protection', desc:'Commercial proposals, quotations, pricing discussions, and agreements remain confidential throughout engagement.' },
+    { icon: ICON_USERS, title:'Controlled Collaboration', desc:'Only authorized users can access project information through role-based permissions and controlled visibility.' }
+  ];
+
+  function trustLegalStatus(req, typeKey, currentIdx){
     var requirements = buildSecureRequirements(req, typeKey, currentIdx);
-    var bodyHtml;
-    if (requirements.length){
-      var counts = {};
-      requirements.forEach(function(r){ counts[r.status] = (counts[r.status] || 0) + 1; });
-      var summaryParts = [];
-      ['Approved','Under Review','Rejected','Pending Upload'].forEach(function(s){
-        if (counts[s]) summaryParts.push(counts[s] + ' ' + s);
-      });
-      bodyHtml =
-        '<div class="secure-req-summary">' + esc(summaryParts.join(' · ')) + '</div>' +
-        '<table class="secure-req-table"><thead><tr><th>Requirement</th><th>Purpose</th><th>Status</th><th></th></tr></thead><tbody>' +
-          requirements.map(function(r){ return secureReqRowViewOnlyHtml(req.id, r); }).join('') +
-        '</tbody></table>' +
-        '<div class="secure-req-note">View-only — a consolidated record of every Scinode Secure document across this request. Upload or manage documents from the relevant stage in the timeline.</div>';
-    } else {
-      bodyHtml = '<div class="secure-req-empty">No Scinode Secure documents yet for this request.</div>';
-    }
+    if (!requirements.length) return 'Active';
+    var pending = requirements.some(function(r){ return r.ownedByCustomer && r.status !== 'Approved'; });
+    return pending ? 'Agreement Required' : 'Active';
+  }
+
+  function trustStatusPillHtml(label){
+    var cls = label === 'Agreement Required' ? 'warn' : label === 'Always Protected' ? 'always' : 'ok';
+    var icon = cls === 'ok' ? ICON_CHECK : cls === 'always' ? ICON_SHIELD_CHECK : '';
+    return '<span class="trust-pillar-status ' + cls + '">' + icon + esc(label) + '</span>';
+  }
+
+  function trustPillarRowHtml(p, statusLabel){
+    return '<div class="trust-pillar">' +
+      '<div class="trust-pillar-icon">' + p.icon + '</div>' +
+      '<div class="trust-pillar-body">' +
+        '<div class="trust-pillar-title">' + esc(p.title) + '</div>' +
+        '<div class="trust-pillar-desc">' + esc(p.desc) + '</div>' +
+        trustStatusPillHtml(statusLabel) +
+      '</div>' +
+    '</div>';
+  }
+
+  function secureRightPanelHtml(req, typeKey, currentIdx){
+    var expanded = !secureVaultCollapsed;
+    var toggleBtn = '<button type="button" class="secure-vault-toggle" aria-expanded="' + expanded + '" onclick="toggleSecureVault()" aria-label="' + (expanded ? 'Collapse' : 'Expand') + ' Scinode Secure Trust Framework"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>';
+
+    var pillarsHtml = TRUST_FRAMEWORK_PILLARS.map(function(p){ return trustPillarRowHtml(p, 'Active'); }).join('') +
+      trustPillarRowHtml({ icon: ICON_SCALE, title:'Legal & Governance', desc:'Maintain governed collaboration through agreements, approvals, audit history, and compliance workflows.' }, trustLegalStatus(req, typeKey, currentIdx)) +
+      trustPillarRowHtml({ icon: ICON_SHIELD, title:'Platform Security', desc:'Authentication, encryption, monitoring, and infrastructure continuously protect platform data.' }, 'Always Protected');
+
+    var bodyHtml = '<div class="trust-intro">Protecting every interaction across your collaboration lifecycle.</div>' +
+      pillarsHtml;
+
     return '<div class="secure-req-card">' +
       '<div class="secure-req-title-row">' +
-        '<div class="secure-req-title">Scinode Secure Vault</div>' +
+        '<div><div class="secure-req-title">Scinode Secure</div><div class="trust-eyebrow">Trust Framework</div></div>' +
         '<button type="button" class="secure-info-pill" onclick="openSecureModal()" aria-label="About Scinode Secure">' + ICON_INFO + '</button>' +
+        toggleBtn +
       '</div>' +
-      bodyHtml +
+      (secureVaultCollapsed ? '' : bodyHtml) +
     '</div>';
   }
 
@@ -954,7 +1153,7 @@
     var currentIdx = stageIndexFor(req.progress, RFQ_LOG_STAGES.length);
     return renderStageAccordion(RFQ_LOG_STAGES, currentIdx, req.lastUpdated, function(i, idx){
       return rfqStageBodyHtml(req, i, idx) + secureCardHtml(req, 'RFQ', i);
-    });
+    }, 'RFQ');
   }
 
   function rfqSideHtml(req){
@@ -977,15 +1176,371 @@
     '</div>';
   }
 
+  /* ── Documents tab (global request document library) ─────────────────────
+     Purely additive, gated by the "Documents Tab" demo toggle in .rfqdet-toprow
+     (DOCS_TAB_MODE below). When off, renderDetailCard renders exactly as before
+     (no tab bar, logHtml goes straight into .rfqdet-body) — the "Classic View"
+     kept for demo/comparison purposes per explicit request. Intentionally
+     separate from Scinode Secure (buildSecureRequirements/secureRightPanelHtml):
+     this is the general document library, never NDA/NCDS/MSA. */
+  var DOCS_TAB_MODE = (function(){
+    try { return localStorage.getItem('scinodeDocsTabMode') === '1'; } catch (e){ return false; }
+  })();
+
+  window.setDocsTabMode = function(on){
+    DOCS_TAB_MODE = on;
+    try { localStorage.setItem('scinodeDocsTabMode', on ? '1' : '0'); } catch (e){ /* storage unavailable */ }
+    updateDocsToggleUI();
+    init();
+  };
+
+  function updateDocsToggleUI(){
+    var c = document.getElementById('rfqdet-layout-classic');
+    var n = document.getElementById('rfqdet-layout-new');
+    if (!c || !n) return;
+    c.classList.toggle('active', !DOCS_TAB_MODE);
+    c.setAttribute('aria-selected', String(!DOCS_TAB_MODE));
+    n.classList.toggle('active', DOCS_TAB_MODE);
+    n.setAttribute('aria-selected', String(DOCS_TAB_MODE));
+  }
+
+  window.rfqdetSwitchDocTab = function(name, btn){
+    switchTab(btn);
+    ['journey', 'documents'].forEach(function(n){
+      var p = document.getElementById('rfqdet-panel-' + n);
+      if (p) p.classList.toggle('active', n === name);
+    });
+  };
+
+  function docTypeIconHtml(ext){
+    return '<div class="rfqdet-doc-icon2 ' + ext + '">' + ICON_DOC + '</div>';
+  }
+
+  window.rfqdetFilterDocs = function(reqId, query){
+    flatSearchQuery = query;
+    renderFlatDocsTbody();
+  };
+
+  /* Documents-tab UI compare (demo toggle, separate from the Level-1 Classic/Documents
+     toggle): "Flat List" is the original single-list Documents view (unchanged below,
+     just renamed); "Categorized" is the new All/Request/Product/Scinode Secure
+     second-level nav. Persisted like the other demo toggles so a refresh keeps it. */
+  var DOCS_V2_MODE = (function(){
+    try { return localStorage.getItem('scinodeDocsV2Mode') === '1'; } catch (e){ return false; }
+  })();
+  window.setDocsV2Mode = function(on){
+    DOCS_V2_MODE = on;
+    try { localStorage.setItem('scinodeDocsV2Mode', on ? '1' : '0'); } catch (e){ /* storage unavailable */ }
+    init();
+  };
+  function docsUiToggleHtml(){
+    return '<div class="sbv-toggle" role="tablist" aria-label="Documents UI compare" title="Categorized documents (new) vs. flat list — demo comparison, not a saved preference">' +
+      '<button type="button" role="tab" id="rfqdet-docsui-flat" aria-selected="' + (!DOCS_V2_MODE) + '" class="' + (DOCS_V2_MODE ? '' : 'active') + '" onclick="setDocsV2Mode(false)">Flat List</button>' +
+      '<button type="button" role="tab" id="rfqdet-docsui-v2" aria-selected="' + (!!DOCS_V2_MODE) + '" class="' + (DOCS_V2_MODE ? 'active' : '') + '" onclick="setDocsV2Mode(true)">Categorized</button>' +
+    '</div>';
+  }
+
+  function documentsPanelHtml(req, secureCurrentIdx){
+    return DOCS_V2_MODE ? documentsPanelV2Html(req, secureCurrentIdx) : documentsPanelFlatHtml(req, secureCurrentIdx);
+  }
+
+  /* "Flat List" sources the exact same catalog (Request + Product + Scinode Secure)
+     as the Categorized view's "All Documents" — same documents, same category
+     badges — just without the second-level category nav above it. */
+  function documentsPanelFlatHtml(req, secureCurrentIdx){
+    var catalog = buildDocumentCatalog(req, secureCurrentIdx);
+    docsCatalogCache = catalog;
+    flatCategoryFilter = 'all';
+    flatSearchQuery = '';
+    var docs = flattenDocumentCatalog(catalog);
+    var n = docs.length;
+    var head = '<div class="rfqdet-docs-head">' +
+        '<div class="rfqdet-docs-head-row">' +
+          '<div>' +
+            '<div class="rfqdet-docs-title">Documents</div>' +
+            '<div class="rfqdet-docs-sub">All documents related to this request, product, and secure collaboration.</div>' +
+            (n ? '<div class="rfqdet-docs-count">' + n + (n === 1 ? ' document' : ' documents') + ' shared for this request</div>' : '') +
+          '</div>' +
+          docsUiToggleHtml() +
+        '</div>' +
+      '</div>';
+    if (!n){
+      return '<div class="rfqdet-docs-panel">' + head +
+        '<div class="rfqdet-docs-empty">' + ICON_FOLDER_OPEN +
+          '<div class="rfqdet-docs-empty-title">No documents available yet.</div>' +
+          '<div class="rfqdet-docs-empty-sub">Documents related to this request will appear here.</div>' +
+        '</div>' +
+      '</div>';
+    }
+    return '<div class="rfqdet-docs-panel">' + head +
+      '<div class="rfqdet-docs-controls">' +
+        '<div class="rfqdet-docs-search">' + ICON_SEARCH + '<input type="text" placeholder="Search documents" oninput="rfqdetFilterDocs(\'' + esc(req.id) + '\', this.value)"></div>' +
+        '<div class="rfqdet-docs-sort">' + ICON_SORT + '<span>Newest first</span></div>' +
+      '</div>' +
+      '<div class="rfqdet-docs-table-card"><div class="rfqdet-docs-table-wrap"><table class="secure-req-table rfqdet-docs-table"><thead><tr><th>Document</th><th id="rfqdet-cat-th">' + flatCategoryHeaderHtml() + '</th><th>Type</th><th>Shared on</th><th>Shared by</th><th></th></tr></thead>' +
+        '<tbody id="rfqdet-docs-tbody">' + docs.map(flatDocRowHtml).join('') + '</tbody>' +
+      '</table></div></div>' +
+    '</div>';
+  }
+
+  /* ── Categorized Documents view (new, "Level 2" nav: All / Request / Product /
+     Scinode Secure) ──────────────────────────────────────────────────────────────
+     docsCatalogCache + docsActiveCategory are module state so category switching and
+     search filtering can just rebuild #rfqdet-docs-list-area, the same lightweight
+     pattern as rfqdetFilterDocs above — no full init() re-render mid-interaction. */
+  var docsCatalogCache = null;
+  var docsActiveCategory = 'all';
+
+  /* Flat List's own Category-column filter (separate from docsActiveCategory above,
+     which drives the Categorized view's Level-2 nav tabs). Reset to 'all' every time
+     documentsPanelFlatHtml renders. */
+  var flatCategoryFilter = 'all';
+  var flatSearchQuery = '';
+  var FLAT_CATEGORY_OPTIONS = [
+    { value:'all', label:'All' },
+    { value:'product', label:'Product' },
+    { value:'request', label:'Request' },
+    { value:'secure', label:'Scinode Secure' }
+  ];
+
+  function flatDocRowHtml(d){
+    var newBadge = d.isNew ? '<span class="rfqdet-doc-new-badge">New</span>' : '';
+    var statusBadge = d.secureStatus ? secureStatusPillHtml(d.secureStatus) : '';
+    return '<tr>' +
+      '<td><div class="rfqdet-doc-cell">' + docTypeIconHtml(d.ext) +
+        '<span class="rfqdet-doc-name" title="' + esc(d.name) + '">' + esc(d.name) + '</span>' +
+        statusBadge + newBadge +
+      '</div></td>' +
+      '<td>' + catalogCategoryBadgeHtml(d.category) + '</td>' +
+      '<td>' + esc(d.type) + '</td>' +
+      '<td>' + esc(relativeShareLabel(d.sharedOnDate)) + '</td>' +
+      '<td>' + esc(d.sharedBy) + '</td>' +
+      '<td style="text-align:right;"><div class="secure-req-action-group">' +
+        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(d.name) + '\')">View</button>' +
+        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureDownloadDoc(\'' + esc(d.name) + '\')">Download</button>' +
+      '</div></td>' +
+    '</tr>';
+  }
+
+  function flatCategoryHeaderHtml(){
+    var current = FLAT_CATEGORY_OPTIONS.filter(function(o){ return o.value === flatCategoryFilter; })[0];
+    var opts = FLAT_CATEGORY_OPTIONS.map(function(o){
+      return '<button type="button" class="rfqdet-catcol-opt' + (o.value === flatCategoryFilter ? ' active' : '') + '" onclick="rfqdetSetCategoryFilter(\'' + o.value + '\')">' + esc(o.label) + (o.value === flatCategoryFilter ? ICON_CHECK : '') + '</button>';
+    }).join('');
+    return '<div class="rfqdet-catcol-wrap">' +
+      '<button type="button" class="rfqdet-catcol-head" onclick="rfqdetToggleCatMenu(event)">Category' + (flatCategoryFilter !== 'all' ? ': ' + esc(current.label) : '') + ICON_CHEVRON + '</button>' +
+      '<div class="rfqdet-catcol-menu" id="rfqdet-catcol-menu">' + opts + '</div>' +
+    '</div>';
+  }
+
+  window.rfqdetToggleCatMenu = function(e){
+    e.stopPropagation();
+    var menu = document.getElementById('rfqdet-catcol-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+
+  function closeCatFilterMenu(){
+    var menu = document.getElementById('rfqdet-catcol-menu');
+    if (menu) menu.classList.remove('open');
+  }
+
+  document.addEventListener('click', function(e){
+    if (!e.target.closest || !e.target.closest('.rfqdet-catcol-wrap')) closeCatFilterMenu();
+  });
+
+  function renderFlatDocsTbody(){
+    var tbody = document.getElementById('rfqdet-docs-tbody');
+    if (!tbody || !docsCatalogCache) return;
+    var q = flatSearchQuery.trim().toLowerCase();
+    var docs = flattenDocumentCatalog(docsCatalogCache);
+    if (flatCategoryFilter !== 'all') docs = docs.filter(function(d){ return d.category === flatCategoryFilter; });
+    var filtered = q ? docs.filter(function(d){ return d.name.toLowerCase().indexOf(q) !== -1; }) : docs;
+    tbody.innerHTML = filtered.length
+      ? filtered.map(flatDocRowHtml).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:22px 0;">No documents match your filters.</td></tr>';
+    var headCell = document.getElementById('rfqdet-cat-th');
+    if (headCell) headCell.innerHTML = flatCategoryHeaderHtml();
+  }
+
+  window.rfqdetSetCategoryFilter = function(cat){
+    flatCategoryFilter = cat;
+    closeCatFilterMenu();
+    renderFlatDocsTbody();
+  };
+
+  function catalogCategoryBadgeHtml(category){
+    var meta = { request:{ label:'Request', cls:'request' }, product:{ label:'Product', cls:'product' }, secure:{ label:'Scinode Secure', cls:'secure' } }[category];
+    return meta ? '<span class="rfqdet-cat-badge ' + meta.cls + '">' + esc(meta.label) + '</span>' : '';
+  }
+
+  function catalogRowHtml(d, showCategoryBadge){
+    var newBadge = d.isNew ? '<span class="rfqdet-doc-new-badge">New</span>' : '';
+    var catBadge = showCategoryBadge ? catalogCategoryBadgeHtml(d.category) : '';
+    var statusBadge = d.secureStatus ? secureStatusPillHtml(d.secureStatus) : '';
+    return '<tr>' +
+      '<td><div class="rfqdet-doc-cell">' + docTypeIconHtml(d.ext) +
+        '<span class="rfqdet-doc-name" title="' + esc(d.name) + '">' + esc(d.name) + '</span>' +
+        catBadge + statusBadge + newBadge +
+      '</div></td>' +
+      '<td>' + esc(d.type) + '</td>' +
+      '<td>' + esc(relativeShareLabel(d.sharedOnDate)) + '</td>' +
+      '<td>' + esc(d.sharedBy) + '</td>' +
+      '<td style="text-align:right;"><div class="secure-req-action-group">' +
+        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureViewDoc(\'' + esc(d.name) + '\')">View</button>' +
+        '<button type="button" class="secure-req-action secure-req-action-ghost" onclick="secureDownloadDoc(\'' + esc(d.name) + '\')">Download</button>' +
+      '</div></td>' +
+    '</tr>';
+  }
+
+  function catalogTableCardHtml(rows, showCategoryBadge){
+    if (!rows.length) return '';
+    return '<div class="rfqdet-docs-table-card"><div class="rfqdet-docs-table-wrap"><table class="secure-req-table rfqdet-docs-table"><thead><tr><th>Document</th><th>Type</th><th>Shared on</th><th>Shared by</th><th></th></tr></thead><tbody>' +
+      rows.map(function(r){ return catalogRowHtml(r, showCategoryBadge); }).join('') +
+    '</tbody></table></div></div>';
+  }
+
+  function catalogEmptyHtml(title, sub, extraHtml){
+    return '<div class="rfqdet-docs-empty">' + ICON_FOLDER_OPEN +
+      '<div class="rfqdet-docs-empty-title">' + esc(title) + '</div>' +
+      (sub ? '<div class="rfqdet-docs-empty-sub">' + esc(sub) + '</div>' : '') +
+      (extraHtml || '') +
+    '</div>';
+  }
+
+  function docsSubgroupHtml(title, rows, actionHtml, emptyTitle, emptySub){
+    var head = '<div class="rfqdet-docs-subgroup-head"><span class="rfqdet-docs-subgroup-title">' + esc(title) + '</span>' + (actionHtml || '') + '</div>';
+    var body = rows.length ? catalogTableCardHtml(rows, false) : catalogEmptyHtml(emptyTitle || '', emptySub || '');
+    return '<div class="rfqdet-docs-subgroup">' + head + body + '</div>';
+  }
+
+  function docsMatchesQuery(d, q){
+    return !q || d.name.toLowerCase().indexOf(q) !== -1;
+  }
+
+  function docsCategoryBodyHtml(catalog, category, query){
+    var q = (query || '').trim().toLowerCase();
+    if (category === 'product'){
+      var prod = catalog.product.filter(function(d){ return docsMatchesQuery(d, q); });
+      if (!prod.length) return catalogEmptyHtml(q ? 'No documents match your search.' : 'No product documents available yet.', q ? '' : 'Product documents shared by Scinode will appear here.');
+      return catalogTableCardHtml(prod, false);
+    }
+    if (category === 'secure'){
+      var sec = catalog.secure.filter(function(d){ return docsMatchesQuery(d, q); });
+      var uploadBtn = '<button type="button" class="mfg-btn-secondary rfqdet-docs-upload-btn" onclick="rfqdetDemoUpload(\'Secure Document\')">Upload Secure Document</button>';
+      if (!sec.length){
+        return catalogEmptyHtml(q ? 'No documents match your search.' : 'No secure documents available yet.', q ? '' : 'Secure documents shared or uploaded for this request will appear here.', q ? '' : '<div class="rfqdet-docs-cta-row">' + uploadBtn + '</div>');
+      }
+      return '<div class="rfqdet-docs-cta-row">' + uploadBtn + '</div>' + catalogTableCardHtml(sec, false);
+    }
+    if (category === 'request'){
+      var totalReq = catalog.request.proposal.length + catalog.request.meeting.length + catalog.request.po.length;
+      if (!totalReq) return catalogEmptyHtml('No request documents available yet.', 'Documents shared during the progress of this request will appear here.');
+      var proposal = catalog.request.proposal.filter(function(d){ return docsMatchesQuery(d, q); });
+      var meeting = catalog.request.meeting.filter(function(d){ return docsMatchesQuery(d, q); });
+      var po = catalog.request.po.filter(function(d){ return docsMatchesQuery(d, q); });
+      var poUploadBtn = '<button type="button" class="mfg-btn-secondary rfqdet-docs-upload-btn-sm" onclick="rfqdetDemoUpload(\'Purchase Order\')">Upload PO</button>';
+      var groups = '';
+      if (proposal.length) groups += docsSubgroupHtml('Commercial Proposal', proposal);
+      if (meeting.length) groups += docsSubgroupHtml('Meeting Notes', meeting);
+      if (po.length || !q){
+        groups += docsSubgroupHtml('Purchase Orders', po, poUploadBtn, 'No purchase orders uploaded yet.', 'You can upload a purchase order when it is ready.');
+      }
+      if (!groups) groups = catalogEmptyHtml('No documents match your search.', '');
+      return '<div class="rfqdet-docs-request-groups">' + groups + '</div>';
+    }
+    /* 'all' */
+    var flat = flattenDocumentCatalog(catalog).filter(function(d){ return docsMatchesQuery(d, q); });
+    if (!flat.length) return catalogEmptyHtml(q ? 'No documents match your search.' : 'No documents available yet.', q ? '' : 'Documents related to this request will appear here.');
+    return catalogTableCardHtml(flat, true);
+  }
+
+  function renderDocsListArea(query){
+    var area = document.getElementById('rfqdet-docs-list-area');
+    if (!area || !docsCatalogCache) return;
+    area.innerHTML = docsCategoryBodyHtml(docsCatalogCache, docsActiveCategory, query);
+  }
+
+  window.rfqdetSwitchDocsCategory = function(cat, btn){
+    docsActiveCategory = cat;
+    switchTab(btn);
+    var input = document.getElementById('rfqdet-docs-search-input');
+    if (input) input.value = '';
+    renderDocsListArea('');
+  };
+
+  window.rfqdetFilterCatalog = function(value){
+    renderDocsListArea(value);
+  };
+
+  /* No persistence layer behind Purchase Order / Secure Document uploads in this
+     categorized demo view — a real file picker opens and a toast confirms the pick,
+     same fidelity as the existing secureViewDoc/secureDownloadDoc stubs elsewhere on
+     this page. The real, persisted Secure upload/review workflow (versions, statuses,
+     change notes) is untouched — it still lives on the Request Journey timeline and
+     the Scinode Secure Vault. */
+  window.rfqdetDemoUpload = function(kind){
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', function(){
+      var file = input.files && input.files[0];
+      document.body.removeChild(input);
+      if (file) rfqToast(file.name + ' uploaded as ' + kind + ' (demo).');
+    });
+    input.click();
+  };
+
+  function documentsPanelV2Html(req, secureCurrentIdx){
+    var catalog = buildDocumentCatalog(req, secureCurrentIdx);
+    docsCatalogCache = catalog;
+    docsActiveCategory = 'all';
+    var counts = documentCatalogCounts(catalog);
+    var head = '<div class="rfqdet-docs-head">' +
+        '<div class="rfqdet-docs-head-row">' +
+          '<div>' +
+            '<div class="rfqdet-docs-title">Documents</div>' +
+            '<div class="rfqdet-docs-sub">All documents related to this request, product, and secure collaboration.</div>' +
+          '</div>' +
+          docsUiToggleHtml() +
+        '</div>' +
+      '</div>';
+    var catnav = '<div class="rfqdet-docs-catnav" role="tablist" aria-label="Document category">' +
+        '<button type="button" class="rfqdet-catnav-btn active" role="tab" aria-selected="true" onclick="rfqdetSwitchDocsCategory(\'all\',this)">All Documents <span class="rfqdet-catnav-count">' + counts.all + '</span></button>' +
+        '<button type="button" class="rfqdet-catnav-btn" role="tab" aria-selected="false" onclick="rfqdetSwitchDocsCategory(\'request\',this)">Request <span class="rfqdet-catnav-count">' + counts.request + '</span></button>' +
+        '<button type="button" class="rfqdet-catnav-btn" role="tab" aria-selected="false" onclick="rfqdetSwitchDocsCategory(\'product\',this)">Product <span class="rfqdet-catnav-count">' + counts.product + '</span></button>' +
+        '<button type="button" class="rfqdet-catnav-btn" role="tab" aria-selected="false" onclick="rfqdetSwitchDocsCategory(\'secure\',this)"><span class="rfqdet-catnav-shield">' + ICON_SHIELD_CHECK + '</span>Scinode Secure <span class="rfqdet-catnav-count">' + counts.secure + '</span></button>' +
+      '</div>';
+    var controls = '<div class="rfqdet-docs-controls">' +
+        '<div class="rfqdet-docs-search">' + ICON_SEARCH + '<input type="text" id="rfqdet-docs-search-input" placeholder="Search documents" oninput="rfqdetFilterCatalog(this.value)"></div>' +
+        '<div class="rfqdet-docs-sort">' + ICON_SORT + '<span>Newest first</span></div>' +
+      '</div>';
+    var listArea = '<div id="rfqdet-docs-list-area">' + docsCategoryBodyHtml(catalog, 'all', '') + '</div>';
+    return '<div class="rfqdet-docs-panel">' + head + catnav + controls + listArea + '</div>';
+  }
+
   /* Shared card/banner/body shell for every request type's detail page.
      secureCurrentIdx is the request's current stage index within its own type's
      LOG_STAGES (same value each xxxLogHtml already computes via stageIndexFor). */
   function renderDetailCard(req, typeLabel, logHtml, sideHtml, secureCurrentIdx){
     var sm = STATUS_META[req.status];
     var secureSide = secureRightPanelHtml(req, req.type, secureCurrentIdx);
+    var tabsHtml = '';
+    var mainContent = logHtml;
+    if (DOCS_TAB_MODE){
+      var docCount = documentCatalogCounts(buildDocumentCatalog(req, secureCurrentIdx)).all;
+      tabsHtml = '<div class="rfqdet-tabs-row"><div class="mdet-tabs" role="tablist" aria-label="Request sections">' +
+          '<button type="button" class="mdet-tab active" role="tab" aria-selected="true" onclick="rfqdetSwitchDocTab(\'journey\',this)">Request Journey</button>' +
+          '<button type="button" class="mdet-tab" role="tab" aria-selected="false" onclick="rfqdetSwitchDocTab(\'documents\',this)">Documents <span class="rfqdet-tab-count">' + docCount + '</span></button>' +
+        '</div></div>';
+      mainContent = '<div class="rfqdet-tabpanels">' +
+          '<div class="rfqdet-tabpanel active" id="rfqdet-panel-journey">' + logHtml + '</div>' +
+          '<div class="rfqdet-tabpanel" id="rfqdet-panel-documents">' + documentsPanelHtml(req, secureCurrentIdx) + '</div>' +
+        '</div>';
+    }
     document.getElementById('rfqdet-page').innerHTML =
       '<div class="rfqdet-card">' +
-        '<div class="rfqdet-banner">' +
+        '<div class="rfqdet-header-frame">' +
           '<div class="rfqdet-title">Request Details</div>' +
           '<div class="rfqdet-badges">' +
             '<span class="rfqdet-id">Request ID: ' + esc(req.id) +
@@ -993,13 +1548,16 @@
             '</span>' +
             '<span class="rfqdet-status" style="background:' + sm.bg + ';color:' + sm.text + ';">' + esc(req.status) + '</span>' +
             '<span class="rfqdet-type">' + esc(typeLabel) + '</span>' +
-            secureBadgeHtml(req, req.type, secureCurrentIdx) +
           '</div>' +
-          stepperHtml(req) +
+          secureBadgeHtml(req, req.type, secureCurrentIdx) +
         '</div>' +
-        '<div class="rfqdet-body">' +
-          logHtml +
-          '<div class="rfqdet-side-col">' + sideHtml + secureSide + '</div>' +
+        '<div class="rfqdet-progress-frame">' + stepperHtml(req) + '</div>' +
+        '<div class="rfqdet-body-frame">' +
+          tabsHtml +
+          '<div class="rfqdet-body">' +
+            mainContent +
+            '<div class="rfqdet-side-col">' + sideHtml + secureSide + '</div>' +
+          '</div>' +
         '</div>' +
       '</div>';
   }
@@ -1031,7 +1589,7 @@
     var currentIdx = stageIndexFor(req.progress, RFS_LOG_STAGES.length);
     return renderStageAccordion(RFS_LOG_STAGES, currentIdx, req.lastUpdated, function(i, idx){
       return rfsStageBodyHtml(req, i, idx) + secureCardHtml(req, 'Sample Request', i);
-    });
+    }, 'Sample Request');
   }
 
   function rfsSideHtml(req){
@@ -1118,7 +1676,7 @@
     var currentIdx = stageIndexFor(req.progress, CONSULT_LOG_STAGES.length);
     return renderStageAccordion(CONSULT_LOG_STAGES, currentIdx, req.lastUpdated, function(i, idx){
       return consultStageBodyHtml(req, i, idx) + secureCardHtml(req, 'Consultation', i);
-    });
+    }, 'Consultation');
   }
 
   function consultSideHtml(req){
@@ -1303,7 +1861,7 @@
     var currentIdx = stageIndexFor(req.progress, CMO_LOG_STAGES.length);
     return renderStageAccordion(CMO_LOG_STAGES, currentIdx, req.lastUpdated, function(i, idx){
       return cmoStageBodyHtml(req, i, idx) + secureCardHtml(req, 'Manufacturing Project', i);
-    });
+    }, 'Manufacturing Project');
   }
 
   function cmoSideHtml(req){
@@ -1454,7 +2012,7 @@
     var currentIdx = stageIndexFor(req.progress, CDMO_LOG_STAGES.length);
     return renderStageAccordion(CDMO_LOG_STAGES, currentIdx, req.lastUpdated, function(i, idx){
       return cdmoStageBodyHtml(req, i, idx) + secureCardHtml(req, 'CDMO Project', i);
-    });
+    }, 'CDMO Project');
   }
 
   function cdmoSideHtml(req){
@@ -1614,7 +2172,7 @@
     var currentIdx = stageIndexFor(req.progress, RD_LOG_STAGES.length);
     return renderStageAccordion(RD_LOG_STAGES, currentIdx, req.lastUpdated, function(i, idx){
       return rdStageBodyHtml(req, i, idx) + secureCardHtml(req, 'R&D Project', i);
-    });
+    }, 'R&D Project');
   }
 
   function rdSideHtml(req){
@@ -1754,6 +2312,7 @@
   };
 
   function init(){
+    updateDocsToggleUI();
     var req = currentReq();
     if (!req){
       document.getElementById('rfqdet-page').innerHTML =

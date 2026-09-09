@@ -1843,7 +1843,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
    banner pill) plus the same shimmer-sweep + icon-pulse motion from that pill —
    "confidence, not urgency": slow, continuous, WCAG-checked indigo-only pulse,
    never a flashing/green color shift. Respects prefers-reduced-motion. */
-.rdreq-secure-badge{display:inline-flex;align-items:center;gap:8px;background:#CCD3F8;border:none;border-radius:var(--radius-full);padding:7px 14px;position:relative;overflow:hidden;}
+.rdreq-secure-badge{display:inline-flex;align-items:center;gap:8px;background:var(--secure-200);border:none;border-radius:var(--radius-full);padding:7px 14px;position:relative;overflow:hidden;}
 .rdreq-secure-badge::after{content:'';position:absolute;top:0;bottom:0;width:46%;background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.65) 50%,rgba(255,255,255,0) 100%);transform:translateX(-160%);animation:rdreqSecureShimmer 3.4s ease-in-out infinite;}
 .rdreq-secure-badge-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--secure-800);flex-shrink:0;animation:rdreqSecureBeat 2.6s ease-in-out infinite;}
 .rdreq-secure-badge-text{font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--secure-800);white-space:nowrap;}

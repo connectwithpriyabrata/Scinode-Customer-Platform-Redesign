@@ -255,6 +255,28 @@
             <div class="af-field-hint" id="af-profiletype-hint"></div>
           </div>
 
+          <!-- What describes you the best — Customers only, optional -->
+          <div class="af-field hidden" id="af-field-describe">
+            <label>What describes you the best?</label>
+            <select class="af-select" id="af-describe-input">
+              <option value="" selected disabled>Select one</option>
+              <option>Manufacturer</option>
+              <option>CRO / CDMO</option>
+              <option>Research Lab</option>
+              <option>Distributor</option>
+              <option>Brand / Product Company</option>
+              <option>Consultant / Advisor</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Upload NDA — Customers only, optional, never blocks signup -->
+          <div class="af-field hidden" id="af-field-nda">
+            <label>Upload NDA <span class="af-optional">(Optional)</span></label>
+            <input class="af-input" type="file" id="af-nda-input" accept=".pdf,.doc,.docx">
+            <div class="af-field-hint">Built for IP-sensitive collaboration, Scinode ensures encrypted data handling and strict access control at every step.</div>
+          </div>
+
           <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
 
           <div class="af-sso-stack">
@@ -565,19 +587,19 @@
       headline: 'Source chemistry products and manage requests in one place.',
       pageSub: 'Customer workspace',
       accountNoun: 'Scinode',
-      companyLabel: 'Company Name',
-      companyLabelPublic: 'Which company do you represent?',
-      companyPlaceholder: 'Enter company name',
-      emailLabel: 'Email',
+      companyLabel: 'Organisation Name',
+      companyLabelPublic: 'Which organisation do you represent?',
+      companyPlaceholder: 'Enter organisation name',
+      emailLabel: 'Work Email',
       company: 'Nova Specialty Chemicals',
       name: 'Ananya Verma',
       emailByDomain: { verified: 'ananya@novaspecialty.com', 'new': 'ananya@newbuyer.com', public: 'ananya@gmail.com' },
       pendingTitle: 'Your Scinode workspace is almost ready',
       pendingBody: "We're verifying your company details and access. Once approved, you'll be able to explore the Scinode ecosystem and manage your requests and project activity from one place.",
       pendingBullets: [
-        'Discover diverse set of manufacturers and R&amp;D capabilities of Scinode',
-        'Raise and track requests for your Compliance, Manufacturing, Quality and Development requirements',
-        "Track your order after placing it till it's delivered to your location"
+        'Discover manufacturers and R&amp;D capabilities across Scinode',
+        'Raise and track Compliance, Manufacturing, Quality and Development requests',
+        'Track your orders from placement through delivery'
       ],
       approvedSubtext: 'Start exploring the Scinode ecosystem.'
     },
@@ -614,6 +636,8 @@
     afRenderIndustryChips();
     document.getElementById('af-profiletype-input').value = '';
     document.getElementById('af-profiletype-hint').textContent = '';
+    document.getElementById('af-describe-input').value = '';
+    document.getElementById('af-nda-input').value = '';
     // Switching platform while sitting on a result/verify screen would otherwise
     // leave stale content (e.g. Deep Research's welcome copy) under the new brand panel.
     if (afState.screen === 'result' || afState.screen === 'verify') afShowScreen('signup');
@@ -697,6 +721,8 @@
     document.getElementById('af-field-website').classList.toggle('hidden', s.platform !== 'ions');
     document.getElementById('af-field-profiletype').classList.toggle('hidden', s.platform !== 'ions');
     document.getElementById('af-field-industries').classList.toggle('hidden', s.platform !== 'atoms');
+    document.getElementById('af-field-describe').classList.toggle('hidden', s.platform !== 'customers');
+    document.getElementById('af-field-nda').classList.toggle('hidden', s.platform !== 'customers');
     // IONS already asks for its Organization Website in Section 1 (above) — don't
     // ask a second time in the shared New-Private-Domain block ("Atoms sign in/up/
     // sso.pdf" §5B's Website field is redundant here).

@@ -1947,6 +1947,8 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-field{margin-bottom:14px;}
 .af-field label{display:block;font-family:var(--font);font-size:12.5px;font-weight:500;color:var(--text-1);margin-bottom:6px;}
 .af-field label .af-req{color:#EF4444;margin-left:2px;}
+.af-field label .af-optional{color:var(--text-3);font-weight:400;margin-left:4px;}
+.af-input[type="file"]{padding:9px 14px;font-size:12.5px;color:var(--text-2);}
 .af-input,.af-select{width:100%;border:0.5px solid var(--border-h);border-radius:var(--radius-sm);padding:11px 14px;font-family:var(--font);font-size:13.5px;color:var(--text-1);background:var(--white);transition:border-color .15s,box-shadow .15s;appearance:none;}
 .af-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' viewBox='0 0 24 24' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;}
 .af-input:hover,.af-select:hover{border-color:var(--teal-100);}

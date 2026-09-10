@@ -270,6 +270,16 @@ function generateRemainingRequests(){
       stage = 'Dropped'; progress = 0;
     }
 
+    /* Demo override: RD-2026-00210 is used to demonstrate the Collaboration
+       Requirements table with two Secure documents visible at once — NDA already
+       Approved (from its normal seeded history) and NCDS still Pending Upload (see
+       the matching override in seedDemoSecureVersions). Progress is bumped to reach
+       stage 4 ("Commercial Proposal Ready"), where NCDS first triggers. */
+    if (id === 'RD-2026-00210'){
+      stage = 'Commercial Proposal Ready';
+      progress = 70;
+    }
+
     extra.push({
       id: id, type: prodInfo.type, status: status, objective: prodInfo.obj, productName: prodInfo.name, casNumber: prodInfo.cas,
       stage: stage, progress: progress, expert: expInfo, lastUpdated: lastUpdated, createdDate: createdDate,
@@ -626,12 +636,28 @@ function secureTriggerAt(typeKey, stageIdx){
   return (triggers && triggers[stageIdx]) || null;
 }
 
+/* True from the stage that first triggers Collaboration Requirements onward —
+   used to mark every timeline stage header from that point on, not just the
+   single triggering stage, since Secure stays active for the rest of the request. */
+function secureActiveByStage(typeKey, stageIdx){
+  var triggers = SECURE_STAGE_TRIGGERS[typeKey];
+  if (!triggers) return false;
+  for (var k = 0; k <= stageIdx; k++){
+    if (triggers[k]) return true;
+  }
+  return false;
+}
+
 /* Deterministic demo version history for a requirement that has no real upload yet,
    shown only on seeded/procedural sample requests (never on a request the current
    user actually submitted — see isUserSubmitted in getAllRequests). Exists purely so
    the document review workflow (Under Review / Approved / Rejected) and version
    history are visible in the prototype without a real backend/admin reviewer. */
 function seedDemoSecureVersions(req, code){
+  /* Demo override: force NCDS to Pending Upload on RD-2026-00210 so its
+     Collaboration Requirements table shows an Approved doc (NDA) and a Pending
+     Upload requirement side by side — see the matching progress override above. */
+  if (req.id === 'RD-2026-00210' && code === 'NCDS') return [];
   var seed = rfqSeed(req.id + code);
   var baseDate = req.createdDate || req.lastUpdated || '2026-06-01';
   function ts(daysAfterBase, offset){
@@ -709,6 +735,103 @@ function saveSecureVersions(id, code, versions){
   var uploads = Object.assign({}, existing);
   uploads[code] = { versions: versions };
   saveRequestOverride(id, { secureUploads: uploads });
+}
+
+/* "Today"/"Yesterday" read naturally in a live demo; anything older falls back to the
+   same absolute format used everywhere else (formatDate). */
+function relativeShareLabel(iso){
+  var d = new Date(iso + 'T00:00:00');
+  if (isNaN(d.getTime())) return iso;
+  var now = new Date();
+  var startOfDay = function(x){ return new Date(x.getFullYear(), x.getMonth(), x.getDate()); };
+  var diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  return formatDate(iso);
+}
+
+/* ---------- Categorized document catalog (Documents tab) ----------
+   Backs both sides of the Documents-tab "Flat List / Categorized" demo toggle — Flat
+   List is flattenDocumentCatalog() rendered as one list, Categorized adds the All/
+   Request/Product/Scinode Secure second-level nav on top of the same data. Three real
+   domains: Request (Commercial Proposal / Meeting Notes — Admin-only; Purchase Orders —
+   customer-uploadable), Product (Admin-only), and Scinode Secure. The Secure entries are
+   read straight from buildSecureRequirements — same source of truth as the Secure
+   Vault/Timeline — so this is a second VIEW of real Secure data, never a second fake
+   Secure dataset living in parallel. */
+var REQUEST_MEETING_POOL = [
+  { name:'Technical Discussion Notes', ext:'pdf' },
+  { name:'Kickoff Call Summary', ext:'pdf' },
+  { name:'Process Review Minutes', ext:'pdf' }
+];
+var PRODUCT_DOC_POOL = [
+  { name:'Product Specification', ext:'pdf' },
+  { name:'Certificate of Analysis', ext:'pdf' },
+  { name:'Technical Data Sheet', ext:'pdf' },
+  { name:'Safety Data Sheet', ext:'pdf' }
+];
+var CATALOG_DAY_OFFSETS = [0, 1, 4, 9, 15, 22];
+function catalogDateFor(offsetIdx){
+  var d = new Date();
+  d.setDate(d.getDate() - CATALOG_DAY_OFFSETS[Math.min(offsetIdx, CATALOG_DAY_OFFSETS.length - 1)]);
+  return d.toISOString().slice(0, 10);
+}
+function buildDocumentCatalog(req, secureCurrentIdx){
+  var seed = rfqSeed(req.id + 'CATALOG');
+  var expertName = (req.expert && req.expert.name) || 'Scinode Team';
+
+  var proposal = [{
+    name:'Commercial Proposal.pdf', ext:'pdf', type:'PDF',
+    sharedOnDate: catalogDateFor(0), sharedBy:'Scinode Team', isNew:true
+  }];
+
+  var meetingCount = 1 + (seed % 2);
+  var meeting = [];
+  for (var m = 0; m < meetingCount; m++){
+    var mp = REQUEST_MEETING_POOL[(seed + m) % REQUEST_MEETING_POOL.length];
+    meeting.push({ name:mp.name + '.' + mp.ext, ext:mp.ext, type:mp.ext.toUpperCase(), sharedOnDate: catalogDateFor(m + 1), sharedBy: expertName, isNew:false });
+  }
+
+  var poCount = 1 + ((seed >> 2) % 2);
+  var po = [];
+  for (var p = 0; p < poCount; p++){
+    po.push({ name:'PO-2026-' + ('00' + (p + 1)).slice(-3) + '.pdf', ext:'pdf', type:'PDF', sharedOnDate: catalogDateFor(p + 2), sharedBy:'You', isNew:false });
+  }
+
+  var productCount = 3 + (seed % 2);
+  var product = [];
+  for (var q = 0; q < productCount; q++){
+    var pp = PRODUCT_DOC_POOL[q % PRODUCT_DOC_POOL.length];
+    product.push({ name:pp.name + '.' + pp.ext, ext:pp.ext, type:pp.ext.toUpperCase(), sharedOnDate: catalogDateFor(q + 1), sharedBy:'Scinode Team', isNew:(q === 0) });
+  }
+
+  var requirements = buildSecureRequirements(req, req.type, secureCurrentIdx);
+  var secure = requirements.filter(function(r){ return r.doc; }).map(function(r){
+    return {
+      name: r.doc.fileName, ext:'pdf', type:'PDF',
+      sharedOnDate: (r.doc.uploadedAt || '').slice(0, 10),
+      sharedBy: r.doc.uploadedBy === 'You' ? 'You' : 'Scinode Team',
+      isNew:false, secureStatus: r.status
+    };
+  });
+
+  return { request:{ proposal:proposal, meeting:meeting, po:po }, product:product, secure:secure };
+}
+function documentCatalogCounts(catalog){
+  var requestCount = catalog.request.proposal.length + catalog.request.meeting.length + catalog.request.po.length;
+  var productCount = catalog.product.length;
+  var secureCount = catalog.secure.length;
+  return { all: requestCount + productCount + secureCount, request:requestCount, product:productCount, secure:secureCount };
+}
+function flattenDocumentCatalog(catalog){
+  var out = [];
+  catalog.request.proposal.forEach(function(d){ out.push(Object.assign({ category:'request' }, d)); });
+  catalog.request.meeting.forEach(function(d){ out.push(Object.assign({ category:'request' }, d)); });
+  catalog.request.po.forEach(function(d){ out.push(Object.assign({ category:'request' }, d)); });
+  catalog.product.forEach(function(d){ out.push(Object.assign({ category:'product' }, d)); });
+  catalog.secure.forEach(function(d){ out.push(Object.assign({ category:'secure' }, d)); });
+  out.sort(function(a, b){ return a.sharedOnDate < b.sharedOnDate ? 1 : a.sharedOnDate > b.sharedOnDate ? -1 : 0; });
+  return out;
 }
 
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }

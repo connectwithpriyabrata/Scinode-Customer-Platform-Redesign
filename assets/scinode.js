@@ -75,7 +75,10 @@ function ensureRdRequestModal() {
             '<div class="modal-title" id="rdreq-title">Kick off a new R&amp;D Request</div>' +
             '<div class="modal-subtitle">Start your request journey with seamless updates and visibility</div>' +
           '</div>' +
-          '<button type="button" class="modal-close" onclick="closeRdRequestModal()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
+          '<div class="rdreq-header-right">' +
+            scinodeSecureBadgeHtml() +
+            '<button type="button" class="modal-close" onclick="closeRdRequestModal()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
+          '</div>' +
         '</div>' +
         '<div class="rdreq-divider"></div>' +
         '<div class="rdreq-body">' +
@@ -167,7 +170,6 @@ function ensureRdRequestModal() {
             '</label>' +
             '<div class="rdreq-upload-help">Supports PDF, DOCX, PNG up to 10 MB</div>' +
           '</div>' +
-          scinodeSecureSectionHtml('rdreq') +
         '</div>' +
         '<div class="rdreq-footer">' +
           '<button type="button" class="mfg-btn-secondary rdreq-close-btn" onclick="closeRdRequestModal()">Close ' + AppIcon('close', { size: 14 }) + '</button>' +
@@ -325,7 +327,6 @@ function rdreqReset() {
   if (catalogTimeline) catalogTimeline.value = '';
   const comments = document.getElementById('rdreq-comments');
   if (comments) comments.value = '';
-  rdreqSecureReset('rdreq');
   rdreqUpdateConditionalFields();
 }
 function saveUserRequest(req) {
@@ -358,7 +359,6 @@ function submitRdRequest() {
     if (timelinePref) expSpecs.push({ label: 'Timeline', value: timelinePref });
     if (productKnown) expSpecs.push({ label: 'Product/Molecule Known', value: productKnown });
     if (rdreqUploadedFile) expSpecs.push({ label: 'Supporting File', value: rdreqUploadedFile.name });
-    Array.prototype.push.apply(expSpecs, scinodeSecureSpecsFor('rdreq'));
 
     const newExploratoryRequest = {
       id: id,
@@ -411,7 +411,6 @@ function submitRdRequest() {
     });
     if (catalogTimelinePref) catSpecs.push({ label: 'Timeline', value: catalogTimelinePref });
     if (rdreqUploadedFile) catSpecs.push({ label: 'Supporting File', value: rdreqUploadedFile.name });
-    Array.prototype.push.apply(catSpecs, scinodeSecureSpecsFor('rdreq'));
 
     const newCatalogRequest = {
       id: id,
@@ -475,7 +474,10 @@ function ensureCdmoRequestModal() {
             '<div class="modal-title" id="cdmoreq-title">Start your CDMO Project</div>' +
             '<div class="modal-subtitle">Share your molecule requirements to receive proposals from qualified partners and manufacturers.</div>' +
           '</div>' +
-          '<button type="button" class="modal-close" onclick="closeCdmoRequestModal()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
+          '<div class="rdreq-header-right">' +
+            scinodeSecureBadgeHtml() +
+            '<button type="button" class="modal-close" onclick="closeCdmoRequestModal()" aria-label="Close">' + AppIcon('close', { size: 16 }) + '</button>' +
+          '</div>' +
         '</div>' +
         '<div class="rdreq-divider"></div>' +
         '<div class="rdreq-body">' +
@@ -535,7 +537,6 @@ function ensureCdmoRequestModal() {
             '</label>' +
             '<div class="rdreq-upload-help">Supports PDF, DOCX, PNG up to 10 MB</div>' +
           '</div>' +
-          scinodeSecureSectionHtml('cdmoreq') +
         '</div>' +
         '<div class="rdreq-footer">' +
           '<button type="button" class="mfg-btn-secondary rdreq-close-btn" onclick="closeCdmoRequestModal()">Close ' + AppIcon('close', { size: 14 }) + '</button>' +
@@ -624,7 +625,6 @@ function cdmoreqReset() {
   cdmoreqUploadedFile = null;
   const fn = document.getElementById('cdmoreq-filename');
   if (fn) fn.textContent = 'No file chosen';
-  rdreqSecureReset('cdmoreq');
   cdmoreqValidate();
 }
 function submitCdmoRequest() {
@@ -646,7 +646,6 @@ function submitCdmoRequest() {
     { label: 'Quantity', value: qtyNote }
   ];
   if (cdmoreqUploadedFile) specs.push({ label: 'Supporting File', value: cdmoreqUploadedFile.name });
-  Array.prototype.push.apply(specs, scinodeSecureSpecsFor('cdmoreq'));
 
   const newRequest = {
     id: id,
@@ -673,147 +672,19 @@ function submitCdmoRequest() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   Scinode Secure — "Secure Collaboration" section, shared by the R&D and
-   CDMO request modals. Displayed just before Submit: a "Secure this
-   Request" toggle (default off) that reveals an optional NDA/Agreement
-   upload + note. Keyed by `prefix` ('rdreq' / 'cdmoreq') so element ids
-   stay unique per modal. */
-let scinodeSecureUploadedFiles = {};
-
-function scinodeSecureSectionHtml(prefix) {
-  return '<div class="rdreq-secure-section">' +
-    '<div class="rdreq-secure-head">' +
-      '<div class="rdreq-secure-head-left">' +
-        '<span class="rdreq-secure-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>' +
-        '<div><div class="rdreq-secure-title">Secure this Request</div><div class="rdreq-secure-sub">Initiate this request under Scinode Secure</div></div>' +
-        '<button type="button" class="ssinfo-trigger" aria-label="About Scinode Secure" tabindex="0">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' +
-        '</button>' +
-      '</div>' +
-      '<label class="rdreq-secure-toggle-wrap">' +
-        '<input type="checkbox" class="rdreq-secure-toggle-input" id="' + prefix + '-secure-toggle" onchange="rdreqSecureToggle(\'' + prefix + '\')">' +
-        '<span class="rdreq-secure-toggle"><span class="rdreq-secure-toggle-knob"></span></span>' +
-      '</label>' +
-    '</div>' +
-    '<div id="' + prefix + '-secure-fields" style="display:none;">' +
-      '<div style="margin-top:14px;">' +
-        '<div class="rdreq-field-label rdreq-field-label-sm">Upload NDA / Agreement</div>' +
-        '<label class="rdreq-upload-label">' +
-          AppIcon('upload', { size: 16 }) +
-          '<span class="rdreq-upload-btn-text">Choose File</span>' +
-          '<span class="rdreq-upload-filename" id="' + prefix + '-secure-filename">No file chosen</span>' +
-          '<input type="file" id="' + prefix + '-secure-file-input" accept=".pdf,.docx,.jpg,.jpeg,.png" style="display:none;" onchange="rdreqSecureHandleFile(\'' + prefix + '\', event)">' +
-        '</label>' +
-        '<div class="rdreq-upload-help">Supports PDF, DOCX, JPG, JPEG, PNG. Optional — you can submit without uploading.</div>' +
-      '</div>' +
-      '<div style="margin-top:14px;">' +
-        '<div class="rdreq-field-label rdreq-field-label-sm">Additional Note</div>' +
-        '<div class="rdreq-input-wrap rdreq-textarea-wrap"><textarea class="rdreq-textarea" id="' + prefix + '-secure-note" placeholder="Any context related to the uploaded agreement or confidentiality requirements"></textarea></div>' +
-      '</div>' +
-    '</div>' +
+   Scinode Secure — shared by the R&D and CDMO request modals. Every request
+   is protected under Scinode Secure by default now, so this is a static
+   informational badge (no opt-in toggle, no upload/note fields) shown just
+   before Submit. Secure activation for the submitted request is entirely
+   stage-driven (see SECURE_STAGE_TRIGGERS / buildSecureRequirements in
+   requests-data.js) — nothing here feeds into `specifications` anymore. */
+function scinodeSecureBadgeHtml() {
+  return '<div class="rdreq-secure-badge">' +
+    '<span class="rdreq-secure-badge-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>' +
+    '<span class="rdreq-secure-badge-text">Protected by Scinode Secure</span>' +
   '</div>';
 }
 
-function rdreqSecureToggle(prefix) {
-  const toggle = document.getElementById(prefix + '-secure-toggle');
-  const fields = document.getElementById(prefix + '-secure-fields');
-  const wrap = toggle ? toggle.closest('.rdreq-secure-toggle-wrap') : null;
-  const on = !!(toggle && toggle.checked);
-  if (wrap) wrap.classList.toggle('on', on);
-  if (fields) fields.style.display = on ? '' : 'none';
-  if (!on) {
-    scinodeSecureUploadedFiles[prefix] = null;
-    const fn = document.getElementById(prefix + '-secure-filename');
-    if (fn) fn.textContent = 'No file chosen';
-    const fileInput = document.getElementById(prefix + '-secure-file-input');
-    if (fileInput) fileInput.value = '';
-  }
-}
-function rdreqSecureHandleFile(prefix, e) {
-  const file = e.target.files && e.target.files[0];
-  const nameEl = document.getElementById(prefix + '-secure-filename');
-  if (!file) { scinodeSecureUploadedFiles[prefix] = null; if (nameEl) nameEl.textContent = 'No file chosen'; return; }
-  const maxBytes = 10 * 1024 * 1024;
-  if (file.size > maxBytes) {
-    showToast('File exceeds the 10 MB limit');
-    e.target.value = '';
-    scinodeSecureUploadedFiles[prefix] = null;
-    if (nameEl) nameEl.textContent = 'No file chosen';
-    return;
-  }
-  scinodeSecureUploadedFiles[prefix] = file;
-  if (nameEl) nameEl.textContent = file.name;
-}
-function rdreqSecureReset(prefix) {
-  const toggle = document.getElementById(prefix + '-secure-toggle');
-  if (toggle) toggle.checked = false;
-  const wrap = toggle ? toggle.closest('.rdreq-secure-toggle-wrap') : null;
-  if (wrap) wrap.classList.remove('on');
-  const fields = document.getElementById(prefix + '-secure-fields');
-  if (fields) fields.style.display = 'none';
-  const fileInput = document.getElementById(prefix + '-secure-file-input');
-  if (fileInput) fileInput.value = '';
-  scinodeSecureUploadedFiles[prefix] = null;
-  const fn = document.getElementById(prefix + '-secure-filename');
-  if (fn) fn.textContent = 'No file chosen';
-  const note = document.getElementById(prefix + '-secure-note');
-  if (note) note.value = '';
-}
-/* Specs to fold into the submitted request's `specifications` array, if the
-   toggle for this modal is on. Called by each submitXxxRequest(). */
-function scinodeSecureSpecsFor(prefix) {
-  const toggle = document.getElementById(prefix + '-secure-toggle');
-  if (!toggle || !toggle.checked) return [];
-  const file = scinodeSecureUploadedFiles[prefix];
-  const noteEl = document.getElementById(prefix + '-secure-note');
-  const note = noteEl ? noteEl.value.trim() : '';
-  const out = [{ label: 'Scinode Secure', value: file ? 'Requested — NDA uploaded (' + file.name + ')' : 'Requested — NDA to follow' }];
-  if (note) out.push({ label: 'Secure Note', value: note });
-  return out;
-}
-
-/* Info (ⓘ) tooltip — rendered into document.body (not nested in the trigger)
-   so it isn't clipped by .modal-box's overflow-y:auto. Delegated so it works
-   for both modals without per-instance wiring. */
-function ensureScinodeSecureInfoTooltip() {
-  let tip = document.getElementById('scinode-secure-info-tooltip');
-  if (!tip) {
-    tip = document.createElement('div');
-    tip.id = 'scinode-secure-info-tooltip';
-    tip.className = 'ssinfo-tip';
-    tip.innerHTML = '<div class="ssinfo-tip-title">Scinode Secure</div>' +
-      '<div class="ssinfo-tip-body">Start your collaboration securely from day one. If you already have an NDA or confidentiality agreement, you can upload it now. Otherwise, our team will work with you to complete the required legal and confidentiality process before sensitive information is exchanged.</div>';
-    document.body.appendChild(tip);
-  }
-  return tip;
-}
-function showScinodeSecureInfoTooltip(trigger) {
-  const tip = ensureScinodeSecureInfoTooltip();
-  const r = trigger.getBoundingClientRect();
-  tip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 296)) + 'px';
-  tip.style.top = (r.bottom + 8) + 'px';
-  tip.classList.add('open');
-}
-function hideScinodeSecureInfoTooltip() {
-  const tip = document.getElementById('scinode-secure-info-tooltip');
-  if (tip) tip.classList.remove('open');
-}
-document.addEventListener('mouseover', function (e) {
-  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
-  if (t) showScinodeSecureInfoTooltip(t);
-});
-document.addEventListener('mouseout', function (e) {
-  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
-  if (t) hideScinodeSecureInfoTooltip();
-});
-document.addEventListener('focusin', function (e) {
-  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
-  if (t) showScinodeSecureInfoTooltip(t);
-});
-document.addEventListener('focusout', function (e) {
-  const t = e.target.closest && e.target.closest('.ssinfo-trigger');
-  if (t) hideScinodeSecureInfoTooltip();
-});
 
 /* ══════════════════════════════════════════════════════════════════════
    RFQ Request modal — replaces the generic Create Request modal when the

@@ -524,15 +524,19 @@
     .secure-link:hover{color:#E0E7FF;}
     .secure-divider{position:relative;z-index:1;height:1px;background:rgba(165,180,252,.22);}
     .secure-pillars{position:relative;z-index:1;display:flex;gap:12px;}
-    .secure-pillar{flex:1;min-width:0;position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;background:rgba(165,180,252,.12);border-radius:999px;padding:10px 16px;}
-    .secure-pillar-shimmer{position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 50%,rgba(255,255,255,0) 100%);animation:secShimmer 3.4s ease-in-out infinite;pointer-events:none;}
-    .secure-pico{color:#E0E7FF;flex-shrink:0;display:flex;position:relative;z-index:1;}
-    .secure-pname{font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;z-index:1;}
+    /* Pillar tiles use "Halo" (secure-200 -> secure-300) — the Surface Gradients doc names this
+       exact gradient for "icon containers, pillar tiles, avatar and thumbnail grounds," holding a
+       secure-600/900 glyph at full contrast. Halo is a light surface, so the icon/label flip from
+       white to secure-800 here (the doc's own light-surface text rule) — the white shimmer sweep
+       this pill used against its old dark fill is dropped, since it wouldn't read against Halo's
+       light ground and the doc doesn't call for one on icon/pillar tiles. */
+    .secure-pillar{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:linear-gradient(150deg,var(--secure-200) 0%,var(--secure-300) 100%);border-radius:999px;padding:10px 16px;}
+    .secure-pico{color:var(--secure-800);flex-shrink:0;display:flex;}
+    .secure-pname{font-size:12.5px;font-weight:600;color:var(--secure-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     @keyframes secPulse{0%,100%{box-shadow:0 0 0 0 rgba(165,180,252,.35);}50%{box-shadow:0 0 0 10px rgba(165,180,252,0);}}
     @keyframes secFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-    @keyframes secShimmer{0%{transform:translateX(-120%);}100%{transform:translateX(220%);}}
     @media (prefers-reduced-motion:reduce){
-      .secure-shield,.secure-pillar-shimmer{animation:none!important;}
+      .secure-shield{animation:none!important;}
     }
     @media (max-width:900px){ .secure-pillars{flex-wrap:wrap;} .secure-pillar{flex:1 1 45%;} }
 

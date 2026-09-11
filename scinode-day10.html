@@ -2964,9 +2964,9 @@
 <style id="trust-styles">
   .hero-p5-layer{position:absolute;inset:0;z-index:0;pointer-events:none;}
   .hero-p5-layer canvas{display:block;}
-  .hero-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:#96DDA5;font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:0;opacity:.85;background:none;border:none;padding:0;cursor:pointer;transition:opacity .15s ease;}
+  .hero-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:var(--secure-300);font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:0;opacity:.85;background:none;border:none;padding:0;cursor:pointer;transition:opacity .15s ease;}
   .hero-trust-line:hover,.hero-trust-line:focus-visible{opacity:1;text-decoration:underline;}
-  .hero-trust-line:focus-visible{outline:2px solid #96DDA5;outline-offset:3px;border-radius:4px;}
+  .hero-trust-line:focus-visible{outline:2px solid var(--secure-300);outline-offset:3px;border-radius:4px;}
   .hero-trust-line svg{flex-shrink:0;}
   .trust-modal .modal-box{max-width:960px;padding:34px 38px 30px;border-radius:20px;background:radial-gradient(1100px 480px at 88% -10%,rgba(2,150,138,.16),transparent 60%),linear-gradient(165deg,#182133 0%,#0F2A24 45%,#021C26 100%);box-shadow:0 24px 70px rgba(0,0,0,.5);}
   .trust-modal .modal-close{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.75);}
@@ -3057,6 +3057,28 @@
   .tc-light .tc-continuous{border-color:var(--border);}
   .tc-light .tc-continuous-label{color:var(--text-3);}
   .tc-light .tc-wf-signal{color:var(--teal-600);background:#fff;border-color:var(--teal-100);}
+
+  /* Secure Indigo mode — a third, additive option alongside Dark/Light (both of
+     which stay exactly as they were: teal/sage). Reuses .tc-light's white-background
+     structure and swaps only identity-bearing accents (icons, eyebrows, pills,
+     interactive states) onto the Secure Indigo tokens, per the design system's
+     "Secure is a semantic layer, not a page theme" rule — headings, body copy and
+     the dark ribbon/shield container are untouched. Always paired with .tc-light. */
+  .tc-secure .tc-ribbon svg{color:var(--secure-300);}
+  .tc-secure .tc-shield{color:var(--secure-300);}
+  .tc-secure .tc-eyebrow{color:var(--secure-600);}
+  .tc-secure .tc-sec-eyebrow{color:var(--secure-600);}
+  .tc-secure .tc-sec-eyebrow::after{background:linear-gradient(90deg,var(--secure-200),rgba(226,232,240,0));}
+  .tc-secure .tc-card:hover{border-color:var(--secure-200);}
+  .tc-secure .tc-ico{color:var(--secure-600);background:var(--secure-100);}
+  .tc-secure .tc-list li{color:var(--secure-700);background:var(--secure-100);}
+  .tc-secure .tc-sits-core-tag{color:var(--secure-700);background:#fff;border-color:var(--secure-200);}
+  .tc-secure .tc-wf-check{color:var(--secure-600);background:var(--secure-100);}
+  .tc-secure .tc-wf-signal{color:var(--secure-700);background:#fff;border-color:var(--secure-200);}
+  .tc-secure .tc-lifecycle-step-done{color:var(--secure-700);background:var(--secure-100);border-color:transparent;}
+  .tc-secure .tc-tree-root{color:var(--secure-700);}
+  .tc-secure .tc-powered{color:var(--secure-700);}
+  .tc-secure .tc-mode-toggle button.active{background:var(--secure-600);color:#fff;}
 </style>
 
 <div class="modal-backdrop trust-modal" id="trust-center-modal" role="dialog" aria-modal="true" aria-labelledby="trust-modal-title" onclick="handleTrustBackdropClick(event)">
@@ -3076,6 +3098,7 @@
         <div class="tc-mode-toggle" role="tablist" aria-label="Trust Center appearance">
           <button type="button" role="tab" aria-selected="true" class="active" onclick="setTrustMode('dark')">Dark</button>
           <button type="button" role="tab" aria-selected="false" onclick="setTrustMode('light')">Light</button>
+          <button type="button" role="tab" aria-selected="false" onclick="setTrustMode('secure')">Secure Indigo</button>
         </div>
         <button type="button" class="modal-close" onclick="closeTrustCenterModal()" aria-label="Close">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -3272,9 +3295,10 @@
   function setTrustMode(mode) {
     var box = document.querySelector('#trust-center-modal .modal-box');
     if (!box) return;
-    box.classList.toggle('tc-light', mode === 'light');
+    box.classList.toggle('tc-light', mode === 'light' || mode === 'secure');
+    box.classList.toggle('tc-secure', mode === 'secure');
     document.querySelectorAll('.tc-mode-toggle [role="tab"]').forEach(function (b, i) {
-      var active = (i === 0 && mode === 'dark') || (i === 1 && mode === 'light');
+      var active = (i === 0 && mode === 'dark') || (i === 1 && mode === 'light') || (i === 2 && mode === 'secure');
       b.classList.toggle('active', active);
       b.setAttribute('aria-selected', active ? 'true' : 'false');
     });
@@ -3576,8 +3600,7 @@
     return '<div class="secure-pillar"><span class="secure-pillar-shimmer" style="animation-delay:'+DELAYS[idx]+'"></span><span class="secure-pico">'+p.i+'</span><span class="secure-pname">'+p.n+'</span></div>';
   }).join('');
   var html = '<div class="secure-banner">'
-    + '<div class="secure-glow secure-glow-a" aria-hidden="true"></div>'
-    + '<div class="secure-glow secure-glow-b" aria-hidden="true"></div>'
+    + '<div class="secure-glow-overlay" aria-hidden="true"></div>'
     + '<div class="secure-header">'
     + '<div class="secure-brand"><span class="secure-shield">'+SHIELD+'</span>'
     + '<div><div class="secure-brand-name">Scinode Secure</div>'

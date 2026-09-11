@@ -130,6 +130,30 @@
         <div class="af-sub" id="af-signup-sub">Manufacturing &amp; Suppliers workspace</div>
 
         <form onsubmit="afSubmitSignup(event)">
+          <div id="af-section3-wrap">
+            <div class="af-section-label">Email &amp; password</div>
+            <div class="af-field">
+              <label><span id="af-email-label">Email</span> <span class="af-req">*</span></label>
+              <input class="af-input" type="email" id="af-section3-email" placeholder="you@company.com" required>
+            </div>
+            <div class="af-field">
+              <label>Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" minlength="8" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-field-hint">Minimum 8 characters.</div>
+            </div>
+            <div class="af-field">
+              <label>Confirm Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password-confirm" placeholder="Re-enter password" minlength="8" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-field-error hidden" id="af-password-match-error">Passwords don't match.</div>
+            </div>
+          </div>
+
           <div class="af-section-label">Platform signup details</div>
 
           <!-- Name — direct vs SSO-verified -->
@@ -299,32 +323,6 @@
           <div class="af-sso-connected-note hidden" id="af-sso-connected-note">
             <span>Signing up with <b id="af-sso-connected-method">Google</b> — no password needed.</span>
             <button type="button" onclick="afSetSource('direct')">Use email instead</button>
-          </div>
-
-          <div class="af-divider-row" id="af-divider-or"><span class="af-divider-text">or</span></div>
-
-          <div id="af-section3-wrap">
-            <div class="af-section-label" style="margin-top:0;">Email &amp; password</div>
-            <div class="af-field">
-              <label><span id="af-email-label">Email</span> <span class="af-req">*</span></label>
-              <input class="af-input" type="email" id="af-section3-email" placeholder="you@company.com" required>
-            </div>
-            <div class="af-field">
-              <label>Password <span class="af-req">*</span></label>
-              <div class="af-password-row">
-                <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" minlength="8" required>
-                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              </div>
-              <div class="af-field-hint">Minimum 8 characters.</div>
-            </div>
-            <div class="af-field">
-              <label>Confirm Password <span class="af-req">*</span></label>
-              <div class="af-password-row">
-                <input class="af-input" type="password" id="af-section3-password-confirm" placeholder="Re-enter password" minlength="8" required>
-                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              </div>
-              <div class="af-field-error hidden" id="af-password-match-error">Passwords don't match.</div>
-            </div>
           </div>
 
           <div class="af-consent-row">
@@ -715,7 +713,6 @@
     document.getElementById('af-company-public').classList.toggle('hidden', s.domain !== 'public');
 
     document.getElementById('af-section3-wrap').classList.toggle('hidden', s.source !== 'direct');
-    document.getElementById('af-divider-or').classList.toggle('hidden', s.source !== 'direct');
 
     // Platform-specific Section 1 fields (see IDENTITY_ACCESS_SPEC.md §2.1).
     document.getElementById('af-field-website').classList.toggle('hidden', s.platform !== 'ions');

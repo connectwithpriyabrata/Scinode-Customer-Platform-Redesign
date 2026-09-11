@@ -245,24 +245,21 @@
           <!-- Industries — ATOMS only, multi-select -->
           <div class="af-field" id="af-field-industries">
             <label>Industries <span class="af-req">*</span></label>
-            <div class="af-multiselect-row">
-              <select class="af-select" id="af-industries-select">
-                <option value="" selected disabled>Select industries</option>
-                <option>Agrochemicals</option>
-                <option>Beauty &amp; Personal Care</option>
-                <option>Critical Metals</option>
-                <option>Dyes and Pigments</option>
-                <option>Elemental Derivatives</option>
-                <option>Flame Retardants</option>
-                <option>Flavors &amp; Fragrances</option>
-                <option>Food &amp; Nutrition</option>
-                <option>Industrial Chemicals</option>
-                <option>Metallurgy Chemicals</option>
-                <option>Oleochemicals</option>
-                <option>Pharmaceutical</option>
-              </select>
-              <button type="button" class="af-add-btn" onclick="afAddIndustry()">Add</button>
-            </div>
+            <select class="af-select" id="af-industries-select" onchange="afAddIndustry()">
+              <option value="" selected disabled>Select industries</option>
+              <option>Agrochemicals</option>
+              <option>Beauty &amp; Personal Care</option>
+              <option>Critical Metals</option>
+              <option>Dyes and Pigments</option>
+              <option>Elemental Derivatives</option>
+              <option>Flame Retardants</option>
+              <option>Flavors &amp; Fragrances</option>
+              <option>Food &amp; Nutrition</option>
+              <option>Industrial Chemicals</option>
+              <option>Metallurgy Chemicals</option>
+              <option>Oleochemicals</option>
+              <option>Pharmaceutical</option>
+            </select>
             <div class="af-chip-row" id="af-industries-chips"></div>
             <div class="af-field-error hidden" id="af-industries-error">Select at least one industry.</div>
           </div>

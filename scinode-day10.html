@@ -311,14 +311,19 @@
 
 /* ============================================================
    Scinode Secure — ecosystem column trust bar
+   Was on the column's own local teal tokens (--teal/--teal-50/--teal-700,
+   scoped to this eco-styles block) — migrated to a Veil strip (secure-50 ->
+   secure-100, 90deg) matching the Surface Gradients doc's own "Protected by
+   Scinode Secure" veil-banner example: border secure-200, icon secure-600,
+   text secure-800/900.
    ============================================================ */
-.eco-trust-bar { margin-top: 12px; background: var(--teal-50); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.eco-trust-bar { margin-top: 12px; background: linear-gradient(90deg, var(--secure-50) 0%, var(--secure-100) 100%); border: 1px solid var(--secure-200); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .etb-head { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
-.etb-ico { width: 32px; height: 32px; color: var(--teal); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.etb-label { font-size: 12.5px; font-weight: 600; color: var(--teal-700); white-space: nowrap; }
+.etb-ico { width: 32px; height: 32px; color: var(--secure-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.etb-label { font-size: 12.5px; font-weight: 600; color: var(--secure-800); white-space: nowrap; }
 .etb-items { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.etb-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--ink); white-space: nowrap; }
-.etb-item svg { color: var(--teal); flex-shrink: 0; }
+.etb-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--secure-900); white-space: nowrap; }
+.etb-item svg { color: var(--secure-600); flex-shrink: 0; }
 
 /* scroll fade helper */
 .fade-up { opacity: 0; transform: translateY(14px); }
@@ -3064,8 +3069,10 @@
      interactive states) onto the Secure Indigo tokens, per the design system's
      "Secure is a semantic layer, not a page theme" rule — headings, body copy and
      the dark ribbon/shield container are untouched. Always paired with .tc-light. */
+  .modal-box.tc-secure{background:linear-gradient(160deg,#FFFFFF 0%,var(--secure-50) 45%,var(--secure-100) 100%);box-shadow:0 24px 60px rgba(49,46,129,.2);}
+  .tc-secure .tc-ribbon{background:linear-gradient(90deg,var(--secure-600),var(--secure-900));}
   .tc-secure .tc-ribbon svg{color:var(--secure-300);}
-  .tc-secure .tc-shield{color:var(--secure-300);}
+  .tc-secure .tc-shield{background:linear-gradient(135deg,var(--secure-600) 0%,var(--secure-900) 100%);color:var(--secure-300);box-shadow:0 4px 14px rgba(79,70,229,.28);}
   .tc-secure .tc-eyebrow{color:var(--secure-600);}
   .tc-secure .tc-sec-eyebrow{color:var(--secure-600);}
   .tc-secure .tc-sec-eyebrow::after{background:linear-gradient(90deg,var(--secure-200),rgba(226,232,240,0));}
@@ -3082,7 +3089,7 @@
 </style>
 
 <div class="modal-backdrop trust-modal" id="trust-center-modal" role="dialog" aria-modal="true" aria-labelledby="trust-modal-title" onclick="handleTrustBackdropClick(event)">
-  <div class="modal-box">
+  <div class="modal-box tc-light tc-secure">
     <div class="tc-ribbon">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.8 2.9v5.8c0 4.7-3.3 7.7-7.8 9.1-4.5-1.4-7.8-4.4-7.8-9.1V5.9z"/><path d="m8.7 12 2.3 2.3 4.3-4.3"/></svg>
       Scinode Secure — Protecting Every Stage of Collaboration
@@ -3096,9 +3103,9 @@
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
         <div class="tc-mode-toggle" role="tablist" aria-label="Trust Center appearance">
-          <button type="button" role="tab" aria-selected="true" class="active" onclick="setTrustMode('dark')">Dark</button>
+          <button type="button" role="tab" aria-selected="false" onclick="setTrustMode('dark')">Dark</button>
           <button type="button" role="tab" aria-selected="false" onclick="setTrustMode('light')">Light</button>
-          <button type="button" role="tab" aria-selected="false" onclick="setTrustMode('secure')">Secure Indigo</button>
+          <button type="button" role="tab" aria-selected="true" class="active" onclick="setTrustMode('secure')">Secure Indigo</button>
         </div>
         <button type="button" class="modal-close" onclick="closeTrustCenterModal()" aria-label="Close">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -3599,7 +3606,6 @@
     return '<div class="secure-pillar"><span class="secure-pico">'+p.i+'</span><span class="secure-pname">'+p.n+'</span></div>';
   }).join('');
   var html = '<div class="secure-banner">'
-    + '<div class="secure-glow-overlay" aria-hidden="true"></div>'
     + '<div class="secure-header">'
     + '<div class="secure-brand"><span class="secure-shield">'+SHIELD+'</span>'
     + '<div><div class="secure-brand-name">Scinode Secure</div>'

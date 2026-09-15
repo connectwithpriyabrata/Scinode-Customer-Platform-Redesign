@@ -3592,8 +3592,9 @@
 (function(){
   var mounts = document.querySelectorAll('.secure-mount');
   if (!mounts.length) return;
-  var SHIELD = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.4 8 11 4.6-2.6 8-6 8-11V5l-8-3z"/><path d="m9 12 2 2 4-4"/></svg>';
-  var ARR = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var SHIELD = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.4 8 11 4.6-2.6 8-6 8-11V5l-8-3z"/><path d="m9 12 2 2 4-4"/></svg>';
+  var ARR = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>';
   function ico(p){ return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'; }
   var PILLARS = [
     {n:'Intellectual Property Protection', i:ico('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')},
@@ -3606,9 +3607,11 @@
     return '<div class="secure-pillar"><span class="secure-pico">'+p.i+'</span><span class="secure-pname">'+p.n+'</span></div>';
   }).join('');
   var html = '<div class="secure-banner">'
+    + '<div class="secure-sheen" aria-hidden="true"></div>'
     + '<div class="secure-header">'
     + '<div class="secure-brand"><span class="secure-shield">'+SHIELD+'</span>'
-    + '<div><div class="secure-brand-name">Scinode Secure</div>'
+    + '<div><div class="secure-brand-row"><span class="secure-brand-name">Scinode Secure</span>'
+    + '<span class="secure-verified-badge">'+CHECK+'Enterprise Verified</span></div>'
     + '<div class="secure-brand-desc">Enterprise trust framework protecting every request, proposal and project.</div></div></div>'
     + '<button type="button" class="secure-link" onclick="openTrustCenter()">View Trust Center '+ARR+'</button>'
     + '</div>'

@@ -505,27 +505,24 @@
     .cmp-dr-status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--teal-600);margin-top:2px;}
 
     /* Scinode Secure banner (Compliance & Trust) — enterprise trust framework above the tabs.
-       Background is "Rise" (secure-50 -> secure-300) — the Surface Gradients doc's widest light
-       ramp, named for "full-width Secure hero strips... where the gradient itself is the graphic."
-       It's a light surface, so brand/description/link/divider all carry secure-800/900 text per
-       the doc's light-surface rule (never secure-300 type on a light ground). No Glow/Scrim here —
-       those are scoped to deep surfaces only. */
-    .secure-banner{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--secure-50) 0%,var(--secure-300) 100%);border-radius:20px;padding:26px 32px;display:flex;flex-direction:column;gap:20px;margin-bottom:16px;}
+       Background is "Abyss" (950 -> beyond 900) — a deeper pair than the doc's own secure-900
+       floor (#1E1B4B / #14113A), from the "1l Abyss" mockup: "Darkest ground in the ramp, every
+       element in secure-50." Literal hex, not var(--secure-*), since there's no token this deep yet
+       in the nine-token set — every foreground element here is secure-50 (or a secure-50 tint) per
+       that same spec, same as the old Vault treatment's white-on-dark pattern. */
+    .secure-banner{position:relative;overflow:hidden;background:linear-gradient(135deg,#1E1B4B 0%,#14113A 100%);border-radius:20px;padding:26px 32px;display:flex;flex-direction:column;gap:20px;margin-bottom:16px;}
     .secure-header{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
     .secure-brand{display:flex;align-items:center;gap:14px;min-width:0;}
-    .secure-shield{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.55);color:var(--secure-800);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:secPulse 2.6s ease-in-out infinite,secFloat 3.2s ease-in-out infinite;}
-    .secure-brand-name{font-size:18px;font-weight:700;color:var(--secure-900);line-height:1.2;letter-spacing:-.01em;}
-    .secure-brand-desc{font-size:13.5px;color:var(--secure-800);line-height:1.4;margin-top:2px;}
-    .secure-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--secure-900);background:none;border:none;padding:0;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:color .15s;flex-shrink:0;}
-    .secure-link:hover{color:var(--secure-700);}
-    .secure-divider{position:relative;z-index:1;height:1px;background:rgba(49,46,129,.18);}
+    .secure-shield{width:40px;height:40px;border-radius:10px;background:rgba(245,247,255,.12);color:var(--secure-50);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:secPulse 2.6s ease-in-out infinite,secFloat 3.2s ease-in-out infinite;}
+    .secure-brand-name{font-size:18px;font-weight:700;color:var(--secure-50);line-height:1.2;letter-spacing:-.01em;}
+    .secure-brand-desc{font-size:13.5px;color:rgba(245,247,255,.72);line-height:1.4;margin-top:2px;}
+    .secure-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--secure-50);background:none;border:none;padding:0;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:color .15s;flex-shrink:0;}
+    .secure-link:hover{color:rgba(245,247,255,.75);}
+    .secure-divider{position:relative;z-index:1;height:1px;background:rgba(245,247,255,.14);}
     .secure-pillars{position:relative;z-index:1;display:flex;gap:12px;}
-    /* Pillars go glass (translucent white) rather than Halo here — Halo (secure-200 -> secure-300)
-       would nearly disappear against Rise's own light-to-mid indigo sweep. secure-800 text/icon
-       stays at full contrast either way. */
-    .secure-pillar{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);border-radius:999px;padding:10px 16px;}
-    .secure-pico{color:var(--secure-800);flex-shrink:0;display:flex;}
-    .secure-pname{font-size:12.5px;font-weight:600;color:var(--secure-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .secure-pillar{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:rgba(245,247,255,.07);border:1px solid rgba(245,247,255,.12);border-radius:999px;padding:10px 16px;}
+    .secure-pico{color:var(--secure-50);flex-shrink:0;display:flex;}
+    .secure-pname{font-size:12.5px;font-weight:600;color:var(--secure-50);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     @keyframes secPulse{0%,100%{box-shadow:0 0 0 0 rgba(165,180,252,.35);}50%{box-shadow:0 0 0 10px rgba(165,180,252,0);}}
     @keyframes secFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
     @media (prefers-reduced-motion:reduce){

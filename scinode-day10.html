@@ -2969,9 +2969,14 @@
 <style id="trust-styles">
   .hero-p5-layer{position:absolute;inset:0;z-index:0;pointer-events:none;}
   .hero-p5-layer canvas{display:block;}
-  .hero-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:var(--secure-300);font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:0;opacity:.85;background:none;border:none;padding:0;cursor:pointer;transition:opacity .15s ease;}
+  /* #E0E7FF, not secure-300: this hero shares the same --gradient (teal-600/navy)
+     as the Requests hero, and secure-300 only holds ~3.6:1 against the teal-600
+     end (fails AA at 12px) while #E0E7FF holds 5.8:1+ across the whole ramp — see
+     the matching note on .rq-trust-line in requests.html. Kept identical between
+     both pages since this trigger is the same content/function on each. */
+  .hero-trust-line{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:#E0E7FF;font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:0;opacity:.85;background:none;border:none;padding:0;cursor:pointer;transition:opacity .15s ease;}
   .hero-trust-line:hover,.hero-trust-line:focus-visible{opacity:1;text-decoration:underline;}
-  .hero-trust-line:focus-visible{outline:2px solid var(--secure-300);outline-offset:3px;border-radius:4px;}
+  .hero-trust-line:focus-visible{outline:2px solid #E0E7FF;outline-offset:3px;border-radius:4px;}
   .hero-trust-line svg{flex-shrink:0;}
   .trust-modal .modal-box{max-width:960px;padding:34px 38px 30px;border-radius:20px;background:radial-gradient(1100px 480px at 88% -10%,rgba(2,150,138,.16),transparent 60%),linear-gradient(165deg,#182133 0%,#0F2A24 45%,#021C26 100%);box-shadow:0 24px 70px rgba(0,0,0,.5);}
   .trust-modal .modal-close{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.75);}

@@ -122,6 +122,20 @@
   <div class="secure-hist-body" id="secure-hist-body"></div>
 </div>
 
+<div class="rfqdet-docs-drawer-backdrop" id="rfqdet-docs-drawer-backdrop" onclick="closeDocumentsDrawer()"></div>
+<div class="rfqdet-docs-drawer" id="rfqdet-docs-drawer" role="dialog" aria-modal="true" aria-labelledby="rfqdet-docs-drawer-title">
+  <div class="rfqdet-docs-drawer-head">
+    <div>
+      <div class="rfqdet-docs-drawer-title" id="rfqdet-docs-drawer-title">Documents</div>
+      <div class="rfqdet-docs-drawer-sub">All documents related to this request, in one place.</div>
+    </div>
+    <button type="button" class="modal-close" onclick="closeDocumentsDrawer()" aria-label="Close documents">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+  <div class="rfqdet-docs-drawer-body" id="rfqdet-docs-drawer-body"></div>
+</div>
+
 <style>
   .rfqdet-toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
   .rfqdet-toprow .rfqdet-back{margin-bottom:0;}
@@ -213,6 +227,30 @@
   .rfqdet-field-row .rfqdet-field{flex:1;margin-bottom:0;}
   .rfqdet-product-box{background:var(--teal-50);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
   .rfqdet-product-name{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text-1);margin-top:2px;line-height:1.4;}
+
+  /* Documents sidebar card (Classic View only — see DOCS_TAB_MODE gate around
+     renderDetailCard) — a compact entry point only, per spec: "the right rail
+     should communicate everything is here, while the drawer does the actual
+     browsing." Reuses .rfqdet-info-card/.rfqdet-info-title so it sits between
+     "Request Details" and "Scinode Secure" without inventing a new card shell. */
+  .rfqdet-docs-card-sub{font-family:var(--font);font-size:11.5px;color:var(--text-2);line-height:1.5;margin-bottom:12px;}
+  .rfqdet-docs-card-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-family:var(--font);font-size:11px;margin-bottom:14px;}
+  .rfqdet-docs-card-count{font-weight:700;color:var(--text-1);}
+  .rfqdet-docs-card-dot{width:3px;height:3px;border-radius:50%;background:var(--text-3,#94A3B8);flex-shrink:0;}
+  .rfqdet-docs-card-cats{color:var(--text-2);}
+  .rfqdet-docs-card-cta{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:0;font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--teal-600);cursor:pointer;}
+  .rfqdet-docs-card-cta:hover{color:var(--teal-500);}
+  .rfqdet-docs-card-cta svg{transition:transform .15s;}
+  .rfqdet-docs-card-cta:hover svg{transform:translateX(3px);}
+  .rfqdet-docs-card-empty{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:4px 0 2px;}
+  .rfqdet-docs-card-empty svg{color:var(--text-3,#94A3B8);width:22px;height:22px;margin-bottom:4px;}
+  .rfqdet-docs-card-empty-title{font-family:var(--font-heading);font-size:13px;font-weight:600;color:var(--text-1);}
+  .rfqdet-docs-card-empty-sub{font-family:var(--font);font-size:11.5px;color:var(--text-2);line-height:1.5;}
+  /* Preview-only toggle — the mock catalog always has documents, so the empty
+     state above is otherwise unreachable. Visually set apart (dashed rule,
+     muted uppercase label) so it never reads as part of the real card. */
+  .rfqdet-docs-card-demo{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);flex-wrap:wrap;}
+  .rfqdet-docs-card-demo-label{font-family:var(--font);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3,#94A3B8);}
 
   /* Stage-specific rich content (RFQ) */
   .rfqdet-doc-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:8px;padding:10px 12px;}
@@ -415,6 +453,21 @@
   .secure-hist-note,.secure-hist-comment{font-family:var(--font);font-size:11px;color:var(--text-2);line-height:1.5;}
   .secure-hist-note span,.secure-hist-comment span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3,#94A3B8);margin-bottom:2px;}
   .secure-hist-actions{display:flex;gap:14px;margin-top:2px;}
+
+  /* Documents drawer (Classic View) — same fixed/transform/backdrop mechanics as
+     .secure-hist-drawer above, just wider (520-600px target) since it holds a
+     document table rather than a version list. Kept as its own component instead
+     of widening .secure-hist-drawer, which is used elsewhere for something
+     unrelated (Secure requirement version history). */
+  .rfqdet-docs-drawer-backdrop{position:fixed;inset:0;background:rgba(4,20,28,.32);opacity:0;visibility:hidden;transition:opacity .18s,visibility .18s;z-index:600;}
+  .rfqdet-docs-drawer-backdrop.open{opacity:1;visibility:visible;}
+  .rfqdet-docs-drawer{position:fixed;top:0;right:0;bottom:0;width:560px;max-width:92vw;background:#fff;box-shadow:-16px 0 40px rgba(4,62,84,.16);z-index:601;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease;}
+  .rfqdet-docs-drawer.open{transform:translateX(0);}
+  .rfqdet-docs-drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:20px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .rfqdet-docs-drawer-title{font-family:var(--font-heading);font-size:17px;font-weight:600;color:var(--navy-500);}
+  .rfqdet-docs-drawer-sub{font-family:var(--font);font-size:12px;color:var(--text-2);margin-top:3px;}
+  .rfqdet-docs-drawer-body{flex:1;overflow-y:auto;padding:16px 20px 24px;}
+  @media (max-width:640px){ .rfqdet-docs-drawer{width:100%;max-width:100%;} }
 
   /* Trust modal — visually relatable to the Dashboard's Trust Center modal
      (dark gradient box, ribbon strip, shield badge, card grid, footer). */
@@ -783,6 +836,7 @@
     if (e.key !== 'Escape') return;
     closeSecureModal();
     closeSecureVersionHistory();
+    closeDocumentsDrawer();
   });
 
   function secureHistCardHtml(v, isCurrent){
@@ -1519,12 +1573,168 @@
     return '<div class="rfqdet-docs-panel">' + head + catnav + controls + listArea + '</div>';
   }
 
+  /* ── Documents sidebar card + drawer (Classic View only) ──────────────────
+     Additive entry point, per spec: the right-rail card only ever communicates
+     "everything is here" (count + category summary) — it never renders the
+     document list itself. Clicking "View all documents" opens the drawer,
+     which is where the actual browsing happens; reuses the exact same catalog
+     builder and row/table/empty-state renderers as the Documents Tab
+     experiment above (buildDocumentCatalog, flattenDocumentCatalog,
+     catalogTableCardHtml, docsCategoryBodyHtml, catalogEmptyHtml) so there is
+     one source of truth for what a document list looks like. Kept on its own
+     local state (not DOCS_V2_MODE/setDocsV2Mode) so toggling Flat/Categorized
+     inside the drawer never triggers the page's full init(). */
+  var docsDrawerCatalog = null, docsDrawerMode = 'flat', docsDrawerCategory = 'all', docsDrawerSearch = '';
+  var ICON_ARROW_SM = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+  /* The mock catalog generator always produces several documents (proposal +
+     meeting notes + PO + product docs), so a real zero-document request never
+     occurs in this demo data — the sidebar card's empty state would otherwise
+     be unreachable. DOCS_CARD_DEMO_STATE is a "force empty" preview toggle on
+     the card itself (same demo-toggle pattern as DOCS_TAB_MODE/DOCS_V2_MODE
+     above) so both states can be reviewed side by side. */
+  var DOCS_CARD_DEMO_STATE = (function(){
+    try { return localStorage.getItem('scinodeDocsCardDemo') === 'empty' ? 'empty' : 'data'; } catch (e){ return 'data'; }
+  })();
+  window.setDocsCardDemoState = function(state){
+    DOCS_CARD_DEMO_STATE = state;
+    try { localStorage.setItem('scinodeDocsCardDemo', state); } catch (e){ /* storage unavailable */ }
+    init();
+  };
+
+  function documentsSidebarCardHtml(req, secureCurrentIdx){
+    var counts = documentCatalogCounts(buildDocumentCatalog(req, secureCurrentIdx));
+    var forcedEmpty = DOCS_CARD_DEMO_STATE === 'empty';
+    var isEmpty = forcedEmpty || counts.all === 0;
+    var demoToggle = '<div class="rfqdet-docs-card-demo">' +
+        '<span class="rfqdet-docs-card-demo-label">Preview</span>' +
+        '<div class="sbv-toggle" role="tablist" aria-label="Documents card preview state" title="Has documents vs. empty state — demo comparison, not a saved preference">' +
+          '<button type="button" role="tab" aria-selected="' + !forcedEmpty + '" class="' + (forcedEmpty ? '' : 'active') + '" onclick="setDocsCardDemoState(\'data\')">Documents</button>' +
+          '<button type="button" role="tab" aria-selected="' + forcedEmpty + '" class="' + (forcedEmpty ? 'active' : '') + '" onclick="setDocsCardDemoState(\'empty\')">Empty state</button>' +
+        '</div>' +
+      '</div>';
+    var content = isEmpty
+      ? '<div class="rfqdet-docs-card-empty">' + ICON_FOLDER_OPEN +
+          '<div class="rfqdet-docs-card-empty-title">No documents yet</div>' +
+          '<div class="rfqdet-docs-card-empty-sub">Documents related to this request will appear here as they are shared.</div>' +
+        '</div>'
+      : '<div class="rfqdet-docs-card-sub">All documents related to this request, in one place.</div>' +
+        '<div class="rfqdet-docs-card-meta">' +
+          '<span class="rfqdet-docs-card-count">' + counts.all + (counts.all === 1 ? ' document' : ' documents') + '</span>' +
+          '<span class="rfqdet-docs-card-dot"></span>' +
+          '<span class="rfqdet-docs-card-cats">Request &middot; Product &middot; Scinode Secure</span>' +
+        '</div>' +
+        '<button type="button" class="rfqdet-docs-card-cta" onclick="openDocumentsDrawer(' + secureCurrentIdx + ')">View all documents ' + ICON_ARROW_SM + '</button>';
+    return '<div class="rfqdet-info-card rfqdet-docs-card">' +
+      '<div class="rfqdet-info-title">Documents</div>' +
+      content +
+      demoToggle +
+    '</div>';
+  }
+
+  window.openDocumentsDrawer = function(secureCurrentIdx){
+    var req = currentReq();
+    if (!req) return;
+    docsDrawerCatalog = buildDocumentCatalog(req, secureCurrentIdx);
+    docsDrawerMode = 'flat';
+    docsDrawerCategory = 'all';
+    docsDrawerSearch = '';
+    renderDocsDrawerBody();
+    document.getElementById('rfqdet-docs-drawer').classList.add('open');
+    document.getElementById('rfqdet-docs-drawer-backdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeDocumentsDrawer = function(){
+    var d = document.getElementById('rfqdet-docs-drawer');
+    var b = document.getElementById('rfqdet-docs-drawer-backdrop');
+    if (d) d.classList.remove('open');
+    if (b) b.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  window.setDocsDrawerMode = function(mode){
+    docsDrawerMode = mode;
+    docsDrawerCategory = 'all';
+    docsDrawerSearch = '';
+    renderDocsDrawerBody();
+  };
+
+  window.setDocsDrawerCategory = function(cat, btn){
+    docsDrawerCategory = cat;
+    switchTab(btn);
+    renderDocsDrawerList();
+  };
+
+  window.filterDocsDrawer = function(q){
+    docsDrawerSearch = q;
+    renderDocsDrawerList();
+  };
+
+  window.clearDocsDrawerSearch = function(){
+    docsDrawerSearch = '';
+    var input = document.getElementById('rfqdet-docsdr-search-input');
+    if (input) input.value = '';
+    renderDocsDrawerList();
+  };
+
+  function docsDrawerListHtml(){
+    var q = (docsDrawerSearch || '').trim().toLowerCase();
+    if (docsDrawerMode === 'categorized'){
+      return docsCategoryBodyHtml(docsDrawerCatalog, docsDrawerCategory, docsDrawerSearch);
+    }
+    var flat = flattenDocumentCatalog(docsDrawerCatalog).filter(function(d){ return docsMatchesQuery(d, q); });
+    if (!flat.length){
+      return q
+        ? catalogEmptyHtml('No documents found', 'Try a different document name.', '<div class="rfqdet-docs-cta-row" style="justify-content:center;"><button type="button" class="mfg-btn-secondary" onclick="clearDocsDrawerSearch()">Clear search</button></div>')
+        : catalogEmptyHtml('No documents yet', 'Documents related to this request will appear here as they are shared.');
+    }
+    return catalogTableCardHtml(flat, true);
+  }
+
+  function renderDocsDrawerList(){
+    var el = document.getElementById('rfqdet-docsdr-list');
+    if (el) el.innerHTML = docsDrawerListHtml();
+  }
+
+  function renderDocsDrawerBody(){
+    var body = document.getElementById('rfqdet-docs-drawer-body');
+    if (!body || !docsDrawerCatalog) return;
+    var counts = documentCatalogCounts(docsDrawerCatalog);
+    var toggle = '<div class="sbv-toggle" role="tablist" aria-label="Documents view">' +
+        '<button type="button" role="tab" aria-selected="' + (docsDrawerMode === 'flat') + '" class="' + (docsDrawerMode === 'flat' ? 'active' : '') + '" onclick="setDocsDrawerMode(\'flat\')">Flat List</button>' +
+        '<button type="button" role="tab" aria-selected="' + (docsDrawerMode === 'categorized') + '" class="' + (docsDrawerMode === 'categorized' ? 'active' : '') + '" onclick="setDocsDrawerMode(\'categorized\')">Categorized</button>' +
+      '</div>';
+    var catnav = docsDrawerMode === 'categorized'
+      ? '<div class="rfqdet-docs-catnav" role="tablist" aria-label="Document category" style="margin-bottom:14px;">' +
+          '<button type="button" class="rfqdet-catnav-btn active" role="tab" aria-selected="true" onclick="setDocsDrawerCategory(\'all\',this)">All <span class="rfqdet-catnav-count">' + counts.all + '</span></button>' +
+          '<button type="button" class="rfqdet-catnav-btn" role="tab" aria-selected="false" onclick="setDocsDrawerCategory(\'request\',this)">Request <span class="rfqdet-catnav-count">' + counts.request + '</span></button>' +
+          '<button type="button" class="rfqdet-catnav-btn" role="tab" aria-selected="false" onclick="setDocsDrawerCategory(\'product\',this)">Product <span class="rfqdet-catnav-count">' + counts.product + '</span></button>' +
+          '<button type="button" class="rfqdet-catnav-btn" role="tab" aria-selected="false" onclick="setDocsDrawerCategory(\'secure\',this)"><span class="rfqdet-catnav-shield">' + ICON_SHIELD_CHECK + '</span>Scinode Secure <span class="rfqdet-catnav-count">' + counts.secure + '</span></button>' +
+        '</div>'
+      : '';
+    body.innerHTML =
+      '<div class="rfqdet-docs-head-row" style="margin-bottom:14px;">' +
+        '<div class="rfqdet-docs-count">' + counts.all + (counts.all === 1 ? ' document' : ' documents') + '</div>' +
+        toggle +
+      '</div>' +
+      '<div class="rfqdet-docs-controls" style="margin-bottom:16px;">' +
+        '<div class="rfqdet-docs-search">' + ICON_SEARCH + '<input type="text" id="rfqdet-docsdr-search-input" placeholder="Search documents" oninput="filterDocsDrawer(this.value)"></div>' +
+        '<div class="rfqdet-docs-sort">' + ICON_SORT + '<span>Newest first</span></div>' +
+      '</div>' +
+      catnav +
+      '<div id="rfqdet-docsdr-list">' + docsDrawerListHtml() + '</div>';
+  }
+
   /* Shared card/banner/body shell for every request type's detail page.
      secureCurrentIdx is the request's current stage index within its own type's
      LOG_STAGES (same value each xxxLogHtml already computes via stageIndexFor). */
   function renderDetailCard(req, typeLabel, logHtml, sideHtml, secureCurrentIdx){
     var sm = STATUS_META[req.status];
     var secureSide = secureRightPanelHtml(req, req.type, secureCurrentIdx);
+    /* Classic View only — Documents Tab mode already has its own in-page
+       Documents tab, so a second entry point in the sidebar would be redundant. */
+    var docsCard = DOCS_TAB_MODE ? '' : documentsSidebarCardHtml(req, secureCurrentIdx);
     var tabsHtml = '';
     var mainContent = logHtml;
     if (DOCS_TAB_MODE){
@@ -1556,7 +1766,7 @@
           tabsHtml +
           '<div class="rfqdet-body">' +
             mainContent +
-            '<div class="rfqdet-side-col">' + sideHtml + secureSide + '</div>' +
+            '<div class="rfqdet-side-col">' + sideHtml + docsCard + secureSide + '</div>' +
           '</div>' +
         '</div>' +
       '</div>';

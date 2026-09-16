@@ -252,6 +252,60 @@
   .rfqdet-docs-card-demo{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);flex-wrap:wrap;}
   .rfqdet-docs-card-demo-label{font-family:var(--font);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3,#94A3B8);}
 
+  /* Three-way layout picker sitting above the Documents card — a demo-only
+     control (not part of any of the three designs) so Classic/Vault/Analytics
+     can be compared side by side. */
+  .rfqdet-docs-layout-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px;}
+  .rfqdet-docs-layout-toggle-label{font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3,#94A3B8);}
+
+  /* "Restricted Request Vault" card layout — a teal/navy security-vault framing
+     of the same live counts (buildDocumentCatalog/documentCatalogCounts) used
+     by the Classic card and the drawer. */
+  .rfqdet-docs-vault{display:flex;flex-direction:column;}
+  .rfqdet-docs-vault-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .rfqdet-docs-vault-icon{width:40px;height:40px;border-radius:10px;background:var(--teal-50);color:var(--teal-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rfqdet-docs-vault-titles{flex:1;min-width:0;}
+  .rfqdet-docs-vault-title{font-family:var(--font-heading);font-size:16px;font-weight:700;color:var(--text-1);line-height:1.3;}
+  .rfqdet-docs-vault-subtitle{font-family:var(--font);font-size:11.5px;color:var(--text-2);margin-top:1px;}
+  .rfqdet-docs-vault-protected{display:inline-flex;align-items:center;gap:5px;background:var(--page-bg);color:var(--text-1);font-family:var(--font);font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+  .rfqdet-docs-vault-protected svg{color:var(--success-600,#16A34A);}
+  .rfqdet-docs-vault-box{position:relative;background:var(--page-bg);border-radius:12px;padding:16px;margin-bottom:16px;}
+  .rfqdet-docs-vault-badge{position:absolute;top:14px;right:14px;background:var(--teal-50);border:1px solid var(--teal-100);color:var(--teal-700);font-family:var(--font);font-size:10px;font-weight:700;padding:4px 10px;border-radius:999px;}
+  .rfqdet-docs-vault-count{font-family:var(--font-heading);font-size:32px;font-weight:800;color:var(--text-1);line-height:1;}
+  .rfqdet-docs-vault-caption{font-family:var(--font);font-size:12.5px;color:var(--text-1);margin-top:10px;}
+  .rfqdet-docs-vault-breakdown-head{display:flex;align-items:center;justify-content:space-between;font-family:var(--font);font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--text-2);margin-bottom:8px;}
+  .rfqdet-docs-vault-chips{display:flex;gap:8px;margin-bottom:16px;}
+  .rfqdet-docs-vault-chip{flex:1;min-width:0;background:var(--page-bg);border-radius:10px;padding:10px 8px;text-align:center;}
+  .rfqdet-docs-vault-chip .num{font-family:var(--font-heading);font-size:16px;font-weight:700;color:var(--text-1);}
+  .rfqdet-docs-vault-chip .label{font-family:var(--font);font-size:10.5px;color:var(--text-2);margin-top:2px;}
+  .rfqdet-docs-vault-chip.secure .num,.rfqdet-docs-vault-chip.secure .label{color:var(--teal-700);}
+  .rfqdet-docs-vault-cta{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--navy-900,#021C26);color:#fff;border:none;border-radius:10px;padding:13px 16px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
+  .rfqdet-docs-vault-cta:hover{background:#000;}
+  .rfqdet-docs-vault-cta-left{display:inline-flex;align-items:center;gap:8px;}
+
+  /* "Provenance Analytics" card layout — a donut breakdown of the same live
+     counts, sharing color roles with the Vault chips (teal-600 Request,
+     teal-300 Product, navy-900 Secure). */
+  .rfqdet-docs-analytics-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px;}
+  .rfqdet-docs-analytics-title{font-family:var(--font-heading);font-size:16px;font-weight:700;color:var(--text-1);line-height:1.3;}
+  .rfqdet-docs-analytics-subtitle{font-family:var(--font);font-size:11.5px;color:var(--text-2);margin-top:1px;}
+  .rfqdet-docs-analytics-badge{display:inline-flex;align-items:center;gap:5px;background:var(--teal-50);color:var(--teal-700);font-family:var(--font);font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+  .rfqdet-docs-analytics-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:4px 0 18px;}
+  .rfqdet-docs-analytics-donut circle{transition:stroke-dasharray .3s ease;}
+  .rfqdet-docs-analytics-ring-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+  .rfqdet-docs-analytics-ring-label .num{font-family:var(--font-heading);font-size:26px;font-weight:800;color:var(--text-1);line-height:1;}
+  .rfqdet-docs-analytics-ring-label .unit{font-family:var(--font);font-size:9.5px;font-weight:700;letter-spacing:.08em;color:var(--text-3,#94A3B8);margin-top:2px;}
+  .rfqdet-docs-analytics-row{display:flex;align-items:center;gap:8px;background:var(--page-bg);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+  .rfqdet-docs-analytics-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .rfqdet-docs-analytics-dot.request{background:var(--teal-600);}
+  .rfqdet-docs-analytics-dot.product{background:var(--teal-300);}
+  .rfqdet-docs-analytics-dot.secure{background:var(--navy-900,#021C26);}
+  .rfqdet-docs-analytics-label{flex:1;font-family:var(--font);font-size:12.5px;font-weight:500;color:var(--text-1);}
+  .rfqdet-docs-analytics-val{font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--text-1);white-space:nowrap;}
+  .rfqdet-docs-analytics-val .pct{font-weight:500;color:var(--text-2);}
+  .rfqdet-docs-analytics-cta{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--navy-900,#021C26);color:#fff;border:none;border-radius:10px;padding:13px 16px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .15s;}
+  .rfqdet-docs-analytics-cta:hover{background:#000;}
+
   /* Stage-specific rich content (RFQ) */
   .rfqdet-doc-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:8px;padding:10px 12px;}
   .rfqdet-doc-icon{width:28px;height:28px;border-radius:6px;background:#FDE8E8;color:#DC2626;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;font-family:var(--font);}
@@ -1591,8 +1645,10 @@
      meeting notes + PO + product docs), so a real zero-document request never
      occurs in this demo data — the sidebar card's empty state would otherwise
      be unreachable. DOCS_CARD_DEMO_STATE is a "force empty" preview toggle on
-     the card itself (same demo-toggle pattern as DOCS_TAB_MODE/DOCS_V2_MODE
-     above) so both states can be reviewed side by side. */
+     the Classic card layout (same demo-toggle pattern as DOCS_TAB_MODE/
+     DOCS_V2_MODE above) so both states can be reviewed side by side. Only
+     the Classic layout has an empty-state treatment — Vault/Analytics were
+     supplied as populated-state mockups only. */
   var DOCS_CARD_DEMO_STATE = (function(){
     try { return localStorage.getItem('scinodeDocsCardDemo') === 'empty' ? 'empty' : 'data'; } catch (e){ return 'data'; }
   })();
@@ -1602,8 +1658,36 @@
     init();
   };
 
-  function documentsSidebarCardHtml(req, secureCurrentIdx){
-    var counts = documentCatalogCounts(buildDocumentCatalog(req, secureCurrentIdx));
+  /* Three sidebar-card layout concepts, kept side by side for comparison —
+     Classic (original), Vault ("Restricted Request Vault" mockup) and
+     Analytics ("Provenance Analytics" donut mockup). DOCS_CARD_LAYOUT picks
+     which one renders; all three read the same live counts, so none of them
+     hardcode the mockups' own "7" example figure. */
+  var DOCS_CARD_LAYOUT = (function(){
+    try { var v = localStorage.getItem('scinodeDocsCardLayout'); return (v === 'vault' || v === 'analytics') ? v : 'classic'; } catch (e){ return 'classic'; }
+  })();
+  window.setDocsCardLayout = function(layout){
+    DOCS_CARD_LAYOUT = layout;
+    try { localStorage.setItem('scinodeDocsCardLayout', layout); } catch (e){ /* storage unavailable */ }
+    init();
+  };
+  var ICON_LOCK_SM = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  var ICON_LOCK_MD = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  var ICON_PIE_SM = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>';
+  var ICON_ARROW_SM_WHITE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+  function documentsCardLayoutToggleHtml(){
+    return '<div class="rfqdet-docs-layout-toggle">' +
+      '<span class="rfqdet-docs-layout-toggle-label">Card style</span>' +
+      '<div class="sbv-toggle" role="tablist" aria-label="Documents card layout" title="Three layout concepts — demo comparison, not a saved preference">' +
+        '<button type="button" role="tab" aria-selected="' + (DOCS_CARD_LAYOUT === 'classic') + '" class="' + (DOCS_CARD_LAYOUT === 'classic' ? 'active' : '') + '" onclick="setDocsCardLayout(\'classic\')">Classic</button>' +
+        '<button type="button" role="tab" aria-selected="' + (DOCS_CARD_LAYOUT === 'vault') + '" class="' + (DOCS_CARD_LAYOUT === 'vault' ? 'active' : '') + '" onclick="setDocsCardLayout(\'vault\')">Vault</button>' +
+        '<button type="button" role="tab" aria-selected="' + (DOCS_CARD_LAYOUT === 'analytics') + '" class="' + (DOCS_CARD_LAYOUT === 'analytics' ? 'active' : '') + '" onclick="setDocsCardLayout(\'analytics\')">Analytics</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function documentsCardClassicHtml(secureCurrentIdx, counts){
     var forcedEmpty = DOCS_CARD_DEMO_STATE === 'empty';
     var isEmpty = forcedEmpty || counts.all === 0;
     var demoToggle = '<div class="rfqdet-docs-card-demo">' +
@@ -1630,6 +1714,76 @@
       content +
       demoToggle +
     '</div>';
+  }
+
+  /* "Restricted Request Vault" mockup. */
+  function documentsCardVaultHtml(secureCurrentIdx, counts){
+    return '<div class="rfqdet-info-card rfqdet-docs-vault">' +
+      '<div class="rfqdet-docs-vault-head">' +
+        '<div class="rfqdet-docs-vault-icon">' + ICON_LOCK_MD + '</div>' +
+        '<div class="rfqdet-docs-vault-titles">' +
+          '<div class="rfqdet-docs-vault-title">Documents</div>' +
+          '<div class="rfqdet-docs-vault-subtitle">Restricted Request Vault</div>' +
+        '</div>' +
+        '<span class="rfqdet-docs-vault-protected">' + ICON_LOCK_SM + 'Protected</span>' +
+      '</div>' +
+      '<div class="rfqdet-docs-vault-box">' +
+        '<span class="rfqdet-docs-vault-badge">AES-256 Vault</span>' +
+        '<div class="rfqdet-docs-vault-count">' + counts.all + '</div>' +
+        '<div class="rfqdet-docs-vault-caption">All documents related to this request, in one place.</div>' +
+      '</div>' +
+      '<div class="rfqdet-docs-vault-breakdown-head"><span>Source Breakdown</span><span>Total: ' + counts.all + '</span></div>' +
+      '<div class="rfqdet-docs-vault-chips">' +
+        '<div class="rfqdet-docs-vault-chip"><div class="num">' + counts.request + '</div><div class="label">Request</div></div>' +
+        '<div class="rfqdet-docs-vault-chip"><div class="num">' + counts.product + '</div><div class="label">Product</div></div>' +
+        '<div class="rfqdet-docs-vault-chip secure"><div class="num">' + counts.secure + '</div><div class="label">Secure</div></div>' +
+      '</div>' +
+      '<button type="button" class="rfqdet-docs-vault-cta" onclick="openDocumentsDrawer(' + secureCurrentIdx + ')">' +
+        '<span class="rfqdet-docs-vault-cta-left">' + ICON_LOCK_SM + '<span>Open Document Vault (' + counts.all + ')</span></span>' +
+        ICON_ARROW_SM_WHITE +
+      '</button>' +
+    '</div>';
+  }
+
+  /* "Provenance Analytics" donut mockup. */
+  function documentsCardAnalyticsHtml(secureCurrentIdx, counts){
+    var total = counts.all || 1;
+    var R = 40, C = Math.round(2 * Math.PI * R);
+    var reqLen = C * counts.request / total, prodLen = C * counts.product / total, secLen = C * counts.secure / total;
+    var pct = function(n){ return Math.round(n / total * 100); };
+    var donut = '<svg viewBox="0 0 100 100" width="120" height="120" class="rfqdet-docs-analytics-donut">' +
+        '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="var(--page-bg)" stroke-width="12"/>' +
+        '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="var(--teal-600)" stroke-width="12" stroke-dasharray="' + reqLen + ' ' + C + '" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 50 50)"/>' +
+        '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="var(--teal-300)" stroke-width="12" stroke-dasharray="' + prodLen + ' ' + C + '" stroke-dashoffset="' + (-reqLen) + '" stroke-linecap="round" transform="rotate(-90 50 50)"/>' +
+        '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="var(--navy-900)" stroke-width="12" stroke-dasharray="' + secLen + ' ' + C + '" stroke-dashoffset="' + (-(reqLen + prodLen)) + '" stroke-linecap="round" transform="rotate(-90 50 50)"/>' +
+      '</svg>';
+    function row(dotClass, label, n){
+      return '<div class="rfqdet-docs-analytics-row"><span class="rfqdet-docs-analytics-dot ' + dotClass + '"></span><span class="rfqdet-docs-analytics-label">' + label + '</span><span class="rfqdet-docs-analytics-val">' + n + ' <span class="pct">(' + pct(n) + '%)</span></span></div>';
+    }
+    return '<div class="rfqdet-info-card rfqdet-docs-analytics">' +
+      '<div class="rfqdet-docs-analytics-head">' +
+        '<div><div class="rfqdet-docs-analytics-title">Documents</div><div class="rfqdet-docs-analytics-subtitle">Provenance Analytics</div></div>' +
+        '<span class="rfqdet-docs-analytics-badge">' + ICON_PIE_SM + 'Macro View</span>' +
+      '</div>' +
+      '<div class="rfqdet-docs-analytics-ring-wrap">' +
+        donut +
+        '<div class="rfqdet-docs-analytics-ring-label"><div class="num">' + counts.all + '</div><div class="unit">FILES</div></div>' +
+      '</div>' +
+      row('request', 'Request Specs', counts.request) +
+      row('product', 'Product Data', counts.product) +
+      row('secure', 'Scinode Secure', counts.secure) +
+      '<button type="button" class="rfqdet-docs-analytics-cta" onclick="openDocumentsDrawer(' + secureCurrentIdx + ')">' +
+        '<span>Explore Repository (' + counts.all + ')</span>' + ICON_ARROW_SM_WHITE +
+      '</button>' +
+    '</div>';
+  }
+
+  function documentsSidebarCardHtml(req, secureCurrentIdx){
+    var counts = documentCatalogCounts(buildDocumentCatalog(req, secureCurrentIdx));
+    var card = DOCS_CARD_LAYOUT === 'vault' ? documentsCardVaultHtml(secureCurrentIdx, counts)
+      : DOCS_CARD_LAYOUT === 'analytics' ? documentsCardAnalyticsHtml(secureCurrentIdx, counts)
+      : documentsCardClassicHtml(secureCurrentIdx, counts);
+    return documentsCardLayoutToggleHtml() + card;
   }
 
   window.openDocumentsDrawer = function(secureCurrentIdx){

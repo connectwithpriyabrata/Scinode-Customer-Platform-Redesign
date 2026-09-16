@@ -3069,8 +3069,12 @@
      interactive states) onto the Secure Indigo tokens, per the design system's
      "Secure is a semantic layer, not a page theme" rule — headings, body copy and
      the dark ribbon/shield container are untouched. Always paired with .tc-light. */
-  .modal-box.tc-secure{background:linear-gradient(160deg,#FFFFFF 0%,var(--secure-50) 45%,var(--secure-100) 100%);box-shadow:0 24px 60px rgba(49,46,129,.2);}
-  .tc-secure .tc-ribbon{background:linear-gradient(90deg,var(--secure-600),var(--secure-900));}
+  /* Body stays plain white per the Surface Gradients doc's own modal example
+     ("Core in the header band only. The body stays white so content leads") —
+     was a secure-50/100 tinted wash before. Ribbon angle brought to 135deg to
+     match the shield (doc's Rules: "angle stays consistent across a screen"). */
+  .modal-box.tc-secure{background:#fff;box-shadow:0 24px 60px rgba(49,46,129,.2);}
+  .tc-secure .tc-ribbon{background:linear-gradient(135deg,var(--secure-600),var(--secure-900));}
   .tc-secure .tc-ribbon svg{color:var(--secure-300);}
   .tc-secure .tc-shield{background:linear-gradient(135deg,var(--secure-600) 0%,var(--secure-900) 100%);color:var(--secure-300);box-shadow:0 4px 14px rgba(79,70,229,.28);}
   .tc-secure .tc-eyebrow{color:var(--secure-600);}
@@ -3080,6 +3084,10 @@
   .tc-secure .tc-ico{color:var(--secure-600);background:var(--secure-100);}
   .tc-secure .tc-list li{color:var(--secure-700);background:var(--secure-100);}
   .tc-secure .tc-sits-core-tag{color:var(--secure-700);background:#fff;border-color:var(--secure-200);}
+  /* Veil (secure-50 -> secure-100, 160deg) — the doc's own prescribed treatment for
+     "Default Secure section ground inside requests and projects" — was still a
+     teal-tinted wash inherited from .tc-light, never overridden for Secure Indigo. */
+  .tc-secure .tc-lifecycle{background:linear-gradient(160deg,var(--secure-50) 0%,var(--secure-100) 100%);border-color:var(--secure-200);}
   .tc-secure .tc-wf-check{color:var(--secure-600);background:var(--secure-100);}
   .tc-secure .tc-wf-signal{color:var(--secure-700);background:#fff;border-color:var(--secure-200);}
   .tc-secure .tc-lifecycle-step-done{color:var(--secure-700);background:var(--secure-100);border-color:transparent;}

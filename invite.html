@@ -187,18 +187,64 @@
 
       <!-- ══════════ CONFIRMATION ══════════ -->
       <div class="af-screen hidden" id="iv-screen-confirmation">
-        <div class="af-result">
-          <div class="af-result-icon af-success">
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div class="af-success" id="iv-confirm-success">
+          <div class="af-success-status">
+            <span class="af-success-status-icon"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div>
+              <div class="af-success-status-label">Invitation Accepted</div>
+              <div class="af-success-status-meta" id="iv-success-account">Account #SCN-00000 &middot; Active</div>
+            </div>
           </div>
-          <div class="af-result-title">You're in ✓</div>
-          <div class="af-result-body">Welcome to <b id="iv-confirm-company">Acme Manufacturing</b>.</div>
-          <div class="af-result-note hidden" id="iv-confirm-existing-note">Matched to your existing Scinode account — no new profile needed.</div>
-          <div class="af-invite-meta">
-            <div class="af-invite-meta-row"><span>Role</span><b id="iv-confirm-role">Member</b></div>
-            <div class="af-invite-meta-row"><span>Team</span><b id="iv-confirm-team">R&amp;D</b></div>
+
+          <div class="af-success-badge" id="iv-success-badge">Invitation accepted &amp; access granted</div>
+          <div class="af-success-headline" id="iv-success-headline">You're in!</div>
+          <div class="af-success-sub" id="iv-success-sub"></div>
+
+          <div class="af-success-hero" id="iv-success-hero">
+            <div class="af-success-hero-placeholder">
+              <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <span>Illustration coming soon</span>
+            </div>
           </div>
-          <button type="button" class="af-submit" id="iv-confirm-cta" onclick="ivShowScreen('landing')">Continue to ATOMS →</button>
+
+          <div class="af-success-card">
+            <div class="af-success-company-row">
+              <div class="af-success-avatar" id="iv-success-company-avatar">AM</div>
+              <div class="af-success-company-info">
+                <div class="af-success-company-name">
+                  <span id="iv-success-company-name">Company</span>
+                  <span class="af-success-verified-badge">Verified Workspace</span>
+                </div>
+                <div class="af-success-company-meta" id="iv-success-company-meta"></div>
+              </div>
+              <div class="af-success-role">
+                <div class="af-success-role-label">Your Role</div>
+                <div class="af-success-role-value" id="iv-success-role-value"></div>
+              </div>
+            </div>
+            <div class="af-success-colleagues-row">
+              <div class="af-success-avatar-stack" id="iv-success-avatar-stack"></div>
+              <div class="af-success-colleagues-count" id="iv-success-colleagues-count"></div>
+              <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
+            </div>
+            <div class="af-success-activity" id="iv-success-activity"></div>
+          </div>
+
+          <div class="af-success-card">
+            <div class="af-success-checklist-header">
+              <span>Recommended First Steps</span>
+              <span id="iv-success-checklist-progress"></span>
+            </div>
+            <div id="iv-success-checklist"></div>
+          </div>
+
+          <button type="button" class="af-submit" id="iv-success-cta"></button>
+          <div class="af-success-secondary-row" id="iv-success-secondary-row"></div>
+
+          <div class="af-success-footer">
+            <span><span class="af-success-footer-dot"></span><span id="iv-success-footnote">Need assistance? Your dedicated onboarding lead is online</span></span>
+            <span class="af-success-footer-links"><a href="#" onclick="return false;">Contact Support</a> &middot; <a href="#" onclick="return false;">IP Sovereignty Guarantee</a></span>
+          </div>
         </div>
       </div>
 
@@ -405,25 +451,81 @@
       label: 'ATOMS', accountNoun: 'ATOMS',
       headline: 'Connect with verified manufacturers and suppliers.',
       company: 'Acme Manufacturing', role: 'Member', team: 'R&amp;D', invitedBy: 'Rahul Mehta',
-      inviteeName: 'Meera Joshi', inviteeEmail: 'meera@acme.com'
+      inviteeName: 'Meera Joshi', inviteeEmail: 'meera@acme.com',
+      successData: {
+        accountId: 'SCN-ATM-10433',
+        avatarInitials: 'AM',
+        tenantLine: 'Enterprise Tenant &middot; Specialty &amp; Industrial Chemicals',
+        colleagueInitials: ['RM', 'AS'],
+        colleagueOverflow: 6,
+        activityLine: 'Rahul Mehta, Amit Sharma &amp; 6 others are already active in R&amp;D.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Acme Manufacturing's R&amp;D team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Explore 420+ Live Demand Opportunities', desc: 'Browse buyer RFQs and demand signals matched to your product catalogue and plant capabilities.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add a photo and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Browse Demand Opportunities', 'Download Onboarding Guide']
+      }
     },
     ions: {
       label: 'IONS', accountNoun: 'IONS',
       headline: 'Partner with R&amp;D teams, CROs, and specialty labs.',
       company: 'Meridian Labs', role: 'Member', team: 'Research', invitedBy: 'Priya Nair',
-      inviteeName: 'Karan Shah', inviteeEmail: 'karan@meridianlabs.com'
+      inviteeName: 'Karan Shah', inviteeEmail: 'karan@meridianlabs.com',
+      successData: {
+        accountId: 'SCN-ION-20188',
+        avatarInitials: 'ML',
+        tenantLine: 'Research Tenant &middot; Specialty Synthesis &amp; Custom APIs',
+        colleagueInitials: ['PN', 'RI'],
+        colleagueOverflow: 4,
+        activityLine: 'Priya Nair, Dr. Rohan Iyer &amp; 4 others are already active in Research.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Meridian Labs' Research team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Discover R&amp;D Opportunities Matched to Your Capabilities', desc: 'Browse active research and molecule-development briefs from manufacturers and brands.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add your expertise and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Browse Opportunities', 'Download Lab Guide']
+      }
     },
     customers: {
       label: 'Scinode for Customers', accountNoun: 'Scinode',
       headline: 'Source chemistry products and manage requests in one place.',
       company: 'Nova Specialty Chemicals', role: 'Member', team: 'Procurement', invitedBy: 'Ananya Verma',
-      inviteeName: 'Liam Chen', inviteeEmail: 'liam@novaspecialty.com'
+      inviteeName: 'Liam Chen', inviteeEmail: 'liam@novaspecialty.com',
+      successData: {
+        accountId: 'SCN-CUS-30560',
+        avatarInitials: 'NS',
+        tenantLine: 'Customer Tenant &middot; Specialty &amp; Industrial Chemicals Sourcing',
+        colleagueInitials: ['AV', 'VR'],
+        colleagueOverflow: 9,
+        activityLine: 'Ananya Verma, Vikram Rao &amp; 9 others are already active in Procurement.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Nova Specialty Chemicals' Procurement team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Explore Manufacturers &amp; R&amp;D Capabilities', desc: "Browse verified manufacturers and R&amp;D partners across Scinode's ecosystem.", meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add a photo and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Browse Manufacturers', 'Download Sourcing Guide']
+      }
     },
     deepresearch: {
       label: 'Deep Research', accountNoun: 'Deep Research',
       headline: 'Turn your research questions into answers, instantly.',
       company: 'Caltech Chemistry Lab', role: 'Member', team: 'Research', invitedBy: 'Dr. Ananya Rao',
-      inviteeName: 'Noah Fischer', inviteeEmail: 'noah.fischer@caltech.edu'
+      inviteeName: 'Noah Fischer', inviteeEmail: 'noah.fischer@caltech.edu',
+      successData: {
+        accountId: 'SCN-DR-40022',
+        avatarInitials: 'CC',
+        tenantLine: 'Research Tenant &middot; Computational &amp; Experimental Chemistry',
+        colleagueInitials: ['AR', 'WC'],
+        colleagueOverflow: 2,
+        activityLine: 'Dr. Ananya Rao, Dr. Wei Chen &amp; 2 others are already active in Research.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Caltech Chemistry Lab's Research team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Run Your First Deep Research Query', desc: 'Search compounds, routes, literature and patents in one unified workspace.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add your expertise and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Start Research', 'Meet Your Team']
+      }
     }
   };
 
@@ -491,11 +593,6 @@
       document.getElementById('iv-sso-connected-method').textContent = IV_METHOD_LABEL[ivState.source];
     }
 
-    document.getElementById('iv-confirm-company').textContent = meta.company;
-    document.getElementById('iv-confirm-role').textContent = meta.role;
-    document.getElementById('iv-confirm-team').innerHTML = meta.team;
-    document.getElementById('iv-confirm-cta').textContent = 'Continue to ' + meta.accountNoun + ' →';
-
     Object.keys(IV_PLATFORM).forEach(function (p) {
       var btn = document.getElementById('iv-dev-platform-' + p);
       if (btn) btn.classList.toggle('active', ivState.platform === p);
@@ -523,6 +620,7 @@
       document.getElementById('iv-reset-password-match-error').classList.add('hidden');
       ivUpdatePasswordCriteria();
     }
+    document.querySelector('.af-card').classList.toggle('af-card-wide', name === 'confirmation');
     window.scrollTo(0, 0);
   }
 
@@ -626,8 +724,59 @@
     ivShowConfirmation();
   }
 
+  // Same overlapping-avatar palette as auth.html's success screen.
+  var IV_AVATAR_COLORS = ['var(--teal-500)', 'var(--navy-500)', 'var(--text-3)'];
+  var IV_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+
+  function ivRenderSuccess(meta) {
+    var d = meta.successData;
+    if (!d) return;
+    var firstName = meta.inviteeName.split(' ')[0];
+    document.getElementById('iv-success-account').textContent = 'Account #' + d.accountId + ' · Active';
+    document.getElementById('iv-success-badge').textContent = ivState.existing
+      ? 'Matched to your existing Scinode account'
+      : 'Invitation accepted & access granted';
+    document.getElementById('iv-success-headline').textContent = "You're in, " + firstName + '!';
+    document.getElementById('iv-success-sub').innerHTML = ivState.existing
+      ? 'Welcome back to <b>' + meta.company + '</b> on ' + meta.accountNoun + ' — no new profile needed, you were matched to your existing Scinode account.'
+      : meta.invitedBy + ' added you to <b>' + meta.company + '</b> on ' + meta.accountNoun + '. Your team is ready for you.';
+    document.getElementById('iv-success-company-avatar').textContent = d.avatarInitials;
+    document.getElementById('iv-success-company-name').textContent = meta.company;
+    document.getElementById('iv-success-company-meta').innerHTML = d.tenantLine;
+    document.getElementById('iv-success-role-value').textContent = meta.role + ' · ' + meta.team.replace(/&amp;/g, '&');
+
+    var stack = document.getElementById('iv-success-avatar-stack');
+    var avatars = d.colleagueInitials.map(function (initials, i) {
+      return '<span style="background:' + IV_AVATAR_COLORS[i % IV_AVATAR_COLORS.length] + ';">' + initials + '</span>';
+    });
+    avatars.push('<span style="background:var(--border-h);color:var(--text-2);">+' + d.colleagueOverflow + '</span>');
+    stack.innerHTML = avatars.join('');
+    document.getElementById('iv-success-colleagues-count').textContent = (d.colleagueInitials.length + d.colleagueOverflow) + ' colleagues active';
+    document.getElementById('iv-success-activity').innerHTML = d.activityLine;
+
+    var doneCount = d.checklist.filter(function (item) { return item.done; }).length;
+    document.getElementById('iv-success-checklist-progress').textContent = doneCount + ' of ' + d.checklist.length + ' complete';
+    document.getElementById('iv-success-checklist').innerHTML = d.checklist.map(function (item) {
+      return '<div class="af-success-checklist-item' + (item.done ? ' done' : '') + '">' +
+        '<span class="af-success-checklist-check">' + (item.done ? IV_ICON_CHECK : '') + '</span>' +
+        '<div class="af-success-checklist-body">' +
+          '<div class="af-success-checklist-title-row"><span class="af-success-checklist-title">' + item.title + '</span>' +
+          '<span class="af-success-checklist-meta' + (!item.done && item.meta.indexOf('Recommended') === 0 ? ' next' : '') + '">' + item.meta + '</span></div>' +
+          '<div class="af-success-checklist-desc">' + item.desc + '</div>' +
+        '</div></div>';
+    }).join('');
+
+    var successCta = document.getElementById('iv-success-cta');
+    successCta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';
+    successCta.onclick = function () { ivShowScreen('landing'); };
+
+    document.getElementById('iv-success-secondary-row').innerHTML = d.secondary.map(function (label) {
+      return '<button type="button" class="af-success-ghost-btn" onclick="return false;">' + label + '</button>';
+    }).join('');
+  }
+
   function ivShowConfirmation() {
-    document.getElementById('iv-confirm-existing-note').classList.toggle('hidden', !ivState.existing);
+    ivRenderSuccess(IV_PLATFORM[ivState.platform]);
     ivShowScreen('confirmation');
   }
 

@@ -38,6 +38,7 @@
   <div class="af-devbar-group">
     <button id="af-dev-screen-signup" class="active" onclick="afShowScreen('signup')">Sign Up</button>
     <button id="af-dev-screen-signin" onclick="afShowScreen('signin')">Sign In</button>
+    <button id="af-dev-screen-reset" onclick="afShowScreen('reset')">Reset Password</button>
     <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
     <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
   </div>
@@ -359,7 +360,7 @@
                 <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-signin-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
               </div>
             </div>
-            <div class="af-link-row"><button type="button">Forgot password?</button></div>
+            <div class="af-link-row"><button type="button" onclick="afOpenForgotPassword()">Forgot password?</button></div>
             <button type="submit" class="af-submit">Sign In</button>
 
             <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
@@ -385,6 +386,47 @@
 
           <div class="af-footnote">Don't have an account? <button type="button" onclick="afShowScreen('signup')">Sign Up</button></div>
         </form>
+      </div>
+
+      <!-- ══════════ RESET PASSWORD (reached via the "reset link" in the email —
+           simulated in this prototype from the "Verify your email address" modal
+           or the devbar) ══════════ -->
+      <div class="af-screen hidden" id="af-screen-reset">
+        <div class="af-h1">Reset your password</div>
+        <div class="af-sub">Choose a strong, unique password to secure your Scinode account.</div>
+
+        <form onsubmit="afSubmitResetPassword(event)">
+          <div class="af-field">
+            <label>New Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="af-reset-password" placeholder="Enter new password" minlength="8" required oninput="afUpdatePasswordCriteria()">
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-reset-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="af-field-hint">Minimum 8 characters.</div>
+          </div>
+
+          <!-- Live criteria checklist — the real product only shows this list as
+               static text with no indication of what's actually satisfied. Here
+               each item flips to a met/checked state as the user types. -->
+          <div class="af-criteria-box" id="af-criteria-box">
+            <div class="af-criteria-item" id="af-criteria-length"><span class="af-criteria-dot"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>At least 8 characters</div>
+            <div class="af-criteria-item" id="af-criteria-upper"><span class="af-criteria-dot"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>At least one uppercase letter</div>
+            <div class="af-criteria-item" id="af-criteria-numsym"><span class="af-criteria-dot"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>At least one number or special character</div>
+          </div>
+
+          <div class="af-field">
+            <label>Confirm your new Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="af-reset-password-confirm" placeholder="Re-enter new password" minlength="8" required>
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-reset-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="af-field-error hidden" id="af-reset-password-match-error">Passwords don't match.</div>
+          </div>
+
+          <button type="submit" class="af-submit">Update Password</button>
+        </form>
+
+        <div class="af-footnote" style="text-align:center;"><button type="button" onclick="afShowScreen('signin')">Back to Sign In</button></div>
       </div>
 
       <!-- ══════════ RESULT (pending review / activated / rejected / signed in) ══════════ -->
@@ -426,6 +468,72 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ══════════ FORGOT PASSWORD MODALS ══════════ -->
+
+  <!-- Step 1: Check Your Email -->
+  <div class="af-modal-backdrop" id="af-modal-forgot" onclick="afModalBackdropClick(event,'af-modal-forgot')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="afCloseModal('af-modal-forgot')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-pending" style="background:var(--teal-50);color:var(--teal-600);">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="af-result-title">Check Your Email</div>
+        <div class="af-result-body">Please add your email and click on 'Reset'</div>
+      </div>
+      <form onsubmit="afSubmitForgotPassword(event)">
+        <div class="af-field">
+          <label>Work Email <span class="af-req">*</span></label>
+          <input class="af-input" type="email" id="af-forgot-email" placeholder="you@company.com" required>
+        </div>
+        <div class="af-modal-info-box">
+          <ul>
+            <li>The link will expire in 24 hrs for security purposes.</li>
+            <li>If you do not see the email, check your spam folder or corporate quarantine.</li>
+          </ul>
+        </div>
+        <div class="af-modal-cloudflare">
+          <div class="af-modal-cloudflare-status"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> Success!</div>
+          <div class="af-modal-cloudflare-brand"><div class="cf-name">CLOUDFLARE</div><div class="cf-links"><a href="#" onclick="return false;">Privacy</a> &middot; <a href="#" onclick="return false;">Help</a></div></div>
+        </div>
+        <button type="submit" class="af-submit" style="margin-top:20px;">Reset</button>
+      </form>
+      <div class="af-footnote" style="text-align:center;margin-top:14px;"><button type="button" onclick="afCloseModal('af-modal-forgot'); afShowScreen('signin');">Back to Sign In</button></div>
+    </div>
+  </div>
+
+  <!-- Step 2: Verify your email address (confirms the reset email was "sent") -->
+  <div class="af-modal-backdrop" id="af-modal-verify-email" onclick="afModalBackdropClick(event,'af-modal-verify-email')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="afCloseModal('af-modal-verify-email')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-pending" style="background:var(--teal-50);color:var(--teal-600);">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="af-result-title">Verify your email address</div>
+        <div class="af-result-body">We've sent a password reset link to your email. Please check your inbox (and spam folder) and follow the link to reset your password.</div>
+        <div class="af-modal-proto-link">
+          <button type="button" onclick="afCloseModal('af-modal-verify-email'); afShowScreen('reset');">(Prototype) Simulate clicking the email link →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Password Updated Successfully -->
+  <div class="af-modal-backdrop" id="af-modal-password-updated" onclick="afModalBackdropClick(event,'af-modal-password-updated')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="afCloseModal('af-modal-password-updated')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-success">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="af-result-title">Password Updated Successfully</div>
+        <div class="af-result-body">Your password has been updated. Please sign in with your new credentials.</div>
+        <button type="button" class="af-submit" onclick="afCloseModal('af-modal-password-updated'); afShowScreen('signin');">Go to Sign in</button>
+      </div>
     </div>
   </div>
 </div>
@@ -797,19 +905,97 @@
   }
 
   function afShowScreen(name) {
-    ['signup', 'signin', 'result', 'verify'].forEach(function (n) {
+    ['signup', 'signin', 'reset', 'result', 'verify'].forEach(function (n) {
       var el = document.getElementById('af-screen-' + n);
       if (el) el.classList.toggle('hidden', n !== name);
     });
     afState.screen = name;
-    ['signup', 'signin'].forEach(function (n) {
+    ['signup', 'signin', 'reset'].forEach(function (n) {
       var b = document.getElementById('af-dev-screen-' + n);
       if (b) b.classList.toggle('active', n === name);
     });
     document.getElementById('af-devbar-signup-only').classList.toggle('hidden', name !== 'signup');
     document.getElementById('af-devbar-signin-only').classList.toggle('hidden', name !== 'signin');
     document.getElementById('af-devbar-verify-only').classList.toggle('hidden', name !== 'verify');
+    if (name === 'reset') {
+      document.getElementById('af-reset-password').value = '';
+      document.getElementById('af-reset-password-confirm').value = '';
+      document.getElementById('af-reset-password-match-error').classList.add('hidden');
+      afUpdatePasswordCriteria();
+    }
     window.scrollTo(0, 0);
+  }
+
+  // ── Forgot-password modals ──────────────────────────────────────────────
+  // Self-contained (doesn't reuse the dashboard's openModal/closeModal, which
+  // are hardcoded to the #create-request-modal element only).
+  function afOpenModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.classList.add('af-modal-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function afCloseModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.classList.remove('af-modal-open');
+    document.body.style.overflow = '';
+  }
+
+  function afModalBackdropClick(e, id) {
+    if (e.target.id === id) afCloseModal(id);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.af-modal-backdrop.af-modal-open').forEach(function (m) { afCloseModal(m.id); });
+  });
+
+  function afOpenForgotPassword() {
+    var signinEmail = document.getElementById('af-signin-email').value;
+    document.getElementById('af-forgot-email').value = signinEmail || '';
+    afOpenModal('af-modal-forgot');
+  }
+
+  function afSubmitForgotPassword(e) {
+    if (e) e.preventDefault();
+    afCloseModal('af-modal-forgot');
+    afOpenModal('af-modal-verify-email');
+  }
+
+  // Live criteria checklist — closes the UX gap where the real product's list
+  // is static text with no indication of which rules are actually satisfied.
+  function afUpdatePasswordCriteria() {
+    var val = document.getElementById('af-reset-password').value;
+    var checks = {
+      'af-criteria-length': val.length >= 8,
+      'af-criteria-upper': /[A-Z]/.test(val),
+      'af-criteria-numsym': /[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)
+    };
+    Object.keys(checks).forEach(function (id) {
+      document.getElementById(id).classList.toggle('met', checks[id]);
+    });
+    return checks;
+  }
+
+  function afSubmitResetPassword(e) {
+    if (e) e.preventDefault();
+    var checks = afUpdatePasswordCriteria();
+    var allMet = checks['af-criteria-length'] && checks['af-criteria-upper'] && checks['af-criteria-numsym'];
+    var pw = document.getElementById('af-reset-password').value;
+    var confirmPw = document.getElementById('af-reset-password-confirm').value;
+    var error = document.getElementById('af-reset-password-match-error');
+    if (!allMet) {
+      document.getElementById('af-criteria-box').scrollIntoView({ block: 'center' });
+      return;
+    }
+    if (pw !== confirmPw) {
+      error.classList.remove('hidden');
+      return;
+    }
+    error.classList.add('hidden');
+    afOpenModal('af-modal-password-updated');
   }
 
   function afToggleSigninSSO() {

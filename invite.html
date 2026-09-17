@@ -38,7 +38,6 @@
     <div class="af-devbar-group">
       <button id="iv-dev-screen-landing" class="active" onclick="ivShowScreen('landing')">Landing</button>
       <button id="iv-dev-screen-auth" onclick="ivShowScreen('auth')">Auth</button>
-      <button id="iv-dev-screen-profile" onclick="ivShowScreen('profile')">Profile</button>
       <button id="iv-dev-screen-confirmation" onclick="ivShowScreen('confirmation')">Confirmation</button>
     </div>
     <div class="af-devbar-sep"></div>
@@ -124,44 +123,15 @@
         <button type="button" class="af-submit" onclick="ivShowScreen('auth')">Accept Invitation</button>
       </div>
 
-      <!-- ══════════ AUTHENTICATE ══════════ -->
+      <!-- ══════════ AUTHENTICATE (merged with profile completion — Name, Phone
+           and Create Password live here too, so accepting an invite is a single
+           screen). SSO sits below Email/Password as the alternate path. ══════════ -->
       <div class="af-screen hidden" id="iv-screen-auth">
         <div class="af-h1">Sign in to accept</div>
         <div class="af-sub" id="iv-auth-sub">Authenticate to join Acme Manufacturing on ATOMS.</div>
 
-        <div class="af-sso-stack">
-          <button type="button" class="af-sso-btn" onclick="ivAuthenticate('google')">
-            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
-            Continue with Google
-          </button>
-          <button type="button" class="af-sso-btn" onclick="ivAuthenticate('linkedin')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
-            Continue with LinkedIn
-          </button>
-        </div>
-
-        <div class="af-divider-row"><span class="af-divider-text">or</span></div>
-
-        <form onsubmit="ivAuthenticate('direct', event)">
-          <div class="af-field">
-            <label>Email <span class="af-req">*</span></label>
-            <input class="af-input" type="email" placeholder="you@company.com" required>
-          </div>
-          <div class="af-field">
-            <label>Password <span class="af-req">*</span></label>
-            <input class="af-input" type="password" placeholder="Enter your password" minlength="8" required>
-            <div class="af-field-hint">Minimum 8 characters.</div>
-          </div>
-          <button type="submit" class="af-submit">Continue</button>
-        </form>
-      </div>
-
-      <!-- ══════════ COMPLETE PROFILE (only genuinely missing info) ══════════ -->
-      <div class="af-screen hidden" id="iv-screen-profile">
-        <div class="af-h1">Complete your profile</div>
-        <div class="af-sub">Just a couple of details and you're in — your company, role, and team are already set up.</div>
-
-        <form onsubmit="ivSubmitProfile(event)">
+        <form onsubmit="ivSubmitAuth(event)">
+          <!-- Name — direct vs SSO-verified; hidden entirely for existing users -->
           <div class="af-field" id="iv-name-direct-wrap">
             <label>Name <span class="af-req">*</span></label>
             <input class="af-input" type="text" id="iv-name-input" placeholder="Enter your full name" required>
@@ -173,12 +143,44 @@
               <span class="af-verified-chip" id="iv-name-sso-chip">From Google</span>
             </div>
           </div>
-          <div class="af-field">
+
+          <!-- Phone — always asked for new users, hidden for existing (already on file) -->
+          <div class="af-field" id="iv-phone-wrap">
             <label>Phone Number <span class="af-req">*</span></label>
-            <input class="af-input" type="tel" placeholder="Enter phone number" required>
+            <input class="af-input" type="tel" id="iv-phone-input" placeholder="Enter phone number" required>
           </div>
+
+          <!-- Email + Password — only for the direct auth path; SSO authenticates instead -->
+          <div class="af-field" id="iv-email-wrap">
+            <label>Email <span class="af-req">*</span></label>
+            <input class="af-input" type="email" id="iv-email-input" placeholder="you@company.com" required>
+          </div>
+          <div class="af-field" id="iv-password-wrap">
+            <label>Create Password <span class="af-req">*</span></label>
+            <input class="af-input" type="password" id="iv-password-input" placeholder="Create a password" minlength="8" required>
+            <div class="af-field-hint">Minimum 8 characters.</div>
+          </div>
+
           <button type="submit" class="af-submit">Continue</button>
         </form>
+
+        <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+
+        <div class="af-sso-stack">
+          <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('google')">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+            Continue with Google
+          </button>
+          <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('linkedin')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            Continue with LinkedIn
+          </button>
+        </div>
+
+        <div class="af-sso-connected-note hidden" id="iv-sso-connected-note">
+          <span>Continuing with <b id="iv-sso-connected-method">Google</b> — no password needed.</span>
+          <button type="button" onclick="ivChooseAuthMethod('direct')">Use email instead</button>
+        </div>
       </div>
 
       <!-- ══════════ CONFIRMATION ══════════ -->
@@ -357,6 +359,26 @@
       document.getElementById('iv-name-sso-chip').textContent = 'From ' + IV_METHOD_LABEL[ivState.source];
     }
 
+    // Auth-screen field visibility: Name/Phone only for new users (existing
+    // users are already on file); Email/Password only for the direct auth path
+    // (SSO authenticates instead). Hidden-but-required fields must not block
+    // native form validation, so `required` toggles in lockstep with `.hidden`.
+    var isNew = !ivState.existing;
+    var isDirect = ivState.source === 'direct';
+    document.getElementById('iv-name-direct-wrap').classList.toggle('hidden', !isNew || !isDirect);
+    document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', !isNew || isDirect);
+    document.getElementById('iv-name-input').required = isNew && isDirect;
+    document.getElementById('iv-phone-wrap').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-phone-input').required = isNew;
+    document.getElementById('iv-email-wrap').classList.toggle('hidden', !isDirect);
+    document.getElementById('iv-email-input').required = isDirect;
+    document.getElementById('iv-password-wrap').classList.toggle('hidden', !isDirect);
+    document.getElementById('iv-password-input').required = isDirect;
+    document.getElementById('iv-sso-connected-note').classList.toggle('hidden', isDirect);
+    if (!isDirect) {
+      document.getElementById('iv-sso-connected-method').textContent = IV_METHOD_LABEL[ivState.source];
+    }
+
     document.getElementById('iv-confirm-company').textContent = meta.company;
     document.getElementById('iv-confirm-role').textContent = meta.role;
     document.getElementById('iv-confirm-team').innerHTML = meta.team;
@@ -374,37 +396,32 @@
   }
 
   function ivShowScreen(name) {
-    ['landing', 'auth', 'profile', 'confirmation'].forEach(function (n) {
+    ['landing', 'auth', 'confirmation'].forEach(function (n) {
       var el = document.getElementById('iv-screen-' + n);
       if (el) el.classList.toggle('hidden', n !== name);
     });
     ivState.screen = name;
-    ['landing', 'auth', 'profile', 'confirmation'].forEach(function (n) {
+    ['landing', 'auth', 'confirmation'].forEach(function (n) {
       var b = document.getElementById('iv-dev-screen-' + n);
       if (b) b.classList.toggle('active', n === name);
     });
     window.scrollTo(0, 0);
   }
 
-  // Authenticating during acceptance: existing users skip profile completion
-  // entirely (their info is already on file — never re-ask, never create a
-  // second User ID). New users only fill in whatever the auth method didn't
-  // already provide (Name is known from SSO; Phone is always asked).
-  function ivAuthenticate(source, e) {
-    if (e) e.preventDefault();
+  // SSO buttons sit outside the <form> (type=button) so they don't submit it —
+  // they just switch the auth method and let ivRender() show the right fields
+  // (Name locked from SSO, Email/Password hidden). Existing users have nothing
+  // left to provide (Name/Phone already on file, SSO handles auth), so they go
+  // straight to confirmation; new users still need to fill Phone and submit.
+  function ivChooseAuthMethod(source) {
     ivState.source = source;
     ivRender();
     if (ivState.existing) {
       ivShowConfirmation();
-      return;
     }
-    document.getElementById('iv-name-direct-wrap').classList.toggle('hidden', source !== 'direct');
-    document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', source === 'direct');
-    document.getElementById('iv-name-input').required = source === 'direct';
-    ivShowScreen('profile');
   }
 
-  function ivSubmitProfile(e) {
+  function ivSubmitAuth(e) {
     if (e) e.preventDefault();
     ivShowConfirmation();
   }

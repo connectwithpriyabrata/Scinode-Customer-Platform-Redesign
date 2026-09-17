@@ -188,15 +188,10 @@
       <!-- ══════════ CONFIRMATION ══════════ -->
       <div class="af-screen hidden" id="iv-screen-confirmation">
         <div class="af-success" id="iv-confirm-success">
-          <div class="af-success-status">
-            <span class="af-success-status-icon"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            <div>
-              <div class="af-success-status-label">Invitation Accepted</div>
-              <div class="af-success-status-meta" id="iv-success-account">Account #SCN-00000 &middot; Active</div>
-            </div>
+          <div class="af-success-badge" id="iv-success-badge">
+            <span id="iv-success-badge-text">Invitation accepted &amp; access granted</span>
+            <span class="af-success-badge-thin" id="iv-success-badge-account">&middot; Account #SCN-00000 &middot; Active</span>
           </div>
-
-          <div class="af-success-badge" id="iv-success-badge">Invitation accepted &amp; access granted</div>
           <div class="af-success-headline" id="iv-success-headline">You're in!</div>
           <div class="af-success-sub" id="iv-success-sub"></div>
 
@@ -729,10 +724,10 @@
     var d = meta.successData;
     if (!d) return;
     var firstName = meta.inviteeName.split(' ')[0];
-    document.getElementById('iv-success-account').textContent = 'Account #' + d.accountId + ' · Active';
-    document.getElementById('iv-success-badge').textContent = ivState.existing
+    document.getElementById('iv-success-badge-text').textContent = ivState.existing
       ? 'Matched to your existing Scinode account'
       : 'Invitation accepted & access granted';
+    document.getElementById('iv-success-badge-account').textContent = '· Account #' + d.accountId + ' · Active';
     document.getElementById('iv-success-headline').textContent = "You're in, " + firstName + '!';
     document.getElementById('iv-success-sub').innerHTML = ivState.existing
       ? 'Welcome back to <b>' + meta.company + '</b> on ' + meta.accountNoun + ' — no new profile needed, you were matched to your existing Scinode account.'

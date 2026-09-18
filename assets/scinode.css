@@ -2234,7 +2234,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .iv-invite-access-badge{background:rgba(150,221,165,.28);color:var(--navy-500);font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:var(--radius-full);}
 .iv-invite-meta-code{font-family:var(--font);color:var(--navy-500);}
 
-.iv-invite-message{background:var(--page-bg);border-radius:var(--radius-sm);padding:12px 14px;margin-top:16px;font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.6;}
+.iv-invite-message{background:rgba(226,232,240,.25);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-top:16px;font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.6;}
 .iv-invite-message b{color:var(--text-1);}
 .iv-invite-message i{color:var(--text-2);font-style:italic;}
 

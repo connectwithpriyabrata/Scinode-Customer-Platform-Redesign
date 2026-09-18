@@ -1961,7 +1961,6 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
     linear-gradient(90deg,rgba(1,99,88,.3) 0%,rgba(24,33,51,.05) 55%);}
 
 .af-brand-decor{position:absolute;inset:0;opacity:.5;pointer-events:none;}
-.af-brand-logo-chip{background:var(--white);border-radius:var(--radius-md);padding:10px 14px;display:inline-flex;width:fit-content;position:relative;z-index:1;flex-shrink:0;}
 .af-brand-mid{margin-top:auto;position:relative;z-index:1;}
 .af-brand-platform{font-family:var(--font-heading);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;}
 .af-brand-headline{font-family:var(--font-heading);font-size:34px;font-weight:700;line-height:1.24;letter-spacing:-.02em;max-width:380px;}
@@ -1970,13 +1969,14 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .iv-brand-foot-links a{color:rgba(255,255,255,.55);text-decoration:none;font-family:var(--font);}
 .iv-brand-foot-links a:hover{color:#fff;text-decoration:underline;}
 
-/* Invite landing — brand-panel header lockup (logo + wordmark + platform
-   pill + tagline), decorative image tags, invited-by chip, and the trust/
-   benefit feature cards. Header lockup and footer links are global to every
-   invite screen; the chip and feature cards are landing-only (toggled via
-   ivShowScreen). */
-.iv-brand-header-row{display:flex;align-items:flex-start;gap:12px;position:relative;z-index:1;}
-.iv-brand-header-text{padding-top:1px;min-width:0;}
+/* Brand-panel header lockup — wordmark + platform-colored pill + tagline —
+   replaces the old static logo chip on both auth.html and invite.html.
+   Shared markup/classes across both files; pill background/text color and
+   tagline copy are set per-platform via JS (afRender / ivRender). On
+   invite.html the chip and feature cards further down are landing-only
+   (toggled via ivShowScreen). */
+.iv-brand-header-row{position:relative;z-index:1;}
+.iv-brand-header-text{min-width:0;}
 .iv-brand-wordmark-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .iv-brand-wordmark{font-family:var(--font-heading);font-size:15px;font-weight:700;color:#fff;letter-spacing:.02em;}
 .iv-brand-platform-pill{font-family:var(--font);font-size:10px;font-weight:600;color:var(--navy-500);background:var(--sage);padding:2px 9px;border-radius:var(--radius-full);letter-spacing:.02em;}

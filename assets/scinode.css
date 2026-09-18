@@ -2261,6 +2261,32 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 #iv-screen-auth .af-checkbox-label input[type=checkbox]{accent-color:var(--navy-500);}
 #iv-screen-auth .af-checkbox-label a{color:var(--navy-500);}
 
+/* Auth screen (invite.html) — breadcrumb nav, invite/status badge, locked-
+   email hint row, horizontal password criteria, footer disclaimer, and the
+   Step 2 Back+CTA button row. */
+.iv-auth-crumbs{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:12px;color:var(--text-3);margin-bottom:14px;flex-wrap:wrap;}
+.iv-auth-crumbs button{background:none;border:none;padding:0;color:var(--text-3);font-family:var(--font);font-size:12px;cursor:pointer;}
+.iv-auth-crumbs button:hover{color:var(--navy-500);text-decoration:underline;}
+.iv-auth-crumb-sep,.iv-auth-crumb-arrow{color:var(--border-h);}
+.iv-auth-crumb-step.active{color:var(--navy-500);font-weight:600;}
+.iv-auth-crumb-badge{margin-left:auto;color:var(--navy-500);font-weight:600;}
+
+.iv-auth-hint-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:5px;}
+.iv-auth-hint-row .af-field-hint{margin-top:0;}
+.iv-auth-help-link{background:none;border:none;padding:0;color:var(--navy-500);font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.iv-auth-help-link:hover{text-decoration:underline;}
+
+#iv-signup-criteria-box{display:flex;gap:14px 20px;flex-wrap:wrap;}
+#iv-signup-criteria-box .af-criteria-item{padding:4px 0;flex:1;min-width:130px;}
+
+.iv-auth-disclaimer{font-family:var(--font);font-size:11px;color:var(--text-3);text-align:center;margin-top:20px;line-height:1.6;}
+.iv-auth-disclaimer a{color:var(--navy-500);text-decoration:underline;}
+
+.iv-auth-btn-row{display:flex;gap:10px;margin-top:24px;}
+.iv-auth-btn-row .af-submit{margin-top:0;flex:1;}
+.iv-auth-back-btn{flex-shrink:0;background:var(--white);color:var(--text-2);border:0.5px solid var(--border-h);border-radius:var(--radius-sm);padding:12.5px 20px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;}
+.iv-auth-back-btn:hover{background:var(--page-bg);}
+
 #iv-screen-confirmation .af-success-badge{background:rgba(150,221,165,.28);color:var(--navy-500);}
 #iv-screen-confirmation .af-success-avatar{background:var(--navy-500);}
 #iv-screen-confirmation .af-success-verified-badge{background:var(--sage);color:var(--navy-500);}

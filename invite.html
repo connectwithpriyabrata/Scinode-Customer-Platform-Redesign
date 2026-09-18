@@ -226,12 +226,20 @@
            and Create Password live here too, so accepting an invite is a single
            screen). SSO sits below Email/Password as the alternate path. ══════════ -->
       <div class="af-screen hidden" id="iv-screen-auth">
-        <div class="af-stepper-row">
-          <div class="af-h1" id="iv-auth-h1">Sign up to accept</div>
-          <span class="af-stepper-badge hidden" id="iv-auth-step-badge">Step 1 of 2</span>
+        <div class="iv-auth-crumbs hidden" id="iv-auth-crumbs">
+          <button type="button" onclick="ivShowScreen('landing')">← Invitation</button>
+          <span class="iv-auth-crumb-sep">/</span>
+          <span class="iv-auth-crumb-step" id="iv-auth-crumb-1">1. Account Security</span>
+          <span class="iv-auth-crumb-arrow">→</span>
+          <span class="iv-auth-crumb-step" id="iv-auth-crumb-2">2. Profile</span>
+          <span class="iv-auth-crumb-badge" id="iv-auth-step-badge">Step 1 of 2</span>
         </div>
-        <div class="af-sub" id="iv-auth-sub">Authenticate to join Acme Manufacturing on ATOMS.</div>
         <div class="af-stepper-track hidden" id="iv-auth-stepper-track"><div class="af-stepper-fill" id="iv-auth-step-fill"></div></div>
+
+        <div class="iv-invite-badge hidden" id="iv-auth-status-badge"></div>
+
+        <div class="af-h1" id="iv-auth-h1">Sign up to accept</div>
+        <div class="af-sub" id="iv-auth-sub">Authenticate to join Acme Manufacturing on ATOMS.</div>
 
         <form id="iv-auth-form" onsubmit="ivSubmitAuth(event)">
 
@@ -246,7 +254,10 @@
                   <span id="iv-email-locked-value">meera@acme.com</span>
                 </div>
               </div>
-              <div class="af-field-hint">Your email is locked to this invitation.</div>
+              <div class="iv-auth-hint-row">
+                <span class="af-field-hint" id="iv-email-locked-hint">Locked to Acme Manufacturing's authorized domain.</span>
+                <button type="button" class="iv-auth-help-link" onclick="return false;">Need help?</button>
+              </div>
             </div>
 
             <!-- Email — editable, existing users signing in only -->
@@ -299,25 +310,30 @@
               <span>Continuing with <b id="iv-sso-connected-method">Google</b> — no password needed.</span>
               <button type="button" onclick="ivChooseAuthMethod('direct')">Use email instead</button>
             </div>
+
+            <div class="iv-auth-disclaimer hidden" id="iv-auth-disclaimer">Protected by Scinode Enterprise Guard. By continuing, you agree to Scinode's <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</div>
           </div>
 
           <!-- ══ STEP 2 — Profile details (new users only) ══ -->
           <div id="iv-auth-step2" class="hidden">
-            <button type="button" class="af-step-back" onclick="ivSignupGoToStep(1)">← Back</button>
-
             <div class="af-section-label" style="margin-top:0;">Profile details</div>
 
             <!-- Name — direct vs SSO-verified -->
             <div class="af-field" id="iv-name-direct-wrap">
-              <label>Name <span class="af-req">*</span></label>
+              <label>Full Name <span class="af-req">*</span></label>
               <input class="af-input" type="text" id="iv-name-input" placeholder="Enter your full name" required>
             </div>
             <div class="af-field hidden" id="iv-name-sso-wrap">
-              <label>Name</label>
+              <label>Full Name</label>
               <div class="af-field-locked">
                 <div class="af-field-locked-val"><span id="iv-name-sso-value">Meera Joshi</span></div>
                 <span class="af-verified-chip" id="iv-name-sso-chip">From Google</span>
               </div>
+            </div>
+
+            <div class="af-field" id="iv-jobtitle-wrap">
+              <label>Job Title <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="iv-jobtitle-input" placeholder="e.g. R&amp;D Scientist" required>
             </div>
 
             <div class="af-field" id="iv-phone-wrap">
@@ -332,7 +348,10 @@
               </label>
             </div>
 
-            <button type="submit" class="af-submit" id="iv-auth-submit">Create Account</button>
+            <div class="iv-auth-btn-row">
+              <button type="button" class="iv-auth-back-btn" onclick="ivSignupGoToStep(1)">Back</button>
+              <button type="submit" class="af-submit" id="iv-auth-submit">Complete Setup &amp; Enter Workspace →</button>
+            </div>
           </div>
         </form>
       </div>
@@ -616,6 +635,7 @@
       teammateInitials: ['RM', 'AS', 'NK'],
       landingBenefit: 'Collaborate on chemical synthesis workflows, verified supplier sourcing, and batch production on ATOMS.',
       workspaceFeature: { title: 'Pre-Configured Acme Workspace', desc: 'Connect directly with 24 colleagues across R&amp;D, Synthesis, and QA.' },
+      profileActivity: 'synthesis batches, spec reviews, and vendor RFQs',
       successData: {
         accountId: 'SCN-ATM-10433',
         avatarInitials: 'AM',
@@ -648,6 +668,7 @@
       teammateInitials: ['PN', 'RI', 'SM'],
       landingBenefit: 'Collaborate on molecule development, R&amp;D partner discovery, and specialty synthesis briefs on IONS.',
       workspaceFeature: { title: 'Pre-Configured Meridian Labs Workspace', desc: 'Connect directly with 16 colleagues across Research, Synthesis, and QA.' },
+      profileActivity: 'molecule briefs, synthesis routes, and partner requests',
       successData: {
         accountId: 'SCN-ION-20188',
         avatarInitials: 'ML',
@@ -680,6 +701,7 @@
       teammateInitials: ['AV', 'VR', 'IS'],
       landingBenefit: 'Collaborate on sourcing requests, manufacturer discovery, and order tracking on Scinode.',
       workspaceFeature: { title: 'Pre-Configured Nova Specialty Workspace', desc: 'Connect directly with 31 colleagues across Procurement, Quality, and Compliance.' },
+      profileActivity: 'sourcing requests, vendor quotes, and order updates',
       successData: {
         accountId: 'SCN-CUS-30560',
         avatarInitials: 'NS',
@@ -712,6 +734,7 @@
       teammateInitials: ['AR', 'WC', 'SM'],
       landingBenefit: 'Collaborate on compound search, route feasibility, and literature review on Deep Research.',
       workspaceFeature: { title: 'Pre-Configured Caltech Lab Workspace', desc: 'Connect directly with 12 colleagues across Research, Computation, and Review.' },
+      profileActivity: 'research queries, saved routes, and literature reviews',
       successData: {
         accountId: 'SCN-DR-40022',
         avatarInitials: 'CC',
@@ -806,8 +829,6 @@
     }).join('');
     document.getElementById('iv-teammate-count-text').textContent = 'Join ' + meta.teammateCount + ' teammates already in this workspace';
 
-    document.getElementById('iv-auth-sub').textContent = 'Authenticate to join ' + meta.company + ' on ' + meta.accountNoun + '.';
-
     document.getElementById('iv-name-sso-value').textContent = meta.inviteeName;
     if (ivState.source !== 'direct') {
       document.getElementById('iv-name-sso-chip').textContent = 'From ' + IV_METHOD_LABEL[ivState.source];
@@ -821,21 +842,46 @@
     var isNew = !ivState.existing;
     var isDirect = ivState.source === 'direct';
     var showStep2 = isNew && ivState.step === 2;
+    var firstName = meta.inviteeName.split(' ')[0];
 
-    document.getElementById('iv-auth-h1').textContent = isNew ? 'Sign up to accept' : 'Sign in to accept';
-    document.getElementById('iv-auth-step1').classList.toggle('hidden', showStep2);
-    document.getElementById('iv-auth-step2').classList.toggle('hidden', !showStep2);
-    document.getElementById('iv-auth-step-badge').classList.toggle('hidden', !isNew);
-    document.getElementById('iv-auth-stepper-track').classList.toggle('hidden', !isNew);
+    // Headline/sub/status-badge copy — different per step for new users,
+    // unchanged sign-in copy for existing users.
+    if (!isNew) {
+      document.getElementById('iv-auth-h1').textContent = 'Sign in to accept';
+      document.getElementById('iv-auth-sub').textContent = 'Authenticate to join ' + meta.company + ' on ' + meta.accountNoun + '.';
+    } else if (ivState.step === 1) {
+      document.getElementById('iv-auth-h1').textContent = 'Welcome, ' + firstName + '!';
+      document.getElementById('iv-auth-sub').textContent = 'Set a secure password to activate your account and collaborate with ' + meta.invitedBy + ' and ' + meta.teammateCount + ' teammates.';
+    } else {
+      document.getElementById('iv-auth-h1').textContent = 'Tell the team about your role';
+      document.getElementById('iv-auth-sub').textContent = meta.invitedBy + ' and the ' + meta.company + ' team will see this on ' + meta.profileActivity + '.';
+    }
+
+    document.getElementById('iv-auth-crumbs').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-auth-crumb-1').classList.toggle('active', ivState.step === 1);
+    document.getElementById('iv-auth-crumb-2').classList.toggle('active', ivState.step === 2);
     document.getElementById('iv-auth-step-badge').textContent = 'Step ' + ivState.step + ' of 2';
+    document.getElementById('iv-auth-stepper-track').classList.toggle('hidden', !isNew);
     document.getElementById('iv-auth-step-fill').style.width = (ivState.step === 1 ? '50%' : '100%');
     document.getElementById('iv-dev-step-1').classList.toggle('active', ivState.step === 1);
     document.getElementById('iv-dev-step-2').classList.toggle('active', ivState.step === 2);
+
+    var statusBadge = document.getElementById('iv-auth-status-badge');
+    statusBadge.classList.toggle('hidden', !isNew);
+    if (isNew) {
+      statusBadge.innerHTML = ivState.step === 1
+        ? '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Invited to join ' + meta.company
+        : '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Password secured';
+    }
+
+    document.getElementById('iv-auth-step1').classList.toggle('hidden', showStep2);
+    document.getElementById('iv-auth-step2').classList.toggle('hidden', !showStep2);
 
     // Step 2 — profile details (new users only).
     document.getElementById('iv-name-direct-wrap').classList.toggle('hidden', !isNew || !isDirect);
     document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', !isNew || isDirect);
     document.getElementById('iv-name-input').required = isNew && isDirect && showStep2;
+    document.getElementById('iv-jobtitle-input').required = isNew && showStep2;
     document.getElementById('iv-phone-wrap').classList.toggle('hidden', !isNew);
     document.getElementById('iv-phone-input').required = isNew && showStep2;
     document.getElementById('iv-signup-consent').required = showStep2;
@@ -844,6 +890,8 @@
     // new users (they can't change it); existing users type it to sign in.
     document.getElementById('iv-email-locked-wrap').classList.toggle('hidden', !isNew);
     document.getElementById('iv-email-locked-value').textContent = meta.inviteeEmail;
+    document.getElementById('iv-email-locked-hint').textContent = "Locked to " + meta.company + "'s authorized domain.";
+    document.getElementById('iv-auth-disclaimer').classList.toggle('hidden', !isNew);
     document.getElementById('iv-email-wrap').classList.toggle('hidden', isNew || !isDirect);
     document.getElementById('iv-email-input').required = !isNew && isDirect;
     document.getElementById('iv-password-wrap').classList.toggle('hidden', !isDirect);

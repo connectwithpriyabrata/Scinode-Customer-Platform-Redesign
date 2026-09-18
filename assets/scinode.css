@@ -1961,12 +1961,40 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
     linear-gradient(90deg,rgba(1,99,88,.3) 0%,rgba(24,33,51,.05) 55%);}
 
 .af-brand-decor{position:absolute;inset:0;opacity:.5;pointer-events:none;}
-.af-brand-logo-chip{background:var(--white);border-radius:var(--radius-md);padding:10px 14px;display:inline-flex;width:fit-content;position:relative;z-index:1;}
+.af-brand-logo-chip{background:var(--white);border-radius:var(--radius-md);padding:10px 14px;display:inline-flex;width:fit-content;position:relative;z-index:1;flex-shrink:0;}
 .af-brand-mid{margin-top:auto;position:relative;z-index:1;}
 .af-brand-platform{font-family:var(--font-heading);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;}
 .af-brand-headline{font-family:var(--font-heading);font-size:34px;font-weight:700;line-height:1.24;letter-spacing:-.02em;max-width:380px;}
 .af-brand-sub{font-family:var(--font);font-size:14px;line-height:1.6;color:rgba(255,255,255,.72);max-width:360px;margin-top:16px;}
-.af-brand-foot{font-family:var(--font);font-size:12px;color:rgba(255,255,255,.45);position:relative;z-index:1;margin-top:auto;padding-top:32px;}
+.af-brand-foot{font-family:var(--font);font-size:12px;color:rgba(255,255,255,.45);position:relative;z-index:1;margin-top:auto;padding-top:32px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.iv-brand-foot-links a{color:rgba(255,255,255,.55);text-decoration:none;font-family:var(--font);}
+.iv-brand-foot-links a:hover{color:#fff;text-decoration:underline;}
+
+/* Invite landing — brand-panel header lockup (logo + wordmark + platform
+   pill + tagline), decorative image tags, invited-by chip, and the trust/
+   benefit feature cards. Header lockup and footer links are global to every
+   invite screen; the chip and feature cards are landing-only (toggled via
+   ivShowScreen). */
+.iv-brand-header-row{display:flex;align-items:flex-start;gap:12px;position:relative;z-index:1;}
+.iv-brand-header-text{padding-top:1px;min-width:0;}
+.iv-brand-wordmark-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.iv-brand-wordmark{font-family:var(--font-heading);font-size:15px;font-weight:700;color:#fff;letter-spacing:.02em;}
+.iv-brand-platform-pill{font-family:var(--font);font-size:10px;font-weight:600;color:var(--navy-500);background:var(--sage);padding:2px 9px;border-radius:var(--radius-full);letter-spacing:.02em;}
+.iv-brand-tagline{font-family:var(--font);font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
+.iv-brand-tags{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
+.iv-brand-tag{font-family:var(--font);font-size:10.5px;font-weight:500;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);padding:4px 10px;border-radius:var(--radius-full);white-space:nowrap;}
+
+.iv-invited-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:var(--radius-full);padding:6px 14px 6px 6px;width:fit-content;margin-bottom:20px;position:relative;z-index:1;}
+.iv-invited-avatar{width:32px;height:32px;border-radius:50%;background:var(--teal-500);color:#fff;font-family:var(--font);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.iv-invited-text{font-family:var(--font);font-size:12.5px;color:rgba(255,255,255,.85);line-height:1.5;}
+.iv-invited-name{font-weight:600;color:#fff;}
+.iv-invited-meta{color:var(--sage);font-weight:500;}
+
+.iv-feature-list{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+.iv-feature-card{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.06);border-radius:var(--radius-md);padding:12px 14px;}
+.iv-feature-icon{width:30px;height:30px;border-radius:var(--radius-sm);background:rgba(150,221,165,.18);color:var(--sage);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.iv-feature-title{font-family:var(--font);font-size:12.5px;font-weight:600;color:#fff;margin-bottom:2px;}
+.iv-feature-desc{font-family:var(--font);font-size:11.5px;color:rgba(255,255,255,.62);line-height:1.5;}
 
 .af-content{flex:1;min-width:0;overflow-y:auto;display:flex;justify-content:center;padding:64px 48px;background:var(--white);}
 .af-card{width:100%;max-width:440px;margin:auto 0;}
@@ -2178,15 +2206,48 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-success-footer-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--status-success-fg);margin-right:6px;}
 .af-success-footer-links a{color:var(--text-3);text-decoration:underline;margin-left:2px;}
 
-/* Invitation flow (invite.html) — company/role/team summary card. */
-.af-invite-card{background:var(--page-bg);border-radius:var(--radius-md);padding:20px;margin:20px 0 24px;}
-.af-invite-company{font-family:var(--font-heading);font-size:19px;font-weight:700;color:var(--text-1);}
-.af-invite-platform-badge{display:inline-flex;margin-top:8px;background:var(--teal-50);color:var(--teal-700);font-family:var(--font);font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--radius-full);}
-.af-invite-meta{margin-top:16px;display:flex;flex-direction:column;gap:9px;}
-.af-invite-meta-row{display:flex;justify-content:space-between;gap:12px;font-family:var(--font);font-size:13px;}
-.af-invite-meta-row span{color:var(--text-2);}
-.af-invite-meta-row b{color:var(--text-1);font-weight:600;text-align:right;}
-.af-result .af-invite-meta{width:100%;max-width:280px;border-top:0.5px solid var(--border);padding-top:16px;}
+/* Invitation flow (invite.html) — landing screen invite card. */
+.af-invite-platform-badge{display:inline-flex;background:var(--teal-50);color:var(--teal-700);font-family:var(--font);font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--radius-full);}
+
+.iv-invite-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-50);color:var(--teal-700);font-family:var(--font);font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:var(--radius-full);margin-bottom:16px;}
+.iv-invite-h1-company{color:var(--teal-600);display:block;}
+#iv-landing-benefit{margin-bottom:24px;}
+
+.iv-invite-card-v2{background:var(--white);border-top:3px solid var(--teal-500);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:20px 22px;margin-bottom:20px;}
+.iv-invite-card-header{display:flex;align-items:flex-start;gap:12px;}
+.iv-invite-card-avatar{width:44px;height:44px;border-radius:var(--radius-md);background:var(--navy-500);color:#fff;font-family:var(--font-heading);font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.iv-invite-card-heading{flex:1;min-width:0;}
+.iv-invite-card-name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.iv-invite-card-name-row>span:first-child{font-family:var(--font-heading);font-size:16px;font-weight:700;color:var(--text-1);}
+.iv-invite-card-domain{font-family:var(--font);font-size:12px;color:var(--text-2);margin-top:3px;}
+.iv-invite-verified-pill{display:inline-flex;align-items:center;gap:4px;background:var(--teal-50);color:var(--teal-700);font-family:var(--font);font-size:11px;font-weight:600;padding:4px 10px;border-radius:var(--radius-full);white-space:nowrap;flex-shrink:0;}
+
+.iv-invite-card-divider{height:0.5px;background:var(--border);margin:16px 0;}
+
+.iv-invite-meta-v2{display:flex;flex-direction:column;gap:12px;}
+.iv-invite-meta-row-v2{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--font);font-size:12.5px;flex-wrap:wrap;}
+.iv-invite-meta-row-v2>span:first-child{color:var(--text-2);flex-shrink:0;}
+.iv-invite-meta-value{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--text-1);text-align:right;}
+.iv-invite-meta-avatar{width:20px;height:20px;border-radius:50%;background:var(--teal-500);color:#fff;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.iv-invite-meta-sub{color:var(--text-3);font-weight:400;}
+.iv-invite-access-badge{background:var(--teal-50);color:var(--teal-700);font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:var(--radius-full);}
+.iv-invite-meta-code{font-family:var(--font);color:var(--teal-600);}
+
+.iv-invite-message{background:var(--page-bg);border-radius:var(--radius-sm);padding:12px 14px;margin-top:16px;font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.6;}
+.iv-invite-message b{color:var(--text-1);}
+.iv-invite-message i{color:var(--text-2);font-style:italic;}
+
+.iv-invite-card-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:14px;border-top:0.5px solid var(--border);flex-wrap:wrap;}
+.iv-invite-teammates{display:flex;align-items:center;gap:8px;font-family:var(--font);font-size:12px;color:var(--text-2);}
+.iv-invite-expiry{display:flex;align-items:center;gap:4px;font-family:var(--font);font-size:11.5px;color:var(--text-3);white-space:nowrap;}
+
+.iv-invite-caption{font-family:var(--font);font-size:11.5px;color:var(--text-3);text-align:center;margin-top:10px;}
+
+.iv-invite-footer-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--font);font-size:12.5px;color:var(--text-2);flex-wrap:wrap;}
+.iv-invite-footer-row button{background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}
+.iv-invite-footer-row button:hover{text-decoration:underline;}
+.iv-invite-decline{color:var(--text-3)!important;font-weight:500!important;}
+.iv-invite-decline:hover{color:var(--text-2)!important;}
 
 .af-devbar{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:500;background:var(--navy-500);border-radius:20px;box-shadow:var(--shadow-hero);padding:7px 9px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:calc(100vw - 24px);}
 .af-devbar-dragging{transition:none;user-select:none;}

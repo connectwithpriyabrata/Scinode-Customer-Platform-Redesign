@@ -1983,7 +1983,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .iv-brand-tagline{font-family:var(--font);font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
 
 .iv-invited-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:var(--radius-full);padding:6px 14px 6px 6px;width:fit-content;margin-bottom:20px;position:relative;z-index:1;}
-.iv-invited-avatar{width:32px;height:32px;border-radius:50%;background:var(--teal-500);color:#fff;font-family:var(--font);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.iv-invited-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;display:block;background:var(--teal-500);}
 .iv-invited-text{font-family:var(--font);font-size:12.5px;color:rgba(255,255,255,.85);line-height:1.5;}
 .iv-invited-name{font-weight:600;color:#fff;}
 .iv-invited-meta{color:var(--sage);font-weight:500;}

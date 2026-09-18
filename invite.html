@@ -118,7 +118,7 @@
       <!-- Invitation context — landing screen only; recedes to plain brand
            messaging once the user moves past accepting the invite. -->
       <div class="iv-invited-chip" id="iv-landing-extra-top">
-        <div class="iv-invited-avatar" id="iv-invited-avatar">RM</div>
+        <img class="iv-invited-avatar" id="iv-invited-avatar" src="" alt="">
         <div class="iv-invited-text"><span class="iv-invited-name" id="iv-invited-chip-name">Rahul Mehta</span> invited you<br><span class="iv-invited-meta" id="iv-invited-chip-meta">Acme Manufacturing &middot; R&amp;D</span></div>
       </div>
 
@@ -598,6 +598,7 @@
       company: 'Acme Manufacturing', role: 'Member', team: 'R&amp;D', invitedBy: 'Rahul Mehta',
       inviteeName: 'Meera Joshi', inviteeEmail: 'meera@acme.com',
       invitedByTitle: 'Lead Process Chemist',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=12',
       assignedRoleLabel: 'R&amp;D Member',
       accessLevel: 'Full Member Access',
       teamDepartment: 'R&amp;D (Formulation &amp; Process Chemistry)',
@@ -629,6 +630,7 @@
       company: 'Meridian Labs', role: 'Member', team: 'Research', invitedBy: 'Priya Nair',
       inviteeName: 'Karan Shah', inviteeEmail: 'karan@meridianlabs.com',
       invitedByTitle: 'Principal Research Scientist',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=47',
       assignedRoleLabel: 'Research Member',
       accessLevel: 'Full Member Access',
       teamDepartment: 'Research (Specialty Synthesis &amp; Custom APIs)',
@@ -660,6 +662,7 @@
       company: 'Nova Specialty Chemicals', role: 'Member', team: 'Procurement', invitedBy: 'Ananya Verma',
       inviteeName: 'Liam Chen', inviteeEmail: 'liam@novaspecialty.com',
       invitedByTitle: 'Procurement Lead',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=44',
       assignedRoleLabel: 'Procurement Member',
       accessLevel: 'Full Member Access',
       teamDepartment: 'Procurement (Sourcing &amp; Vendor Management)',
@@ -691,6 +694,7 @@
       company: 'Caltech Chemistry Lab', role: 'Member', team: 'Research', invitedBy: 'Dr. Ananya Rao',
       inviteeName: 'Noah Fischer', inviteeEmail: 'noah.fischer@caltech.edu',
       invitedByTitle: 'Principal Investigator',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=45',
       assignedRoleLabel: 'Research Member',
       accessLevel: 'Full Member Access',
       teamDepartment: 'Research (Computational &amp; Experimental Chemistry)',
@@ -766,7 +770,8 @@
     // screen only (toggled in ivShowScreen), but kept populated here so
     // they're correct the instant that screen becomes visible.
     var invitedInitials = meta.invitedBy.replace(/^Dr\.\s*/, '').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase();
-    document.getElementById('iv-invited-avatar').textContent = invitedInitials;
+    document.getElementById('iv-invited-avatar').src = meta.invitedByPhoto;
+    document.getElementById('iv-invited-avatar').alt = meta.invitedBy;
     document.getElementById('iv-invited-chip-name').textContent = meta.invitedBy;
     document.getElementById('iv-invited-chip-meta').innerHTML = meta.company + ' &middot; ' + meta.team;
     document.getElementById('iv-feature1-title').textContent = meta.workspaceFeature.title;

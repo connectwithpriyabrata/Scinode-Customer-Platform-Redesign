@@ -185,7 +185,7 @@
           <div class="iv-invite-meta-v2">
             <div class="iv-invite-meta-row-v2">
               <span>Who Invited You</span>
-              <span class="iv-invite-meta-value"><span class="iv-invite-meta-avatar" id="iv-invited-by-avatar">RM</span><b id="iv-invited-by">Rahul Mehta</b> <span class="iv-invite-meta-sub" id="iv-invited-by-title">(Lead Process Chemist)</span></span>
+              <span class="iv-invite-meta-value"><b id="iv-invited-by">Rahul Mehta</b> <span class="iv-invite-meta-sub" id="iv-invited-by-title">(Lead Process Chemist)</span></span>
             </div>
             <div class="iv-invite-meta-row-v2">
               <span>Assigned Role</span>
@@ -776,7 +776,6 @@
     // Invited-by chip + trust/benefit cards in the brand panel — landing
     // screen only (toggled in ivShowScreen), but kept populated here so
     // they're correct the instant that screen becomes visible.
-    var invitedInitials = meta.invitedBy.replace(/^Dr\.\s*/, '').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase();
     document.getElementById('iv-invited-avatar').src = meta.invitedByPhoto;
     document.getElementById('iv-invited-avatar').alt = meta.invitedBy;
     document.getElementById('iv-invited-chip-name').textContent = meta.invitedBy;
@@ -792,7 +791,6 @@
     document.getElementById('iv-company').textContent = meta.company;
     document.getElementById('iv-platform-badge').textContent = meta.label;
     document.getElementById('iv-company-domain').innerHTML = meta.companyDomain + ' &middot; ' + meta.accountType;
-    document.getElementById('iv-invited-by-avatar').textContent = invitedInitials;
     document.getElementById('iv-invited-by').textContent = meta.invitedBy;
     document.getElementById('iv-invited-by-title').textContent = '(' + meta.invitedByTitle + ')';
     document.getElementById('iv-assigned-role').innerHTML = meta.assignedRoleLabel;

@@ -2229,7 +2229,6 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .iv-invite-meta-row-v2{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--font);font-size:12.5px;flex-wrap:wrap;}
 .iv-invite-meta-row-v2>span:first-child{color:var(--text-2);flex-shrink:0;}
 .iv-invite-meta-value{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--text-1);text-align:right;}
-.iv-invite-meta-avatar{width:20px;height:20px;border-radius:50%;background:var(--navy-500);color:#fff;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .iv-invite-meta-sub{color:var(--text-3);font-weight:400;}
 .iv-invite-access-badge{background:rgba(150,221,165,.28);color:var(--navy-500);font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:var(--radius-full);}
 .iv-invite-meta-code{font-family:var(--font);color:var(--navy-500);}

@@ -42,6 +42,7 @@
     <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
     <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
     <button id="af-dev-screen-pending-platform" onclick="afShowResult('pending-platform')">Cross-Platform Pending</button>
+    <button id="af-dev-screen-approved" onclick="afShowResult('approved')">Just Approved</button>
   </div>
   <div class="af-devbar-sep"></div>
   <span class="af-devbar-label">SSO Display</span>
@@ -1471,6 +1472,8 @@
     bullets.innerHTML = '';
     subtext.classList.add('hidden');
     subtext.textContent = '';
+    note.classList.remove('hidden');
+    note.innerHTML = '';
 
     var resultSimple = document.getElementById('af-result-simple');
     var resultSuccess = document.getElementById('af-result-success');
@@ -1513,6 +1516,22 @@
           meta.pendingBullets.map(function (b) { return '<li>' + b + '</li>'; }).join('');
         bullets.classList.remove('hidden');
       }
+    } else if (reason === 'approved') {
+      // Phase 1 - User Management.pdf §30.1 — the follow-up to the 'pending' /
+      // 'pending-platform' branches above, reached once an admin approves the
+      // application (in the real product, via the link in the approval email;
+      // here, via the devbar). meta.approvedSubtext was already defined per
+      // platform but previously never rendered — this is what it's for.
+      icon.className = 'af-result-icon af-success';
+      icon.innerHTML = AF_ICON_CHECK;
+      title.textContent = "You're approved!";
+      body.textContent = meta.company + ' has been verified and your ' + meta.accountNoun + ' workspace is now active.';
+      note.classList.add('hidden');
+      subtext.textContent = meta.approvedSubtext;
+      subtext.classList.remove('hidden');
+      cta.classList.remove('hidden');
+      cta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';
+      cta.onclick = function () { afSetDomain('verified'); afSetOrgApprovedOnPlatform(true); afShowResult('activated'); };
     } else if (reason === 'rejected') {
       // Phase 1 - User Management.pdf §30.5 — reached after an admin rejects the
       // application; keep messaging neutral, never expose internal review reasons.

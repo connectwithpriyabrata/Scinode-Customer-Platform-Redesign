@@ -41,6 +41,7 @@
       <button id="iv-dev-screen-reset" onclick="ivShowScreen('reset')">Reset Password</button>
       <button id="iv-dev-screen-confirmation" onclick="ivShowScreen('confirmation')">Confirmation</button>
       <button id="iv-dev-screen-pending" onclick="ivShowPending()">Pending Approval</button>
+      <button id="iv-dev-screen-approved" onclick="ivShowApproved()">Just Approved</button>
     </div>
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">Org on This Platform</span>
@@ -406,12 +407,16 @@
         </div>
       </div>
 
-      <!-- ══════════ PENDING APPROVAL (cross-platform invite: the org's domain is
-           already verified elsewhere in the Scinode ecosystem, but this is its
-           first invite onto *this* platform — per the entry-flow decision logic
-           this still requires Admin Approval before the invitee is activated,
-           same "first user from an existing verified org entering a new platform"
-           rule as the organic-signup flow in auth.html) ══════════ -->
+      <!-- ══════════ PENDING APPROVAL / JUST APPROVED (cross-platform invite: the
+           org's domain is already verified elsewhere in the Scinode ecosystem,
+           but this is its first invite onto *this* platform — per the
+           entry-flow decision logic this still requires Admin Approval before
+           the invitee is activated, same "first user from an existing verified
+           org entering a new platform" rule as the organic-signup flow in
+           auth.html. This single block is reused for both the waiting state
+           (ivShowPending) and the follow-up state once an admin approves it
+           (ivShowApproved) — mirrors auth.html's #af-result-simple, which
+           reuses one block for pending/rejected/approved outcomes.) ══════════ -->
       <div class="af-screen hidden" id="iv-screen-pending">
         <div class="af-result" id="iv-pending-result">
           <div class="af-result-icon af-pending" id="iv-pending-icon"></div>
@@ -419,6 +424,7 @@
           <div class="af-result-body" id="iv-pending-body"></div>
           <div class="af-result-note" id="iv-pending-note"></div>
           <ul class="af-result-bullets" id="iv-pending-bullets"></ul>
+          <button type="button" class="af-submit hidden" id="iv-pending-cta"></button>
         </div>
         <div class="af-footnote" style="text-align:center;"><button type="button" onclick="ivShowScreen('landing')">Back to Invitation</button></div>
       </div>
@@ -648,6 +654,7 @@
       teammateCount: 24,
       teammateInitials: ['RM', 'AS', 'NK'],
       landingBenefit: 'Collaborate on chemical synthesis workflows, verified supplier sourcing, and batch production on ATOMS.',
+      approvedSubtext: 'Start boosting your plant capacity utilization.',
       workspaceFeature: { title: 'Pre-Configured Acme Workspace', desc: 'Connect directly with 24 colleagues across R&amp;D, Synthesis, and QA.' },
       profileActivity: 'synthesis batches, spec reviews, and vendor RFQs',
       successData: {
@@ -683,6 +690,7 @@
       teammateCount: 16,
       teammateInitials: ['PN', 'RI', 'SM'],
       landingBenefit: 'Collaborate on molecule development, R&amp;D partner discovery, and specialty synthesis briefs on IONS.',
+      approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.',
       workspaceFeature: { title: 'Pre-Configured Meridian Labs Workspace', desc: 'Connect directly with 16 colleagues across Research, Synthesis, and QA.' },
       profileActivity: 'molecule briefs, synthesis routes, and partner requests',
       successData: {
@@ -718,6 +726,7 @@
       teammateCount: 31,
       teammateInitials: ['AV', 'VR', 'IS'],
       landingBenefit: 'Collaborate on sourcing requests, manufacturer discovery, and order tracking on Scinode.',
+      approvedSubtext: 'Start exploring the Scinode ecosystem.',
       workspaceFeature: { title: 'Pre-Configured Nova Specialty Workspace', desc: 'Connect directly with 31 colleagues across Procurement, Quality, and Compliance.' },
       profileActivity: 'sourcing requests, vendor quotes, and order updates',
       successData: {
@@ -753,6 +762,7 @@
       teammateCount: 12,
       teammateInitials: ['AR', 'WC', 'SM'],
       landingBenefit: 'Collaborate on compound search, route feasibility, and literature review on Deep Research.',
+      approvedSubtext: 'Start your first research workflow.',
       workspaceFeature: { title: 'Pre-Configured Caltech Lab Workspace', desc: 'Connect directly with 12 colleagues across Research, Computation, and Review.' },
       profileActivity: 'research queries, saved routes, and literature reviews',
       successData: {
@@ -978,7 +988,10 @@
       ivState.step = 1;
       ivRender();
     }
-    ['landing', 'auth', 'reset', 'confirmation', 'pending'].forEach(function (n) {
+    // 'pending' is excluded here — it's shared by two sub-states (Pending
+    // Approval vs. Just Approved) with their own devbar buttons, toggled
+    // directly by ivShowPending()/ivShowApproved() instead of by name match.
+    ['landing', 'auth', 'reset', 'confirmation'].forEach(function (n) {
       var b = document.getElementById('iv-dev-screen-' + n);
       if (b) b.classList.toggle('active', n === name);
     });
@@ -1156,14 +1169,41 @@
   function ivShowPending() {
     var meta = IV_PLATFORM[ivState.platform];
     var firstName = meta.inviteeName.split(' ')[0];
-    document.getElementById('iv-pending-icon').innerHTML = IV_ICON_CLOCK;
+    var icon = document.getElementById('iv-pending-icon');
+    icon.className = 'af-result-icon af-pending';
+    icon.innerHTML = IV_ICON_CLOCK;
     document.getElementById('iv-pending-title').textContent = 'Requesting your ' + meta.accountNoun + ' access';
     document.getElementById('iv-pending-body').textContent = meta.company + " is already a verified Scinode organization, but this is its first invitation onto " + meta.accountNoun + '.';
     document.getElementById('iv-pending-note').innerHTML = '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace before " + firstName + ' is activated.';
     document.getElementById('iv-pending-bullets').innerHTML =
       '<li>You\'ll receive an email the moment ' + meta.company + ' is approved for ' + meta.accountNoun + '.</li>' +
       '<li>' + meta.invitedBy + ' and the rest of your team have already set up your role &mdash; no further action needed from you.</li>';
+    document.getElementById('iv-pending-cta').classList.add('hidden');
     ivShowScreen('pending');
+    document.getElementById('iv-dev-screen-pending').classList.add('active');
+    document.getElementById('iv-dev-screen-approved').classList.remove('active');
+  }
+
+  // The follow-up to ivShowPending() once an admin approves the org for this
+  // platform (simulated here via the devbar — in the real product this is
+  // what the invitee would land on after clicking the "approved" email link).
+  // Reuses the same #iv-screen-pending block, switched to a success treatment.
+  function ivShowApproved() {
+    var meta = IV_PLATFORM[ivState.platform];
+    var icon = document.getElementById('iv-pending-icon');
+    icon.className = 'af-result-icon af-success';
+    icon.innerHTML = IV_ICON_CHECK;
+    document.getElementById('iv-pending-title').textContent = "You're approved!";
+    document.getElementById('iv-pending-body').textContent = meta.company + ' has been approved for ' + meta.accountNoun + ' — your invitation is ready to accept.';
+    document.getElementById('iv-pending-note').innerHTML = '<b>' + meta.company + '</b> is now approved for ' + meta.accountNoun + '. ' + meta.approvedSubtext + ' This is what you’d see after clicking the approval link in the admin’s email.';
+    document.getElementById('iv-pending-bullets').innerHTML = '';
+    var cta = document.getElementById('iv-pending-cta');
+    cta.classList.remove('hidden');
+    cta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';
+    cta.onclick = function () { ivSetOrgApprovedOnPlatform(true); ivShowConfirmation(); };
+    ivShowScreen('pending');
+    document.getElementById('iv-dev-screen-pending').classList.remove('active');
+    document.getElementById('iv-dev-screen-approved').classList.add('active');
   }
 
   function ivRenderSuccess(meta) {

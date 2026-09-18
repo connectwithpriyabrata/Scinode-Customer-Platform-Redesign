@@ -42,6 +42,12 @@
     <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
     <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
   </div>
+  <div class="af-devbar-sep"></div>
+  <span class="af-devbar-label">SSO Display</span>
+  <div class="af-devbar-group">
+    <button id="af-dev-sso-with" class="active" onclick="afSetSSODisplay('with')">With SSO</button>
+    <button id="af-dev-sso-without" onclick="afSetSSODisplay('without')">Without SSO</button>
+  </div>
   <span id="af-devbar-signup-only" style="display:contents;">
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">Domain</span>
@@ -307,23 +313,25 @@
             <div class="af-field-hint">Built for IP-sensitive collaboration, Scinode ensures encrypted data handling and strict access control at every step.</div>
           </div>
 
-          <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+          <div id="af-signup-sso-section">
+            <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
 
-          <div class="af-sso-stack">
-            <div id="af-enterprise-btn-wrap">
-              <button type="button" class="af-sso-btn af-sso-enterprise" id="af-enterprise-btn">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                Continue with <span id="af-enterprise-company-name">Acme Manufacturing</span> SSO
+            <div class="af-sso-stack">
+              <div id="af-enterprise-btn-wrap">
+                <button type="button" class="af-sso-btn af-sso-enterprise" id="af-enterprise-btn">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Continue with <span id="af-enterprise-company-name">Acme Manufacturing</span> SSO
+                </button>
+              </div>
+              <button type="button" class="af-sso-btn" id="af-sso-btn-google" onclick="afSetSource('google')">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                <span class="af-sso-btn-label">Continue with Google</span>
+              </button>
+              <button type="button" class="af-sso-btn" id="af-sso-btn-linkedin" onclick="afSetSource('linkedin')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                <span class="af-sso-btn-label">Continue with LinkedIn</span>
               </button>
             </div>
-            <button type="button" class="af-sso-btn" id="af-sso-btn-google" onclick="afSetSource('google')">
-              <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
-              <span class="af-sso-btn-label">Continue with Google</span>
-            </button>
-            <button type="button" class="af-sso-btn" id="af-sso-btn-linkedin" onclick="afSetSource('linkedin')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
-              <span class="af-sso-btn-label">Continue with LinkedIn</span>
-            </button>
           </div>
 
           <div class="af-sso-connected-note hidden" id="af-sso-connected-note">
@@ -363,16 +371,18 @@
             <div class="af-link-row"><button type="button" onclick="afOpenForgotPassword()">Forgot password?</button></div>
             <button type="submit" class="af-submit">Sign In</button>
 
-            <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
-            <div class="af-sso-stack">
-              <button type="button" class="af-sso-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
-                Continue with Google
-              </button>
-              <button type="button" class="af-sso-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
-                Continue with LinkedIn
-              </button>
+            <div id="af-signin-sso-section">
+              <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+              <div class="af-sso-stack">
+                <button type="button" class="af-sso-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                  Continue with Google
+                </button>
+                <button type="button" class="af-sso-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                  Continue with LinkedIn
+                </button>
+              </div>
             </div>
           </div>
 
@@ -687,7 +697,7 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', source: 'direct', signinSSO: false, hasMembership: true };
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', source: 'direct', signinSSO: false, hasMembership: true, ssoDisplay: 'with' };
   var afIndustries = [];
   var afVerifyState = 'pending';
 
@@ -877,6 +887,26 @@
   function afSetSource(m) {
     afState.source = m;
     afRender();
+  }
+
+  // Demo-only toggle: lets reviewers show the Sign Up / Sign In forms with the
+  // SSO options visible or hidden entirely, without walking through the Auth
+  // devbar group each time. Not part of the real product.
+  function afSetSSODisplay(mode) {
+    afState.ssoDisplay = mode;
+    if (mode === 'without' && afState.source !== 'direct') afState.source = 'direct';
+    afApplySSODisplay();
+    afRender();
+  }
+
+  function afApplySSODisplay() {
+    var show = afState.ssoDisplay !== 'without';
+    var signupSection = document.getElementById('af-signup-sso-section');
+    var signinSection = document.getElementById('af-signin-sso-section');
+    if (signupSection) signupSection.classList.toggle('hidden', !show);
+    if (signinSection) signinSection.classList.toggle('hidden', !show);
+    document.getElementById('af-dev-sso-with').classList.toggle('active', show);
+    document.getElementById('af-dev-sso-without').classList.toggle('active', !show);
   }
 
   function afAddIndustry() {
@@ -1360,6 +1390,7 @@
   }
 
   afRender();
+  afApplySSODisplay();
 </script>
 
 </body>

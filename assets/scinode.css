@@ -1981,8 +1981,6 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .iv-brand-wordmark{font-family:var(--font-heading);font-size:15px;font-weight:700;color:#fff;letter-spacing:.02em;}
 .iv-brand-platform-pill{font-family:var(--font);font-size:10px;font-weight:600;color:var(--navy-500);background:var(--sage);padding:2px 9px;border-radius:var(--radius-full);letter-spacing:.02em;}
 .iv-brand-tagline{font-family:var(--font);font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
-.iv-brand-tags{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
-.iv-brand-tag{font-family:var(--font);font-size:10.5px;font-weight:500;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);padding:4px 10px;border-radius:var(--radius-full);white-space:nowrap;}
 
 .iv-invited-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:var(--radius-full);padding:6px 14px 6px 6px;width:fit-content;margin-bottom:20px;position:relative;z-index:1;}
 .iv-invited-avatar{width:32px;height:32px;border-radius:50%;background:var(--teal-500);color:#fff;font-family:var(--font);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}

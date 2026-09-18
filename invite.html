@@ -40,6 +40,13 @@
       <button id="iv-dev-screen-auth" onclick="ivShowScreen('auth')">Auth</button>
       <button id="iv-dev-screen-reset" onclick="ivShowScreen('reset')">Reset Password</button>
       <button id="iv-dev-screen-confirmation" onclick="ivShowScreen('confirmation')">Confirmation</button>
+      <button id="iv-dev-screen-pending" onclick="ivShowPending()">Pending Approval</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Org on This Platform</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-org-approved" class="active" onclick="ivSetOrgApprovedOnPlatform(true)">Approved</button>
+      <button id="iv-dev-org-firstentry" onclick="ivSetOrgApprovedOnPlatform(false)">First Entry</button>
     </div>
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">SSO Display</span>
@@ -399,6 +406,23 @@
         </div>
       </div>
 
+      <!-- ══════════ PENDING APPROVAL (cross-platform invite: the org's domain is
+           already verified elsewhere in the Scinode ecosystem, but this is its
+           first invite onto *this* platform — per the entry-flow decision logic
+           this still requires Admin Approval before the invitee is activated,
+           same "first user from an existing verified org entering a new platform"
+           rule as the organic-signup flow in auth.html) ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-pending">
+        <div class="af-result" id="iv-pending-result">
+          <div class="af-result-icon af-pending" id="iv-pending-icon"></div>
+          <div class="af-result-title" id="iv-pending-title">Requesting your workspace access</div>
+          <div class="af-result-body" id="iv-pending-body"></div>
+          <div class="af-result-note" id="iv-pending-note"></div>
+          <ul class="af-result-bullets" id="iv-pending-bullets"></ul>
+        </div>
+        <div class="af-footnote" style="text-align:center;"><button type="button" onclick="ivShowScreen('landing')">Back to Invitation</button></div>
+      </div>
+
       <!-- ══════════ RESET PASSWORD (existing user forgot their password while
            accepting an invite — reached via the "reset link" in the email,
            simulated here from the "Verify your email address" modal or the
@@ -594,7 +618,7 @@
 
   // ── Invitation flow state — see IDENTITY_ACCESS_SPEC.md screens #17–19
   // and "Phase 1 - User Management.pdf" §20–25, §35.
-  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, ssoDisplay: 'with', step: 1 };
+  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, ssoDisplay: 'with', step: 1 };
   var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
   // Shared Navy/Sage avatar palette for both the landing card's teammate
@@ -753,6 +777,9 @@
     ivState.platform = p;
     ivState.source = 'direct';
     ivState.existing = false;
+    ivState.orgApprovedOnPlatform = true;
+    document.getElementById('iv-dev-org-approved').classList.add('active');
+    document.getElementById('iv-dev-org-firstentry').classList.remove('active');
     ivShowScreen('landing');
     ivRender();
   }
@@ -760,6 +787,19 @@
   function ivSetSource(m) {
     ivState.source = m;
     ivRender();
+  }
+
+  // Cross-platform invite matrix: the inviting org's domain is already
+  // verified elsewhere in the Scinode ecosystem, but this may still be its
+  // first invite onto *this* platform (e.g. Customer → DR/Atoms/Ions) — that
+  // first invite requires Admin Approval before the invitee is activated;
+  // once the org is approved on this platform, later invites skip straight
+  // through (the existing 2-step Confirmation flow). Same rule as
+  // afSetOrgApprovedOnPlatform() in auth.html's organic-signup flow.
+  function ivSetOrgApprovedOnPlatform(val) {
+    ivState.orgApprovedOnPlatform = val;
+    document.getElementById('iv-dev-org-approved').classList.toggle('active', val);
+    document.getElementById('iv-dev-org-firstentry').classList.toggle('active', !val);
   }
 
   // Demo-only toggle: lets reviewers show the Auth screen with the SSO options
@@ -924,7 +964,7 @@
   }
 
   function ivShowScreen(name) {
-    ['landing', 'auth', 'reset', 'confirmation'].forEach(function (n) {
+    ['landing', 'auth', 'reset', 'confirmation', 'pending'].forEach(function (n) {
       var el = document.getElementById('iv-screen-' + n);
       if (el) el.classList.toggle('hidden', n !== name);
     });
@@ -938,7 +978,7 @@
       ivState.step = 1;
       ivRender();
     }
-    ['landing', 'auth', 'reset', 'confirmation'].forEach(function (n) {
+    ['landing', 'auth', 'reset', 'confirmation', 'pending'].forEach(function (n) {
       var b = document.getElementById('iv-dev-screen-' + n);
       if (b) b.classList.toggle('active', n === name);
     });
@@ -1099,10 +1139,32 @@
 
   function ivSubmitAuth(e) {
     if (e) e.preventDefault();
-    ivShowConfirmation();
+    if (!ivState.orgApprovedOnPlatform) {
+      ivShowPending();
+    } else {
+      ivShowConfirmation();
+    }
   }
 
   var IV_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var IV_ICON_CLOCK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+
+  // Cross-platform invite: org already verified elsewhere in the Scinode
+  // ecosystem, but this is its first invite onto the current platform — see
+  // ivSetOrgApprovedOnPlatform(). Mirrors the copy pattern of auth.html's
+  // 'pending-platform' result branch.
+  function ivShowPending() {
+    var meta = IV_PLATFORM[ivState.platform];
+    var firstName = meta.inviteeName.split(' ')[0];
+    document.getElementById('iv-pending-icon').innerHTML = IV_ICON_CLOCK;
+    document.getElementById('iv-pending-title').textContent = 'Requesting your ' + meta.accountNoun + ' access';
+    document.getElementById('iv-pending-body').textContent = meta.company + " is already a verified Scinode organization, but this is its first invitation onto " + meta.accountNoun + '.';
+    document.getElementById('iv-pending-note').innerHTML = '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace before " + firstName + ' is activated.';
+    document.getElementById('iv-pending-bullets').innerHTML =
+      '<li>You\'ll receive an email the moment ' + meta.company + ' is approved for ' + meta.accountNoun + '.</li>' +
+      '<li>' + meta.invitedBy + ' and the rest of your team have already set up your role &mdash; no further action needed from you.</li>';
+    ivShowScreen('pending');
+  }
 
   function ivRenderSuccess(meta) {
     var d = meta.successData;

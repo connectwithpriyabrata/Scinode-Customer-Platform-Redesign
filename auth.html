@@ -41,6 +41,7 @@
     <button id="af-dev-screen-reset" onclick="afShowScreen('reset')">Reset Password</button>
     <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
     <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
+    <button id="af-dev-screen-pending-platform" onclick="afShowResult('pending-platform')">Cross-Platform Pending</button>
   </div>
   <div class="af-devbar-sep"></div>
   <span class="af-devbar-label">SSO Display</span>
@@ -62,6 +63,14 @@
       <button id="af-dev-domain-new" onclick="afSetDomain('new')">New</button>
       <button id="af-dev-domain-public" onclick="afSetDomain('public')">Public</button>
     </div>
+    <span id="af-devbar-crossplatform-only" style="display:contents;">
+      <div class="af-devbar-sep"></div>
+      <span class="af-devbar-label">Org on This Platform</span>
+      <div class="af-devbar-group">
+        <button id="af-dev-org-approved" class="active" onclick="afSetOrgApprovedOnPlatform(true)">Approved</button>
+        <button id="af-dev-org-firstentry" onclick="afSetOrgApprovedOnPlatform(false)">First Entry</button>
+      </div>
+    </span>
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">Auth</span>
     <div class="af-devbar-group">
@@ -726,7 +735,7 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', source: 'direct', signinSSO: false, hasMembership: true, ssoDisplay: 'with', step: 1 };
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, source: 'direct', signinSSO: false, hasMembership: true, ssoDisplay: 'with', step: 1 };
   var afIndustries = [];
   var afVerifyState = 'pending';
 
@@ -903,6 +912,7 @@
     if (!AF_PLATFORM[p]) return;
     afState.platform = p;
     afState.domain = 'verified';
+    afState.orgApprovedOnPlatform = true;
     afState.source = 'direct';
     afState.step = 1;
     afIndustries = [];
@@ -920,6 +930,22 @@
   function afSetDomain(d) {
     afState.domain = d;
     afRender();
+  }
+
+  // Verified-domain orgs can still be brand new to *this specific platform* —
+  // per the entry-flow decision logic, the first user from an already-verified
+  // org entering a new platform (ATOMS/IONS/DR) needs Admin Approval; once the
+  // org is approved on that platform, later users skip straight through. Only
+  // meaningful when domain === 'verified' (a new/public domain is already
+  // pending for its own reason, see afComputeSignupReason).
+  function afSetOrgApprovedOnPlatform(val) {
+    afState.orgApprovedOnPlatform = val;
+    afRender();
+  }
+
+  function afComputeSignupReason() {
+    if (afState.domain !== 'verified') return 'pending';
+    return afState.orgApprovedOnPlatform ? 'activated' : 'pending-platform';
   }
 
   function afSetSource(m) {
@@ -1100,6 +1126,9 @@
     ['verified', 'new', 'public'].forEach(function (d) {
       document.getElementById('af-dev-domain-' + d).classList.toggle('active', s.domain === d);
     });
+    document.getElementById('af-devbar-crossplatform-only').classList.toggle('hidden', s.domain !== 'verified');
+    document.getElementById('af-dev-org-approved').classList.toggle('active', s.orgApprovedOnPlatform);
+    document.getElementById('af-dev-org-firstentry').classList.toggle('active', !s.orgApprovedOnPlatform);
     ['direct', 'google', 'linkedin'].forEach(function (m) {
       document.getElementById('af-dev-source-' + m).classList.toggle('active', s.source === m);
     });
@@ -1296,7 +1325,7 @@
       matchError.classList.add('hidden');
     }
 
-    var reason = afState.domain === 'verified' ? 'activated' : 'pending';
+    var reason = afComputeSignupReason();
     if (afState.source === 'direct') {
       // Phase 1 authentication is Email → Password → Email Verification
       // (Phase 1 - User Management.pdf §"Phase 1 authentication") — SSO auth
@@ -1360,13 +1389,13 @@
   // the form first. Falls back to the current scenario's example email.
   function afPreviewVerify() {
     if (afPendingResultReason === null) {
-      afPendingResultReason = afState.domain === 'verified' ? 'activated' : 'pending';
+      afPendingResultReason = afComputeSignupReason();
     }
     afShowVerify(null);
   }
 
   function afVerifyEmailContinue() {
-    afShowResult(afPendingResultReason || (afState.domain === 'verified' ? 'activated' : 'pending'));
+    afShowResult(afPendingResultReason || afComputeSignupReason());
     afPendingResultReason = null;
   }
 
@@ -1462,6 +1491,22 @@
       note.innerHTML = afState.domain === 'public'
         ? "<b>Public email domain</b> — we couldn't confirm your company automatically, so this goes through admin approval."
         : "<b>New company</b> — this domain isn't in our records yet, so an admin will verify it before activating your account.";
+      cta.classList.add('hidden');
+      if (meta.pendingBullets && meta.pendingBullets.length) {
+        bullets.innerHTML = '<div class="af-result-note" style="margin-top:16px;margin-bottom:-6px;background:none;padding:0;font-weight:600;color:var(--text-1);">Coming next:</div>' +
+          meta.pendingBullets.map(function (b) { return '<li>' + b + '</li>'; }).join('');
+        bullets.classList.remove('hidden');
+      }
+    } else if (reason === 'pending-platform') {
+      // Cross-platform entry: the org's domain is already verified elsewhere in
+      // the Scinode ecosystem, but this is its first signup on *this* platform —
+      // per the entry-flow decision logic, that still requires Admin Approval,
+      // distinct from a brand-new/unverified domain (see the 'pending' branch).
+      icon.className = 'af-result-icon af-pending';
+      icon.innerHTML = AF_ICON_CLOCK;
+      title.textContent = 'Requesting your ' + meta.accountNoun + ' access';
+      body.textContent = meta.company + " is already a verified Scinode organization, but this is your team's first request to join " + meta.accountNoun + '.';
+      note.innerHTML = '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace before you're activated.";
       cta.classList.add('hidden');
       if (meta.pendingBullets && meta.pendingBullets.length) {
         bullets.innerHTML = '<div class="af-result-note" style="margin-top:16px;margin-bottom:-6px;background:none;padding:0;font-weight:600;color:var(--text-1);">Coming next:</div>' +

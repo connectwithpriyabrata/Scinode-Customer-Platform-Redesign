@@ -60,6 +60,12 @@
       <button id="iv-dev-user-new" class="active" onclick="ivSetExisting(false)">New</button>
       <button id="iv-dev-user-existing" onclick="ivSetExisting(true)">Existing</button>
     </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Step</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-step-1" class="active" onclick="ivSignupGoToStep(1)">1</button>
+      <button id="iv-dev-step-2" onclick="ivSignupGoToStep(2)">2</button>
+    </div>
   </div>
 </div>
 
@@ -134,63 +140,115 @@
            and Create Password live here too, so accepting an invite is a single
            screen). SSO sits below Email/Password as the alternate path. ══════════ -->
       <div class="af-screen hidden" id="iv-screen-auth">
-        <div class="af-h1">Sign in to accept</div>
+        <div class="af-stepper-row">
+          <div class="af-h1" id="iv-auth-h1">Sign up to accept</div>
+          <span class="af-stepper-badge hidden" id="iv-auth-step-badge">Step 1 of 2</span>
+        </div>
         <div class="af-sub" id="iv-auth-sub">Authenticate to join Acme Manufacturing on ATOMS.</div>
+        <div class="af-stepper-track hidden" id="iv-auth-stepper-track"><div class="af-stepper-fill" id="iv-auth-step-fill"></div></div>
 
-        <form onsubmit="ivSubmitAuth(event)">
-          <!-- Name — direct vs SSO-verified; hidden entirely for existing users -->
-          <div class="af-field" id="iv-name-direct-wrap">
-            <label>Name <span class="af-req">*</span></label>
-            <input class="af-input" type="text" id="iv-name-input" placeholder="Enter your full name" required>
-          </div>
-          <div class="af-field hidden" id="iv-name-sso-wrap">
-            <label>Name</label>
-            <div class="af-field-locked">
-              <div class="af-field-locked-val"><span id="iv-name-sso-value">Meera Joshi</span></div>
-              <span class="af-verified-chip" id="iv-name-sso-chip">From Google</span>
+        <form id="iv-auth-form" onsubmit="ivSubmitAuth(event)">
+
+          <!-- ══ STEP 1 — Account credentials (new users) / single step (existing users) ══ -->
+          <div id="iv-auth-step1">
+            <!-- Email — locked for new users, fixed by the invitation they accepted -->
+            <div class="af-field hidden" id="iv-email-locked-wrap">
+              <label>Email</label>
+              <div class="af-field-locked">
+                <div class="af-field-locked-val">
+                  <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span id="iv-email-locked-value">meera@acme.com</span>
+                </div>
+              </div>
+              <div class="af-field-hint">Your email is locked to this invitation.</div>
+            </div>
+
+            <!-- Email — editable, existing users signing in only -->
+            <div class="af-field" id="iv-email-wrap">
+              <label>Email <span class="af-req">*</span></label>
+              <input class="af-input" type="email" id="iv-email-input" placeholder="you@company.com" required>
+            </div>
+
+            <div class="af-field" id="iv-password-wrap">
+              <label><span id="iv-password-label">Create Password</span> <span class="af-req">*</span></label>
+              <input class="af-input" type="password" id="iv-password-input" placeholder="Create a password" minlength="8" required oninput="ivUpdateSignupPasswordCriteria()">
+              <div class="af-field-hint">Minimum 8 characters.</div>
+              <div class="af-link-row hidden" id="iv-forgot-link-row"><button type="button" onclick="ivOpenForgotPassword()">Forgot password?</button></div>
+            </div>
+
+            <!-- Live criteria checklist — same pattern as auth.html's signup step,
+                 new users (creating a password) only. -->
+            <div class="af-criteria-box hidden" id="iv-signup-criteria-box">
+              <div class="af-criteria-item" id="iv-signup-criteria-length"><span class="af-criteria-dot"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>At least 8 characters</div>
+              <div class="af-criteria-item" id="iv-signup-criteria-upper"><span class="af-criteria-dot"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>At least one uppercase letter</div>
+              <div class="af-criteria-item" id="iv-signup-criteria-numsym"><span class="af-criteria-dot"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>At least one number or special character</div>
+            </div>
+
+            <!-- Confirm Password — new users only -->
+            <div class="af-field hidden" id="iv-password-confirm-wrap">
+              <label>Confirm Password <span class="af-req">*</span></label>
+              <input class="af-input" type="password" id="iv-password-confirm-input" placeholder="Re-enter password" minlength="8" required>
+              <div class="af-field-error hidden" id="iv-password-match-error">Passwords don't match.</div>
+            </div>
+
+            <button type="submit" class="af-submit hidden" id="iv-auth-existing-submit">Continue</button>
+            <button type="button" class="af-submit hidden" id="iv-auth-continue-btn" onclick="ivSignupContinue()">Continue to Profile Details →</button>
+
+            <div id="iv-auth-sso-section">
+              <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+
+              <div class="af-sso-stack">
+                <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('google')">
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                  Continue with Google
+                </button>
+                <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('linkedin')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                  Continue with LinkedIn
+                </button>
+              </div>
+            </div>
+
+            <div class="af-sso-connected-note hidden" id="iv-sso-connected-note">
+              <span>Continuing with <b id="iv-sso-connected-method">Google</b> — no password needed.</span>
+              <button type="button" onclick="ivChooseAuthMethod('direct')">Use email instead</button>
             </div>
           </div>
 
-          <!-- Phone — always asked for new users, hidden for existing (already on file) -->
-          <div class="af-field" id="iv-phone-wrap">
-            <label>Phone Number <span class="af-req">*</span></label>
-            <input class="af-input" type="tel" id="iv-phone-input" placeholder="Enter phone number" required>
-          </div>
+          <!-- ══ STEP 2 — Profile details (new users only) ══ -->
+          <div id="iv-auth-step2" class="hidden">
+            <button type="button" class="af-step-back" onclick="ivSignupGoToStep(1)">← Back</button>
 
-          <!-- Email + Password — only for the direct auth path; SSO authenticates instead -->
-          <div class="af-field" id="iv-email-wrap">
-            <label>Email <span class="af-req">*</span></label>
-            <input class="af-input" type="email" id="iv-email-input" placeholder="you@company.com" required>
-          </div>
-          <div class="af-field" id="iv-password-wrap">
-            <label><span id="iv-password-label">Create Password</span> <span class="af-req">*</span></label>
-            <input class="af-input" type="password" id="iv-password-input" placeholder="Create a password" minlength="8" required>
-            <div class="af-field-hint">Minimum 8 characters.</div>
-            <div class="af-link-row hidden" id="iv-forgot-link-row"><button type="button" onclick="ivOpenForgotPassword()">Forgot password?</button></div>
-          </div>
+            <div class="af-section-label" style="margin-top:0;">Profile details</div>
 
-          <button type="submit" class="af-submit">Continue</button>
+            <!-- Name — direct vs SSO-verified -->
+            <div class="af-field" id="iv-name-direct-wrap">
+              <label>Name <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="iv-name-input" placeholder="Enter your full name" required>
+            </div>
+            <div class="af-field hidden" id="iv-name-sso-wrap">
+              <label>Name</label>
+              <div class="af-field-locked">
+                <div class="af-field-locked-val"><span id="iv-name-sso-value">Meera Joshi</span></div>
+                <span class="af-verified-chip" id="iv-name-sso-chip">From Google</span>
+              </div>
+            </div>
+
+            <div class="af-field" id="iv-phone-wrap">
+              <label>Phone Number <span class="af-req">*</span></label>
+              <input class="af-input" type="tel" id="iv-phone-input" placeholder="Enter phone number" required>
+            </div>
+
+            <div class="af-consent-row">
+              <label class="af-checkbox-label">
+                <input type="checkbox" id="iv-signup-consent" required>
+                <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+              </label>
+            </div>
+
+            <button type="submit" class="af-submit" id="iv-auth-submit">Create Account</button>
+          </div>
         </form>
-
-        <div id="iv-auth-sso-section">
-          <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
-
-          <div class="af-sso-stack">
-            <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('google')">
-              <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
-              Continue with Google
-            </button>
-            <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('linkedin')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
-              Continue with LinkedIn
-            </button>
-          </div>
-        </div>
-
-        <div class="af-sso-connected-note hidden" id="iv-sso-connected-note">
-          <span>Continuing with <b id="iv-sso-connected-method">Google</b> — no password needed.</span>
-          <button type="button" onclick="ivChooseAuthMethod('direct')">Use email instead</button>
-        </div>
       </div>
 
       <!-- ══════════ CONFIRMATION ══════════ -->
@@ -443,7 +501,7 @@
 
   // ── Invitation flow state — see IDENTITY_ACCESS_SPEC.md screens #17–19
   // and "Phase 1 - User Management.pdf" §20–25, §35.
-  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, ssoDisplay: 'with' };
+  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, ssoDisplay: 'with', step: 1 };
   var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
   var IV_PLATFORM = {
@@ -586,21 +644,44 @@
       document.getElementById('iv-name-sso-chip').textContent = 'From ' + IV_METHOD_LABEL[ivState.source];
     }
 
-    // Auth-screen field visibility: Name/Phone only for new users (existing
-    // users are already on file); Email/Password only for the direct auth path
-    // (SSO authenticates instead). Hidden-but-required fields must not block
-    // native form validation, so `required` toggles in lockstep with `.hidden`.
+    // New users go through a 2-step signup (Step 1: credentials, Step 2:
+    // profile details); existing users sign in on a single step. Hidden-but-
+    // required fields must not block native form validation, so `required`
+    // toggles in lockstep with visibility — now factoring in both isNew and
+    // which step is showing.
     var isNew = !ivState.existing;
     var isDirect = ivState.source === 'direct';
+    var showStep2 = isNew && ivState.step === 2;
+
+    document.getElementById('iv-auth-h1').textContent = isNew ? 'Sign up to accept' : 'Sign in to accept';
+    document.getElementById('iv-auth-step1').classList.toggle('hidden', showStep2);
+    document.getElementById('iv-auth-step2').classList.toggle('hidden', !showStep2);
+    document.getElementById('iv-auth-step-badge').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-auth-stepper-track').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-auth-step-badge').textContent = 'Step ' + ivState.step + ' of 2';
+    document.getElementById('iv-auth-step-fill').style.width = (ivState.step === 1 ? '50%' : '100%');
+    document.getElementById('iv-dev-step-1').classList.toggle('active', ivState.step === 1);
+    document.getElementById('iv-dev-step-2').classList.toggle('active', ivState.step === 2);
+
+    // Step 2 — profile details (new users only).
     document.getElementById('iv-name-direct-wrap').classList.toggle('hidden', !isNew || !isDirect);
     document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', !isNew || isDirect);
-    document.getElementById('iv-name-input').required = isNew && isDirect;
+    document.getElementById('iv-name-input').required = isNew && isDirect && showStep2;
     document.getElementById('iv-phone-wrap').classList.toggle('hidden', !isNew);
-    document.getElementById('iv-phone-input').required = isNew;
-    document.getElementById('iv-email-wrap').classList.toggle('hidden', !isDirect);
-    document.getElementById('iv-email-input').required = isDirect;
+    document.getElementById('iv-phone-input').required = isNew && showStep2;
+    document.getElementById('iv-signup-consent').required = showStep2;
+
+    // Step 1 — account credentials. Email is locked to the invited address for
+    // new users (they can't change it); existing users type it to sign in.
+    document.getElementById('iv-email-locked-wrap').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-email-locked-value').textContent = meta.inviteeEmail;
+    document.getElementById('iv-email-wrap').classList.toggle('hidden', isNew || !isDirect);
+    document.getElementById('iv-email-input').required = !isNew && isDirect;
     document.getElementById('iv-password-wrap').classList.toggle('hidden', !isDirect);
-    document.getElementById('iv-password-input').required = isDirect;
+    document.getElementById('iv-password-input').required = isDirect && !showStep2;
+    document.getElementById('iv-signup-criteria-box').classList.toggle('hidden', !isNew || !isDirect);
+    document.getElementById('iv-password-confirm-wrap').classList.toggle('hidden', !isNew || !isDirect);
+    document.getElementById('iv-password-confirm-input').required = isNew && isDirect && !showStep2;
     // Existing users are signing in with a password they already have, not
     // creating one — label and Forgot-password affordance reflect that.
     document.getElementById('iv-password-label').textContent = isNew ? 'Create Password' : 'Password';
@@ -610,6 +691,9 @@
     if (!isDirect) {
       document.getElementById('iv-sso-connected-method').textContent = IV_METHOD_LABEL[ivState.source];
     }
+
+    document.getElementById('iv-auth-existing-submit').classList.toggle('hidden', isNew);
+    document.getElementById('iv-auth-continue-btn').classList.toggle('hidden', !isNew);
 
     Object.keys(IV_PLATFORM).forEach(function (p) {
       var btn = document.getElementById('iv-dev-platform-' + p);
@@ -628,6 +712,10 @@
       if (el) el.classList.toggle('hidden', n !== name);
     });
     ivState.screen = name;
+    if (name === 'auth') {
+      ivState.step = 1;
+      ivRender();
+    }
     ['landing', 'auth', 'reset', 'confirmation'].forEach(function (n) {
       var b = document.getElementById('iv-dev-screen-' + n);
       if (b) b.classList.toggle('active', n === name);
@@ -724,17 +812,67 @@
       : '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="M2 2l20 20"/></svg>';
   }
 
-  // SSO buttons sit outside the <form> (type=button) so they don't submit it —
-  // they just switch the auth method and let ivRender() show the right fields
-  // (Name locked from SSO, Email/Password hidden). Existing users have nothing
-  // left to provide (Name/Phone already on file, SSO handles auth), so they go
-  // straight to confirmation; new users still need to fill Phone and submit.
+  // SSO buttons are type=button so they don't submit the form — they just
+  // switch the auth method and let ivRender() show the right fields (Name
+  // locked from SSO, Email/Password hidden). Existing users have nothing left
+  // to provide (Name/Phone already on file, SSO handles auth), so they go
+  // straight to confirmation; new users still need Step 2 (Profile details).
   function ivChooseAuthMethod(source) {
     ivState.source = source;
     ivRender();
     if (ivState.existing) {
       ivShowConfirmation();
     }
+  }
+
+  // Live criteria checklist for the new-user signup password — same pattern as
+  // ivUpdatePasswordCriteria() on the Reset Password screen, separate copy
+  // because it targets a different set of element ids.
+  function ivUpdateSignupPasswordCriteria() {
+    var val = document.getElementById('iv-password-input').value;
+    var checks = {
+      'iv-signup-criteria-length': val.length >= 8,
+      'iv-signup-criteria-upper': /[A-Z]/.test(val),
+      'iv-signup-criteria-numsym': /[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)
+    };
+    Object.keys(checks).forEach(function (id) {
+      document.getElementById(id).classList.toggle('met', checks[id]);
+    });
+    return checks;
+  }
+
+  function ivSignupGoToStep(step) {
+    if (step === 2 && ivState.existing) return;
+    ivState.step = step;
+    ivRender();
+    window.scrollTo(0, 0);
+  }
+
+  // Step 1 → Step 2 (new users only). Native reportValidity() only checks
+  // Step 1's fields here, since Step 2's required attributes are already off
+  // while step === 1.
+  function ivSignupContinue() {
+    var form = document.getElementById('iv-auth-form');
+    if (!form.reportValidity()) return;
+
+    if (ivState.source === 'direct') {
+      var checks = ivUpdateSignupPasswordCriteria();
+      if (!checks['iv-signup-criteria-length'] || !checks['iv-signup-criteria-upper'] || !checks['iv-signup-criteria-numsym']) {
+        document.getElementById('iv-signup-criteria-box').scrollIntoView({ block: 'center' });
+        return;
+      }
+      var pw = document.getElementById('iv-password-input').value;
+      var pwConfirm = document.getElementById('iv-password-confirm-input').value;
+      var matchError = document.getElementById('iv-password-match-error');
+      if (pw !== pwConfirm) {
+        matchError.classList.remove('hidden');
+        document.getElementById('iv-password-confirm-input').focus();
+        return;
+      }
+      matchError.classList.add('hidden');
+    }
+
+    ivSignupGoToStep(2);
   }
 
   function ivSubmitAuth(e) {

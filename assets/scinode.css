@@ -1983,7 +1983,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-stepper-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .af-stepper-row .af-h1{margin-bottom:6px;}
 .af-stepper-badge{flex-shrink:0;font-family:var(--font);font-size:11px;font-weight:600;color:var(--teal-700);background:var(--teal-50);padding:4px 10px;border-radius:var(--radius-full);white-space:nowrap;}
-#af-signup-sub{margin-bottom:14px;}
+#af-signup-sub,#iv-auth-sub{margin-bottom:14px;}
 .af-stepper-track{height:4px;border-radius:var(--radius-full);background:var(--border);margin-bottom:26px;overflow:hidden;}
 .af-stepper-fill{height:100%;border-radius:var(--radius-full);background:var(--teal-500);transition:width .25s ease;}
 .af-step-back{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;margin-bottom:18px;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}

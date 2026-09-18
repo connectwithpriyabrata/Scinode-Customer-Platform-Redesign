@@ -590,10 +590,9 @@
   var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, ssoDisplay: 'with', step: 1 };
   var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
-  // Landing card teammate avatars — Navy/Sage only, kept separate from
-  // IV_AVATAR_COLORS (used by the Confirmation screen) so this palette
-  // doesn't reach past the landing screen's invite card.
-  var IV_LANDING_AVATAR_STYLES = [
+  // Shared Navy/Sage avatar palette for both the landing card's teammate
+  // stack and the confirmation screen's colleague stack.
+  var IV_AVATAR_COLORS = [
     { bg: 'var(--navy-500)', fg: '#fff' },
     { bg: 'var(--sage)', fg: 'var(--navy-500)' },
     { bg: 'var(--navy-700)', fg: '#fff' }
@@ -804,7 +803,7 @@
     document.getElementById('iv-invite-message-text').textContent = '"' + meta.inviteMessage + '"';
     var teammateStack = document.getElementById('iv-teammate-stack');
     teammateStack.innerHTML = meta.teammateInitials.map(function (initials, i) {
-      var s = IV_LANDING_AVATAR_STYLES[i % IV_LANDING_AVATAR_STYLES.length];
+      var s = IV_AVATAR_COLORS[i % IV_AVATAR_COLORS.length];
       return '<span style="background:' + s.bg + ';color:' + s.fg + ';">' + initials + '</span>';
     }).join('');
     document.getElementById('iv-teammate-count-text').textContent = 'Join ' + meta.teammateCount + ' teammates already in this workspace';
@@ -1057,8 +1056,6 @@
     ivShowConfirmation();
   }
 
-  // Same overlapping-avatar palette as auth.html's success screen.
-  var IV_AVATAR_COLORS = ['var(--teal-500)', 'var(--navy-500)', 'var(--text-3)'];
   var IV_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 
   function ivRenderSuccess(meta) {
@@ -1080,7 +1077,8 @@
 
     var stack = document.getElementById('iv-success-avatar-stack');
     var avatars = d.colleagueInitials.map(function (initials, i) {
-      return '<span style="background:' + IV_AVATAR_COLORS[i % IV_AVATAR_COLORS.length] + ';">' + initials + '</span>';
+      var s = IV_AVATAR_COLORS[i % IV_AVATAR_COLORS.length];
+      return '<span style="background:' + s.bg + ';color:' + s.fg + ';">' + initials + '</span>';
     });
     avatars.push('<span style="background:var(--border-h);color:var(--text-2);">+' + d.colleagueOverflow + '</span>');
     stack.innerHTML = avatars.join('');

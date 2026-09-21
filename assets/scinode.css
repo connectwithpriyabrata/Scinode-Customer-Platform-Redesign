@@ -2211,6 +2211,24 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-success-checklist-item:not(.done) .af-success-checklist-meta.next{color:var(--teal-600);font-weight:600;}
 .af-success-checklist-desc{font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.5;margin-top:2px;}
 
+/* "Recommended First Steps" as an auto-advancing carousel: same three items and
+   content as the old vertical list, one per slide. Native scroll-snap track
+   (swipe / trackpad work for free) + dots + a pause control; JS only drives
+   the auto-advance (see afInitStepsCarousel / ivInitStepsCarousel). */
+.af-steps-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;position:relative;}
+.af-steps-track::-webkit-scrollbar{display:none;}
+.af-steps-track > .af-success-checklist-item{flex:0 0 100%;box-sizing:border-box;scroll-snap-align:start;background:var(--page-bg);border-top:none;border-radius:var(--radius-md);padding:14px 16px;}
+.af-steps-controls{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+.af-steps-dots{display:flex;align-items:center;gap:6px;}
+.af-steps-dot{width:6px;height:6px;padding:0;border:none;border-radius:var(--radius-full);background:var(--border-h);cursor:pointer;transition:width .2s,background .2s;}
+.af-steps-dot:hover{background:var(--text-3);}
+.af-steps-dot.active{width:18px;background:var(--teal-500);}
+.af-steps-pause{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;border-radius:var(--radius-full);background:none;color:var(--text-3);cursor:pointer;transition:background .15s,color .15s;}
+.af-steps-pause:hover{background:var(--page-bg);color:var(--text-1);}
+.af-steps-pause .icon-play{display:none;}
+.af-steps-pause.is-paused .icon-play{display:block;}
+.af-steps-pause.is-paused .icon-pause{display:none;}
+
 .af-success .af-submit{margin-top:4px;}
 .af-success-secondary-row{display:flex;gap:10px;margin-top:10px;}
 .af-success-ghost-btn{flex:1;background:var(--page-bg);color:var(--teal-700);border:none;border-radius:var(--radius-sm);padding:10px 14px;font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s;}
@@ -2305,6 +2323,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 #iv-screen-confirmation .af-success-verified-badge{background:var(--sage);color:var(--navy-500);}
 #iv-screen-confirmation .af-success-invite-link{color:var(--navy-500);}
 #iv-screen-confirmation .af-success-checklist-item:not(.done) .af-success-checklist-meta.next{color:var(--navy-500);}
+#iv-screen-confirmation .af-steps-dot.active{background:var(--navy-500);}
 #iv-screen-confirmation .af-success-ghost-btn{color:var(--navy-500);}
 
 #iv-screen-reset .af-footnote button{color:var(--navy-500);}

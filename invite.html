@@ -398,7 +398,13 @@
               <span>Recommended First Steps</span>
               <span id="iv-success-checklist-progress"></span>
             </div>
-            <div id="iv-success-checklist"></div>
+            <div class="af-steps-carousel" id="iv-success-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
+              <div class="af-steps-track" id="iv-success-checklist"></div>
+              <div class="af-steps-controls">
+                <div class="af-steps-dots" id="iv-success-checklist-dots"></div>
+                <button type="button" class="af-steps-pause" id="iv-success-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
+              </div>
+            </div>
           </div>
 
           <button type="button" class="af-submit" id="iv-success-cta"></button>
@@ -1238,6 +1244,79 @@
     document.getElementById('iv-dev-screen-approved').classList.add('active');
   }
 
+  // "Recommended First Steps" carousel — auto-advances every 5s, pauses on
+  // hover / focus / touch, via the pause button, when the tab is hidden, or
+  // when the screen isn't showing; auto-advance is off entirely for users who
+  // prefer reduced motion. Content/slides come from the render function.
+  function ivInitStepsCarousel() {
+    var wrap = document.getElementById('iv-success-carousel');
+    var track = document.getElementById('iv-success-checklist');
+    var dotsEl = document.getElementById('iv-success-checklist-dots');
+    var pauseBtn = document.getElementById('iv-success-checklist-pause');
+    var slides = track.children;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function current() {
+      var best = 0, dist = Infinity;
+      for (var i = 0; i < slides.length; i++) {
+        var d = Math.abs(slides[i].offsetLeft - track.scrollLeft);
+        if (d < dist) { dist = d; best = i; }
+      }
+      return best;
+    }
+    function sync() {
+      var cur = current();
+      [].forEach.call(dotsEl.children, function (dot, i) {
+        dot.classList.toggle('active', i === cur);
+        if (i === cur) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current');
+      });
+    }
+    function goTo(i) {
+      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    track.scrollLeft = 0;
+    dotsEl.innerHTML = [].map.call(slides, function (_, i) {
+      return '<button type="button" class="af-steps-dot' + (i === 0 ? ' active' : '') + '" aria-label="Go to step ' + (i + 1) + '"></button>';
+    }).join('');
+
+    if (wrap._tick) clearInterval(wrap._tick);
+    wrap._userPaused = !!reduce;
+    wrap._hoverPaused = false;
+    pauseBtn.classList.toggle('is-paused', wrap._userPaused);
+    pauseBtn.setAttribute('aria-label', wrap._userPaused ? 'Play auto-scroll' : 'Pause auto-scroll');
+    pauseBtn.style.display = reduce ? 'none' : '';
+
+    if (!wrap._bound) {
+      wrap._bound = true;
+      var raf = null;
+      track.addEventListener('scroll', function () {
+        if (raf) return;
+        raf = requestAnimationFrame(function () { raf = null; sync(); });
+      });
+      dotsEl.addEventListener('click', function (e) {
+        var i = [].indexOf.call(dotsEl.children, e.target.closest('.af-steps-dot'));
+        if (i > -1) goTo(i);
+      });
+      pauseBtn.addEventListener('click', function () {
+        wrap._userPaused = !wrap._userPaused;
+        pauseBtn.classList.toggle('is-paused', wrap._userPaused);
+        pauseBtn.setAttribute('aria-label', wrap._userPaused ? 'Play auto-scroll' : 'Pause auto-scroll');
+      });
+      ['mouseenter', 'focusin', 'touchstart'].forEach(function (ev) {
+        wrap.addEventListener(ev, function () { wrap._hoverPaused = true; }, { passive: true });
+      });
+      ['mouseleave', 'focusout', 'touchend'].forEach(function (ev) {
+        wrap.addEventListener(ev, function () { wrap._hoverPaused = false; }, { passive: true });
+      });
+    }
+
+    wrap._tick = setInterval(function () {
+      if (wrap._userPaused || wrap._hoverPaused || document.hidden || !track.offsetParent) return;
+      goTo((current() + 1) % slides.length);
+    }, 5000);
+  }
+
   function ivRenderSuccess(meta) {
     var d = meta.successData;
     if (!d) return;
@@ -1276,6 +1355,7 @@
           '<div class="af-success-checklist-desc">' + item.desc + '</div>' +
         '</div></div>';
     }).join('');
+    ivInitStepsCarousel();
 
     var successCta = document.getElementById('iv-success-cta');
     successCta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';

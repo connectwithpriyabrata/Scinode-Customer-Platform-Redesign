@@ -487,7 +487,7 @@
           <div class="af-result-icon" id="af-result-icon"></div>
           <div class="af-result-title" id="af-result-title"></div>
           <div class="af-result-body" id="af-result-body"></div>
-          <div class="af-result-note" id="af-result-note"></div>
+          <div class="af-info-banner is-info" role="status" id="af-result-note"></div>
           <ul class="af-result-bullets hidden" id="af-result-bullets"></ul>
           <button type="button" class="af-submit hidden" id="af-result-cta"></button>
           <div class="af-result-subtext hidden" id="af-result-subtext"></div>
@@ -1473,6 +1473,18 @@
     document.getElementById('af-success-footnote').textContent = 'Need assistance? Your dedicated onboarding lead is online';
   }
 
+  // Result-screen note as a status banner (icon + text) — same .af-info-banner
+  // component as the company-domain messages on the sign-up form.
+  var AF_BANNER_ICON = {
+    success: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
+    info: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+  };
+  function afSetResultNote(kind, html) {
+    var el = document.getElementById('af-result-note');
+    el.className = 'af-info-banner ' + (kind === 'success' ? 'is-success' : 'is-info');
+    el.innerHTML = AF_BANNER_ICON[kind] + '<span>' + html + '</span>';
+  }
+
   function afShowResult(reason) {
     var meta = AF_PLATFORM[afState.platform];
     var icon = document.getElementById('af-result-icon');
@@ -1505,9 +1517,9 @@
       icon.innerHTML = AF_ICON_CLOCK;
       title.textContent = meta.pendingTitle;
       body.textContent = meta.pendingBody;
-      note.innerHTML = afState.domain === 'public'
+      afSetResultNote('info', afState.domain === 'public'
         ? "<b>Public email domain</b> — we couldn't confirm your company automatically, so this goes through admin approval."
-        : "<b>New company</b> — this domain isn't in our records yet, so an admin will verify it before activating your account.";
+        : "<b>New company</b> — this domain isn't in our records yet, so an admin will verify it before activating your account.");
       cta.classList.add('hidden');
       if (meta.pendingBullets && meta.pendingBullets.length) {
         bullets.innerHTML = '<div class="af-result-note" style="margin-top:16px;margin-bottom:-6px;background:none;padding:0;font-weight:600;color:var(--text-1);">Coming next:</div>' +
@@ -1523,7 +1535,7 @@
       icon.innerHTML = AF_ICON_CLOCK;
       title.textContent = 'Requesting your ' + meta.accountNoun + ' access';
       body.textContent = meta.company + " is already a verified Scinode organization, but this is your team's first request to join " + meta.accountNoun + '.';
-      note.innerHTML = '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace before you're activated.";
+      afSetResultNote('info', '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace before you're activated.");
       cta.classList.add('hidden');
       if (meta.pendingBullets && meta.pendingBullets.length) {
         bullets.innerHTML = '<div class="af-result-note" style="margin-top:16px;margin-bottom:-6px;background:none;padding:0;font-weight:600;color:var(--text-1);">Coming next:</div>' +
@@ -1553,14 +1565,14 @@
       icon.innerHTML = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
       title.textContent = "We couldn't activate your account";
       body.textContent = "We couldn't complete your account setup with the information provided.";
-      note.innerHTML = 'If you think this is incorrect, please contact our team at <b>support@scinode.com</b>.';
+      afSetResultNote('info', 'If you think this is incorrect, please contact our team at <b>support@scinode.com</b>.');
       cta.classList.add('hidden');
     } else if (reason === 'signin') {
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = 'Welcome back!';
       body.textContent = 'Taking you straight to your workspace — no signup needed.';
-      note.innerHTML = 'Existing users always skip signup: matched to your existing account and company via the shared Scinode identity.';
+      afSetResultNote('success', 'Existing users always skip signup: matched to your existing account and company via the shared Scinode identity.');
       cta.classList.remove('hidden');
       cta.textContent = 'Continue to ' + meta.accountNoun + ' →';
       cta.onclick = function () { afShowScreen('signin'); };
@@ -1569,7 +1581,7 @@
       icon.innerHTML = AF_ICON_CLOCK;
       title.textContent = 'Requesting your ' + meta.accountNoun + ' access';
       body.textContent = "We found your existing Scinode account — no need to sign up again.";
-      note.innerHTML = "A shared Scinode account means <b>shared identity, not automatic platform access</b>. We're setting up your " + meta.accountNoun + ' membership now.';
+      afSetResultNote('info', "A shared Scinode account means <b>shared identity, not automatic platform access</b>. We're setting up your " + meta.accountNoun + ' membership now.');
       cta.classList.add('hidden');
     }
 

@@ -2114,11 +2114,12 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-result-bullets{list-style:none;margin:14px 0 0;padding:0;text-align:left;max-width:360px;}
 .af-result-bullets li{font-family:var(--font);font-size:12.5px;color:var(--text-2);line-height:1.55;padding-left:16px;position:relative;margin-bottom:6px;}
 .af-result-bullets li::before{content:'';position:absolute;left:2px;top:7px;width:4px;height:4px;border-radius:50%;background:var(--teal-500);}
-.af-result-subtext{font-family:var(--font);font-size:12px;color:var(--text-2);margin-top:12px;text-align:center;}
 .af-result-ghost-row{display:flex;gap:24px;justify-content:center;margin-top:16px;}
 .af-result-ghost-item{display:flex;flex-direction:column;align-items:center;gap:5px;max-width:170px;text-align:center;}
 .af-result-ghost-btn{background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}
 .af-result-ghost-btn:hover{text-decoration:underline;}
+.af-verify-resend-wrap{width:100%;}
+.af-verify-resend-wrap .af-submit:disabled{opacity:.7;cursor:default;}
 .af-result-ghost-caption{font-family:var(--font);font-size:10.5px;color:var(--text-3);line-height:1.4;}
 
 /* Forgot-password modal system (auth.html) — self-contained; does not reuse
@@ -2180,6 +2181,9 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 
 .af-success-hero{background:#FBF4E9;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);min-height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;overflow:hidden;}
 .af-success-hero img{width:100%;height:100%;object-fit:cover;}
+/* Sign-in page opened from the approval email — shorter, uncropped variant of the hero. */
+.af-signin-hero{min-height:0;height:170px;margin-bottom:22px;}
+.af-signin-hero img{object-fit:contain;padding:10px 0;}
 .af-success-hero-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-3);}
 .af-success-hero-placeholder span{font-family:var(--font);font-size:11.5px;}
 

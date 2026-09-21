@@ -42,7 +42,7 @@
     <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
     <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
     <button id="af-dev-screen-pending-platform" onclick="afShowResult('pending-platform')">Cross-Platform Pending</button>
-    <button id="af-dev-screen-approved" onclick="afShowResult('approved')">Just Approved</button>
+    <button id="af-dev-screen-approved" onclick="afOpenSigninFromLink('approved')">Just Approved</button>
   </div>
   <div class="af-devbar-sep"></div>
   <span class="af-devbar-label">SSO Display</span>
@@ -397,6 +397,10 @@
 
       <!-- ══════════ SIGN IN ══════════ -->
       <div class="af-screen hidden" id="af-screen-signin">
+        <!-- Illustration — only when opened from the "you're approved" email link. -->
+        <div class="af-success-hero af-signin-hero hidden" id="af-signin-hero">
+          <img src="assets/auth-visuals/success-illustration.svg" alt="Illustration of a chemist at a lab bench with a verified-supplier seal">
+        </div>
         <div class="af-h1">Sign in</div>
         <div class="af-sub" id="af-signin-sub">Access your ATOMS workspace</div>
 
@@ -405,6 +409,22 @@
             <div class="af-field">
               <label>Email <span class="af-req">*</span></label>
               <input class="af-input" type="email" id="af-signin-email" placeholder="you@company.com" required>
+            </div>
+
+            <!-- Org details + message — only when opened from the verification / approval
+                 email link (verified domain, or approval). Nothing for new & public. -->
+            <div class="hidden" id="af-signin-link-info">
+              <div class="af-field">
+                <label><span id="af-signin-org-label">Company Name</span></label>
+                <div class="af-field-locked is-verified">
+                  <div class="af-field-locked-val">
+                    <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span id="af-signin-link-company">Acme Manufacturing</span>
+                  </div>
+                  <svg class="af-verified-check" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="m8 12.3 2.8 2.8L16 9.6" stroke="#fff" stroke-width="2.4"/></svg>
+                </div>
+                <div class="af-info-banner is-success" role="status" id="af-signin-link-banner"></div>
+              </div>
             </div>
             <div class="af-field">
               <label>Password <span class="af-req">*</span></label>
@@ -494,7 +514,6 @@
           <div class="af-info-banner is-info" role="status" id="af-result-note"></div>
           <ul class="af-result-bullets hidden" id="af-result-bullets"></ul>
           <button type="button" class="af-submit hidden" id="af-result-cta"></button>
-          <div class="af-result-subtext hidden" id="af-result-subtext"></div>
         </div>
 
         <!-- Rich post-signup success screen — used for reason==='activated' on all
@@ -573,9 +592,11 @@
           <div class="af-result-title" id="af-verify-title">Verify your email</div>
           <div class="af-result-body" id="af-verify-body">We sent a verification link to <b id="af-verify-email">you@company.com</b>.</div>
           <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span id="af-verify-note">Verify your email to finish setting up your ATOMS account.</span></div>
-          <button type="button" class="af-submit" id="af-verify-cta" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
-          <div class="af-result-ghost-row" id="af-verify-resend-row">
-            <button type="button" class="af-result-ghost-btn" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
+          <div class="af-verify-resend-wrap" id="af-verify-resend-row">
+            <button type="button" class="af-submit" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
+          </div>
+          <div class="af-result-ghost-row" id="af-verify-continue-row">
+            <button type="button" class="af-result-ghost-btn" id="af-verify-cta" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
           </div>
         </div>
       </div>
@@ -749,7 +770,7 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, source: 'direct', signinSSO: false, hasMembership: true, ssoDisplay: 'with', step: 1 };
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, signupEmail: '', source: 'direct', signinSSO: false, hasMembership: true, ssoDisplay: 'with', step: 1 };
   var afIndustries = [];
   var afVerifyState = 'pending';
 
@@ -924,6 +945,7 @@
 
   function afSetPlatform(p) {
     if (!AF_PLATFORM[p]) return;
+    afClearSigninLink();
     afState.platform = p;
     afState.domain = 'verified';
     afState.orgApprovedOnPlatform = true;
@@ -1198,6 +1220,7 @@
   }
 
   function afShowScreen(name) {
+    afClearSigninLink();
     ['signup', 'signin', 'reset', 'result', 'verify'].forEach(function (n) {
       var el = document.getElementById('af-screen-' + n);
       if (el) el.classList.toggle('hidden', n !== name);
@@ -1223,6 +1246,7 @@
     if (name !== 'result') {
       document.querySelector('.af-card').classList.remove('af-card-wide');
     }
+    afRenderSigninLanding();
     window.scrollTo(0, 0);
   }
 
@@ -1406,7 +1430,8 @@
       // already verifies the identity, so only the direct path stops here.
       afPendingResultReason = reason;
       var emailInput = document.getElementById('af-section3-email');
-      afShowVerify(emailInput && emailInput.value ? emailInput.value : null);
+      afState.signupEmail = emailInput && emailInput.value ? emailInput.value : '';
+      afShowVerify(afState.signupEmail || null);
     } else {
       afShowResult(reason);
     }
@@ -1422,6 +1447,10 @@
 
   // Email verification support states — "Atoms sign in/up/sso.pdf" §4 calls out
   // Successful verification, Resend, Expired link, and Already verified.
+  // "Resend verification email" is the screen's one primary CTA; "I've verified —
+  // Continue" is the prototype's stand-in for clicking the link in the email, so
+  // it's a quiet text button — except in the "already verified" state, where
+  // there's nothing to resend and Continue becomes the primary action.
   function afSetVerifyState(state) {
     afVerifyState = state;
     var icon = document.getElementById('af-verify-icon');
@@ -1429,28 +1458,33 @@
     var body = document.getElementById('af-verify-body');
     var cta = document.getElementById('af-verify-cta');
     var resendRow = document.getElementById('af-verify-resend-row');
+    var continueRow = document.getElementById('af-verify-continue-row');
+    var emailNow = document.getElementById('af-verify-email') ? document.getElementById('af-verify-email').textContent : 'you@company.com';
+
+    cta.className = state === 'verified' ? 'af-submit' : 'af-result-ghost-btn';
+    continueRow.style.marginTop = state === 'verified' ? '0' : '';
 
     if (state === 'expired') {
       icon.className = 'af-result-icon af-danger';
       icon.innerHTML = AF_ICON_WARNING;
       title.textContent = 'This link has expired';
       body.textContent = 'Verification links expire after 24 hours for security. Request a new one below.';
-      cta.classList.add('hidden');
       resendRow.classList.remove('hidden');
+      continueRow.classList.add('hidden');
     } else if (state === 'verified') {
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = 'Your email is already verified';
       body.textContent = 'You can continue setting up your account.';
-      cta.classList.remove('hidden');
       resendRow.classList.add('hidden');
+      continueRow.classList.remove('hidden');
     } else {
       icon.className = 'af-result-icon af-pending';
       icon.innerHTML = AF_ICON_MAIL;
       title.textContent = 'Verify your email';
-      body.innerHTML = 'We sent a verification link to <b id="af-verify-email">' + (document.getElementById('af-verify-email') ? document.getElementById('af-verify-email').textContent : 'you@company.com') + '</b>.';
-      cta.classList.remove('hidden');
+      body.innerHTML = "We've sent a verification link to <b id=\"af-verify-email\">" + emailNow + '</b>. Click the link in that email to continue.';
       resendRow.classList.remove('hidden');
+      continueRow.classList.remove('hidden');
     }
 
     ['pending', 'expired', 'verified'].forEach(function (s) {
@@ -1468,19 +1502,83 @@
     afShowVerify(null);
   }
 
+  // Simulates clicking the link in the verification email: it opens the sign-in
+  // page (email prefilled), which for a verified domain also carries the org
+  // details and — when the org isn't on this platform yet — the cross-platform
+  // message. New and public domains get the plain sign-in page. Signing in then
+  // resolves to the dashboard or the pending-approval screen (afSubmitSignin).
   function afVerifyEmailContinue() {
-    afShowResult(afPendingResultReason || afComputeSignupReason());
+    var reason = afPendingResultReason || afComputeSignupReason();
     afPendingResultReason = null;
+    afOpenSigninFromLink('verify', reason);
   }
 
+  var afResendTimer = null;
   function afResendVerification() {
     var btn = document.getElementById('af-resend-btn');
+    if (btn.disabled) return;
+    btn.disabled = true;
     btn.textContent = 'Verification email resent ✓';
-    setTimeout(function () { btn.textContent = 'Resend verification email'; }, 2500);
+    clearTimeout(afResendTimer);
+    afResendTimer = setTimeout(function () {
+      btn.textContent = 'Resend verification email';
+      btn.disabled = false;
+    }, 2500);
+  }
+
+  // mode: 'verify' (link in the verification email) or 'approved' (link in the
+  // admin-approval email — same sign-in page, plus the illustration).
+  function afOpenSigninFromLink(mode, reason) {
+    var meta = AF_PLATFORM[afState.platform];
+    afShowScreen('signin');
+    afState.signinLink = { mode: mode, reason: reason || null, domain: afState.domain };
+    document.getElementById('af-signin-email').value = afState.signupEmail || meta.emailByDomain[afState.domain] || '';
+    document.getElementById('af-signin-password').value = '';
+    afRenderSigninLanding();
+  }
+
+  function afClearSigninLink() {
+    if (!afState.signinLink) return;
+    afState.signinLink = null;
+    document.getElementById('af-signin-email').value = '';
+    document.getElementById('af-signin-password').value = '';
+    afRenderSigninLanding();
+  }
+
+  function afRenderSigninLanding() {
+    var link = afState.signinLink;
+    var meta = AF_PLATFORM[afState.platform];
+    var approved = !!link && link.mode === 'approved';
+    var showOrg = !!link && (approved || link.domain === 'verified');
+    document.getElementById('af-signin-hero').classList.toggle('hidden', !approved);
+    document.getElementById('af-signin-link-info').classList.toggle('hidden', !showOrg);
+    if (!showOrg) return;
+
+    document.getElementById('af-signin-org-label').textContent = meta.companyLabel;
+    document.getElementById('af-signin-link-company').textContent = meta.company;
+    var banner = document.getElementById('af-signin-link-banner');
+    var kind = 'success', html;
+    if (approved) {
+      html = "<b>You're approved!</b> " + meta.company + ' has been approved for ' + meta.accountNoun + '. ' + meta.approvedSubtext;
+    } else if (link.reason === 'pending-platform') {
+      kind = 'info';
+      html = '<b>Cross-platform access</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace after you sign in.";
+    } else {
+      html = 'Your email is verified and your company is already verified. Sign in to continue to your workspace.';
+    }
+    banner.className = 'af-info-banner ' + (kind === 'success' ? 'is-success' : 'is-info');
+    banner.innerHTML = AF_BANNER_ICON[kind] + '<span>' + html + '</span>';
   }
 
   function afSubmitSignin(e) {
     if (e) e.preventDefault();
+    var link = afState.signinLink;
+    if (link) {
+      var outcome = link.mode === 'approved' ? 'activated' : link.reason;
+      afClearSigninLink();
+      afShowResult(outcome);
+      return;
+    }
     afShowResult(afState.hasMembership ? 'signin' : 'signin-no-membership');
   }
 
@@ -1626,11 +1724,8 @@
     var note = document.getElementById('af-result-note');
     var bullets = document.getElementById('af-result-bullets');
     var cta = document.getElementById('af-result-cta');
-    var subtext = document.getElementById('af-result-subtext');
     bullets.classList.add('hidden');
     bullets.innerHTML = '';
-    subtext.classList.add('hidden');
-    subtext.textContent = '';
     note.classList.remove('hidden');
     note.innerHTML = '';
 
@@ -1675,22 +1770,6 @@
           meta.pendingBullets.map(function (b) { return '<li>' + b + '</li>'; }).join('');
         bullets.classList.remove('hidden');
       }
-    } else if (reason === 'approved') {
-      // Phase 1 - User Management.pdf §30.1 — the follow-up to the 'pending' /
-      // 'pending-platform' branches above, reached once an admin approves the
-      // application (in the real product, via the link in the approval email;
-      // here, via the devbar). meta.approvedSubtext was already defined per
-      // platform but previously never rendered — this is what it's for.
-      icon.className = 'af-result-icon af-success';
-      icon.innerHTML = AF_ICON_CHECK;
-      title.textContent = "You're approved!";
-      body.textContent = meta.company + ' has been verified and your ' + meta.accountNoun + ' workspace is now active.';
-      note.classList.add('hidden');
-      subtext.textContent = meta.approvedSubtext;
-      subtext.classList.remove('hidden');
-      cta.classList.remove('hidden');
-      cta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';
-      cta.onclick = function () { afSetDomain('verified'); afSetOrgApprovedOnPlatform(true); afShowResult('activated'); };
     } else if (reason === 'rejected') {
       // Phase 1 - User Management.pdf §30.5 — reached after an admin rejects the
       // application; keep messaging neutral, never expose internal review reasons.
@@ -1714,7 +1793,7 @@
       icon.innerHTML = AF_ICON_CLOCK;
       title.textContent = 'Requesting your ' + meta.accountNoun + ' access';
       body.textContent = "We found your existing Scinode account — no need to sign up again.";
-      afSetResultNote('info', "A shared Scinode account means <b>shared identity, not automatic platform access</b>. We're setting up your " + meta.accountNoun + ' membership now.');
+      afSetResultNote('info', "<b>Cross-platform access</b> — a shared Scinode account means <b>shared identity, not automatic platform access</b>. An admin will review and approve your " + meta.accountNoun + ' membership before you can continue.');
       cta.classList.add('hidden');
     }
 

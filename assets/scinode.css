@@ -2040,9 +2040,9 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-field-locked-val{font-family:var(--font);font-size:13.5px;color:var(--text-1);font-weight:500;display:flex;align-items:center;gap:6px;min-width:0;}
 .af-field-locked-val span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .af-lock-icon{color:var(--text-3);flex-shrink:0;}
-/* Locked field for a verified company: sage fill (navy text per the design system's
-   text-on-sage pairing) with a solid green check badge on the right. */
-.af-field-locked.is-verified{background:var(--sage);border-color:rgba(3,50,67,.14);}
+/* Locked field for a verified company: sage outline on the lightest sage tint,
+   navy text, and a solid green check badge on the right. */
+.af-field-locked.is-verified{background:rgba(150,221,165,.15);border:1px solid var(--sage);}
 .af-field-locked.is-verified .af-field-locked-val{color:var(--navy-500);}
 .af-field-locked.is-verified .af-lock-icon{color:var(--navy-500);}
 .af-field-locked.is-verified .af-verified-check{color:var(--status-success-fg);flex-shrink:0;display:block;}

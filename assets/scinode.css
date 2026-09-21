@@ -2028,6 +2028,13 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-input:focus,.af-select:focus{outline:none;border:1.5px solid var(--teal-500);box-shadow:0 0 0 3px var(--teal-50);}
 .af-input::placeholder{color:var(--text-3);}
 .af-field-hint{font-family:var(--font);font-size:11px;color:var(--text-3);margin-top:5px;}
+/* Inline status banner under a form field — success (green + check) for a
+   verified company, info (blue + i) for new / public domains. Uses the
+   semantic status tokens, not a brand accent. */
+.af-info-banner{display:flex;align-items:flex-start;gap:8px;border-radius:var(--radius-md);padding:10px 12px;margin-top:8px;font-family:var(--font);font-size:12px;line-height:1.5;text-align:left;}
+.af-info-banner svg{flex-shrink:0;margin-top:2px;}
+.af-info-banner.is-success{background:var(--status-success-bg);color:var(--status-success-fg);}
+.af-info-banner.is-info{background:var(--status-info-bg);color:var(--status-info-fg);}
 
 .af-field-locked{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;background:var(--page-bg);}
 .af-field-locked-val{font-family:var(--font);font-size:13.5px;color:var(--text-1);font-weight:500;display:flex;align-items:center;gap:6px;min-width:0;}

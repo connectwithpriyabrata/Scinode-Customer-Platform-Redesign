@@ -266,7 +266,10 @@
 
             <div class="af-field" id="iv-password-wrap">
               <label><span id="iv-password-label">Create Password</span> <span class="af-req">*</span></label>
-              <input class="af-input" type="password" id="iv-password-input" placeholder="Create a password" minlength="8" required oninput="ivUpdateSignupPasswordCriteria()">
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="iv-password-input" placeholder="Create a password" minlength="8" required oninput="ivUpdateSignupPasswordCriteria()">
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-password-input', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
               <div class="af-field-hint" id="iv-password-hint">Minimum 8 characters.</div>
               <div class="af-criteria-box hidden" id="iv-signup-criteria-box">
                 <div class="af-criteria-list">
@@ -285,7 +288,10 @@
             <!-- Confirm Password — new users only -->
             <div class="af-field hidden" id="iv-password-confirm-wrap">
               <label>Confirm Password <span class="af-req">*</span></label>
-              <input class="af-input" type="password" id="iv-password-confirm-input" placeholder="Re-enter password" minlength="8" required>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="iv-password-confirm-input" placeholder="Re-enter password" minlength="8" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-password-confirm-input', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
               <div class="af-field-error hidden" id="iv-password-match-error">Passwords don't match.</div>
             </div>
 

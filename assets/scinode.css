@@ -2040,6 +2040,9 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-field-locked-val{font-family:var(--font);font-size:13.5px;color:var(--text-1);font-weight:500;display:flex;align-items:center;gap:6px;min-width:0;}
 .af-field-locked-val span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .af-lock-icon{color:var(--text-3);flex-shrink:0;}
+/* Locked field for a verified company: success-status green with a check on the right. */
+.af-field-locked.is-verified{background:var(--status-success-bg);border-color:rgba(45,122,58,.22);}
+.af-field-locked.is-verified .af-verified-check{color:var(--status-success-fg);flex-shrink:0;display:block;}
 .af-verified-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--font);font-size:11px;font-weight:600;color:var(--teal-600);background:var(--teal-50);padding:2px 8px;border-radius:var(--radius-full);white-space:nowrap;flex-shrink:0;}
 
 .af-phone-row{display:flex;gap:8px;}

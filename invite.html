@@ -51,6 +51,12 @@
       <button id="iv-dev-org-firstentry" onclick="ivSetOrgApprovedOnPlatform(false)">First Entry</button>
     </div>
     <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Account</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-account-active" class="active" onclick="ivSetAccountPending(false)">Active</button>
+      <button id="iv-dev-account-pending" onclick="ivSetAccountPending(true)">Pending approval</button>
+    </div>
+    <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">SSO Display</span>
     <div class="af-devbar-group">
       <button id="iv-dev-sso-with" class="active" onclick="ivSetSSODisplay('with')">With SSO</button>
@@ -209,7 +215,7 @@
           </div>
         </div>
 
-        <button type="button" class="af-submit" onclick="ivShowScreen('auth')">Accept Invitation &amp; Create Account →</button>
+        <button type="button" class="af-submit" onclick="ivAccept()">Accept Invitation &amp; Create Account →</button>
         <div class="iv-invite-caption">Takes about ~60 seconds to set a password and activate your profile.</div>
       </div>
 
@@ -442,7 +448,7 @@
         <div class="af-success-hero af-signin-hero hidden" id="iv-signin-hero">
           <img src="assets/auth-visuals/success-illustration.svg" alt="Illustration of a chemist at a lab bench with a verified-supplier seal">
         </div>
-        <div class="af-h1">Sign in to accept</div>
+        <div class="af-h1" id="iv-signin-h1">Sign in to accept</div>
         <div class="af-sub" id="iv-signin-sub">Sign in to join Acme Manufacturing on ATOMS.</div>
         <form onsubmit="ivSubmitSigninLink(event)">
           <div class="af-field">
@@ -482,6 +488,7 @@
           <div class="af-result-body" id="iv-pending-body"></div>
           <div class="af-info-banner is-info" role="status" id="iv-pending-note"></div>
           <ul class="af-result-bullets" id="iv-pending-bullets"></ul>
+          <button type="button" class="af-submit hidden" id="iv-pending-cta"></button>
         </div>
         <div class="af-footnote" style="text-align:center;"><button type="button" onclick="ivShowScreen('landing')">Back to Invitation</button></div>
       </div>
@@ -685,7 +692,7 @@
 
   // ── Invitation flow state — see IDENTITY_ACCESS_SPEC.md screens #17–19
   // and "Phase 1 - User Management.pdf" §20–25, §35.
-  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, ssoDisplay: 'with', step: 1 };
+  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, pendingAccount: false, ssoDisplay: 'with', step: 1 };
   var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
   // Shared Navy/Sage avatar palette for both the landing card's teammate
@@ -849,6 +856,9 @@
     ivState.source = 'direct';
     ivState.existing = false;
     ivState.orgApprovedOnPlatform = true;
+    ivState.pendingAccount = false;
+    document.getElementById('iv-dev-account-active').classList.add('active');
+    document.getElementById('iv-dev-account-pending').classList.remove('active');
     document.getElementById('iv-dev-org-approved').classList.add('active');
     document.getElementById('iv-dev-org-firstentry').classList.remove('active');
     ivShowScreen('landing');
@@ -871,6 +881,17 @@
     ivState.orgApprovedOnPlatform = val;
     document.getElementById('iv-dev-org-approved').classList.toggle('active', val);
     document.getElementById('iv-dev-org-firstentry').classList.toggle('active', !val);
+    if (val) ivSetAccountPending(false);
+  }
+
+  // The invitee has already signed up but is waiting on the admin (24-48h), so
+  // trying to sign in / accept again shows the pending message instead. Only
+  // makes sense while the org isn't approved on this platform yet.
+  function ivSetAccountPending(val) {
+    ivState.pendingAccount = val;
+    document.getElementById('iv-dev-account-active').classList.toggle('active', !val);
+    document.getElementById('iv-dev-account-pending').classList.toggle('active', val);
+    if (val && ivState.orgApprovedOnPlatform) ivSetOrgApprovedOnPlatform(false);
   }
 
   // Demo-only toggle: lets reviewers show the Auth screen with the SSO options
@@ -1243,9 +1264,21 @@
 
   function ivFinishAccept() {
     if (!ivState.orgApprovedOnPlatform) {
-      ivShowPending();
+      // Already applied and still waiting -> the pending message; otherwise this
+      // is the first time through, so it leads with "Your email is verified".
+      ivShowPending(ivState.pendingAccount ? 'signin' : 'verify');
     } else {
       ivShowConfirmation();
+    }
+  }
+
+  // Landing CTA. An invitee who already signed up and is still pending sees the
+  // pending message instead of the sign-up form.
+  function ivAccept() {
+    if (ivState.pendingAccount && !ivState.orgApprovedOnPlatform) {
+      ivShowPending('signin');
+    } else {
+      ivShowScreen('auth');
     }
   }
 
@@ -1268,21 +1301,46 @@
   // ecosystem, but this is its first invite onto the current platform — see
   // ivSetOrgApprovedOnPlatform(). Mirrors the copy pattern of auth.html's
   // 'pending-platform' result branch.
-  function ivShowPending() {
+  // Shared copy for every "waiting on the admin" screen (spec §30 pending messaging).
+  var IV_PENDING_MESSAGE = 'Scinode is an invite-only platform. Your account is pending admin approval. You will be notified in your registered email ID once access is approved.';
+
+  // via: 'verify' (arriving from the verification email — leads with "Your email is
+  // verified") or 'signin' (the invitee tried to sign in / accept again while
+  // still pending).
+  function ivShowPending(via) {
     var meta = IV_PLATFORM[ivState.platform];
     var firstName = meta.inviteeName.split(' ')[0];
+    var fromSignin = via === 'signin';
+    if (!fromSignin) ivSetAccountPending(true);
     var icon = document.getElementById('iv-pending-icon');
-    icon.className = 'af-result-icon af-pending';
-    icon.innerHTML = IV_ICON_CLOCK;
-    document.getElementById('iv-pending-title').textContent = 'Requesting your ' + meta.accountNoun + ' access';
-    document.getElementById('iv-pending-body').textContent = meta.company + " is already a verified Scinode organization, but this is its first invitation onto " + meta.accountNoun + '.';
-    ivSetPendingNote('info', '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace before " + firstName + ' is activated.');
+    icon.className = 'af-result-icon ' + (fromSignin ? 'af-pending' : 'af-success');
+    icon.innerHTML = fromSignin ? IV_ICON_CLOCK : IV_ICON_CHECK;
+    document.getElementById('iv-pending-title').textContent = fromSignin ? 'Your account is pending approval' : 'Your email is verified';
+    document.getElementById('iv-pending-body').textContent = IV_PENDING_MESSAGE;
+    ivSetPendingNote('info', '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + ' yet. An admin will review and approve this workspace before ' + firstName + ' is activated. Approval usually takes 24–48 hours.');
     document.getElementById('iv-pending-bullets').innerHTML =
-      '<li>You\'ll receive an email the moment ' + meta.company + ' is approved for ' + meta.accountNoun + '.</li>' +
       '<li>' + meta.invitedBy + ' and the rest of your team have already set up your role &mdash; no further action needed from you.</li>';
+    document.getElementById('iv-pending-cta').classList.add('hidden');
     ivShowScreen('pending');
     document.getElementById('iv-dev-screen-pending').classList.add('active');
     document.getElementById('iv-dev-screen-approved').classList.remove('active');
+  }
+
+  // Verified email, org already on this platform: no admin step, so offer sign-in.
+  function ivShowEmailVerified() {
+    var meta = IV_PLATFORM[ivState.platform];
+    var icon = document.getElementById('iv-pending-icon');
+    icon.className = 'af-result-icon af-success';
+    icon.innerHTML = IV_ICON_CHECK;
+    document.getElementById('iv-pending-title').textContent = 'Your email is verified';
+    document.getElementById('iv-pending-body').textContent = meta.company + ' is already verified, so you can sign in to accept your invitation now.';
+    ivSetPendingNote('success', 'Your company is already verified — no admin approval needed.');
+    document.getElementById('iv-pending-bullets').innerHTML = '';
+    var cta = document.getElementById('iv-pending-cta');
+    cta.classList.remove('hidden');
+    cta.textContent = 'Sign in & accept invitation →';
+    cta.onclick = function () { ivOpenSigninFromLink('verify'); };
+    ivShowScreen('pending');
   }
 
   var ivLink = null;
@@ -1307,39 +1365,43 @@
     }, 2500);
   }
 
-  // Stands in for clicking the link in the verification email.
+  // Stands in for clicking the link in the verification email: opens a "Your
+  // email is verified" screen — with the pending-approval message if the org
+  // isn't on this platform yet, or a sign-in offer if it is.
   function ivVerifyContinue() {
-    ivOpenSigninFromLink('verify');
+    if (ivState.orgApprovedOnPlatform) {
+      ivShowEmailVerified();
+    } else {
+      ivShowPending('verify');
+    }
   }
 
-  // mode: 'verify' (link in the verification email) or 'approved' (link in the
-  // admin-approval email — same sign-in page, plus the illustration). What the
-  // page says depends on whether the org is already on this platform.
+  // mode: 'verify' (from "Your email is verified" — the org is already on this
+  // platform, no approval needed) or 'approved' (link in the admin-approval
+  // email — same sign-in page, plus the illustration and "You're all set").
   function ivOpenSigninFromLink(mode) {
     var meta = IV_PLATFORM[ivState.platform];
+    var firstName = meta.inviteeName.split(' ')[0];
     ivShowScreen('signin');
-    var firstEntry = mode === 'verify' && !ivState.orgApprovedOnPlatform;
     ivLink = { mode: mode };
+    var approved = mode === 'approved';
 
-    document.getElementById('iv-signin-hero').classList.toggle('hidden', mode !== 'approved');
-    document.getElementById('iv-signin-sub').textContent = 'Sign in to join ' + meta.company + ' on ' + meta.accountNoun + '.';
+    document.getElementById('iv-signin-hero').classList.toggle('hidden', !approved);
+    document.getElementById('iv-signin-h1').textContent = approved ? "You're all set, " + firstName + '!' : 'Sign in to accept';
+    document.getElementById('iv-signin-sub').textContent = approved
+      ? 'Your account has been approved. Sign in to accept your invitation.'
+      : 'Sign in to join ' + meta.company + ' on ' + meta.accountNoun + '.';
     document.getElementById('iv-signin-email-value').textContent = meta.inviteeEmail;
     document.getElementById('iv-signin-password').value = '';
 
-    var kind = 'success', html;
-    if (mode === 'approved') {
-      html = "<b>You're approved!</b> " + meta.company + ' has been approved for ' + meta.accountNoun + '. ' + meta.approvedSubtext;
-    } else if (firstEntry) {
-      kind = 'info';
-      html = '<b>Cross-platform access</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + " yet. An admin will review and approve this workspace after you sign in.";
-    } else {
-      html = 'Your email is verified and ' + meta.company + ' is already verified. Sign in to accept your invitation.';
-    }
+    var html = approved
+      ? '<b>' + meta.company + '</b> has been approved for ' + meta.accountNoun + '. ' + meta.approvedSubtext
+      : 'Your email is verified and ' + meta.company + ' is already verified. Sign in to accept your invitation.';
     var banner = document.getElementById('iv-signin-banner');
-    banner.className = 'af-info-banner ' + (kind === 'success' ? 'is-success' : 'is-info');
-    banner.innerHTML = IV_BANNER_ICON[kind] + '<span>' + html + '</span>';
+    banner.className = 'af-info-banner is-success';
+    banner.innerHTML = IV_BANNER_ICON.success + '<span>' + html + '</span>';
 
-    document.getElementById('iv-dev-screen-approved').classList.toggle('active', mode === 'approved');
+    document.getElementById('iv-dev-screen-approved').classList.toggle('active', approved);
   }
 
   function ivSubmitSigninLink(e) {

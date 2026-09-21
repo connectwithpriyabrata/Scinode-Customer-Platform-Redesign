@@ -340,7 +340,10 @@
                 <option>Metallurgy Chemicals</option>
                 <option>Oleochemicals</option>
                 <option>Pharmaceutical</option>
+                <option value="__other__">Others</option>
               </select>
+              <input class="af-input af-industry-other hidden" type="text" id="af-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="afOtherIndustryKey(event)">
+              <div class="af-field-hint hidden" id="af-industries-other-hint">Press Enter to add it to your industries.</div>
               <div class="af-chip-row" id="af-industries-chips"></div>
               <div class="af-field-error hidden" id="af-industries-error">Select at least one industry.</div>
             </div>
@@ -921,6 +924,7 @@
     afState.step = 1;
     afIndustries = [];
     afRenderIndustryChips();
+    afHideOtherIndustry();
     document.getElementById('af-profiletype-input').value = '';
     document.getElementById('af-profiletype-hint').textContent = '';
     document.getElementById('af-describe-input').value = '';
@@ -980,23 +984,71 @@
   function afAddIndustry() {
     var select = document.getElementById('af-industries-select');
     var val = select.value;
-    if (!val || afIndustries.indexOf(val) !== -1) return;
-    afIndustries.push(val);
-    afRenderIndustryChips();
     select.value = '';
+    if (val === '__other__') {
+      afShowOtherIndustry();
+      return;
+    }
+    afPushIndustry(val);
   }
 
-  function afRemoveIndustry(industry) {
-    afIndustries = afIndustries.filter(function (i) { return i !== industry; });
+  // Adds an industry chip (deduped, case-insensitive). Shared by the dropdown
+  // options and the free-text "Others" entry so both behave identically.
+  function afPushIndustry(name) {
+    if (!name) return;
+    var lower = name.toLowerCase();
+    if (afIndustries.some(function (i) { return i.toLowerCase() === lower; })) return;
+    afIndustries.push(name);
     afRenderIndustryChips();
+  }
+
+  function afShowOtherIndustry() {
+    var input = document.getElementById('af-industries-other');
+    input.classList.remove('hidden');
+    document.getElementById('af-industries-other-hint').classList.remove('hidden');
+    input.focus();
+  }
+
+  function afHideOtherIndustry() {
+    var input = document.getElementById('af-industries-other');
+    if (!input) return;
+    input.value = '';
+    input.classList.add('hidden');
+    document.getElementById('af-industries-other-hint').classList.add('hidden');
+  }
+
+  // Enter adds the typed industry (and must not submit the surrounding form);
+  // Escape cancels.
+  function afOtherIndustryKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var name = e.target.value.replace(/\s+/g, ' ').trim();
+      if (!name) return;
+      afPushIndustry(name);
+      afHideOtherIndustry();
+      document.getElementById('af-industries-select').focus();
+    } else if (e.key === 'Escape') {
+      afHideOtherIndustry();
+      document.getElementById('af-industries-select').focus();
+    }
+  }
+
+  function afRemoveIndustryAt(index) {
+    afIndustries.splice(index, 1);
+    afRenderIndustryChips();
+  }
+
+  function afEscapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function afRenderIndustryChips() {
     var row = document.getElementById('af-industries-chips');
     if (!row) return;
-    row.innerHTML = afIndustries.map(function (industry) {
-      return '<span class="af-chip">' + industry +
-        '<button type="button" onclick="afRemoveIndustry(\'' + industry.replace(/'/g, "\\'") + '\')" aria-label="Remove ' + industry + '">' +
+    row.innerHTML = afIndustries.map(function (industry, i) {
+      var safe = afEscapeHtml(industry);
+      return '<span class="af-chip">' + safe +
+        '<button type="button" onclick="afRemoveIndustryAt(' + i + ')" aria-label="Remove ' + safe + '">' +
         '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
     }).join('');
     var error = document.getElementById('af-industries-error');

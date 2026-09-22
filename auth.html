@@ -43,6 +43,7 @@
     <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
     <button id="af-dev-screen-pending-platform" onclick="afShowResult('pending-platform')">Cross-Platform Pending</button>
     <button id="af-dev-screen-approved" onclick="afOpenSigninFromLink('approved')">Just Approved</button>
+    <button id="af-dev-screen-verified" onclick="afOpenSigninFromLink('verify')">Just Verified</button>
   </div>
   <div class="af-devbar-sep"></div>
   <span class="af-devbar-label">SSO Display</span>
@@ -1558,7 +1559,15 @@
   function afVerifyEmailContinue() {
     var reason = afPendingResultReason || afComputeSignupReason();
     afPendingResultReason = null;
-    afShowResult(reason === 'activated' ? 'email-verified' : reason);
+    if (reason === 'activated') {
+      // Verified domain + same platform, already approved: no separate
+      // "your email is verified" stop — go straight to the same landing the
+      // admin-approval email link uses (mode 'verify' swaps in its own
+      // heading + info message, see afRenderSigninLanding).
+      afOpenSigninFromLink('verify');
+    } else {
+      afShowResult(reason);
+    }
   }
 
   var afResendTimer = null;
@@ -1574,19 +1583,22 @@
     }, 2500);
   }
 
-  // mode: 'verify' (from "Your email is verified" — same platform, no approval
-  // needed) or 'approved' (link in the admin-approval email — same sign-in page,
-  // plus the illustration and "You're all set" heading).
+  // mode: 'verify' (verified domain + same platform, already approved — "I've
+  // verified — Continue" on the Verify Email screen lands here directly, no
+  // separate approval gate) or 'approved' (link in the admin-approval email).
+  // Both land on the same rich confirmation screen — illustration, colleagues
+  // card, Recommended First Steps on the brand panel — and differ only in the
+  // heading and the info message below the company name (afRenderSigninLanding).
   function afOpenSigninFromLink(mode) {
     var meta = AF_PLATFORM[afState.platform];
     afShowScreen('signin');
     afState.signinLink = { mode: mode };
     afResetSigninForm();
     document.getElementById('af-signin-email').value = afState.signupEmail || meta.emailByDomain[afState.domain] || '';
-    // Approved: the confirmation content (company details, recommended steps)
-    // is embedded right on this screen, so the card widens to match — same
+    // The confirmation content (colleagues card, recommended steps) is
+    // embedded right on this screen, so the card widens to match — same
     // width the dashboard uses for the identical cards.
-    document.querySelector('.af-card').classList.toggle('af-card-wide', mode === 'approved');
+    document.querySelector('.af-card').classList.toggle('af-card-wide', mode === 'approved' || mode === 'verify');
     afRenderSigninLanding();
   }
 
@@ -1613,21 +1625,28 @@
     var link = afState.signinLink;
     var meta = AF_PLATFORM[afState.platform];
     var approved = !!link && link.mode === 'approved';
-    document.getElementById('af-signin-hero').classList.toggle('hidden', !approved);
+    var verified = !!link && link.mode === 'verify';
+    // 'verify' and 'approved' share the same rich layout (illustration,
+    // colleagues card, Recommended First Steps on the brand panel) — only
+    // the heading and the info banner below the company name differ.
+    var rich = approved || verified;
+    document.getElementById('af-signin-hero').classList.toggle('hidden', !rich);
     document.getElementById('af-signin-link-info').classList.toggle('hidden', !link);
-    document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !approved);
+    document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !rich);
     // Recommended First Steps moves to the brand panel for this screen only —
     // swap which of the two .af-brand-mid blocks is showing.
-    document.getElementById('af-brand-mid-default').classList.toggle('hidden', approved);
-    document.getElementById('af-brand-mid-approved').classList.toggle('hidden', !approved);
-    if (approved) {
+    document.getElementById('af-brand-mid-default').classList.toggle('hidden', rich);
+    document.getElementById('af-brand-mid-approved').classList.toggle('hidden', !rich);
+    if (rich) {
       afRenderColleagues('af-signin-success', meta);
       afRenderChecklist('af-brand-steps', meta);
     }
     document.getElementById('af-signin-h1').textContent = approved
       ? meta.successData.firstName + ', your account has been approved.'
-      : 'Sign in';
-    document.getElementById('af-signin-sub').innerHTML = approved
+      : verified
+        ? meta.successData.firstName + ', your account has been verified.'
+        : 'Sign in';
+    document.getElementById('af-signin-sub').innerHTML = rich
       ? 'Welcome to <b>' + meta.company + "</b>'s space on Scinode. Your team and workspace are ready. Sign in to get started."
       : 'Access your ' + meta.accountNoun + ' workspace';
     if (!link) return;
@@ -1645,8 +1664,8 @@
   function afSubmitSignin(e) {
     if (e) e.preventDefault();
     var link = afState.signinLink;
-    if (link && link.mode === 'approved') {
-      // Everything (headline, company details, recommended steps) is already
+    if (link && (link.mode === 'approved' || link.mode === 'verify')) {
+      // Everything (headline, colleagues card, recommended steps) is already
       // shown on this screen — there's no separate destination to send the
       // user to, so this just confirms inline instead of adding a screen back.
       afState.pendingAccount = null;
@@ -1655,11 +1674,6 @@
       document.getElementById('af-signin-password').disabled = true;
       submit.disabled = true;
       submit.textContent = 'Signed in ✓';
-      return;
-    }
-    if (link) {
-      afClearSigninLink();
-      afShowResult('activated');
       return;
     }
     // Still waiting on the admin (24-48h): signing in shows the pending message.
@@ -1856,17 +1870,6 @@
       // Rich post-signup success screen — same template for all 4 platforms,
       // content driven entirely by meta.successData (see AF_PLATFORM above).
       afRenderSuccess(meta);
-    } else if (reason === 'email-verified') {
-      // Verified domain on a platform the org is already on: no admin approval,
-      // so once the email is verified the user can sign in straight away.
-      icon.className = 'af-result-icon af-success';
-      icon.innerHTML = AF_ICON_CHECK;
-      title.textContent = 'Your email is verified';
-      body.textContent = meta.company + ' is already verified, so you can sign in to ' + meta.accountNoun + ' now.';
-      afSetResultNote('success', 'Your company is already verified — no admin approval needed.');
-      cta.classList.remove('hidden');
-      cta.textContent = 'Sign in to ' + meta.accountNoun + ' →';
-      cta.onclick = function () { afOpenSigninFromLink('verify'); };
     } else if (reason === 'pending' || reason === 'pending-platform') {
       // APPROVAL_PENDING: a new/public domain, or a verified org's first signup
       // on this platform (cross-platform expansion). Always the same screen

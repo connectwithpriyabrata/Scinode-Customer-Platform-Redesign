@@ -2277,7 +2277,10 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-pending-icon-wrap{position:relative;display:inline-flex;flex-shrink:0;}
 .af-pending-icon-wrap .af-result-icon{margin-bottom:0;}
 .af-pending-icon-badge{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--status-success-fg);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;color:#fff;}
-#af-pending-body{margin-bottom:0;}
+/* .af-result-body's shared max-width:360px (sized for the old centered,
+   narrower templates) leaves this one wrapping early instead of using the
+   full width of its column next to the icon. */
+#af-pending-body{max-width:none;margin-bottom:0;}
 
 /* Rounded square instead of the base .af-result-icon circle, plus a slowly
    ticking clock hand (spins in place around the dial's true center via

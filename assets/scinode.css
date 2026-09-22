@@ -2298,31 +2298,65 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 #af-pending-banner{margin-bottom:20px;}
 
 .af-lifecycle-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;}
-.af-lifecycle-header-title{display:flex;align-items:center;gap:8px;font-family:var(--font-heading);font-size:15px;font-weight:700;color:var(--text-1);}
+.af-lifecycle-header-title{display:flex;align-items:center;flex-wrap:wrap;gap:8px;row-gap:2px;font-family:var(--font-heading);font-size:15px;font-weight:700;color:var(--text-1);}
 .af-lifecycle-header-title svg{color:var(--teal-600);flex-shrink:0;}
-.af-lifecycle-refresh{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;}
+.af-lifecycle-hint{font-family:var(--font);font-size:10.5px;font-weight:400;color:var(--text-3);white-space:nowrap;}
+.af-lifecycle-refresh{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;}
 .af-lifecycle-refresh:hover{text-decoration:underline;}
 .af-lifecycle-refresh:disabled{opacity:.6;cursor:default;text-decoration:none;}
 .af-lifecycle-refresh svg.is-spinning{animation:af-spin .7s linear infinite;}
 @keyframes af-spin{to{transform:rotate(360deg);}}
 
-.af-lifecycle-steps{display:flex;flex-direction:column;}
-.af-lifecycle-step{display:flex;gap:14px;}
-.af-lifecycle-step-rail{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
-.af-lifecycle-step-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;}
-.af-lifecycle-step.is-done .af-lifecycle-step-icon{background:var(--status-success-fg);}
-.af-lifecycle-step.is-active .af-lifecycle-step-icon{background:var(--status-warning-fg);}
-.af-lifecycle-step.is-locked .af-lifecycle-step-icon{background:var(--border-h);color:var(--text-3);}
-.af-lifecycle-step-line{width:2px;flex:1;background:var(--border);margin:4px 0;min-height:24px;}
-.af-lifecycle-step:last-child .af-lifecycle-step-line{display:none;}
-.af-lifecycle-step-body{flex:1;min-width:0;padding-bottom:22px;}
-.af-lifecycle-step:last-child .af-lifecycle-step-body{padding-bottom:0;}
-.af-lifecycle-step-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.af-lifecycle-step-title{font-family:var(--font);font-size:13.5px;font-weight:600;color:var(--text-1);}
-.af-lifecycle-step.is-locked .af-lifecycle-step-title{color:var(--text-3);}
-.af-lifecycle-step.is-active .af-lifecycle-step-title{color:var(--status-warning-fg);}
-.af-lifecycle-step-desc{font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.5;margin-top:4px;}
-.af-lifecycle-step-meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--text-3);margin-top:4px;}
+/* Horizontal Verification Lifecycle stepper — 3 nodes in a row on a
+   connecting track; each step's label carries a small (i) icon and the
+   full detail (status, description, timestamp/SLA) only ever shows in a
+   dark popover on hovering/focusing THAT ICON — not the step/node/badge,
+   which stay inert. Adapted from the React/Tailwind reference the user
+   supplied onto this project's plain HTML/CSS + design tokens. */
+.af-lifecycle-steps{padding-top:4px;}
+.af-hstep-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;position:relative;}
+.af-hstep{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.af-hstep-track{position:absolute;top:16px;left:50%;width:100%;height:2px;background:var(--border);z-index:0;}
+.af-hstep.is-done .af-hstep-track{background:var(--status-success-fg);}
+.af-hstep.is-active .af-hstep-track{background:linear-gradient(to right,var(--status-warning-fg),var(--border));}
+.af-hstep-node{position:relative;z-index:1;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px var(--white);flex-shrink:0;}
+.af-hstep.is-done .af-hstep-node{background:var(--status-success-fg);color:#fff;}
+.af-hstep.is-active .af-hstep-node{background:var(--status-warning-fg);color:#fff;animation:af-hstep-pulse 2s ease-in-out infinite;}
+.af-hstep.is-locked .af-hstep-node{background:var(--page-bg);color:var(--text-3);border:1px solid var(--border-h);}
+@keyframes af-hstep-pulse{0%,100%{box-shadow:0 0 0 4px var(--white);}50%{box-shadow:0 0 0 4px var(--white),0 0 0 7px rgba(138,109,0,.15);}}
+@media (prefers-reduced-motion:reduce){.af-hstep.is-active .af-hstep-node{animation:none;}}
+
+.af-hstep-label{margin-top:8px;display:flex;align-items:center;justify-content:center;gap:3px;max-width:100%;}
+.af-hstep-title{font-family:var(--font);font-size:12px;font-weight:700;color:var(--text-1);}
+.af-hstep.is-active .af-hstep-title{color:var(--status-warning-fg);}
+.af-hstep.is-locked .af-hstep-title{color:var(--text-3);}
+.af-hstep .af-status-badge{margin-top:6px;}
+
+.af-hstep-info-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-3);padding:2px;margin:-2px;border-radius:50%;transition:color .15s,background .15s;}
+.af-hstep-info-wrap:hover,.af-hstep-info-wrap:focus-visible{color:var(--text-1);background:var(--page-bg);outline:none;}
+
+.af-hstep-popover{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:10px;width:230px;background:var(--navy-900);color:#fff;padding:13px 14px;border-radius:var(--radius-md);box-shadow:var(--shadow-hero);text-align:left;z-index:50;cursor:auto;}
+.af-hstep-info-wrap:hover .af-hstep-popover,.af-hstep-info-wrap:focus-visible .af-hstep-popover{display:block;}
+.af-hstep-row .af-hstep:first-child .af-hstep-popover{left:0;transform:none;}
+.af-hstep-row .af-hstep:last-child .af-hstep-popover{left:auto;right:0;transform:none;}
+.af-hstep-popover-head{display:flex;align-items:center;gap:6px;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.14);}
+.af-hstep-popover-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.af-hstep.is-done .af-hstep-popover-dot{background:var(--sage);}
+.af-hstep.is-active .af-hstep-popover-dot{background:var(--gold);}
+.af-hstep.is-locked .af-hstep-popover-dot{background:var(--text-3);}
+.af-hstep-popover-title{flex:1;min-width:0;font-family:var(--font);font-size:12px;font-weight:700;color:#fff;}
+.af-hstep-popover-state{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;padding:2px 6px;border-radius:var(--radius-xs);flex-shrink:0;}
+.af-hstep.is-done .af-hstep-popover-state{background:rgba(150,221,165,.18);color:var(--sage);}
+.af-hstep.is-active .af-hstep-popover-state{background:rgba(229,214,46,.18);color:var(--gold);}
+.af-hstep.is-locked .af-hstep-popover-state{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
+.af-hstep-popover-desc{font-family:var(--font);font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;margin:0;}
+.af-hstep-popover-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.14);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:rgba(255,255,255,.6);}
+.af-hstep-popover-meta span:last-child{color:var(--sage);font-weight:600;text-align:right;}
+
+@media (max-width:640px){
+  .af-hstep-title{font-size:11px;}
+  .af-hstep-popover{width:180px;font-size:11px;}
+}
 
 /* "While you wait, explore Scinode" link grid — decorative, not part of the
    Figma redesign above; a 2x2 grid of outbound cards inside the same

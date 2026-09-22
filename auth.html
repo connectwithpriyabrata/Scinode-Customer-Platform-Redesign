@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Sign Up — Scinode</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260922c" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260922d" />
   <script src="assets/scinode.js?v=20260902a"></script>
 </head>
 <body>
@@ -669,7 +669,7 @@
 
           <div class="af-success-card af-lifecycle-card">
             <div class="af-lifecycle-header">
-              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-4"/></svg>Verification Lifecycle</div>
+              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-4"/></svg>Verification Lifecycle<span class="af-lifecycle-hint">Hover the <span aria-hidden="true">ⓘ</span> on each step for details</span></div>
               <button type="button" class="af-lifecycle-refresh" id="af-lifecycle-refresh" onclick="afRefreshPendingStatus()"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>Refresh Status</button>
             </div>
             <div class="af-lifecycle-steps" id="af-pending-steps"></div>
@@ -2078,20 +2078,44 @@
     };
   }
 
-  function afLifecycleStepHTML(state, iconSvg, title, badgeHtml, desc, metaText) {
-    return '<div class="af-lifecycle-step is-' + state + '">' +
-      '<div class="af-lifecycle-step-rail"><span class="af-lifecycle-step-icon">' + iconSvg + '</span><span class="af-lifecycle-step-line"></span></div>' +
-      '<div class="af-lifecycle-step-body">' +
-        '<div class="af-lifecycle-step-head"><span class="af-lifecycle-step-title">' + title + '</span>' + badgeHtml + '</div>' +
-        '<div class="af-lifecycle-step-desc">' + desc + '</div>' +
-        '<div class="af-lifecycle-step-meta">' + metaText + '</div>' +
+  // Horizontal stepper — node icon + short label (with a hover-only (i)
+  // detail popover) + status badge, three of these side by side in a grid.
+  // stateLabel is the popover's own word ("In Review", not the badge's
+  // "Active Review") — matches the reference design's distinct copy for
+  // the compact badge vs. the expanded popover.
+  function afHStepHTML(opts) {
+    return '<div class="af-hstep is-' + opts.state + '">' +
+      (opts.isLast ? '' : '<span class="af-hstep-track"></span>') +
+      '<div class="af-hstep-node">' + opts.iconSvg + '</div>' +
+      '<div class="af-hstep-label">' +
+        '<span class="af-hstep-title">' + opts.shortTitle + '</span>' +
+        '<span class="af-hstep-info-wrap" tabindex="0">' + AF_ICON_INFO_SM +
+          '<div class="af-hstep-popover">' +
+            '<div class="af-hstep-popover-head">' +
+              '<span class="af-hstep-popover-dot"></span>' +
+              '<span class="af-hstep-popover-title">' + opts.fullTitle + '</span>' +
+              '<span class="af-hstep-popover-state">' + opts.stateLabel + '</span>' +
+            '</div>' +
+            '<p class="af-hstep-popover-desc">' + opts.desc + '</p>' +
+            '<div class="af-hstep-popover-meta"><span>Timestamp / SLA</span><span>' + opts.metaValue + '</span></div>' +
+          '</div>' +
+        '</span>' +
       '</div>' +
+      opts.badgeHtml +
     '</div>';
   }
 
-  var AF_LIFECYCLE_ICON_DONE = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-  var AF_LIFECYCLE_ICON_LOCK = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
-  var AF_LIFECYCLE_ICON_DOT = '<svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>';
+  // "Organization &amp; Entity Verification" -> "Organization &amp; Entity" —
+  // keeps the label under the node short; the full title still shows in the
+  // hover popover.
+  function afHStepShortTitle(title) {
+    return title.replace(/\s*(Verification|Provisioning)\s*$/, '').trim();
+  }
+
+  var AF_HSTEP_ICON_DONE = '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var AF_HSTEP_ICON_ACTIVE = '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+  var AF_HSTEP_ICON_LOCKED = '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  var AF_ICON_INFO_SM = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
 
   // "Rahul Mehta" -> {displayName:"Rahul M.", avatarInitial:"R"}. Strips a
   // leading title ("Dr.") out of the first-name/avatar calculation but keeps
@@ -2143,17 +2167,27 @@
       pending.verifiedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    var steps = afLifecycleStepHTML('done', AF_LIFECYCLE_ICON_DONE, 'Work Email Verification',
-        '<span class="af-status-badge is-success">100% Done</span>',
-        'Corporate email ownership confirmed via secure one-time passcode.',
-        'Verified at ' + pending.verifiedAt) +
-      afLifecycleStepHTML('active', AF_LIFECYCLE_ICON_DOT, copy.step2Title,
-        '<span class="af-status-badge is-warning">Active Review</span>',
-        copy.step2Desc, copy.step2Meta) +
-      afLifecycleStepHTML('locked', AF_LIFECYCLE_ICON_LOCK, 'Ecosystem Access &amp; Workspace Setup',
-        '<span class="af-status-badge is-neutral">Pending</span>',
-        meta.ecosystemAccessDesc, 'Unlocks upon domain approval');
-    document.getElementById('af-pending-steps').innerHTML = steps;
+    var step3Title = 'Ecosystem Access &amp; Workspace Setup';
+    var steps = afHStepHTML({
+        state: 'done', iconSvg: AF_HSTEP_ICON_DONE,
+        fullTitle: 'Work Email Verification', shortTitle: afHStepShortTitle('Work Email Verification'),
+        stateLabel: 'Completed', badgeHtml: '<span class="af-status-badge is-success">100% Done</span>',
+        desc: 'Corporate email ownership confirmed via secure one-time passcode.',
+        metaValue: 'Verified at ' + pending.verifiedAt
+      }) +
+      afHStepHTML({
+        state: 'active', iconSvg: AF_HSTEP_ICON_ACTIVE,
+        fullTitle: copy.step2Title, shortTitle: afHStepShortTitle(copy.step2Title),
+        stateLabel: 'In Review', badgeHtml: '<span class="af-status-badge is-warning">Active Review</span>',
+        desc: copy.step2Desc, metaValue: copy.step2Meta
+      }) +
+      afHStepHTML({
+        state: 'locked', iconSvg: AF_HSTEP_ICON_LOCKED, isLast: true,
+        fullTitle: step3Title, shortTitle: afHStepShortTitle(step3Title),
+        stateLabel: 'Locked', badgeHtml: '<span class="af-status-badge is-neutral">Pending</span>',
+        desc: meta.ecosystemAccessDesc, metaValue: 'Unlocks upon domain approval'
+      });
+    document.getElementById('af-pending-steps').innerHTML = '<div class="af-hstep-row">' + steps + '</div>';
 
     // "While you wait" explore card — the ecosystem line reuses the exact
     // copy already shown on the brand panel; "Other Platforms" lists the 3

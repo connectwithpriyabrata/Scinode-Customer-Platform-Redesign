@@ -616,6 +616,61 @@
             <span class="af-success-footer-links"><a href="#" onclick="return false;">Contact Support</a> &middot; <a href="#" onclick="return false;">IP Sovereignty Guarantee</a></span>
           </div>
         </div>
+
+        <!-- Rich pending-approval screen — used for reason==='pending' /
+             'pending-platform' (new/public domain, or verified-org cross-platform
+             expansion), replacing the minimal .af-result block above for those
+             cases. Content is populated per-scenario in afRenderPending(). -->
+        <div class="af-success hidden" id="af-result-pending">
+          <div class="af-success-hero" id="af-pending-hero">
+            <img src="assets/auth-visuals/success-illustration.svg" alt="Illustration of a chemist at a lab bench with a verified-supplier seal" style="object-fit:contain;padding:24px;">
+          </div>
+
+          <div class="af-success-card">
+            <div class="af-success-company-row">
+              <div class="af-success-avatar" id="af-pending-avatar">P</div>
+              <div class="af-success-company-info">
+                <div class="af-success-company-name">
+                  <span id="af-pending-name">Name</span>
+                  <span class="af-success-verified-badge">✓ Email Verified</span>
+                </div>
+                <div class="af-success-company-meta af-pending-email-row"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span id="af-pending-email">you@company.com</span></div>
+              </div>
+              <div class="af-success-role">
+                <div class="af-success-role-label">Reference ID</div>
+                <div class="af-success-role-value" id="af-pending-refid">SCI-ORG-00000</div>
+              </div>
+            </div>
+            <div class="af-pending-orgcard-row">
+              <div class="af-pending-orgcard-domain"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="18" x="4" y="3" rx="1"/><path d="M9 21v-4h6v4M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"/></svg><span>Organization Domain:</span><code id="af-pending-domain">@company.com</code></div>
+              <span class="af-status-badge is-warning" id="af-pending-domain-badge">Domain Review in Progress</span>
+            </div>
+          </div>
+
+          <div class="af-pending-icon-wrap">
+            <div class="af-result-icon af-pending" id="af-pending-icon"></div>
+            <span class="af-pending-icon-badge"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </div>
+          <div class="af-result-title" id="af-pending-title">Your account is pending approval</div>
+          <div class="af-result-body" id="af-pending-body">Scinode is an invite-only ecosystem. Your email is verified, but your organization domain is undergoing entity compliance validation before access is activated.</div>
+
+          <div class="af-info-banner is-info" role="status" id="af-pending-banner">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <div>
+              <div id="af-pending-banner-lead"></div>
+              <div class="af-pending-banner-meta" id="af-pending-banner-meta"></div>
+              <a href="#" class="af-pending-banner-link" id="af-pending-banner-link" onclick="return false;"></a>
+            </div>
+          </div>
+
+          <div class="af-success-card af-lifecycle-card">
+            <div class="af-lifecycle-header">
+              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-4"/></svg>Verification Lifecycle</div>
+              <button type="button" class="af-lifecycle-refresh" id="af-lifecycle-refresh" onclick="afRefreshPendingStatus()"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>Refresh Status</button>
+            </div>
+            <div class="af-lifecycle-steps" id="af-pending-steps"></div>
+          </div>
+        </div>
       </div>
 
       <!-- ══════════ VERIFY EMAIL (Phase 1 direct-signup step, before Company/User resolution) ══════════ -->
@@ -837,6 +892,8 @@
         'Unlock R&amp;D and product intelligence to grow your business'
       ],
       approvedSubtext: 'Start boosting your plant capacity utilization.',
+      pendingRefId: 'SCI-ORG-48213',
+      ecosystemAccessDesc: 'Granting access to demand-matching, product cataloguing, and the verified manufacturer network.',
       successData: {
         accountId: 'SCN-ATM-10432',
         firstName: 'Rahul',
@@ -874,6 +931,8 @@
         'Get access to market intelligence for your products to help grow your business'
       ],
       approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.',
+      pendingRefId: 'SCI-ORG-94821',
+      ecosystemAccessDesc: 'Granting access to R&amp;D matchmaking, Molecule AI intelligence, and the verified partner network.',
       successData: {
         accountId: 'SCN-ION-20187',
         firstName: 'Priya',
@@ -911,6 +970,8 @@
         'Track your orders from placement through delivery'
       ],
       approvedSubtext: 'Start exploring the Scinode ecosystem.',
+      pendingRefId: 'SCI-ORG-77042',
+      ecosystemAccessDesc: 'Granting access to manufacturer discovery, request tracking, and the verified supplier network.',
       successData: {
         accountId: 'SCN-CUS-30559',
         firstName: 'Ananya',
@@ -948,6 +1009,8 @@
         'Calculate scale-up, materials, conditions and save every result.'
       ],
       approvedSubtext: 'Start your first research workflow.',
+      pendingRefId: 'SCI-ORG-33095',
+      ecosystemAccessDesc: 'Granting access to deep research tooling, literature intelligence, and the verified collaborator network.',
       successData: {
         accountId: 'SCN-DR-40021',
         firstName: 'Dr. Ananya',
@@ -1880,16 +1943,19 @@
 
     var resultSimple = document.getElementById('af-result-simple');
     var resultSuccess = document.getElementById('af-result-success');
+    var resultPending = document.getElementById('af-result-pending');
+    var isPending = reason === 'pending' || reason === 'pending-platform';
     var card = document.querySelector('.af-card');
-    resultSimple.classList.toggle('hidden', reason === 'activated');
+    resultSimple.classList.toggle('hidden', reason === 'activated' || isPending);
     resultSuccess.classList.toggle('hidden', reason !== 'activated');
-    card.classList.toggle('af-card-wide', reason === 'activated');
+    resultPending.classList.toggle('hidden', !isPending);
+    card.classList.toggle('af-card-wide', reason === 'activated' || isPending);
 
     if (reason === 'activated') {
       // Rich post-signup success screen — same template for all 4 platforms,
       // content driven entirely by meta.successData (see AF_PLATFORM above).
       afRenderSuccess(meta);
-    } else if (reason === 'pending' || reason === 'pending-platform') {
+    } else if (isPending) {
       // APPROVAL_PENDING: a new/public domain, or a verified org's first signup
       // on this platform (cross-platform expansion). Always the same screen
       // regardless of how the user got here (just verified their email, or
@@ -1900,22 +1966,7 @@
       // currently set to.
       var pending = afState.pendingAccount || { reason: reason, domain: afState.domain };
       afState.pendingAccount = pending;
-      icon.className = 'af-result-icon af-pending';
-      icon.innerHTML = AF_ICON_CLOCK;
-      title.textContent = 'Your account is pending approval';
-      body.textContent = AF_PENDING_MESSAGE;
-      var why = pending.reason === 'pending-platform'
-        ? '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + ' yet.'
-        : (pending.domain === 'public'
-          ? "<b>Public email domain</b> — we couldn't confirm your company automatically, so this goes through admin approval."
-          : "<b>New company</b> — this domain isn't in our records yet, so an admin will verify it before activating your account.");
-      afSetResultNote('info', why + ' Approval usually takes 24–48 hours.');
-      cta.classList.add('hidden');
-      if (meta.pendingBullets && meta.pendingBullets.length) {
-        bullets.innerHTML = '<div class="af-result-note" style="margin-top:16px;margin-bottom:-6px;background:none;padding:0;font-weight:600;color:var(--text-1);">Coming next:</div>' +
-          meta.pendingBullets.map(function (b) { return '<li>' + b + '</li>'; }).join('');
-        bullets.classList.remove('hidden');
-      }
+      afRenderPending(pending, meta);
     } else if (reason === 'rejected') {
       // Phase 1 - User Management.pdf §30.5 — reached after an admin rejects the
       // application; keep messaging neutral, never expose internal review reasons.
@@ -1937,6 +1988,144 @@
     }
 
     afShowScreen('result');
+  }
+
+  // Per-scenario copy for the pending-approval lifecycle screen — mirrors the
+  // 3-way branching afShowResult used to do inline (new domain / public
+  // domain / cross-platform expansion), now driving a full Verification
+  // Lifecycle card instead of a single banner line.
+  function afPendingCopy(pending, meta, domainStr) {
+    if (pending.reason === 'pending-platform') {
+      return {
+        bannerLead: 'Cross-platform expansion detected:',
+        bannerBody: meta.company + " is already verified on Scinode, but hasn't been approved for " + meta.accountNoun + ' yet — an onboarding specialist is confirming access scope with your workspace admin.',
+        eta: 'within ~12 hours',
+        linkText: 'Want faster approval? Notify your workspace admin',
+        domainBadge: 'Platform Access Pending',
+        step2Title: 'Organization &amp; Platform Verification',
+        step2Desc: meta.company + ' is already verified on Scinode — confirming your access scope for ' + meta.accountNoun + '.',
+        step2Meta: 'In compliance review (Est. 12–24 hrs)'
+      };
+    }
+    if (pending.domain === 'public') {
+      return {
+        bannerLead: 'Public email domain detected:',
+        bannerBody: 'This domain (' + domainStr + ") isn't tied to a company record, so an onboarding specialist is verifying your organization manually.",
+        eta: 'within ~24 hours',
+        linkText: 'Want faster approval? Submit a work document',
+        domainBadge: 'Manual Review in Progress',
+        step2Title: 'Organization &amp; Entity Verification',
+        step2Desc: "Manual verification of your organization, since a public email domain (" + domainStr + ") can't be auto-matched to a company record.",
+        step2Meta: 'In compliance review (Est. 24–48 hrs)'
+      };
+    }
+    return {
+      bannerLead: 'New company domain detected:',
+      bannerBody: "This domain isn't in our verified chemical registry yet, so an onboarding specialist is performing standard compliance checks.",
+      eta: 'within ~18 hours',
+      linkText: 'Want faster approval? Submit lab credentials',
+      domainBadge: 'Domain Review in Progress',
+      step2Title: 'Organization &amp; Entity Verification',
+      step2Desc: 'Automated lookup on domain "' + domainStr + '" and manual verification against chemical supplier &amp; lab directories.',
+      step2Meta: 'In compliance review (Est. 18–24 hrs)'
+    };
+  }
+
+  function afLifecycleStepHTML(state, iconSvg, title, badgeHtml, desc, metaText) {
+    return '<div class="af-lifecycle-step is-' + state + '">' +
+      '<div class="af-lifecycle-step-rail"><span class="af-lifecycle-step-icon">' + iconSvg + '</span><span class="af-lifecycle-step-line"></span></div>' +
+      '<div class="af-lifecycle-step-body">' +
+        '<div class="af-lifecycle-step-head"><span class="af-lifecycle-step-title">' + title + '</span>' + badgeHtml + '</div>' +
+        '<div class="af-lifecycle-step-desc">' + desc + '</div>' +
+        '<div class="af-lifecycle-step-meta">' + metaText + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  var AF_LIFECYCLE_ICON_DONE = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var AF_LIFECYCLE_ICON_LOCK = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  var AF_LIFECYCLE_ICON_DOT = '<svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>';
+
+  // "Rahul Mehta" -> {displayName:"Rahul M.", avatarInitial:"R"}. Strips a
+  // leading title ("Dr.") out of the first-name/avatar calculation but keeps
+  // it in the displayed name, e.g. "Dr. Ananya Rao" -> "Dr. Ananya R." / "A".
+  function afPersonDisplay(fullName) {
+    var words = (fullName || 'User').split(' ');
+    var titleWords = [];
+    while (words.length > 1 && /\.$/.test(words[0]) && words[0].length <= 4) {
+      titleWords.push(words.shift());
+    }
+    var first = words[0] || 'User';
+    var last = words.length > 1 ? words[words.length - 1] : '';
+    return {
+      displayName: (titleWords.length ? titleWords.join(' ') + ' ' : '') + first + (last ? ' ' + last.charAt(0) + '.' : ''),
+      avatarInitial: first.charAt(0).toUpperCase()
+    };
+  }
+
+  // Renders the pending-approval screen: org summary card, headline, review
+  // banner and the 3-step Verification Lifecycle timeline. reason/domain come
+  // from afState.pendingAccount (fixed at signup, see afShowResult above) so
+  // the screen never drifts if the devbar toggles change afterward.
+  function afRenderPending(pending, meta) {
+    var email = afState.signupEmail || meta.emailByDomain[pending.domain] || meta.emailByDomain.verified;
+    var domainStr = '@' + (email.split('@')[1] || 'company.com');
+    var person = afPersonDisplay(meta.name);
+
+    document.getElementById('af-pending-avatar').textContent = person.avatarInitial;
+    document.getElementById('af-pending-name').textContent = person.displayName;
+    document.getElementById('af-pending-email').textContent = email;
+    document.getElementById('af-pending-refid').textContent = meta.pendingRefId || 'SCI-ORG-00000';
+    document.getElementById('af-pending-domain').textContent = domainStr;
+
+    document.getElementById('af-pending-icon').innerHTML = AF_ICON_CLOCK;
+    document.getElementById('af-pending-title').textContent = 'Your account is pending approval';
+    document.getElementById('af-pending-body').textContent = AF_PENDING_MESSAGE;
+
+    var copy = afPendingCopy(pending, meta, domainStr);
+    document.getElementById('af-pending-domain-badge').textContent = copy.domainBadge;
+
+    document.getElementById('af-pending-banner-lead').innerHTML = '<b>' + copy.bannerLead + '</b> ' + copy.bannerBody;
+    document.getElementById('af-pending-banner-meta').innerHTML = 'Typical review duration: <b>24–48 hours</b> (Estimated completion: ' + copy.eta + '). You will receive an instant email notification once approved.';
+    document.getElementById('af-pending-banner-link').textContent = copy.linkText + ' →';
+
+    // "Verified at" is fixed the first time this scenario renders, not
+    // recomputed on every visit, so it doesn't drift if the user leaves and
+    // comes back — same persistence pattern as afState.pendingAccount itself.
+    if (!pending.verifiedAt) {
+      pending.verifiedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    var steps = afLifecycleStepHTML('done', AF_LIFECYCLE_ICON_DONE, 'Work Email Verification',
+        '<span class="af-status-badge is-success">100% Done</span>',
+        'Corporate email ownership confirmed via secure one-time passcode.',
+        'Verified at ' + pending.verifiedAt) +
+      afLifecycleStepHTML('active', AF_LIFECYCLE_ICON_DOT, copy.step2Title,
+        '<span class="af-status-badge is-warning">Active Review</span>',
+        copy.step2Desc, copy.step2Meta) +
+      afLifecycleStepHTML('locked', AF_LIFECYCLE_ICON_LOCK, 'Ecosystem Access &amp; Workspace Setup',
+        '<span class="af-status-badge is-neutral">Pending</span>',
+        meta.ecosystemAccessDesc, 'Unlocks upon domain approval');
+    document.getElementById('af-pending-steps').innerHTML = steps;
+  }
+
+  // "Refresh Status" is a demo affordance — briefly shows a checking state,
+  // then confirms nothing has changed yet (this is a prototype; there's no
+  // real backend polling to do).
+  var afRefreshPendingTimer = null;
+  function afRefreshPendingStatus() {
+    var btn = document.getElementById('af-lifecycle-refresh');
+    if (btn.disabled) return;
+    var svg = btn.querySelector('svg');
+    btn.disabled = true;
+    svg.classList.add('is-spinning');
+    btn.lastChild.textContent = ' Checking…';
+    clearTimeout(afRefreshPendingTimer);
+    afRefreshPendingTimer = setTimeout(function () {
+      svg.classList.remove('is-spinning');
+      btn.lastChild.textContent = ' Refresh Status';
+      btn.disabled = false;
+    }, 1100);
   }
 
   afRender();

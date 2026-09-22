@@ -2253,6 +2253,60 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-success-footer-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--status-success-fg);margin-right:6px;}
 .af-success-footer-links a{color:var(--text-3);text-decoration:underline;margin-left:2px;}
 
+/* Pending-approval screen ("pending" / "pending-platform" reasons) — org
+   summary card, status headline, review-status banner and a 3-step
+   verification-lifecycle timeline. Reuses .af-success/.af-success-card/
+   .af-success-company-row/.af-result-icon etc. above; only the pieces below
+   are new. See afRenderPending(). */
+.af-pending-orgcard-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);}
+.af-pending-orgcard-domain{display:flex;align-items:center;gap:8px;font-family:var(--font);font-size:12.5px;color:var(--text-2);}
+.af-pending-orgcard-domain svg{color:var(--text-3);flex-shrink:0;}
+.af-pending-orgcard-domain code{background:var(--page-bg);color:var(--text-1);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border-radius:var(--radius-xs);}
+.af-pending-email-row{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.af-pending-email-row svg{color:var(--text-3);flex-shrink:0;}
+
+.af-status-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--font);font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--radius-full);white-space:nowrap;flex-shrink:0;}
+.af-status-badge.is-success{background:var(--status-success-bg);color:var(--status-success-fg);}
+.af-status-badge.is-warning{background:var(--status-warning-bg);color:var(--status-warning-fg);}
+.af-status-badge.is-neutral{background:var(--page-bg);color:var(--text-3);}
+
+.af-pending-icon-wrap{position:relative;display:inline-flex;align-self:flex-start;margin-bottom:16px;}
+.af-pending-icon-wrap .af-result-icon{margin-bottom:0;}
+.af-pending-icon-badge{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--status-success-fg);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;color:#fff;}
+#af-pending-body{max-width:520px;margin-bottom:20px;}
+
+.af-pending-banner-meta{margin-top:8px;}
+.af-pending-banner-link{display:inline-block;margin-top:8px;color:var(--status-info-fg);font-family:var(--font);font-size:12px;font-weight:600;text-decoration:underline;}
+.af-pending-banner-link:hover{opacity:.8;}
+#af-pending-banner{margin-bottom:20px;}
+
+.af-lifecycle-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;}
+.af-lifecycle-header-title{display:flex;align-items:center;gap:8px;font-family:var(--font-heading);font-size:15px;font-weight:700;color:var(--text-1);}
+.af-lifecycle-header-title svg{color:var(--teal-600);flex-shrink:0;}
+.af-lifecycle-refresh{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;}
+.af-lifecycle-refresh:hover{text-decoration:underline;}
+.af-lifecycle-refresh:disabled{opacity:.6;cursor:default;text-decoration:none;}
+.af-lifecycle-refresh svg.is-spinning{animation:af-spin .7s linear infinite;}
+@keyframes af-spin{to{transform:rotate(360deg);}}
+
+.af-lifecycle-steps{display:flex;flex-direction:column;}
+.af-lifecycle-step{display:flex;gap:14px;}
+.af-lifecycle-step-rail{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.af-lifecycle-step-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;}
+.af-lifecycle-step.is-done .af-lifecycle-step-icon{background:var(--status-success-fg);}
+.af-lifecycle-step.is-active .af-lifecycle-step-icon{background:var(--status-warning-fg);}
+.af-lifecycle-step.is-locked .af-lifecycle-step-icon{background:var(--border-h);color:var(--text-3);}
+.af-lifecycle-step-line{width:2px;flex:1;background:var(--border);margin:4px 0;min-height:24px;}
+.af-lifecycle-step:last-child .af-lifecycle-step-line{display:none;}
+.af-lifecycle-step-body{flex:1;min-width:0;padding-bottom:22px;}
+.af-lifecycle-step:last-child .af-lifecycle-step-body{padding-bottom:0;}
+.af-lifecycle-step-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.af-lifecycle-step-title{font-family:var(--font);font-size:13.5px;font-weight:600;color:var(--text-1);}
+.af-lifecycle-step.is-locked .af-lifecycle-step-title{color:var(--text-3);}
+.af-lifecycle-step.is-active .af-lifecycle-step-title{color:var(--status-warning-fg);}
+.af-lifecycle-step-desc{font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.5;margin-top:4px;}
+.af-lifecycle-step-meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--text-3);margin-top:4px;}
+
 /* Invitation flow (invite.html) — landing screen invite card. Accent
    palette here is Navy (--navy-500) + Sage (--sage) rather than the brand
    teal, so the "Accept Invitation" CTA below stays the only teal element

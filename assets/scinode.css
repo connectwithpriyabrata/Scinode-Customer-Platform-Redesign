@@ -2307,6 +2307,18 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-lifecycle-step-desc{font-family:var(--font);font-size:12px;color:var(--text-2);line-height:1.5;margin-top:4px;}
 .af-lifecycle-step-meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--text-3);margin-top:4px;}
 
+/* "While you wait, explore Scinode" link grid — decorative, not part of the
+   Figma redesign above; a 2x2 grid of outbound cards inside the same
+   .af-success-card shell. */
+.af-explore-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.af-explore-item{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:var(--radius-md);background:var(--page-bg);text-decoration:none;transition:background .15s;}
+.af-explore-item:hover{background:var(--teal-50);}
+.af-explore-icon{width:30px;height:30px;border-radius:var(--radius-sm);background:var(--white);color:var(--teal-600);box-shadow:var(--shadow-nested);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.af-explore-body{flex:1;min-width:0;}
+.af-explore-title{display:flex;align-items:center;justify-content:space-between;gap:6px;font-family:var(--font);font-size:13px;font-weight:600;color:var(--text-1);}
+.af-explore-title svg{color:var(--text-3);flex-shrink:0;}
+.af-explore-desc{display:block;font-family:var(--font);font-size:11.5px;color:var(--text-2);line-height:1.5;margin-top:2px;}
+
 /* Invitation flow (invite.html) — landing screen invite card. Accent
    palette here is Navy (--navy-500) + Sage (--sage) rather than the brand
    teal, so the "Accept Invitation" CTA below stays the only teal element
@@ -2427,4 +2439,5 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
   .af-success-secondary-row{flex-direction:column;}
   .af-success-badge{border-radius:var(--radius-md);flex-wrap:wrap;justify-content:center;text-align:center;row-gap:2px;}
   .af-success-badge-thin{flex-basis:100%;margin-left:12px;}
+  .af-explore-grid{grid-template-columns:1fr;}
 }

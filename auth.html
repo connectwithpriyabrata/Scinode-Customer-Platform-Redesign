@@ -85,7 +85,6 @@
     <span class="af-devbar-label">Sign In</span>
     <div class="af-devbar-group">
       <button id="af-dev-signinsso" onclick="afToggleSigninSSO()">SSO org detected</button>
-      <button id="af-dev-signin-nomembership" onclick="afToggleSigninMembership()">No ATOMS membership</button>
       <button id="af-dev-signin-pending" onclick="afToggleSigninPending()">Account pending approval</button>
     </div>
   </span>
@@ -769,7 +768,7 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, hasMembership: true, ssoDisplay: 'with', step: 1 };
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, ssoDisplay: 'with', step: 1 };
   var afIndustries = [];
   var afVerifyState = 'pending';
 
@@ -1340,20 +1339,18 @@
     document.getElementById('af-signin-password').required = !afState.signinSSO;
   }
 
-  // Existing Scinode identity, but no membership on *this* platform yet — per
-  // "Atoms sign in/up/sso.pdf" §8: shared identity is not automatic platform
-  // access, so this routes to membership creation/pending, not straight in.
-  function afToggleSigninMembership() {
-    afState.hasMembership = !afState.hasMembership;
-    document.getElementById('af-dev-signin-nomembership').classList.toggle('active', !afState.hasMembership);
-  }
-
-  // Demo toggle: puts the account in (or out of) the "waiting on admin approval" state.
-  // Turning it on only makes sense when the org isn't approved for this
-  // platform yet, so it flips that toggle too (mirrors ivSetAccountPending()).
+  // Demo toggle: puts the account in (or out of) the "waiting on admin approval"
+  // state. Covers both ways a Sign In can end up here — an existing Scinode
+  // identity with no membership on this platform yet ("Atoms sign in/up/
+  // sso.pdf" §8: shared identity is not automatic platform access), and an
+  // account that already submitted a signup and is still waiting — since both
+  // are the same underlying case (verified domain, different/no platform
+  // membership) and show the identical Approval Pending screen. Turning it on
+  // only makes sense when the org isn't approved for this platform yet, so it
+  // flips that toggle too (mirrors ivSetAccountPending()).
   function afToggleSigninPending() {
     var turningOn = !afState.pendingAccount;
-    afState.pendingAccount = turningOn ? { reason: afState.domain === 'verified' ? 'pending-platform' : 'pending', domain: afState.domain } : null;
+    afState.pendingAccount = turningOn ? { reason: 'pending-platform', domain: 'verified' } : null;
     afSyncPendingBtn();
     if (turningOn && afState.orgApprovedOnPlatform) afSetOrgApprovedOnPlatform(false);
   }
@@ -1599,7 +1596,7 @@
       afShowResult(afState.pendingAccount.reason);
       return;
     }
-    afShowResult(afState.hasMembership ? 'signin' : 'signin-no-membership');
+    afShowResult('signin');
   }
 
   // Overlapping-avatar palette for the success screen's colleague stack —
@@ -1819,13 +1816,6 @@
       cta.classList.remove('hidden');
       cta.textContent = 'Continue to ' + meta.accountNoun + ' →';
       cta.onclick = function () { afShowScreen('signin'); };
-    } else if (reason === 'signin-no-membership') {
-      icon.className = 'af-result-icon af-pending';
-      icon.innerHTML = AF_ICON_CLOCK;
-      title.textContent = 'Requesting your ' + meta.accountNoun + ' access';
-      body.textContent = "We found your existing Scinode account — no need to sign up again.";
-      afSetResultNote('info', "<b>Cross-platform access</b> — a shared Scinode account means <b>shared identity, not automatic platform access</b>. An admin will review and approve your " + meta.accountNoun + ' membership before you can continue.');
-      cta.classList.add('hidden');
     }
 
     afShowScreen('result');

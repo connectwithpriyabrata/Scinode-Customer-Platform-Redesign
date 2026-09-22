@@ -43,6 +43,7 @@
       <button id="iv-dev-screen-pending" onclick="ivShowPending()">Pending Approval</button>
       <button id="iv-dev-screen-verify" onclick="ivShowVerify()">Verify Email</button>
       <button id="iv-dev-screen-approved" onclick="ivOpenSigninFromLink('approved')">Just Approved</button>
+      <button id="iv-dev-screen-verified" onclick="ivOpenSigninFromLink('verify')">Just Verified</button>
     </div>
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">Org on This Platform</span>
@@ -1062,6 +1063,7 @@
     ivState.screen = name;
     if (name !== 'signin') ivLink = null;
     document.getElementById('iv-dev-screen-approved').classList.remove('active');
+    document.getElementById('iv-dev-screen-verified').classList.remove('active');
     document.getElementById('iv-dev-screen-pending').classList.remove('active');
     document.getElementById('iv-dev-screen-verify').classList.toggle('active', name === 'verify');
     // Invitation context (who invited you + trust/benefit cards) only makes
@@ -1324,23 +1326,6 @@
     document.getElementById('iv-dev-screen-approved').classList.remove('active');
   }
 
-  // Verified email, org already on this platform: no admin step, so offer sign-in.
-  function ivShowEmailVerified() {
-    var meta = IV_PLATFORM[ivState.platform];
-    var icon = document.getElementById('iv-pending-icon');
-    icon.className = 'af-result-icon af-success';
-    icon.innerHTML = IV_ICON_CHECK;
-    document.getElementById('iv-pending-title').textContent = 'Your email is verified';
-    document.getElementById('iv-pending-body').textContent = meta.company + ' is already verified, so you can sign in to accept your invitation now.';
-    ivSetPendingNote('success', 'Your company is already verified — no admin approval needed.');
-    document.getElementById('iv-pending-bullets').innerHTML = '';
-    var cta = document.getElementById('iv-pending-cta');
-    cta.classList.remove('hidden');
-    cta.textContent = 'Sign in & accept invitation →';
-    cta.onclick = function () { ivOpenSigninFromLink('verify'); };
-    ivShowScreen('pending');
-  }
-
   var ivLink = null;
 
   function ivShowVerify() {
@@ -1363,12 +1348,14 @@
     }, 2500);
   }
 
-  // Stands in for clicking the link in the verification email: opens a "Your
-  // email is verified" screen — with the pending-approval message if the org
-  // isn't on this platform yet, or a sign-in offer if it is.
+  // Stands in for clicking the link in the verification email. Verified
+  // domain + org already on this platform: no separate "your email is
+  // verified" stop — go straight to the sign-in screen, same as
+  // auth.html's afVerifyEmailContinue(). Otherwise: the pending-approval
+  // message (org isn't on this platform yet).
   function ivVerifyContinue() {
     if (ivState.orgApprovedOnPlatform) {
-      ivShowEmailVerified();
+      ivOpenSigninFromLink('verify');
     } else {
       ivShowPending('verify');
     }
@@ -1383,9 +1370,14 @@
     ivShowScreen('signin');
     ivLink = { mode: mode };
     var approved = mode === 'approved';
+    var verified = mode === 'verify';
 
     document.getElementById('iv-signin-hero').classList.toggle('hidden', !approved);
-    document.getElementById('iv-signin-h1').textContent = approved ? "You're all set, " + firstName + '!' : 'Sign in to accept';
+    document.getElementById('iv-signin-h1').textContent = approved
+      ? "You're all set, " + firstName + '!'
+      : verified
+        ? firstName + ', your email ID has been verified.'
+        : 'Sign in to accept';
     document.getElementById('iv-signin-sub').textContent = approved
       ? 'Your account has been approved. Sign in to accept your invitation.'
       : 'Sign in to join ' + meta.company + ' on ' + meta.accountNoun + '.';
@@ -1400,6 +1392,7 @@
     banner.innerHTML = IV_BANNER_ICON.success + '<span>' + html + '</span>';
 
     document.getElementById('iv-dev-screen-approved').classList.toggle('active', approved);
+    document.getElementById('iv-dev-screen-verified').classList.toggle('active', verified);
   }
 
   function ivSubmitSigninLink(e) {

@@ -2118,8 +2118,8 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-result-ghost-item{display:flex;flex-direction:column;align-items:center;gap:5px;max-width:170px;text-align:center;}
 .af-result-ghost-btn{background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}
 .af-result-ghost-btn:hover{text-decoration:underline;}
-.af-verify-resend-wrap{width:100%;}
-.af-verify-resend-wrap .af-submit:disabled{opacity:.7;cursor:default;}
+.af-submit:disabled{opacity:.7;cursor:default;}
+.af-result-ghost-btn:disabled{opacity:.55;cursor:default;}
 .af-result-ghost-caption{font-family:var(--font);font-size:10.5px;color:var(--text-3);line-height:1.4;}
 
 /* Forgot-password modal system (auth.html) — self-contained; does not reuse

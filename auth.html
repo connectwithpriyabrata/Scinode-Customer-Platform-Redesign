@@ -593,11 +593,9 @@
           <div class="af-result-title" id="af-verify-title">Verify your email</div>
           <div class="af-result-body" id="af-verify-body">We've sent a verification link to <b id="af-verify-email">you@company.com</b>. Click the link in that email to continue.</div>
           <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span id="af-verify-note">Verify your email to finish setting up your ATOMS account.</span></div>
-          <div class="af-verify-resend-wrap" id="af-verify-resend-row">
-            <button type="button" class="af-submit" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
-          </div>
-          <div class="af-result-ghost-row" id="af-verify-continue-row">
-            <button type="button" class="af-result-ghost-btn" id="af-verify-cta" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
+          <button type="button" class="af-submit" id="af-verify-cta" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
+          <div class="af-result-ghost-row" id="af-verify-resend-row">
+            <button type="button" class="af-result-ghost-btn" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
           </div>
         </div>
       </div>
@@ -1452,44 +1450,43 @@
 
   // Email verification support states — "Atoms sign in/up/sso.pdf" §4 calls out
   // Successful verification, Resend, Expired link, and Already verified.
-  // "Resend verification email" is the screen's one primary CTA; "I've verified —
-  // Continue" is the prototype's stand-in for clicking the link in the email, so
-  // it's a quiet text button — except in the "already verified" state, where
-  // there's nothing to resend and Continue becomes the primary action.
+  // Per the signup/verification/approval spec: "I've verified — Continue" is the
+  // screen's primary action, "Resend verification email" is secondary — except
+  // when the link has expired, where Continue is unavailable and Resend becomes
+  // the only (primary) action.
   function afSetVerifyState(state) {
     afVerifyState = state;
     var icon = document.getElementById('af-verify-icon');
     var title = document.getElementById('af-verify-title');
     var body = document.getElementById('af-verify-body');
     var cta = document.getElementById('af-verify-cta');
+    var resendBtn = document.getElementById('af-resend-btn');
     var resendRow = document.getElementById('af-verify-resend-row');
-    var continueRow = document.getElementById('af-verify-continue-row');
     var emailNow = document.getElementById('af-verify-email') ? document.getElementById('af-verify-email').textContent : 'you@company.com';
-
-    cta.className = state === 'verified' ? 'af-submit' : 'af-result-ghost-btn';
-    continueRow.style.marginTop = state === 'verified' ? '0' : '';
 
     if (state === 'expired') {
       icon.className = 'af-result-icon af-danger';
       icon.innerHTML = AF_ICON_WARNING;
       title.textContent = 'This link has expired';
       body.textContent = 'Verification links expire after 24 hours for security. Request a new one below.';
+      cta.classList.add('hidden');
+      resendBtn.className = 'af-submit';
       resendRow.classList.remove('hidden');
-      continueRow.classList.add('hidden');
     } else if (state === 'verified') {
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
       title.textContent = 'Your email is already verified';
       body.textContent = 'You can continue setting up your account.';
+      cta.classList.remove('hidden');
       resendRow.classList.add('hidden');
-      continueRow.classList.remove('hidden');
     } else {
       icon.className = 'af-result-icon af-pending';
       icon.innerHTML = AF_ICON_MAIL;
       title.textContent = 'Verify your email';
       body.innerHTML = "We've sent a verification link to <b id=\"af-verify-email\">" + emailNow + '</b>. Click the link in that email to continue.';
+      cta.classList.remove('hidden');
+      resendBtn.className = 'af-result-ghost-btn';
       resendRow.classList.remove('hidden');
-      continueRow.classList.remove('hidden');
     }
 
     ['pending', 'expired', 'verified'].forEach(function (s) {
@@ -1507,14 +1504,16 @@
     afShowVerify(null);
   }
 
-  // Simulates clicking the link in the verification email: it opens a "Your email
-  // is verified" screen. If the org is already on this platform there's no admin
-  // step, so it offers sign-in (afOpenSigninFromLink); otherwise it explains the
-  // account is pending admin approval.
+  // Simulates clicking the link in the verification email — this is the
+  // EMAIL_VERIFIED state. If the org is already on this platform, no admin
+  // approval is needed: the account is ACTIVE and can sign in right away.
+  // Otherwise (cross-platform, or a new/public domain) it's APPROVAL_PENDING —
+  // a distinct state from "just verified", never shown as a success/verified
+  // screen (spec: "Do NOT merge Verification Pending and Approval Pending").
   function afVerifyEmailContinue() {
     var reason = afPendingResultReason || afComputeSignupReason();
     afPendingResultReason = null;
-    afShowResult(reason === 'activated' ? 'email-verified' : reason, 'verify');
+    afShowResult(reason === 'activated' ? 'email-verified' : reason);
   }
 
   var afResendTimer = null;
@@ -1583,7 +1582,7 @@
     }
     // Still waiting on the admin (24-48h): signing in shows the pending message.
     if (afState.pendingAccount) {
-      afShowResult(afState.pendingAccount.reason, 'signin');
+      afShowResult(afState.pendingAccount.reason);
       return;
     }
     afShowResult(afState.hasMembership ? 'signin' : 'signin-no-membership');
@@ -1726,10 +1725,7 @@
   // Shared copy for every "waiting on the admin" screen (spec §30 pending messaging).
   var AF_PENDING_MESSAGE = 'Scinode is an invite-only platform. Your account is pending admin approval. You will be notified in your registered email ID once access is approved.';
 
-  // via: 'verify' (arriving from the verification email — the screen leads with
-  // "Your email is verified") or 'signin' (the user tried to sign in while still
-  // pending). Only affects the pending reasons.
-  function afShowResult(reason, via) {
+  function afShowResult(reason) {
     var meta = AF_PLATFORM[afState.platform];
     var icon = document.getElementById('af-result-icon');
     var title = document.getElementById('af-result-title');
@@ -1765,19 +1761,23 @@
       cta.textContent = 'Sign in to ' + meta.accountNoun + ' →';
       cta.onclick = function () { afOpenSigninFromLink('verify'); };
     } else if (reason === 'pending' || reason === 'pending-platform') {
-      // Admin approval needed: a new/public domain, or a verified org's first
-      // signup on this platform (cross-platform). Remembered so a sign-in attempt
-      // during the 24-48h wait shows this same message (afSubmitSignin).
-      var fromSignin = via === 'signin';
-      if (!fromSignin) afState.pendingAccount = { reason: reason, domain: afState.domain };
-      var pDomain = fromSignin && afState.pendingAccount ? afState.pendingAccount.domain : afState.domain;
-      icon.className = 'af-result-icon ' + (fromSignin ? 'af-pending' : 'af-success');
-      icon.innerHTML = fromSignin ? AF_ICON_CLOCK : AF_ICON_CHECK;
-      title.textContent = fromSignin ? 'Your account is pending approval' : 'Your email is verified';
+      // APPROVAL_PENDING: a new/public domain, or a verified org's first signup
+      // on this platform (cross-platform expansion). Always the same screen
+      // regardless of how the user got here (just verified their email, or
+      // tried to sign in again during the 24-48h wait) — the account's
+      // approval reason/domain is fixed at signup, remembered in
+      // afState.pendingAccount so a later sign-in attempt shows this same
+      // message instead of re-deriving it from whatever the devbar is
+      // currently set to.
+      var pending = afState.pendingAccount || { reason: reason, domain: afState.domain };
+      afState.pendingAccount = pending;
+      icon.className = 'af-result-icon af-pending';
+      icon.innerHTML = AF_ICON_CLOCK;
+      title.textContent = 'Your account is pending approval';
       body.textContent = AF_PENDING_MESSAGE;
-      var why = reason === 'pending-platform'
+      var why = pending.reason === 'pending-platform'
         ? '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + ' yet.'
-        : (pDomain === 'public'
+        : (pending.domain === 'public'
           ? "<b>Public email domain</b> — we couldn't confirm your company automatically, so this goes through admin approval."
           : "<b>New company</b> — this domain isn't in our records yet, so an admin will verify it before activating your account.");
       afSetResultNote('info', why + ' Approval usually takes 24–48 hours.');

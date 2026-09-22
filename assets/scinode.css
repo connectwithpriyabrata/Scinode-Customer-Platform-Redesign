@@ -2187,6 +2187,10 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-success-hero-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-3);}
 .af-success-hero-placeholder span{font-family:var(--font);font-size:11.5px;}
 
+/* Merged approved-signin screen: the confirmation cards sit directly under the
+   Sign In button, so give the block its own top margin like .af-submit's. */
+#af-signin-approved-extra{margin-top:24px;}
+
 .af-success-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:20px;margin-bottom:16px;}
 .af-success-company-row{display:flex;align-items:flex-start;gap:14px;}
 .af-success-avatar{width:44px;height:44px;border-radius:var(--radius-md);background:var(--teal-500);color:#fff;font-family:var(--font);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}

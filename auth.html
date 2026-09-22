@@ -434,7 +434,49 @@
               </div>
             </div>
             <div class="af-link-row"><button type="button" onclick="afOpenForgotPassword()">Forgot password?</button></div>
-            <button type="submit" class="af-submit">Sign In</button>
+            <button type="submit" class="af-submit" id="af-signin-submit">Sign In</button>
+
+            <!-- Approved-via-email-link only: the confirmation content that used to
+                 live on a separate post-signin screen, folded in here so signing in
+                 after admin approval is a single screen instead of two. -->
+            <div class="hidden" id="af-signin-approved-extra">
+              <div class="af-success-card">
+                <div class="af-success-company-row">
+                  <div class="af-success-avatar" id="af-signin-success-company-avatar">AM</div>
+                  <div class="af-success-company-info">
+                    <div class="af-success-company-name">
+                      <span id="af-signin-success-company-name">Company</span>
+                      <span class="af-success-verified-badge">Verified Workspace</span>
+                    </div>
+                    <div class="af-success-company-meta" id="af-signin-success-company-meta"></div>
+                  </div>
+                  <div class="af-success-role">
+                    <div class="af-success-role-label">Your Role</div>
+                    <div class="af-success-role-value" id="af-signin-success-role-value"></div>
+                  </div>
+                </div>
+                <div class="af-success-colleagues-row">
+                  <div class="af-success-avatar-stack" id="af-signin-success-avatar-stack"></div>
+                  <div class="af-success-colleagues-count" id="af-signin-success-colleagues-count"></div>
+                  <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
+                </div>
+                <div class="af-success-activity" id="af-signin-success-activity"></div>
+              </div>
+
+              <div class="af-success-card">
+                <div class="af-success-checklist-header">
+                  <span>Recommended First Steps</span>
+                  <span id="af-signin-success-checklist-progress"></span>
+                </div>
+                <div class="af-steps-carousel" id="af-signin-success-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
+                  <div class="af-steps-track" id="af-signin-success-checklist"></div>
+                  <div class="af-steps-controls">
+                    <div class="af-steps-dots" id="af-signin-success-checklist-dots"></div>
+                    <button type="button" class="af-steps-pause" id="af-signin-success-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div id="af-signin-sso-section">
               <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
@@ -1547,17 +1589,32 @@
     var meta = AF_PLATFORM[afState.platform];
     afShowScreen('signin');
     afState.signinLink = { mode: mode };
+    afResetSigninForm();
     document.getElementById('af-signin-email').value = afState.signupEmail || meta.emailByDomain[afState.domain] || '';
-    document.getElementById('af-signin-password').value = '';
+    // Approved: the confirmation content (company details, recommended steps)
+    // is embedded right on this screen, so the card widens to match — same
+    // width the dashboard uses for the identical cards.
+    document.querySelector('.af-card').classList.toggle('af-card-wide', mode === 'approved');
     afRenderSigninLanding();
   }
 
   function afClearSigninLink() {
     if (!afState.signinLink) return;
     afState.signinLink = null;
+    afResetSigninForm();
     document.getElementById('af-signin-email').value = '';
-    document.getElementById('af-signin-password').value = '';
     afRenderSigninLanding();
+  }
+
+  // Undoes afCompleteApprovedSignin()'s disabled/"Signed in" state so a fresh
+  // visit to this screen (a new link, or navigating back to it) starts clean.
+  function afResetSigninForm() {
+    document.getElementById('af-signin-email').disabled = false;
+    document.getElementById('af-signin-password').disabled = false;
+    document.getElementById('af-signin-password').value = '';
+    var submit = document.getElementById('af-signin-submit');
+    submit.disabled = false;
+    submit.textContent = 'Sign In';
   }
 
   function afRenderSigninLanding() {
@@ -1566,9 +1623,16 @@
     var approved = !!link && link.mode === 'approved';
     document.getElementById('af-signin-hero').classList.toggle('hidden', !approved);
     document.getElementById('af-signin-link-info').classList.toggle('hidden', !link);
-    document.getElementById('af-signin-h1').textContent = approved ? "You're all set, " + meta.successData.firstName + '!' : 'Sign in';
-    document.getElementById('af-signin-sub').textContent = approved
-      ? 'Your account has been approved. Sign in to get started.'
+    document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !approved);
+    if (approved) {
+      afRenderCompanyCard('af-signin-success', meta);
+      afRenderChecklist('af-signin-success', meta);
+    }
+    document.getElementById('af-signin-h1').textContent = approved
+      ? meta.successData.firstName + ', your account has been approved.'
+      : 'Sign in';
+    document.getElementById('af-signin-sub').innerHTML = approved
+      ? 'Welcome to <b>' + meta.company + "</b>'s space on Scinode. Your team and workspace are ready. Sign in to get started."
       : 'Access your ' + meta.accountNoun + ' workspace';
     if (!link) return;
 
@@ -1585,9 +1649,20 @@
   function afSubmitSignin(e) {
     if (e) e.preventDefault();
     var link = afState.signinLink;
+    if (link && link.mode === 'approved') {
+      // Everything (headline, company details, recommended steps) is already
+      // shown on this screen — there's no separate destination to send the
+      // user to, so this just confirms inline instead of adding a screen back.
+      afState.pendingAccount = null;
+      var submit = document.getElementById('af-signin-submit');
+      document.getElementById('af-signin-email').disabled = true;
+      document.getElementById('af-signin-password').disabled = true;
+      submit.disabled = true;
+      submit.textContent = 'Signed in ✓';
+      return;
+    }
     if (link) {
       afClearSigninLink();
-      if (link.mode === 'approved') afState.pendingAccount = null;
       afShowResult('activated');
       return;
     }
@@ -1608,11 +1683,13 @@
   // hover / focus / touch, via the pause button, when the tab is hidden, or
   // when the screen isn't showing; auto-advance is off entirely for users who
   // prefer reduced motion. Content/slides come from the render function.
-  function afInitStepsCarousel() {
-    var wrap = document.getElementById('af-success-carousel');
-    var track = document.getElementById('af-success-checklist');
-    var dotsEl = document.getElementById('af-success-checklist-dots');
-    var pauseBtn = document.getElementById('af-success-checklist-pause');
+  // prefix selects which instance (the dashboard's af-success-* or the merged
+  // approved-signin screen's af-signin-success-*).
+  function afInitStepsCarousel(prefix) {
+    var wrap = document.getElementById(prefix + '-carousel');
+    var track = document.getElementById(prefix + '-checklist');
+    var dotsEl = document.getElementById(prefix + '-checklist-dots');
+    var pauseBtn = document.getElementById(prefix + '-checklist-pause');
     var slides = track.children;
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1677,29 +1754,33 @@
     }, 5000);
   }
 
-  function afRenderSuccess(meta) {
+  // Company card (avatar/name/role, colleagues, activity) — shared by the
+  // dashboard's success screen (prefix 'af-success') and the merged
+  // approved-signin screen (prefix 'af-signin-success'), which mirrors the
+  // same id suffixes under its own prefix.
+  function afRenderCompanyCard(prefix, meta) {
     var d = meta.successData;
-    if (!d) return;
-    document.getElementById('af-success-account').textContent = 'Account #' + d.accountId + ' · Active';
-    document.getElementById('af-success-headline').textContent = "You're all set, " + d.firstName + '!';
-    document.getElementById('af-success-sub').innerHTML = 'Welcome to the <b>' + meta.company + '</b> space on Scinode. Your team and workspace are ready.';
-    document.getElementById('af-success-company-avatar').textContent = d.avatarInitials;
-    document.getElementById('af-success-company-name').textContent = meta.company;
-    document.getElementById('af-success-company-meta').innerHTML = d.tenantLine;
-    document.getElementById('af-success-role-value').textContent = d.role;
+    document.getElementById(prefix + '-company-avatar').textContent = d.avatarInitials;
+    document.getElementById(prefix + '-company-name').textContent = meta.company;
+    document.getElementById(prefix + '-company-meta').innerHTML = d.tenantLine;
+    document.getElementById(prefix + '-role-value').textContent = d.role;
 
-    var stack = document.getElementById('af-success-avatar-stack');
+    var stack = document.getElementById(prefix + '-avatar-stack');
     var avatars = d.colleagueInitials.map(function (initials, i) {
       return '<span style="background:' + AF_AVATAR_COLORS[i % AF_AVATAR_COLORS.length] + ';">' + initials + '</span>';
     });
     avatars.push('<span style="background:var(--border-h);color:var(--text-2);">+' + d.colleagueOverflow + '</span>');
     stack.innerHTML = avatars.join('');
-    document.getElementById('af-success-colleagues-count').textContent = (d.colleagueInitials.length + d.colleagueOverflow) + ' colleagues active';
-    document.getElementById('af-success-activity').innerHTML = d.activityLine;
+    document.getElementById(prefix + '-colleagues-count').textContent = (d.colleagueInitials.length + d.colleagueOverflow) + ' colleagues active';
+    document.getElementById(prefix + '-activity').innerHTML = d.activityLine;
+  }
 
+  // "Recommended First Steps" list + carousel — same prefix convention as above.
+  function afRenderChecklist(prefix, meta) {
+    var d = meta.successData;
     var doneCount = d.checklist.filter(function (item) { return item.done; }).length;
-    document.getElementById('af-success-checklist-progress').textContent = doneCount + ' of ' + d.checklist.length + ' complete';
-    document.getElementById('af-success-checklist').innerHTML = d.checklist.map(function (item) {
+    document.getElementById(prefix + '-checklist-progress').textContent = doneCount + ' of ' + d.checklist.length + ' complete';
+    document.getElementById(prefix + '-checklist').innerHTML = d.checklist.map(function (item) {
       return '<div class="af-success-checklist-item' + (item.done ? ' done' : '') + '">' +
         '<span class="af-success-checklist-check">' + (item.done ? AF_ICON_CHECK : '') + '</span>' +
         '<div class="af-success-checklist-body">' +
@@ -1708,7 +1789,17 @@
           '<div class="af-success-checklist-desc">' + item.desc + '</div>' +
         '</div></div>';
     }).join('');
-    afInitStepsCarousel();
+    afInitStepsCarousel(prefix);
+  }
+
+  function afRenderSuccess(meta) {
+    var d = meta.successData;
+    if (!d) return;
+    document.getElementById('af-success-account').textContent = 'Account #' + d.accountId + ' · Active';
+    document.getElementById('af-success-headline').textContent = "You're all set, " + d.firstName + '!';
+    document.getElementById('af-success-sub').innerHTML = 'Welcome to the <b>' + meta.company + '</b> space on Scinode. Your team and workspace are ready.';
+    afRenderCompanyCard('af-success', meta);
+    afRenderChecklist('af-success', meta);
 
     var successCta = document.getElementById('af-success-cta');
     successCta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';

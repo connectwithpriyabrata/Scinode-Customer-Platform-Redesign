@@ -970,6 +970,11 @@
   // pending for its own reason, see afComputeSignupReason).
   function afSetOrgApprovedOnPlatform(val) {
     afState.orgApprovedOnPlatform = val;
+    // Approving the org for this platform means there's nothing left pending.
+    if (val && afState.pendingAccount) {
+      afState.pendingAccount = null;
+      afSyncPendingBtn();
+    }
     afRender();
   }
 
@@ -1344,9 +1349,13 @@
   }
 
   // Demo toggle: puts the account in (or out of) the "waiting on admin approval" state.
+  // Turning it on only makes sense when the org isn't approved for this
+  // platform yet, so it flips that toggle too (mirrors ivSetAccountPending()).
   function afToggleSigninPending() {
-    afState.pendingAccount = afState.pendingAccount ? null : { reason: afState.domain === 'verified' ? 'pending-platform' : 'pending', domain: afState.domain };
+    var turningOn = !afState.pendingAccount;
+    afState.pendingAccount = turningOn ? { reason: afState.domain === 'verified' ? 'pending-platform' : 'pending', domain: afState.domain } : null;
     afSyncPendingBtn();
+    if (turningOn && afState.orgApprovedOnPlatform) afSetOrgApprovedOnPlatform(false);
   }
   function afSyncPendingBtn() {
     document.getElementById('af-dev-signin-pending').classList.toggle('active', !!afState.pendingAccount);
@@ -1426,6 +1435,11 @@
       matchError.classList.add('hidden');
     }
 
+    // A fresh submission always reflects the current domain/platform toggles —
+    // clear any pending status left over from an earlier demo run so the
+    // pending screen doesn't show stale reason/domain data for this one.
+    afState.pendingAccount = null;
+    afSyncPendingBtn();
     var reason = afComputeSignupReason();
     if (afState.source === 'direct') {
       // Phase 1 authentication is Email → Password → Email Verification

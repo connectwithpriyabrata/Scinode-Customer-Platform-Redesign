@@ -133,10 +133,29 @@
       </div>
     </div>
 
-    <div class="af-brand-mid">
+    <div class="af-brand-mid" id="af-brand-mid-default">
       <div class="af-brand-platform" id="af-brand-platform">ATOMS</div>
       <div class="af-brand-headline" id="af-brand-headline">Connect with verified manufacturers and suppliers.</div>
       <div class="af-brand-sub" id="af-brand-sub">One account gets you into every Scinode platform — ATOMS, IONS, Scinode for Customers, and Deep Research.</div>
+    </div>
+
+    <!-- Just-approved sign-in only: Recommended First Steps lives here instead
+         of the right-hand form column, so the panel stays useful the moment
+         someone lands here from the approval email. -->
+    <div class="af-brand-mid hidden" id="af-brand-mid-approved">
+      <div class="af-success-card af-brand-steps-card">
+        <div class="af-success-checklist-header">
+          <span>Recommended First Steps</span>
+          <span id="af-brand-steps-checklist-progress"></span>
+        </div>
+        <div class="af-steps-carousel" id="af-brand-steps-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
+          <div class="af-steps-track" id="af-brand-steps-checklist"></div>
+          <div class="af-steps-controls">
+            <div class="af-steps-dots" id="af-brand-steps-checklist-dots"></div>
+            <button type="button" class="af-steps-pause" id="af-brand-steps-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="af-brand-foot">© Scinode — an agentic execution platform for chemistry &amp; manufacturing</div>
@@ -404,6 +423,21 @@
         <div class="af-h1" id="af-signin-h1">Sign in</div>
         <div class="af-sub" id="af-signin-sub">Access your ATOMS workspace</div>
 
+        <!-- Approved-via-email-link only: colleagues/team context right under
+             the heading. Company name/role and Recommended First Steps used to
+             live here too — the former was redundant with the Company Name
+             field below, the latter now lives on the brand panel instead. -->
+        <div class="hidden" id="af-signin-approved-extra">
+          <div class="af-success-card">
+            <div class="af-success-colleagues-row">
+              <div class="af-success-avatar-stack" id="af-signin-success-avatar-stack"></div>
+              <div class="af-success-colleagues-count" id="af-signin-success-colleagues-count"></div>
+              <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
+            </div>
+            <div class="af-success-activity" id="af-signin-success-activity"></div>
+          </div>
+        </div>
+
         <form onsubmit="afSubmitSignin(event)">
           <div id="af-signin-normal">
             <div class="af-field">
@@ -435,48 +469,6 @@
             </div>
             <div class="af-link-row"><button type="button" onclick="afOpenForgotPassword()">Forgot password?</button></div>
             <button type="submit" class="af-submit" id="af-signin-submit">Sign In</button>
-
-            <!-- Approved-via-email-link only: the confirmation content that used to
-                 live on a separate post-signin screen, folded in here so signing in
-                 after admin approval is a single screen instead of two. -->
-            <div class="hidden" id="af-signin-approved-extra">
-              <div class="af-success-card">
-                <div class="af-success-company-row">
-                  <div class="af-success-avatar" id="af-signin-success-company-avatar">AM</div>
-                  <div class="af-success-company-info">
-                    <div class="af-success-company-name">
-                      <span id="af-signin-success-company-name">Company</span>
-                      <span class="af-success-verified-badge">Verified Workspace</span>
-                    </div>
-                    <div class="af-success-company-meta" id="af-signin-success-company-meta"></div>
-                  </div>
-                  <div class="af-success-role">
-                    <div class="af-success-role-label">Your Role</div>
-                    <div class="af-success-role-value" id="af-signin-success-role-value"></div>
-                  </div>
-                </div>
-                <div class="af-success-colleagues-row">
-                  <div class="af-success-avatar-stack" id="af-signin-success-avatar-stack"></div>
-                  <div class="af-success-colleagues-count" id="af-signin-success-colleagues-count"></div>
-                  <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
-                </div>
-                <div class="af-success-activity" id="af-signin-success-activity"></div>
-              </div>
-
-              <div class="af-success-card">
-                <div class="af-success-checklist-header">
-                  <span>Recommended First Steps</span>
-                  <span id="af-signin-success-checklist-progress"></span>
-                </div>
-                <div class="af-steps-carousel" id="af-signin-success-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
-                  <div class="af-steps-track" id="af-signin-success-checklist"></div>
-                  <div class="af-steps-controls">
-                    <div class="af-steps-dots" id="af-signin-success-checklist-dots"></div>
-                    <button type="button" class="af-steps-pause" id="af-signin-success-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <div id="af-signin-sso-section">
               <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
@@ -1624,9 +1616,13 @@
     document.getElementById('af-signin-hero').classList.toggle('hidden', !approved);
     document.getElementById('af-signin-link-info').classList.toggle('hidden', !link);
     document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !approved);
+    // Recommended First Steps moves to the brand panel for this screen only —
+    // swap which of the two .af-brand-mid blocks is showing.
+    document.getElementById('af-brand-mid-default').classList.toggle('hidden', approved);
+    document.getElementById('af-brand-mid-approved').classList.toggle('hidden', !approved);
     if (approved) {
-      afRenderCompanyCard('af-signin-success', meta);
-      afRenderChecklist('af-signin-success', meta);
+      afRenderColleagues('af-signin-success', meta);
+      afRenderChecklist('af-brand-steps', meta);
     }
     document.getElementById('af-signin-h1').textContent = approved
       ? meta.successData.firstName + ', your account has been approved.'
@@ -1758,13 +1754,21 @@
   // dashboard's success screen (prefix 'af-success') and the merged
   // approved-signin screen (prefix 'af-signin-success'), which mirrors the
   // same id suffixes under its own prefix.
-  function afRenderCompanyCard(prefix, meta) {
+  // Company avatar/name/meta/role — dashboard only (af-success prefix); the
+  // merged approved-signin screen dropped this in favor of just the Company
+  // Name field already shown above it.
+  function afRenderCompanyInfo(prefix, meta) {
     var d = meta.successData;
     document.getElementById(prefix + '-company-avatar').textContent = d.avatarInitials;
     document.getElementById(prefix + '-company-name').textContent = meta.company;
     document.getElementById(prefix + '-company-meta').innerHTML = d.tenantLine;
     document.getElementById(prefix + '-role-value').textContent = d.role;
+  }
 
+  // Colleagues avatar stack + count + activity line — shared by the dashboard
+  // (prefix af-success) and the merged approved-signin screen (af-signin-success).
+  function afRenderColleagues(prefix, meta) {
+    var d = meta.successData;
     var stack = document.getElementById(prefix + '-avatar-stack');
     var avatars = d.colleagueInitials.map(function (initials, i) {
       return '<span style="background:' + AF_AVATAR_COLORS[i % AF_AVATAR_COLORS.length] + ';">' + initials + '</span>';
@@ -1798,7 +1802,8 @@
     document.getElementById('af-success-account').textContent = 'Account #' + d.accountId + ' · Active';
     document.getElementById('af-success-headline').textContent = "You're all set, " + d.firstName + '!';
     document.getElementById('af-success-sub').innerHTML = 'Welcome to the <b>' + meta.company + '</b> space on Scinode. Your team and workspace are ready.';
-    afRenderCompanyCard('af-success', meta);
+    afRenderCompanyInfo('af-success', meta);
+    afRenderColleagues('af-success', meta);
     afRenderChecklist('af-success', meta);
 
     var successCta = document.getElementById('af-success-cta');

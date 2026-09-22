@@ -2202,6 +2202,8 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-success-role-label{font-family:var(--font);font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.02em;}
 .af-success-role-value{font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text-1);margin-top:2px;}
 .af-success-colleagues-row{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);}
+/* No company-row above it here (approved-signin's trimmed card) — drop the divider meant to separate it from that. */
+.af-success-card > .af-success-colleagues-row:first-child{margin-top:0;padding-top:0;border-top:none;}
 .af-success-avatar-stack{display:flex;flex-shrink:0;}
 .af-success-avatar-stack span{width:26px;height:26px;border-radius:50%;border:2px solid var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:9.5px;font-weight:600;color:#fff;margin-left:-8px;}
 .af-success-avatar-stack span:first-child{margin-left:0;}

@@ -2279,6 +2279,16 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-pending-icon-badge{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--status-success-fg);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;color:#fff;}
 #af-pending-body{margin-bottom:0;}
 
+/* Rounded square instead of the base .af-result-icon circle, plus a slowly
+   ticking clock hand (spins in place around the dial's true center via
+   transform-box:view-box) to read as "actively waiting", not static. */
+#af-pending-icon{border-radius:var(--radius-lg);}
+#af-pending-icon .af-clock-hand{transform-box:view-box;transform-origin:12px 12px;animation:af-clock-tick 6s linear infinite;}
+@keyframes af-clock-tick{to{transform:rotate(360deg);}}
+@media (prefers-reduced-motion:reduce){
+  #af-pending-icon .af-clock-hand{animation:none;}
+}
+
 .af-pending-banner-meta{margin-top:8px;}
 .af-pending-banner-link{display:inline-block;margin-top:8px;color:var(--status-info-fg);font-family:var(--font);font-size:12px;font-weight:600;text-decoration:underline;}
 .af-pending-banner-link:hover{opacity:.8;}

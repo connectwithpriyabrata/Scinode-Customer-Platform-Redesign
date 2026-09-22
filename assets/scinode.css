@@ -2002,6 +2002,19 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-eyebrow-banner button{background:none;border:none;padding:0;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none;}
 .af-eyebrow-banner button:hover{text-decoration:underline;}
 
+/* Small reusable (i) tooltip — icon + a white popover that opens below on
+   hover/focus of the icon only. General-purpose (not scoped to one page),
+   unlike the dark .af-hstep-popover used for the pending screen's status
+   details — this is a plain info list, so a light card reads better. */
+.af-info-tip-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:5px;padding:1px;border-radius:50%;color:var(--teal-600);cursor:default;transition:color .15s;}
+.af-info-tip-wrap:hover,.af-info-tip-wrap:focus-visible{color:var(--teal-700);outline:none;}
+.af-info-tip-popover{display:none;position:absolute;top:100%;left:0;margin-top:8px;width:230px;background:var(--white);color:var(--text-1);padding:14px 16px;border-radius:var(--radius-md);box-shadow:var(--shadow-hero);text-align:left;z-index:60;cursor:auto;}
+.af-info-tip-wrap:hover .af-info-tip-popover,.af-info-tip-wrap:focus-visible .af-info-tip-popover{display:block;}
+.af-info-tip-title{font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--text-1);margin-bottom:8px;line-height:1.4;}
+.af-info-tip-list{list-style:none;margin:0;padding:0;}
+.af-info-tip-list li{font-family:var(--font);font-size:12.5px;font-weight:400;color:var(--text-2);line-height:1.7;padding-left:14px;position:relative;}
+.af-info-tip-list li::before{content:'';position:absolute;left:2px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--teal-500);}
+
 .af-h1{font-family:var(--font-heading);font-size:24px;font-weight:700;color:var(--text-1);letter-spacing:-.01em;margin-bottom:6px;}
 .af-sub{font-family:var(--font);font-size:13.5px;color:var(--text-2);margin-bottom:26px;}
 

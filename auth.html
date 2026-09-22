@@ -1761,13 +1761,19 @@
     var rich = approved || verified;
     document.getElementById('af-signin-hero').classList.toggle('hidden', !rich);
     document.getElementById('af-signin-link-info').classList.toggle('hidden', !link);
-    document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !rich);
+    // Colleagues card is Just Verified-only — on Just Approved (an admin
+    // just granted access to this platform) there's no established team
+    // activity on it yet to show, unlike Just Verified where the org/team
+    // was already active on this platform beforehand.
+    document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !verified);
     // Recommended First Steps moves to the brand panel for this screen only —
     // swap which of the two .af-brand-mid blocks is showing.
     document.getElementById('af-brand-mid-default').classList.toggle('hidden', rich);
     document.getElementById('af-brand-mid-approved').classList.toggle('hidden', !rich);
-    if (rich) {
+    if (verified) {
       afRenderColleagues('af-signin-success', meta);
+    }
+    if (rich) {
       afRenderChecklist('af-brand-steps', meta);
     }
     document.getElementById('af-signin-h1').textContent = approved

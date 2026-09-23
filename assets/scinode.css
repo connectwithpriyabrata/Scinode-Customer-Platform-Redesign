@@ -2028,46 +2028,6 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-step-back{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;margin-bottom:18px;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}
 .af-step-back:hover{text-decoration:underline;}
 
-/* Signup 2-step wizard's stepper — compact dot+line style, no card/background
-   (sits directly on the form), auth.html's signup form only (invite.html's
-   Auth screen keeps its own separate .af-stepper-track/.af-stepper-fill
-   pill+bar, untouched). A single 5-column CSS grid: dot / title / connector
-   / dot / title on row 1, with each status directly under its own title on
-   row 2 (placed by id, not source order, so it can't drift from its title
-   if the markup is ever reordered). Uses the design system's own type
-   (Outfit) and brand colors (teal-500 current, status-success-fg done) —
-   not the monochrome/monospace reference the user first shared. */
-.af-mstepper{display:grid;grid-template-columns:auto auto 1fr auto auto;align-items:center;column-gap:6px;row-gap:2px;margin:14px 0 22px;}
-#af-signup-stepper-dot-1{grid-column:1;grid-row:1;}
-#af-signup-stepper-title-1{grid-column:2;grid-row:1;}
-#af-signup-stepper-connector{grid-column:3;grid-row:1;}
-#af-signup-stepper-dot-2{grid-column:4;grid-row:1;}
-#af-signup-stepper-title-2{grid-column:5;grid-row:1;}
-#af-signup-stepper-status-1{grid-column:2;grid-row:2;}
-#af-signup-stepper-status-2{grid-column:5;grid-row:2;}
-
-.af-mstep-dot{width:16px;height:16px;border-radius:50%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.af-mstep-dot svg{width:8px;height:8px;display:none;color:#fff;}
-.af-mstep-dot.is-pending{background:none;border:1.5px solid var(--border-h);}
-.af-mstep-dot.is-current{background:var(--teal-500);}
-.af-mstep-dot.is-done{background:var(--status-success-fg);}
-.af-mstep-dot.is-done svg{display:block;}
-.af-mstep-connector{height:1.5px;background:var(--border-h);margin:0 3px;transition:background .2s;}
-.af-mstep-connector.is-done{background:var(--text-1);}
-.af-mstep-title{font-family:var(--font);font-size:14px;font-weight:400;color:var(--text-3);white-space:nowrap;}
-.af-mstep-title.is-current{color:var(--teal-600);}
-.af-mstep-title.is-done{color:var(--text-1);}
-.af-mstep-status{font-family:var(--font);font-size:12px;font-weight:400;color:var(--text-3);white-space:nowrap;}
-.af-mstep-status.is-current{color:var(--teal-600);}
-.af-mstep-status.is-done{color:var(--status-success-fg);}
-@media (max-width:420px){
-  .af-mstepper{column-gap:5px;}
-  /* Titles/status can no longer stay on one line at this width without
-     overflowing past the card edge — let them wrap instead. */
-  .af-mstep-title{font-size:13px;white-space:normal;line-height:1.25;}
-  .af-mstep-status{font-size:11px;white-space:normal;}
-}
-
 .af-section-label{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin:26px 0 14px;}
 
 .af-field{margin-bottom:14px;}

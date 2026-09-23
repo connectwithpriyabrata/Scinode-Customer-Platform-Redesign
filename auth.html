@@ -1764,12 +1764,12 @@
     document.getElementById('af-signin-h1').textContent = approved
       ? 'Welcome to ' + meta.accountNoun + ', ' + meta.successData.firstName + '! Your account is approved.'
       : verified
-        ? meta.successData.firstName + ', your email ID has been verified.'
+        ? meta.successData.firstName + ', your email is verified and your account is approved.'
         : 'Sign in';
     document.getElementById('af-signin-sub').innerHTML = approved
       ? 'Your <b>' + meta.company + '</b> team and workspace are ready. Sign in to get started and ' + meta.approvedSubAction + '.'
       : verified
-        ? 'Welcome to <b>' + meta.company + "</b>'s space on " + meta.accountNoun + '. Your team and workspace are ready. Sign in to get started.'
+        ? 'Welcome to <b>' + meta.company + "</b>'s space on " + meta.accountNoun + '. Your team and workspace are ready—sign in to continue and get started'
         : 'Access your ' + meta.accountNoun + ' workspace';
   }
 

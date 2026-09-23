@@ -424,13 +424,6 @@
         <div class="af-h1" id="af-signin-h1">Sign in</div>
         <div class="af-sub" id="af-signin-sub">Access your ATOMS workspace</div>
 
-        <!-- Org verification / approval message — only when opened from the
-             verification or approval email link (verified domain, or
-             approval). Sits with the subheader now; the locked Company Name
-             field this used to live under was removed as redundant with
-             this message. -->
-        <div class="af-info-banner is-success hidden" role="status" id="af-signin-link-banner"></div>
-
         <!-- Approved-via-email-link only: colleagues/team context right under
              the heading. Company name/role and Recommended First Steps used to
              live here too — the former was redundant with the Company Name
@@ -1750,15 +1743,9 @@
     var verified = !!link && link.mode === 'verify';
     // 'verify' and 'approved' share the same rich layout (illustration,
     // colleagues card, Recommended First Steps on the brand panel) — only
-    // the heading and the info banner (now next to the subheader, no
-    // locked Company Name field) differ.
+    // the heading and subtext differ.
     var rich = approved || verified;
     document.getElementById('af-signin-hero').classList.toggle('hidden', !rich);
-    // Approved: this message is now folded into the subtext above (see
-    // af-signin-sub below), so the banner would just repeat it — only
-    // Just Verified still needs it (nothing else on this screen says
-    // "your company is already verified").
-    document.getElementById('af-signin-link-banner').classList.toggle('hidden', !verified);
     // Colleagues card is Just Verified-only — on Just Approved (an admin
     // just granted access to this platform) there's no established team
     // activity on it yet to show, unlike Just Verified where the org/team
@@ -1784,11 +1771,6 @@
       : verified
         ? 'Welcome to <b>' + meta.company + "</b>'s space on " + meta.accountNoun + '. Your team and workspace are ready. Sign in to get started.'
         : 'Access your ' + meta.accountNoun + ' workspace';
-    if (!verified) return;
-
-    var banner = document.getElementById('af-signin-link-banner');
-    banner.className = 'af-info-banner is-success';
-    banner.innerHTML = AF_BANNER_ICON.success + '<span>Your email is verified and your company is already verified. Sign in to continue to your workspace.</span>';
   }
 
   function afSubmitSignin(e) {

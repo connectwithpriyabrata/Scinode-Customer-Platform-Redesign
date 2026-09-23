@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Sign Up — Scinode</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260923h" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260923i" />
   <script src="assets/scinode.js?v=20260902a"></script>
 </head>
 <body>
@@ -174,11 +174,11 @@
           <button type="button" onclick="afShowScreen('signin')">Sign In →</button>
         </div>
 
+        <div class="af-sub" id="af-signup-sub">Welcome to <b>Scinode for Manufacturers</b></div>
         <div class="af-stepper-row">
-          <div class="af-h1" id="af-signup-h1">Create your ATOMS account</div>
+          <div class="af-h1" id="af-signup-h1">Get started with your account</div>
           <span class="af-stepper-badge" id="af-signup-step-badge">Step 1 of 2</span>
         </div>
-        <div class="af-sub" id="af-signup-sub">Manufacturing workspace</div>
         <div class="af-stepper-track"><div class="af-stepper-fill" id="af-signup-step-fill"></div></div>
 
         <form id="af-signup-form" onsubmit="afSubmitSignup(event)">
@@ -910,7 +910,6 @@
       tagline: 'Platform for Chemistry &amp; Manufacturing',
       pillBg: 'var(--teal-500)', pillFg: '#fff',
       headline: 'Connect with verified manufacturers and suppliers.',
-      pageSub: 'Manufacturing workspace',
       accountNoun: 'ATOMS',
       companyLabel: 'Company Name',
       companyLabelPublic: 'Which company do you represent?',
@@ -949,7 +948,6 @@
       tagline: 'Platform for R&amp;D &amp; Chemistry',
       pillBg: 'var(--sage)', pillFg: 'var(--navy-500)',
       headline: 'Partner with R&amp;D teams, CROs, and specialty labs.',
-      pageSub: 'R&amp;D &middot; CROs &middot; Labs workspace',
       accountNoun: 'IONS',
       companyLabel: 'Organization / Institute Name',
       companyLabelPublic: 'Which organization / institute do you represent?',
@@ -988,7 +986,6 @@
       tagline: 'Platform for Chemistry Sourcing',
       pillBg: 'var(--navy-500)', pillFg: '#fff',
       headline: 'Source chemistry products and manage requests in one place.',
-      pageSub: 'Customer workspace',
       accountNoun: 'Scinode',
       companyLabel: 'Organisation Name',
       companyLabelPublic: 'Which organisation do you represent?',
@@ -1027,7 +1024,6 @@
       tagline: 'Platform for Chemistry Research',
       pillBg: 'var(--indigo)', pillFg: '#fff',
       headline: 'Turn your research questions into answers, instantly.',
-      pageSub: 'Researcher workspace',
       accountNoun: 'Deep Research',
       companyLabel: 'Company Name',
       companyLabelPublic: 'Which company do you represent?',
@@ -1313,8 +1309,7 @@
     document.getElementById('af-brand-tagline').innerHTML = meta.tagline;
     document.getElementById('af-brand-headline').innerHTML = meta.headline;
     document.getElementById('af-brand-sub').textContent = AF_ECOSYSTEM_SUB;
-    document.getElementById('af-signup-h1').textContent = 'Create your ' + meta.accountNoun + ' account';
-    document.getElementById('af-signup-sub').innerHTML = meta.pageSub;
+    document.getElementById('af-signup-sub').innerHTML = 'Welcome to <b>' + meta.label + '</b>';
     document.getElementById('af-signin-sub').textContent = 'Access your ' + meta.accountNoun + ' workspace';
     document.getElementById('af-verify-note').textContent = 'Verify your email to finish setting up your ' + meta.accountNoun + ' account.';
 

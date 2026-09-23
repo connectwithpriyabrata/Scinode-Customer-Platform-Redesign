@@ -2028,6 +2028,33 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-step-back{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;margin-bottom:18px;color:var(--teal-600);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;}
 .af-step-back:hover{text-decoration:underline;}
 
+/* Signup 2-step wizard's stepper — circular nodes + connecting track,
+   replacing the old .af-stepper-badge/.af-stepper-track pill+bar for
+   auth.html's signup form only (invite.html's Auth screen keeps the old
+   one — .af-stepper-track/.af-stepper-fill above are still used there,
+   don't remove them). Adapted from a reference design: check/ring/plain
+   node states, done segment on the connector, eyebrow+title+status label
+   under each node. */
+.af-hstepper2{margin:20px 0 28px;}
+.af-hstepper2-track{display:flex;align-items:center;}
+.af-hstepper2-node{position:relative;width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .2s,border-color .2s,box-shadow .2s;}
+.af-hstepper2-node svg,.af-hstepper2-dot{display:none;}
+.af-hstepper2-node.is-done{background:var(--status-success-fg);}
+.af-hstepper2-node.is-done svg{display:block;}
+.af-hstepper2-node.is-current{background:var(--white);border:2px solid var(--teal-500);box-shadow:0 0 0 4px var(--teal-50);}
+.af-hstepper2-node.is-current .af-hstepper2-dot{display:block;width:12px;height:12px;border-radius:50%;background:var(--teal-500);}
+.af-hstepper2-node.is-pending{background:var(--teal-50);}
+.af-hstepper2-connector{flex:1;height:2px;background:var(--border);margin:0 10px;transition:background .2s;}
+.af-hstepper2-connector.is-done{background:var(--status-success-fg);}
+.af-hstepper2-labels{display:flex;margin-top:10px;}
+.af-hstepper2-label{flex:1;min-width:0;display:flex;flex-direction:column;}
+.af-hstepper2-label:last-child{align-items:flex-end;text-align:right;}
+.af-hstepper2-eyebrow{font-family:var(--font);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);}
+.af-hstepper2-title{font-family:var(--font);font-size:13.5px;font-weight:700;color:var(--text-1);margin-top:2px;}
+.af-hstepper2-status{font-family:var(--font);font-size:11.5px;font-weight:600;margin-top:3px;color:var(--text-3);}
+.af-hstepper2-status.is-done{color:var(--status-success-fg);}
+.af-hstepper2-status.is-current{color:var(--teal-600);}
+
 .af-section-label{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin:26px 0 14px;}
 
 .af-field{margin-bottom:14px;}

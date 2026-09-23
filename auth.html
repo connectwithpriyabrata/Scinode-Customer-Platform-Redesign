@@ -88,6 +88,20 @@
       <button id="af-dev-signinsso" onclick="afToggleSigninSSO()">SSO org detected</button>
       <button id="af-dev-signin-pending" onclick="afToggleSigninPending()">Account pending approval</button>
     </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Existing Customer</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-xp-off" class="active" onclick="afSetExistingCustomer(false)">Off</button>
+      <button id="af-dev-xp-on" onclick="afSetExistingCustomer(true)">On</button>
+    </div>
+    <span id="af-devbar-xp-complete-only" class="hidden" style="display:contents;">
+      <div class="af-devbar-sep"></div>
+      <span class="af-devbar-label">Platform Profile Info</span>
+      <div class="af-devbar-group">
+        <button id="af-dev-xp-missing" class="active" onclick="afSetXpProfileComplete(false)">Missing</button>
+        <button id="af-dev-xp-complete" onclick="afSetXpProfileComplete(true)">Complete</button>
+      </div>
+    </span>
   </span>
   <span id="af-devbar-verify-only" class="hidden" style="display:contents;">
     <div class="af-devbar-sep"></div>
@@ -481,6 +495,91 @@
           </div>
 
           <div class="af-footnote">Don't have an account? <button type="button" onclick="afShowScreen('signup')">Sign Up</button></div>
+        </form>
+      </div>
+
+      <!-- ══════════ EXISTING CUSTOMER → NEW PLATFORM: missing profile persona ══════════
+           Reached from afSubmitSignin() when an existing Scinode ecosystem
+           account (e.g. Scinode for Customers) signs into a platform it
+           hasn't set up a persona for yet — same identity, not a new
+           account, just the platform-specific field(s) already used on Sign
+           Up (Industries / Profile Type), reused here under their own ids
+           since they live in a different form. Deep Research has no
+           existing equivalent field on Sign Up, so its two questions are
+           new. On completion this reuses the existing Cross-Platform
+           Pending screen (afSubmitXpProfile → afShowResult('pending-platform')). -->
+      <div class="af-screen hidden" id="af-screen-xp-profile">
+        <div class="af-h1">One more step</div>
+        <div class="af-sub" id="af-xp-sub">Just confirm a couple of details to set up your workspace.</div>
+
+        <form onsubmit="afSubmitXpProfile(event)">
+          <!-- Industries — ATOMS only, multi-select (mirrors #af-field-industries on Sign Up) -->
+          <div class="af-field hidden" id="af-xp-field-industries">
+            <label>Industries <span class="af-req">*</span></label>
+            <select class="af-select" id="af-xp-industries-select" onchange="afXpAddIndustry()">
+              <option value="" selected disabled>Select industries</option>
+              <option>Agrochemicals</option>
+              <option>Beauty &amp; Personal Care</option>
+              <option>Critical Metals</option>
+              <option>Dyes and Pigments</option>
+              <option>Elemental Derivatives</option>
+              <option>Flame Retardants</option>
+              <option>Flavors &amp; Fragrances</option>
+              <option>Food &amp; Nutrition</option>
+              <option>Industrial Chemicals</option>
+              <option>Metallurgy Chemicals</option>
+              <option>Oleochemicals</option>
+              <option>Pharmaceutical</option>
+              <option value="__other__">Others</option>
+            </select>
+            <input class="af-input af-industry-other hidden" type="text" id="af-xp-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="afXpOtherIndustryKey(event)">
+            <div class="af-field-hint hidden" id="af-xp-industries-other-hint">Press Enter to add it to your industries.</div>
+            <div class="af-chip-row" id="af-xp-industries-chips"></div>
+            <div class="af-field-error hidden" id="af-xp-industries-error">Select at least one industry.</div>
+          </div>
+
+          <!-- Profile Type — IONS only (mirrors #af-field-profiletype on Sign Up) -->
+          <div class="af-field hidden" id="af-xp-field-profiletype">
+            <label>Profile Type <span class="af-req">*</span></label>
+            <select class="af-select" id="af-xp-profiletype-input" onchange="afXpUpdateProfileTypeHint()">
+              <option value="" selected disabled>Select the option that best describes you</option>
+              <option>Scientist / Research Lab</option>
+              <option>CRO / CDMO</option>
+              <option>Others</option>
+            </select>
+            <div class="af-field-hint" id="af-xp-profiletype-hint"></div>
+          </div>
+
+          <!-- Deep Research — two mandatory questions, no existing equivalent field on Sign Up -->
+          <div class="af-field hidden" id="af-xp-field-dr-role">
+            <label>What best describes your role? <span class="af-req">*</span></label>
+            <select class="af-select" id="af-xp-dr-role" onchange="afXpValidate()">
+              <option value="" selected disabled>Select one</option>
+              <option>Researcher / Scientist</option>
+              <option>Student / Research Scholar</option>
+              <option>R&amp;D / Innovation</option>
+              <option>Process / Manufacturing</option>
+              <option>Business / Product / Commercial</option>
+              <option>Procurement / Sourcing</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="af-field hidden" id="af-xp-field-dr-orgtype">
+            <label>What type of organisation are you part of? <span class="af-req">*</span></label>
+            <select class="af-select" id="af-xp-dr-orgtype" onchange="afXpValidate()">
+              <option value="" selected disabled>Select one</option>
+              <option>Industry / Enterprise</option>
+              <option>Manufacturer</option>
+              <option>CRO / CDMO / Research Services</option>
+              <option>University / Academic Institution</option>
+              <option>Research Institution / Government</option>
+              <option>Biotech / Deep Tech Company</option>
+              <option>Independent Researcher / Consultant</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <button type="submit" class="af-submit" id="af-xp-submit" disabled>Continue</button>
         </form>
       </div>
 
@@ -889,8 +988,9 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, ssoDisplay: 'with', step: 1 };
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, ssoDisplay: 'with', step: 1, existingCustomer: false, xpProfileComplete: false };
   var afIndustries = [];
+  var afXpIndustries = [];
   var afVerifyState = 'pending';
 
   var AF_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
@@ -1077,6 +1177,8 @@
     document.getElementById('af-profiletype-hint').textContent = '';
     document.getElementById('af-describe-input').value = '';
     document.getElementById('af-nda-input').value = '';
+    afState.existingCustomer = false;
+    afState.xpProfileComplete = false;
     // Switching platform while sitting on a result/verify screen would otherwise
     // leave stale content (e.g. Deep Research's welcome copy) under the new brand panel.
     if (afState.screen === 'result' || afState.screen === 'verify') afShowScreen('signup');
@@ -1125,6 +1227,27 @@
   function afComputeSignupReason() {
     if (afState.domain !== 'verified') return 'pending';
     return afState.orgApprovedOnPlatform ? 'activated' : 'pending-platform';
+  }
+
+  // Demo toggles for the "existing Scinode ecosystem account signs into a
+  // different platform" flow (see afSubmitSignin / afShowXpProfile below).
+  // Existing Customer = the account belongs to the shared ecosystem already
+  // (e.g. Scinode for Customers); Platform Profile Info = whether this
+  // account already has the platform-specific persona field(s) on file, so
+  // both branches of that flow (question screen shown vs. skipped) are
+  // independently demoable.
+  function afSetExistingCustomer(val) {
+    afState.existingCustomer = val;
+    if (val && afState.pendingAccount) {
+      afState.pendingAccount = null;
+      afSyncPendingBtn();
+    }
+    afRender();
+  }
+
+  function afSetXpProfileComplete(val) {
+    afState.xpProfileComplete = val;
+    afRender();
   }
 
   function afSetSource(m) {
@@ -1359,11 +1482,16 @@
     ['direct', 'google', 'linkedin'].forEach(function (m) {
       document.getElementById('af-dev-source-' + m).classList.toggle('active', s.source === m);
     });
+    document.getElementById('af-dev-xp-off').classList.toggle('active', !s.existingCustomer);
+    document.getElementById('af-dev-xp-on').classList.toggle('active', s.existingCustomer);
+    document.getElementById('af-devbar-xp-complete-only').classList.toggle('hidden', !s.existingCustomer || s.platform === 'customers');
+    document.getElementById('af-dev-xp-missing').classList.toggle('active', !s.xpProfileComplete);
+    document.getElementById('af-dev-xp-complete').classList.toggle('active', s.xpProfileComplete);
   }
 
   function afShowScreen(name) {
     afClearSigninLink();
-    ['signup', 'signin', 'reset', 'result', 'verify'].forEach(function (n) {
+    ['signup', 'signin', 'reset', 'result', 'verify', 'xp-profile'].forEach(function (n) {
       var el = document.getElementById('af-screen-' + n);
       if (el) el.classList.toggle('hidden', n !== name);
     });
@@ -1788,7 +1916,150 @@
       afShowResult(afState.pendingAccount.reason);
       return;
     }
+    // Existing Scinode ecosystem account (e.g. Scinode for Customers) signing
+    // into a different platform — same identity, not a new account, but the
+    // platform-specific persona info may still be missing. Scinode for
+    // Customers itself needs no extra persona info (spec Example 4).
+    if (afState.existingCustomer && afState.platform !== 'customers') {
+      if (afState.xpProfileComplete) {
+        afShowResult('pending-platform');
+      } else {
+        afShowXpProfile();
+      }
+      return;
+    }
     afShowResult('signin');
+  }
+
+  // ── Existing Customer → new platform: missing profile persona screen ────
+  // Reuses the AF_PLATFORM meta and the same field content as Sign Up's
+  // Industries / Profile Type, under separate af-xp-* ids/state since they
+  // live in a different form on a different screen.
+  function afShowXpProfile() {
+    var meta = AF_PLATFORM[afState.platform];
+    var isAtoms = afState.platform === 'atoms';
+    var isIons = afState.platform === 'ions';
+    var isDR = afState.platform === 'deepresearch';
+
+    afXpIndustries = [];
+    afXpRenderIndustryChips();
+    afXpHideOtherIndustry();
+    document.getElementById('af-xp-profiletype-input').value = '';
+    document.getElementById('af-xp-profiletype-hint').textContent = '';
+    document.getElementById('af-xp-dr-role').value = '';
+    document.getElementById('af-xp-dr-orgtype').value = '';
+
+    document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms);
+    document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons);
+    document.getElementById('af-xp-field-dr-role').classList.toggle('hidden', !isDR);
+    document.getElementById('af-xp-field-dr-orgtype').classList.toggle('hidden', !isDR);
+    document.getElementById('af-xp-profiletype-input').required = isIons;
+    document.getElementById('af-xp-dr-role').required = isDR;
+    document.getElementById('af-xp-dr-orgtype').required = isDR;
+
+    document.getElementById('af-xp-sub').innerHTML = 'Your Scinode account is all set — just confirm a couple of details to set up your <b>' + meta.label + '</b> workspace.';
+
+    afXpValidate();
+    afShowScreen('xp-profile');
+  }
+
+  function afXpValidate() {
+    var p = afState.platform;
+    var valid = true;
+    if (p === 'atoms') {
+      valid = afXpIndustries.length > 0;
+    } else if (p === 'ions') {
+      valid = !!document.getElementById('af-xp-profiletype-input').value;
+    } else if (p === 'deepresearch') {
+      valid = !!document.getElementById('af-xp-dr-role').value && !!document.getElementById('af-xp-dr-orgtype').value;
+    }
+    document.getElementById('af-xp-submit').disabled = !valid;
+  }
+
+  // Same dedupe/chip pattern as afPushIndustry/afRenderIndustryChips (Sign
+  // Up's Industries field) — kept as a separate copy rather than a shared,
+  // prefix-parameterized function so this new screen can't affect the
+  // existing, already-verified Sign Up flow.
+  function afXpAddIndustry() {
+    var select = document.getElementById('af-xp-industries-select');
+    var val = select.value;
+    select.value = '';
+    if (val === '__other__') {
+      afXpShowOtherIndustry();
+      return;
+    }
+    afXpPushIndustry(val);
+  }
+  function afXpPushIndustry(name) {
+    if (!name) return;
+    var lower = name.toLowerCase();
+    if (afXpIndustries.some(function (i) { return i.toLowerCase() === lower; })) return;
+    afXpIndustries.push(name);
+    afXpRenderIndustryChips();
+  }
+  function afXpShowOtherIndustry() {
+    var input = document.getElementById('af-xp-industries-other');
+    input.classList.remove('hidden');
+    document.getElementById('af-xp-industries-other-hint').classList.remove('hidden');
+    input.focus();
+  }
+  function afXpHideOtherIndustry() {
+    var input = document.getElementById('af-xp-industries-other');
+    if (!input) return;
+    input.value = '';
+    input.classList.add('hidden');
+    document.getElementById('af-xp-industries-other-hint').classList.add('hidden');
+  }
+  function afXpOtherIndustryKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var name = e.target.value.replace(/\s+/g, ' ').trim();
+      if (!name) return;
+      afXpPushIndustry(name);
+      afXpHideOtherIndustry();
+      document.getElementById('af-xp-industries-select').focus();
+    } else if (e.key === 'Escape') {
+      afXpHideOtherIndustry();
+      document.getElementById('af-xp-industries-select').focus();
+    }
+  }
+  function afXpRemoveIndustryAt(index) {
+    afXpIndustries.splice(index, 1);
+    afXpRenderIndustryChips();
+  }
+  function afXpRenderIndustryChips() {
+    var row = document.getElementById('af-xp-industries-chips');
+    if (!row) return;
+    row.innerHTML = afXpIndustries.map(function (industry, i) {
+      var safe = afEscapeHtml(industry);
+      return '<span class="af-chip">' + safe +
+        '<button type="button" onclick="afXpRemoveIndustryAt(' + i + ')" aria-label="Remove ' + safe + '">' +
+        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
+    }).join('');
+    var error = document.getElementById('af-xp-industries-error');
+    if (error && afXpIndustries.length) error.classList.add('hidden');
+    afXpValidate();
+  }
+
+  // Same copy source as Sign Up's Profile Type hint (AF_PROFILE_TYPE_DESC).
+  function afXpUpdateProfileTypeHint() {
+    var select = document.getElementById('af-xp-profiletype-input');
+    var hint = document.getElementById('af-xp-profiletype-hint');
+    hint.textContent = AF_PROFILE_TYPE_DESC[select.value] || '';
+    afXpValidate();
+  }
+
+  function afSubmitXpProfile(e) {
+    if (e) e.preventDefault();
+    if (afState.platform === 'atoms' && afXpIndustries.length === 0) {
+      document.getElementById('af-xp-industries-error').classList.remove('hidden');
+      document.getElementById('af-xp-industries-select').focus();
+      return;
+    }
+    // Missing-info collection done — same destination as the "already had
+    // the info" skip path (afSubmitSignin): the existing Cross-Platform
+    // Pending screen, reused rather than duplicated.
+    afShowResult('pending-platform');
   }
 
   // Overlapping-avatar palette for the success screen's colleague stack —

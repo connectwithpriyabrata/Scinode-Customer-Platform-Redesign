@@ -2049,11 +2049,10 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-info-banner.is-success{background:var(--status-success-bg);color:var(--status-success-fg);}
 .af-info-banner.is-info{background:var(--status-info-bg);color:var(--status-info-fg);}
 
-/* Company Name banner under the locked field: no pill background or icon,
-   just the status-colored text (both the verified/success and
+/* Company Name banner under the locked field: no pill background, keep the
+   icon + status-colored text (both the verified/success and
    cross-platform-expansion/info states this one banner can show). */
 #af-company-verified-banner{background:none;padding:0;}
-#af-company-verified-banner svg{display:none;}
 
 .af-field-locked{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;background:var(--page-bg);}
 .af-field-locked-val{font-family:var(--font);font-size:13.5px;color:var(--text-1);font-weight:500;display:flex;align-items:center;gap:6px;min-width:0;}

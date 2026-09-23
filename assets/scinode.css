@@ -2019,7 +2019,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
    stepper: all 3 items are equal, none is "done"/"active"/"locked"), used
    on the Existing-Customer profile-completion screen. Reuses the same
    teal-50/teal-700 soft-panel treatment as .af-eyebrow-banner above. */
-.af-howitworks{background:var(--teal-50);border-radius:var(--radius-md);margin-bottom:20px;}
+.af-howitworks{background:var(--page-bg);border-radius:var(--radius-md);margin-bottom:20px;}
 .af-howitworks-toggle{display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;color:var(--teal-700);text-align:left;}
 .af-howitworks-toggle svg{flex-shrink:0;}
 .af-howitworks-icon{color:var(--teal-500);}

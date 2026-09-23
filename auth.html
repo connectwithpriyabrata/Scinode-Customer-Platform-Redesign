@@ -931,7 +931,6 @@
         'Match with demand opportunities relevant to your industry and capabilities',
         'Unlock R&amp;D and product intelligence to grow your business'
       ],
-      approvedSubtext: 'Start boosting your plant capacity utilization.',
       approvedSubAction: 'boost your plant capacity utilization',
       pendingRefId: 'SCI-ORG-48213',
       ecosystemAccessDesc: 'Granting access to demand-matching, product cataloguing, and the verified manufacturer network.',
@@ -971,7 +970,6 @@
         'Unlock R&amp;D intelligence to help assess the best path to molecule development',
         'Get access to market intelligence for your products to help grow your business'
       ],
-      approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.',
       approvedSubAction: 'explore R&amp;D opportunities based on your capabilities',
       pendingRefId: 'SCI-ORG-94821',
       ecosystemAccessDesc: 'Granting access to R&amp;D matchmaking, Molecule AI intelligence, and the verified partner network.',
@@ -1011,7 +1009,6 @@
         'Raise and track Compliance, Manufacturing, Quality and Development requests',
         'Track your orders from placement through delivery'
       ],
-      approvedSubtext: 'Start exploring the Scinode ecosystem.',
       approvedSubAction: 'explore the Scinode ecosystem',
       pendingRefId: 'SCI-ORG-77042',
       ecosystemAccessDesc: 'Granting access to manufacturer discovery, request tracking, and the verified supplier network.',
@@ -1051,7 +1048,6 @@
         'Get ranked routes, feasibility, cost and IP-risk insights.',
         'Calculate scale-up, materials, conditions and save every result.'
       ],
-      approvedSubtext: 'Start your first research workflow.',
       approvedSubAction: 'run your first research query',
       pendingRefId: 'SCI-ORG-33095',
       ecosystemAccessDesc: 'Granting access to deep research tooling, literature intelligence, and the verified collaborator network.',
@@ -1758,7 +1754,11 @@
     // locked Company Name field) differ.
     var rich = approved || verified;
     document.getElementById('af-signin-hero').classList.toggle('hidden', !rich);
-    document.getElementById('af-signin-link-banner').classList.toggle('hidden', !link);
+    // Approved: this message is now folded into the subtext above (see
+    // af-signin-sub below), so the banner would just repeat it — only
+    // Just Verified still needs it (nothing else on this screen says
+    // "your company is already verified").
+    document.getElementById('af-signin-link-banner').classList.toggle('hidden', !verified);
     // Colleagues card is Just Verified-only — on Just Approved (an admin
     // just granted access to this platform) there's no established team
     // activity on it yet to show, unlike Just Verified where the org/team
@@ -1784,14 +1784,11 @@
       : verified
         ? 'Welcome to <b>' + meta.company + "</b>'s space on " + meta.accountNoun + '. Your team and workspace are ready. Sign in to get started.'
         : 'Access your ' + meta.accountNoun + ' workspace';
-    if (!link) return;
+    if (!verified) return;
 
-    var html = approved
-      ? '<b>' + meta.company + '</b> has been approved for ' + meta.accountNoun + '. ' + meta.approvedSubtext
-      : 'Your email is verified and your company is already verified. Sign in to continue to your workspace.';
     var banner = document.getElementById('af-signin-link-banner');
     banner.className = 'af-info-banner is-success';
-    banner.innerHTML = AF_BANNER_ICON.success + '<span>' + html + '</span>';
+    banner.innerHTML = AF_BANNER_ICON.success + '<span>Your email is verified and your company is already verified. Sign in to continue to your workspace.</span>';
   }
 
   function afSubmitSignin(e) {

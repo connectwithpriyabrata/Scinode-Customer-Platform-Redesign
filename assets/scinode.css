@@ -2057,7 +2057,7 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-mstep-title{font-family:var(--font);font-size:14px;font-weight:400;color:var(--text-3);white-space:nowrap;}
 .af-mstep-title.is-current{color:var(--teal-600);}
 .af-mstep-title.is-done{color:var(--text-1);}
-.af-mstep-status{font-family:var(--font);font-size:12.5px;font-weight:400;color:var(--text-3);white-space:nowrap;}
+.af-mstep-status{font-family:var(--font);font-size:12px;font-weight:400;color:var(--text-3);white-space:nowrap;}
 .af-mstep-status.is-current{color:var(--teal-600);}
 .af-mstep-status.is-done{color:var(--status-success-fg);}
 @media (max-width:420px){

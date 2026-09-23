@@ -2015,6 +2015,25 @@ body[data-premium="navy"] .mp-locked-btn:hover{background:var(--navy-700);}
 .af-info-tip-list li{font-family:var(--font);font-size:12.5px;font-weight:400;color:var(--text-2);line-height:1.7;padding-left:14px;position:relative;}
 .af-info-tip-list li::before{content:'';position:absolute;left:2px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--teal-500);}
 
+/* "How it works" — collapsed-by-default infographic (not a progress
+   stepper: all 3 items are equal, none is "done"/"active"/"locked"), used
+   on the Existing-Customer profile-completion screen. Reuses the same
+   teal-50/teal-700 soft-panel treatment as .af-eyebrow-banner above. */
+.af-howitworks{background:var(--teal-50);border-radius:var(--radius-md);margin-bottom:20px;}
+.af-howitworks-toggle{display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;color:var(--teal-700);text-align:left;}
+.af-howitworks-toggle svg{flex-shrink:0;}
+.af-howitworks-icon{color:var(--teal-500);}
+.af-howitworks-toggle-label{flex:1;}
+.af-howitworks-chevron{color:var(--teal-600);transition:transform .18s ease;}
+.af-howitworks.is-open .af-howitworks-chevron{transform:rotate(180deg);}
+.af-howitworks-body{padding:2px 16px 16px;}
+.af-howitworks-steps{display:flex;align-items:flex-start;}
+.af-howitworks-step{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;width:84px;}
+.af-howitworks-step-icon{width:34px;height:34px;border-radius:var(--radius-full);background:var(--white);color:var(--teal-600);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-nested);flex-shrink:0;}
+.af-howitworks-step-icon svg{width:16px;height:16px;}
+.af-howitworks-step-title{font-family:var(--font);font-size:11px;font-weight:600;color:var(--text-1);margin-top:6px;line-height:1.3;}
+.af-howitworks-connector{flex:1 1 auto;height:1.5px;min-width:10px;background:var(--teal-100);margin-top:17px;}
+
 .af-h1{font-family:var(--font-heading);font-size:24px;font-weight:700;color:var(--text-1);letter-spacing:-.01em;margin-bottom:6px;}
 .af-sub{font-family:var(--font);font-size:13.5px;color:var(--text-2);margin-bottom:26px;}
 

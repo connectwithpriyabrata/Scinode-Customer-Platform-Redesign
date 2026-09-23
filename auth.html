@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Sign Up — Scinode</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260923i" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260923j" />
   <script src="assets/scinode.js?v=20260902a"></script>
 </head>
 <body>
@@ -511,6 +511,34 @@
       <div class="af-screen hidden" id="af-screen-xp-profile">
         <div class="af-h1">One more step</div>
         <div class="af-sub" id="af-xp-sub">Just confirm a couple of details to set up your workspace.</div>
+
+        <!-- Basic infographic, not a progress stepper — all 3 items are equal,
+             just explaining the flow. Collapsed by default (afToggleHowItWorks). -->
+        <div class="af-howitworks" id="af-xp-howitworks">
+          <button type="button" class="af-howitworks-toggle" id="af-xp-howitworks-toggle" onclick="afToggleHowItWorks()" aria-expanded="false" aria-controls="af-xp-howitworks-body">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="af-howitworks-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <span class="af-howitworks-toggle-label">How it works</span>
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="af-howitworks-chevron"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="af-howitworks-body hidden" id="af-xp-howitworks-body">
+            <div class="af-howitworks-steps">
+              <div class="af-howitworks-step">
+                <div class="af-howitworks-step-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+                <div class="af-howitworks-step-title">Add Details</div>
+              </div>
+              <div class="af-howitworks-connector"></div>
+              <div class="af-howitworks-step">
+                <div class="af-howitworks-step-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+                <div class="af-howitworks-step-title">Get Verified</div>
+              </div>
+              <div class="af-howitworks-connector"></div>
+              <div class="af-howitworks-step">
+                <div class="af-howitworks-step-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+                <div class="af-howitworks-step-title">Access in 24 Hours</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <form onsubmit="afSubmitXpProfile(event)">
           <!-- Industries — ATOMS only, multi-select (mirrors #af-field-industries on Sign Up) -->
@@ -1959,8 +1987,19 @@
 
     document.getElementById('af-xp-sub').innerHTML = 'Your Scinode account is all set — just confirm a couple of details to set up your <b>' + meta.label + '</b> workspace.';
 
+    document.getElementById('af-xp-howitworks').classList.remove('is-open');
+    document.getElementById('af-xp-howitworks-body').classList.add('hidden');
+    document.getElementById('af-xp-howitworks-toggle').setAttribute('aria-expanded', 'false');
+
     afXpValidate();
     afShowScreen('xp-profile');
+  }
+
+  function afToggleHowItWorks() {
+    var panel = document.getElementById('af-xp-howitworks');
+    var open = panel.classList.toggle('is-open');
+    document.getElementById('af-xp-howitworks-body').classList.toggle('hidden', !open);
+    document.getElementById('af-xp-howitworks-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
   }
 
   function afXpValidate() {

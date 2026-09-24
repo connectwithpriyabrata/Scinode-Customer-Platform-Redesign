@@ -648,6 +648,13 @@
           <div class="af-info-banner is-info" role="status" id="af-result-note"></div>
           <ul class="af-result-bullets hidden" id="af-result-bullets"></ul>
           <button type="button" class="af-submit hidden" id="af-result-cta"></button>
+
+          <!-- Rejected-only: the platforms this account WASN'T rejected for —
+               reuses the pending screen's explore-card component. -->
+          <div class="hidden" id="af-rejected-explore">
+            <div class="af-section-label" style="margin-top:26px;">Explore Other Platforms</div>
+            <div class="af-explore-grid" id="af-rejected-explore-grid"></div>
+          </div>
         </div>
 
         <!-- Rich post-signup success screen — used for reason==='activated' on all
@@ -725,59 +732,21 @@
             <img src="assets/auth-visuals/pending-illustration.png" alt="Illustration of a chemist holding a flask, with a microscope, lab glassware and a DNA helix">
           </div>
 
-          <div class="af-success-card">
-            <div class="af-success-company-row">
-              <div class="af-success-avatar" id="af-pending-avatar">P</div>
-              <div class="af-success-company-info">
-                <div class="af-success-company-name">
-                  <span id="af-pending-name">Name</span>
-                  <span class="af-success-verified-badge">✓ Email Verified</span>
-                </div>
-                <div class="af-success-company-meta af-pending-email-row"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span id="af-pending-email">you@company.com</span></div>
-              </div>
-              <div class="af-success-role">
-                <div class="af-success-role-label">Reference ID</div>
-                <div class="af-success-role-value" id="af-pending-refid">SCI-ORG-00000</div>
-              </div>
-            </div>
-            <div class="af-pending-orgcard-row">
-              <div class="af-pending-orgcard-domain"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="18" x="4" y="3" rx="1"/><path d="M9 21v-4h6v4M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"/></svg><span>Organization Domain:</span><code id="af-pending-domain">@company.com</code></div>
-              <span class="af-status-badge is-warning" id="af-pending-domain-badge">Domain Review in Progress</span>
-            </div>
-          </div>
-
           <div class="af-pending-head">
             <div class="af-pending-icon-wrap">
               <div class="af-result-icon af-pending" id="af-pending-icon"></div>
               <span class="af-pending-icon-badge"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
             </div>
             <div class="af-pending-head-text">
-              <div class="af-result-title" id="af-pending-title">Your account is pending approval</div>
-              <div class="af-result-body" id="af-pending-body">Scinode is an invite-only ecosystem. Your email is verified, but your organization domain is undergoing entity compliance validation before access is activated.</div>
+              <div class="af-result-title" id="af-pending-title">Your account is created with us</div>
+              <div class="af-result-body" id="af-pending-body">We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.</div>
             </div>
           </div>
 
-          <div class="af-info-banner is-info" role="status" id="af-pending-banner">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-            <div>
-              <div id="af-pending-banner-lead"></div>
-              <div class="af-pending-banner-meta" id="af-pending-banner-meta"></div>
-              <a href="#" class="af-pending-banner-link" id="af-pending-banner-link" onclick="return false;"></a>
-            </div>
-          </div>
+          <!-- TODO: Abhishek's gif goes here (spec: "add Abhishek's gif across
+               all platforms") — not available yet, see conversation. -->
 
-          <div class="af-success-card af-lifecycle-card">
-            <div class="af-lifecycle-header">
-              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-4"/></svg>Verification Lifecycle<span class="af-lifecycle-hint">Hover the <span aria-hidden="true">ⓘ</span> on each step for details</span></div>
-              <button type="button" class="af-lifecycle-refresh" id="af-lifecycle-refresh" onclick="afRefreshPendingStatus()"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>Refresh Status</button>
-            </div>
-            <div class="af-lifecycle-steps" id="af-pending-steps"></div>
-          </div>
-
-          <!-- Optional add-on (not part of the Figma redesign above): gives the
-               user something to do during the 24-48h wait instead of just a
-               pending message — links out to the wider Scinode/Scimplify web
-               presence and previews the other platforms one account covers. -->
+          <!-- "While you wait, explore Scinode" — 2 platform-specific cards. -->
           <div class="af-success-card">
             <div class="af-lifecycle-header">
               <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>While you wait, explore Scinode</div>
@@ -787,29 +756,15 @@
               <a href="#" onclick="return false;" class="af-explore-item">
                 <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span>
                 <span class="af-explore-body">
-                  <span class="af-explore-title">The Scinode Platform<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-                  <span class="af-explore-desc" id="af-pending-explore-platform-desc">One account gets you into every Scinode platform.</span>
+                  <span class="af-explore-title" id="af-pending-explore1-title">Your CDMO Journey<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="af-pending-explore1-desc">Explore how we can take your CDMO journey from idea to reality.</span>
                 </span>
               </a>
               <a href="#" onclick="return false;" class="af-explore-item">
                 <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
                 <span class="af-explore-body">
-                  <span class="af-explore-title">Scinode Blog<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-                  <span class="af-explore-desc">Product updates, R&amp;D case studies, and industry insights.</span>
-                </span>
-              </a>
-              <a href="#" onclick="return false;" class="af-explore-item">
-                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v18Z"/><path d="M6 12H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2"/><path d="M18 9h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></svg></span>
-                <span class="af-explore-body">
-                  <span class="af-explore-title">Scimplify<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-                  <span class="af-explore-desc">Meet the company behind Scinode.</span>
-                </span>
-              </a>
-              <a href="#" onclick="return false;" class="af-explore-item">
-                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
-                <span class="af-explore-body">
-                  <span class="af-explore-title">Other Platforms<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-                  <span class="af-explore-desc" id="af-pending-explore-others-desc">Preview the other platforms your account will cover.</span>
+                  <span class="af-explore-title" id="af-pending-explore2-title">Talk to Scira<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="af-pending-explore2-desc">What do you want to develop or manufacture today? Ask Scira.</span>
                 </span>
               </a>
             </div>
@@ -1024,6 +979,12 @@
       pillBg: 'var(--teal-500)', pillFg: '#fff',
       headline: 'Connect with verified manufacturers and suppliers.',
       accountNoun: 'ATOMS',
+      supportEmail: 'support.atoms@scinode.ai',
+      rejectedBlurb: 'For manufacturers looking to grow demand, capabilities, and global opportunities.',
+      exploreCard1Title: 'Your Growth, Unlocked',
+      exploreCard1Desc: 'Explore how your journey towards more opportunities and demand begins.',
+      exploreCard2Title: 'Beyond Manufacturing',
+      exploreCard2Desc: 'Discover the research, quality, compliance and market support behind global growth.',
       companyLabel: 'Company Name',
       companyLabelPublic: 'Which company do you represent?',
       companyPlaceholder: 'Enter company name',
@@ -1031,14 +992,6 @@
       company: 'Acme Manufacturing',
       name: 'Rahul Mehta',
       emailByDomain: { verified: 'rahul@acme.com', 'new': 'rahul@newcompany.com', public: 'rahul@gmail.com' },
-      pendingBullets: [
-        'Generate demand for your product catalogue',
-        'Match with demand opportunities relevant to your industry and capabilities',
-        'Unlock R&amp;D and product intelligence to grow your business'
-      ],
-      approvedSubAction: 'boost your plant capacity utilization',
-      pendingRefId: 'SCI-ORG-48213',
-      ecosystemAccessDesc: 'Granting access to demand-matching, product cataloguing, and the verified manufacturer network.',
       successData: {
         accountId: 'SCN-ATM-10432',
         firstName: 'Rahul',
@@ -1062,6 +1015,12 @@
       pillBg: 'var(--sage)', pillFg: 'var(--navy-500)',
       headline: 'Partner with R&amp;D teams, CROs, and specialty labs.',
       accountNoun: 'IONS',
+      supportEmail: 'support.ions@scinode.ai',
+      rejectedBlurb: 'For researchers working on R&amp;D, synthesis, and scientific projects.',
+      exploreCard1Title: 'Make Your Next Breakthrough',
+      exploreCard1Desc: 'Discover the people, capabilities, and opportunities that can help turn your research into what comes next.',
+      exploreCard2Title: 'Your Technology, Commercialised.',
+      exploreCard2Desc: 'Turn your scientific expertise into real-world opportunities through the right Projects, partnerships, and network.',
       companyLabel: 'Organization / Institute Name',
       companyLabelPublic: 'Which organization / institute do you represent?',
       companyPlaceholder: 'Enter organization / institute name',
@@ -1069,14 +1028,6 @@
       company: 'Meridian Labs',
       name: 'Priya Nair',
       emailByDomain: { verified: 'priya@meridianlabs.com', 'new': 'priya@newlab.com', public: 'priya@gmail.com' },
-      pendingBullets: [
-        'Discover relevant R&amp;D opportunities based on your capabilities',
-        'Unlock R&amp;D intelligence to help assess the best path to molecule development',
-        'Get access to market intelligence for your products to help grow your business'
-      ],
-      approvedSubAction: 'explore R&amp;D opportunities based on your capabilities',
-      pendingRefId: 'SCI-ORG-94821',
-      ecosystemAccessDesc: 'Granting access to R&amp;D matchmaking, Molecule AI intelligence, and the verified partner network.',
       successData: {
         accountId: 'SCN-ION-20187',
         firstName: 'Priya',
@@ -1100,6 +1051,12 @@
       pillBg: 'var(--navy-500)', pillFg: '#fff',
       headline: 'Source chemistry products and manage requests in one place.',
       accountNoun: 'Scinode',
+      supportEmail: 'support@scinode.ai',
+      rejectedBlurb: 'For customers managing their product journey from development to manufacturing.',
+      exploreCard1Title: 'Your CDMO Journey',
+      exploreCard1Desc: 'Explore how we can take your CDMO journey from idea to reality.',
+      exploreCard2Title: 'Talk to Scira',
+      exploreCard2Desc: 'What do you want to develop or manufacture today? Ask Scira.',
       companyLabel: 'Organisation Name',
       companyLabelPublic: 'Which organisation do you represent?',
       companyPlaceholder: 'Enter organisation name',
@@ -1107,14 +1064,6 @@
       company: 'Nova Specialty Chemicals',
       name: 'Ananya Verma',
       emailByDomain: { verified: 'ananya@novaspecialty.com', 'new': 'ananya@newbuyer.com', public: 'ananya@gmail.com' },
-      pendingBullets: [
-        'Discover manufacturers and R&amp;D capabilities across Scinode',
-        'Raise and track Compliance, Manufacturing, Quality and Development requests',
-        'Track your orders from placement through delivery'
-      ],
-      approvedSubAction: 'explore the Scinode ecosystem',
-      pendingRefId: 'SCI-ORG-77042',
-      ecosystemAccessDesc: 'Granting access to manufacturer discovery, request tracking, and the verified supplier network.',
       successData: {
         accountId: 'SCN-CUS-30559',
         firstName: 'Ananya',
@@ -1138,6 +1087,12 @@
       pillBg: 'var(--indigo)', pillFg: '#fff',
       headline: 'Turn your research questions into answers, instantly.',
       accountNoun: 'Deep Research',
+      supportEmail: 'support.deepresearch@scinode.ai',
+      rejectedBlurb: 'For deep, AI-powered research across chemicals, markets, and scientific intelligence.',
+      exploreCard1Title: 'From Idea to Molecule',
+      exploreCard1Desc: 'Discover how AI helps chemists move from a target molecule to practical, commercially viable synthesis routes.',
+      exploreCard2Title: 'Beyond AI: Intelligence for Chemistry',
+      exploreCard2Desc: 'Explore why chemistry needs more than AI alone — and how human expertise, scientific reasoning, and AI come together to accelerate discovery.',
       companyLabel: 'Company Name',
       companyLabelPublic: 'Which company do you represent?',
       companyPlaceholder: 'Enter company name',
@@ -1145,14 +1100,6 @@
       company: 'Caltech Chemistry Lab',
       name: 'Dr. Ananya Rao',
       emailByDomain: { verified: 'ananya.rao@caltech.edu', 'new': 'ananya.rao@newlab.edu', public: 'ananya.rao@gmail.com' },
-      pendingBullets: [
-        'Search compounds, routes, literature and patents in one place.',
-        'Get ranked routes, feasibility, cost and IP-risk insights.',
-        'Calculate scale-up, materials, conditions and save every result.'
-      ],
-      approvedSubAction: 'run your first research query',
-      pendingRefId: 'SCI-ORG-33095',
-      ecosystemAccessDesc: 'Granting access to deep research tooling, literature intelligence, and the verified collaborator network.',
       successData: {
         accountId: 'SCN-DR-40021',
         firstName: 'Dr. Ananya',
@@ -1764,12 +1711,12 @@
       afRenderChecklist('af-brand-steps', meta);
     }
     document.getElementById('af-signin-h1').textContent = approved
-      ? 'Welcome to ' + meta.accountNoun + ', ' + meta.successData.firstName + '! Your account is approved.'
+      ? 'Welcome to ' + meta.label + ', ' + meta.successData.firstName + '! Your account is approved.'
       : verified
         ? meta.successData.firstName + ', your email is verified and your account is approved.'
         : 'Sign in';
     document.getElementById('af-signin-sub').innerHTML = approved
-      ? 'Your <b>' + meta.company + '</b> team and workspace are ready. Sign in to get started and ' + meta.approvedSubAction + '.'
+      ? 'Sign in to get started.'
       : verified
         ? 'Welcome to <b>' + meta.company + "</b>'s space on " + meta.accountNoun + '. Your team and workspace are ready—sign in to continue and get started'
         : 'Access your ' + meta.accountNoun + ' workspace';
@@ -2211,8 +2158,7 @@
     el.innerHTML = AF_BANNER_ICON[kind] + '<span>' + html + '</span>';
   }
 
-  // Shared copy for every "waiting on the admin" screen (spec §30 pending messaging).
-  var AF_PENDING_MESSAGE = 'Scinode is an invite-only platform. Your account is pending admin approval. You will be notified in your registered email ID once access is approved.';
+  var AF_PENDING_MESSAGE = "We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.";
 
   function afShowResult(reason) {
     var meta = AF_PLATFORM[afState.platform];
@@ -2226,6 +2172,7 @@
     bullets.innerHTML = '';
     note.classList.remove('hidden');
     note.innerHTML = '';
+    document.getElementById('af-rejected-explore').classList.add('hidden');
 
     var resultSimple = document.getElementById('af-result-simple');
     var resultSuccess = document.getElementById('af-result-success');
@@ -2258,10 +2205,24 @@
       // application; keep messaging neutral, never expose internal review reasons.
       icon.className = 'af-result-icon af-danger';
       icon.innerHTML = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
-      title.textContent = "We couldn't activate your account";
-      body.textContent = "We couldn't complete your account setup with the information provided.";
-      afSetResultNote('info', 'If you think this is incorrect, please contact our team at <b>support@scinode.com</b>.');
+      title.textContent = "We couldn't verify your company for this platform";
+      body.textContent = 'We were unable to verify your company or confirm your eligibility for this platform with the information provided.';
+      afSetResultNote('info', 'If you believe this is incorrect, please contact our team at <b>' + meta.supportEmail + '</b>.');
       cta.classList.add('hidden');
+
+      var explore = document.getElementById('af-rejected-explore');
+      explore.classList.remove('hidden');
+      document.getElementById('af-rejected-explore-grid').innerHTML = Object.keys(AF_PLATFORM)
+        .filter(function (p) { return p !== afState.platform; })
+        .map(function (p) {
+          var m = AF_PLATFORM[p];
+          return '<a href="#" onclick="return false;" class="af-explore-item">' +
+            '<span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>' +
+            '<span class="af-explore-body">' +
+              '<span class="af-explore-title">' + m.label + '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>' +
+              '<span class="af-explore-desc">' + m.rejectedBlurb + '</span>' +
+            '</span></a>';
+        }).join('');
     } else if (reason === 'signin') {
       icon.className = 'af-result-icon af-success';
       icon.innerHTML = AF_ICON_CHECK;
@@ -2275,86 +2236,6 @@
 
     afShowScreen('result');
   }
-
-  // Per-scenario copy for the pending-approval lifecycle screen — mirrors the
-  // 3-way branching afShowResult used to do inline (new domain / public
-  // domain / cross-platform expansion), now driving a full Verification
-  // Lifecycle card instead of a single banner line.
-  function afPendingCopy(pending, meta, domainStr) {
-    if (pending.reason === 'pending-platform') {
-      return {
-        bannerLead: 'Cross-platform expansion detected:',
-        bannerBody: meta.company + " is already verified on Scinode, but hasn't been approved for " + meta.accountNoun + ' yet — an onboarding specialist is confirming access scope with your workspace admin.',
-        eta: 'within ~12 hours',
-        linkText: 'Want faster approval? Notify your workspace admin',
-        domainBadge: 'Platform Access Pending',
-        step2Title: 'Organization &amp; Platform Verification',
-        step2Desc: meta.company + ' is already verified on Scinode — confirming your access scope for ' + meta.accountNoun + '.',
-        step2Meta: 'In compliance review (Est. 12–24 hrs)'
-      };
-    }
-    if (pending.domain === 'public') {
-      return {
-        bannerLead: 'Public email domain detected:',
-        bannerBody: 'This domain (' + domainStr + ") isn't tied to a company record, so an onboarding specialist is verifying your organization manually.",
-        eta: 'within ~24 hours',
-        linkText: 'Want faster approval? Submit a work document',
-        domainBadge: 'Manual Review in Progress',
-        step2Title: 'Organization &amp; Entity Verification',
-        step2Desc: "Manual verification of your organization, since a public email domain (" + domainStr + ") can't be auto-matched to a company record.",
-        step2Meta: 'In compliance review (Est. 24–48 hrs)'
-      };
-    }
-    return {
-      bannerLead: 'New company domain detected:',
-      bannerBody: "This domain isn't in our verified chemical registry yet, so an onboarding specialist is performing standard compliance checks.",
-      eta: 'within ~18 hours',
-      linkText: 'Want faster approval? Submit lab credentials',
-      domainBadge: 'Domain Review in Progress',
-      step2Title: 'Organization &amp; Entity Verification',
-      step2Desc: 'Automated lookup on domain "' + domainStr + '" and manual verification against chemical supplier &amp; lab directories.',
-      step2Meta: 'In compliance review (Est. 18–24 hrs)'
-    };
-  }
-
-  // Horizontal stepper — node icon + short label (with a hover-only (i)
-  // detail popover) + status badge, three of these side by side in a grid.
-  // stateLabel is the popover's own word ("In Review", not the badge's
-  // "Active Review") — matches the reference design's distinct copy for
-  // the compact badge vs. the expanded popover.
-  function afHStepHTML(opts) {
-    return '<div class="af-hstep is-' + opts.state + '">' +
-      (opts.isLast ? '' : '<span class="af-hstep-track"></span>') +
-      '<div class="af-hstep-node">' + opts.iconSvg + '</div>' +
-      '<div class="af-hstep-label">' +
-        '<span class="af-hstep-title">' + opts.shortTitle + '</span>' +
-        '<span class="af-hstep-info-wrap" tabindex="0">' + AF_ICON_INFO_SM +
-          '<div class="af-hstep-popover">' +
-            '<div class="af-hstep-popover-head">' +
-              '<span class="af-hstep-popover-dot"></span>' +
-              '<span class="af-hstep-popover-title">' + opts.fullTitle + '</span>' +
-              '<span class="af-hstep-popover-state">' + opts.stateLabel + '</span>' +
-            '</div>' +
-            '<p class="af-hstep-popover-desc">' + opts.desc + '</p>' +
-            '<div class="af-hstep-popover-meta"><span>Timestamp / SLA</span><span>' + opts.metaValue + '</span></div>' +
-          '</div>' +
-        '</span>' +
-      '</div>' +
-      opts.badgeHtml +
-    '</div>';
-  }
-
-  // "Organization &amp; Entity Verification" -> "Organization &amp; Entity" —
-  // keeps the label under the node short; the full title still shows in the
-  // hover popover.
-  function afHStepShortTitle(title) {
-    return title.replace(/\s*(Verification|Provisioning)\s*$/, '').trim();
-  }
-
-  var AF_HSTEP_ICON_DONE = '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-  var AF_HSTEP_ICON_ACTIVE = '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
-  var AF_HSTEP_ICON_LOCKED = '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
-  var AF_ICON_INFO_SM = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
 
   // "Rahul Mehta" -> {displayName:"Rahul M.", avatarInitial:"R"}. Strips a
   // leading title ("Dr.") out of the first-name/avatar calculation but keeps
@@ -2373,89 +2254,19 @@
     };
   }
 
-  // Renders the pending-approval screen: org summary card, headline, review
-  // banner and the 3-step Verification Lifecycle timeline. reason/domain come
-  // from afState.pendingAccount (fixed at signup, see afShowResult above) so
-  // the screen never drifts if the devbar toggles change afterward.
+  // Renders the simplified pending screen: icon/title/body (same copy for
+  // every reason/domain now — spec dropped the reason-specific banner and
+  // Verification Lifecycle timeline) plus the 2 platform-specific
+  // "While you wait" cards.
   function afRenderPending(pending, meta) {
-    var email = afState.signupEmail || meta.emailByDomain[pending.domain] || meta.emailByDomain.verified;
-    var domainStr = '@' + (email.split('@')[1] || 'company.com');
-    var person = afPersonDisplay(meta.name);
-
-    document.getElementById('af-pending-avatar').textContent = person.avatarInitial;
-    document.getElementById('af-pending-name').textContent = person.displayName;
-    document.getElementById('af-pending-email').textContent = email;
-    document.getElementById('af-pending-refid').textContent = meta.pendingRefId || 'SCI-ORG-00000';
-    document.getElementById('af-pending-domain').textContent = domainStr;
-
     document.getElementById('af-pending-icon').innerHTML = AF_ICON_CLOCK;
-    document.getElementById('af-pending-title').textContent = 'Your account is pending approval';
+    document.getElementById('af-pending-title').textContent = 'Your account is created with us';
     document.getElementById('af-pending-body').textContent = AF_PENDING_MESSAGE;
 
-    var copy = afPendingCopy(pending, meta, domainStr);
-    document.getElementById('af-pending-domain-badge').textContent = copy.domainBadge;
-
-    document.getElementById('af-pending-banner-lead').innerHTML = '<b>' + copy.bannerLead + '</b> ' + copy.bannerBody;
-    document.getElementById('af-pending-banner-meta').innerHTML = 'Typical review duration: <b>24–48 hours</b> (Estimated completion: ' + copy.eta + '). You will receive an instant email notification once approved.';
-    document.getElementById('af-pending-banner-link').textContent = copy.linkText + ' →';
-
-    // "Verified at" is fixed the first time this scenario renders, not
-    // recomputed on every visit, so it doesn't drift if the user leaves and
-    // comes back — same persistence pattern as afState.pendingAccount itself.
-    if (!pending.verifiedAt) {
-      pending.verifiedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    var step3Title = 'Ecosystem Access &amp; Workspace Setup';
-    var steps = afHStepHTML({
-        state: 'done', iconSvg: AF_HSTEP_ICON_DONE,
-        fullTitle: 'Work Email Verification', shortTitle: afHStepShortTitle('Work Email Verification'),
-        stateLabel: 'Completed', badgeHtml: '<span class="af-status-badge is-success">100% Done</span>',
-        desc: 'Corporate email ownership confirmed via secure one-time passcode.',
-        metaValue: 'Verified at ' + pending.verifiedAt
-      }) +
-      afHStepHTML({
-        state: 'active', iconSvg: AF_HSTEP_ICON_ACTIVE,
-        fullTitle: copy.step2Title, shortTitle: afHStepShortTitle(copy.step2Title),
-        stateLabel: 'In Review', badgeHtml: '<span class="af-status-badge is-warning">Active Review</span>',
-        desc: copy.step2Desc, metaValue: copy.step2Meta
-      }) +
-      afHStepHTML({
-        state: 'locked', iconSvg: AF_HSTEP_ICON_LOCKED, isLast: true,
-        fullTitle: step3Title, shortTitle: afHStepShortTitle(step3Title),
-        stateLabel: 'Locked', badgeHtml: '<span class="af-status-badge is-neutral">Pending</span>',
-        desc: meta.ecosystemAccessDesc, metaValue: 'Unlocks upon domain approval'
-      });
-    document.getElementById('af-pending-steps').innerHTML = '<div class="af-hstep-row">' + steps + '</div>';
-
-    // "While you wait" explore card — the ecosystem line reuses the exact
-    // copy already shown on the brand panel; "Other Platforms" lists the 3
-    // platforms besides the one just signed up for.
-    document.getElementById('af-pending-explore-platform-desc').textContent = AF_ECOSYSTEM_SUB;
-    var otherLabels = Object.keys(AF_PLATFORM)
-      .filter(function (p) { return p !== afState.platform; })
-      .map(function (p) { return AF_PLATFORM[p].label; });
-    document.getElementById('af-pending-explore-others-desc').textContent =
-      'Take a quick look at ' + otherLabels.slice(0, -1).join(', ') + ' & ' + otherLabels.slice(-1) + '.';
-  }
-
-  // "Refresh Status" is a demo affordance — briefly shows a checking state,
-  // then confirms nothing has changed yet (this is a prototype; there's no
-  // real backend polling to do).
-  var afRefreshPendingTimer = null;
-  function afRefreshPendingStatus() {
-    var btn = document.getElementById('af-lifecycle-refresh');
-    if (btn.disabled) return;
-    var svg = btn.querySelector('svg');
-    btn.disabled = true;
-    svg.classList.add('is-spinning');
-    btn.lastChild.textContent = ' Checking…';
-    clearTimeout(afRefreshPendingTimer);
-    afRefreshPendingTimer = setTimeout(function () {
-      svg.classList.remove('is-spinning');
-      btn.lastChild.textContent = ' Refresh Status';
-      btn.disabled = false;
-    }, 1100);
+    document.getElementById('af-pending-explore1-title').firstChild.textContent = meta.exploreCard1Title;
+    document.getElementById('af-pending-explore1-desc').textContent = meta.exploreCard1Desc;
+    document.getElementById('af-pending-explore2-title').firstChild.textContent = meta.exploreCard2Title;
+    document.getElementById('af-pending-explore2-desc').textContent = meta.exploreCard2Desc;
   }
 
   afRender();

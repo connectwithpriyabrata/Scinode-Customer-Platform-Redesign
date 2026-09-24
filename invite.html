@@ -169,7 +169,7 @@
       <div class="af-screen" id="iv-screen-landing">
         <div class="iv-invite-badge"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg> Workspace Invitation</div>
         <div class="af-h1">You've been invited to join<br><span class="iv-invite-h1-company" id="iv-h1-company">Acme Manufacturing</span></div>
-        <div class="af-sub" id="iv-landing-benefit">Collaborate on chemical synthesis workflows, verified supplier sourcing, and batch production on ATOMS.</div>
+        <div class="af-sub" id="iv-landing-benefit">Connect with your organization and get started on the platform.</div>
 
         <div class="iv-invite-card-v2">
           <div class="iv-invite-card-header">
@@ -179,7 +179,6 @@
                 <span id="iv-company">Acme Manufacturing</span>
                 <span class="af-invite-platform-badge" id="iv-platform-badge">ATOMS</span>
               </div>
-              <div class="iv-invite-card-domain" id="iv-company-domain">acme.com &middot; Verified Enterprise Account</div>
             </div>
             <span class="iv-invite-verified-pill"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Verified</span>
           </div>
@@ -192,16 +191,8 @@
               <span class="iv-invite-meta-value"><b id="iv-invited-by">Rahul Mehta</b> <span class="iv-invite-meta-sub" id="iv-invited-by-title">(Lead Process Chemist)</span></span>
             </div>
             <div class="iv-invite-meta-row-v2">
-              <span>Assigned Role</span>
-              <span class="iv-invite-meta-value"><b id="iv-assigned-role">R&amp;D Member</b> <span class="iv-invite-access-badge" id="iv-access-level">Full Member Access</span></span>
-            </div>
-            <div class="iv-invite-meta-row-v2">
-              <span>Team &amp; Department</span>
+              <span>Team</span>
               <b id="iv-team-department">R&amp;D (Formulation &amp; Process Chemistry)</b>
-            </div>
-            <div class="iv-invite-meta-row-v2">
-              <span>Invitation Sent To</span>
-              <b class="iv-invite-meta-code" id="iv-sent-to">meera@acme.com</b>
             </div>
           </div>
 
@@ -212,12 +203,10 @@
               <div class="af-success-avatar-stack" id="iv-teammate-stack"></div>
               <span id="iv-teammate-count-text">Join 24 teammates already in this workspace</span>
             </div>
-            <div class="iv-invite-expiry"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Expires in 7d</div>
           </div>
         </div>
 
         <button type="button" class="af-submit" onclick="ivAccept()">Accept Invitation &amp; Create Account →</button>
-        <div class="iv-invite-caption">Takes about ~60 seconds to set a password and activate your profile.</div>
       </div>
 
       <!-- ══════════ AUTHENTICATE (merged with profile completion — Name, Phone
@@ -348,6 +337,70 @@
             <div class="af-field" id="iv-phone-wrap">
               <label>Phone Number <span class="af-req">*</span></label>
               <input class="af-input" type="tel" id="iv-phone-input" placeholder="Enter phone number" required>
+            </div>
+
+            <!-- Platform-specific field — same content as Sign Up's, joining
+                 an existing org so there's no Company Name here (spec:
+                 "Screen 2 onwards ... exactly the same as Recurring User
+                 Sign Up"). -->
+            <div class="af-field hidden" id="iv-field-industries">
+              <label>Industries <span class="af-req">*</span></label>
+              <select class="af-select" id="iv-industries-select" onchange="ivAddIndustry()">
+                <option value="" selected disabled>Select industries</option>
+                <option>Agrochemicals</option>
+                <option>Beauty &amp; Personal Care</option>
+                <option>Critical Metals</option>
+                <option>Dyes and Pigments</option>
+                <option>Elemental Derivatives</option>
+                <option>Flame Retardants</option>
+                <option>Flavors &amp; Fragrances</option>
+                <option>Food &amp; Nutrition</option>
+                <option>Industrial Chemicals</option>
+                <option>Metallurgy Chemicals</option>
+                <option>Oleochemicals</option>
+                <option>Pharmaceutical</option>
+                <option value="__other__">Others</option>
+              </select>
+              <input class="af-input af-industry-other hidden" type="text" id="iv-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="ivOtherIndustryKey(event)">
+              <div class="af-field-hint hidden" id="iv-industries-other-hint">Press Enter to add it to your industries.</div>
+              <div class="af-chip-row" id="iv-industries-chips"></div>
+              <div class="af-field-error hidden" id="iv-industries-error">Select at least one industry.</div>
+            </div>
+            <div class="af-field hidden" id="iv-field-profiletype">
+              <label>Profile Type <span class="af-req">*</span></label>
+              <select class="af-select" id="iv-profiletype-input">
+                <option value="" selected disabled>Select the option that best describes you</option>
+                <option>Scientist / Research Lab</option>
+                <option>CRO / CDMO</option>
+                <option>Others</option>
+              </select>
+            </div>
+            <div class="af-field hidden" id="iv-field-dr-role">
+              <label>What best describes your role? <span class="af-req">*</span></label>
+              <select class="af-select" id="iv-dr-role">
+                <option value="" selected disabled>Select one</option>
+                <option>Researcher / Scientist</option>
+                <option>Student / Research Scholar</option>
+                <option>R&amp;D / Innovation</option>
+                <option>Process / Manufacturing</option>
+                <option>Business / Product / Commercial</option>
+                <option>Procurement / Sourcing</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="af-field hidden" id="iv-field-dr-orgtype">
+              <label>What type of organisation are you part of? <span class="af-req">*</span></label>
+              <select class="af-select" id="iv-dr-orgtype">
+                <option value="" selected disabled>Select one</option>
+                <option>Industry / Enterprise</option>
+                <option>Manufacturer</option>
+                <option>CRO / CDMO / Research Services</option>
+                <option>University / Academic Institution</option>
+                <option>Research Institution / Government</option>
+                <option>Biotech / Deep Tech Company</option>
+                <option>Independent Researcher / Consultant</option>
+                <option>Other</option>
+              </select>
             </div>
 
             <div class="af-consent-row">
@@ -692,6 +745,72 @@
   // ── Invitation flow state — see IDENTITY_ACCESS_SPEC.md screens #17–19
   // and "Phase 1 - User Management.pdf" §20–25, §35.
   var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, pendingAccount: false, ssoDisplay: 'with', step: 1 };
+  var ivIndustries = [];
+
+  function ivEscapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Same dedupe/chip pattern as Sign Up's Industries field (auth.html).
+  function ivAddIndustry() {
+    var select = document.getElementById('iv-industries-select');
+    var val = select.value;
+    select.value = '';
+    if (val === '__other__') {
+      ivShowOtherIndustry();
+      return;
+    }
+    ivPushIndustry(val);
+  }
+  function ivPushIndustry(name) {
+    if (!name) return;
+    var lower = name.toLowerCase();
+    if (ivIndustries.some(function (i) { return i.toLowerCase() === lower; })) return;
+    ivIndustries.push(name);
+    ivRenderIndustryChips();
+  }
+  function ivShowOtherIndustry() {
+    var input = document.getElementById('iv-industries-other');
+    input.classList.remove('hidden');
+    document.getElementById('iv-industries-other-hint').classList.remove('hidden');
+    input.focus();
+  }
+  function ivHideOtherIndustry() {
+    var input = document.getElementById('iv-industries-other');
+    if (!input) return;
+    input.value = '';
+    input.classList.add('hidden');
+    document.getElementById('iv-industries-other-hint').classList.add('hidden');
+  }
+  function ivOtherIndustryKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var name = e.target.value.replace(/\s+/g, ' ').trim();
+      if (!name) return;
+      ivPushIndustry(name);
+      ivHideOtherIndustry();
+      document.getElementById('iv-industries-select').focus();
+    } else if (e.key === 'Escape') {
+      ivHideOtherIndustry();
+      document.getElementById('iv-industries-select').focus();
+    }
+  }
+  function ivRemoveIndustryAt(index) {
+    ivIndustries.splice(index, 1);
+    ivRenderIndustryChips();
+  }
+  function ivRenderIndustryChips() {
+    var row = document.getElementById('iv-industries-chips');
+    if (!row) return;
+    row.innerHTML = ivIndustries.map(function (industry, i) {
+      var safe = ivEscapeHtml(industry);
+      return '<span class="af-chip">' + safe +
+        '<button type="button" onclick="ivRemoveIndustryAt(' + i + ')" aria-label="Remove ' + safe + '">' +
+        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
+    }).join('');
+    var error = document.getElementById('iv-industries-error');
+    if (error && ivIndustries.length) error.classList.add('hidden');
+  }
   var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
   // Shared Navy/Sage avatar palette for both the landing card's teammate
@@ -712,15 +831,11 @@
       inviteeName: 'Meera Joshi', inviteeEmail: 'meera@acme.com',
       invitedByTitle: 'Lead Process Chemist',
       invitedByPhoto: 'https://i.pravatar.cc/64?img=12',
-      assignedRoleLabel: 'R&amp;D Member',
-      accessLevel: 'Full Member Access',
       teamDepartment: 'R&amp;D (Formulation &amp; Process Chemistry)',
-      companyDomain: 'acme.com',
-      accountType: 'Verified Enterprise Account',
       inviteMessage: "Hey Meera, welcome to Acme! We're setting up our high-yield synthesis runs and batch scale-ups on ATOMS. Excited to have your formulation expertise on board.",
       teammateCount: 24,
       teammateInitials: ['RM', 'AS', 'NK'],
-      landingBenefit: 'Collaborate on chemical synthesis workflows, verified supplier sourcing, and batch production on ATOMS.',
+      landingBenefit: 'Connect with your organization and get started on the platform.',
       approvedSubtext: 'Start boosting your plant capacity utilization.',
       workspaceFeature: { title: 'Pre-Configured Acme Workspace', desc: 'Connect directly with 24 colleagues across R&amp;D, Synthesis, and QA.' },
       profileActivity: 'synthesis batches, spec reviews, and vendor RFQs',
@@ -748,15 +863,11 @@
       inviteeName: 'Karan Shah', inviteeEmail: 'karan@meridianlabs.com',
       invitedByTitle: 'Principal Research Scientist',
       invitedByPhoto: 'https://i.pravatar.cc/64?img=47',
-      assignedRoleLabel: 'Research Member',
-      accessLevel: 'Full Member Access',
       teamDepartment: 'Research (Specialty Synthesis &amp; Custom APIs)',
-      companyDomain: 'meridianlabs.com',
-      accountType: 'Verified Research Tenant',
       inviteMessage: "Hey Karan, welcome to Meridian Labs! We're scoping a few custom API synthesis routes on IONS and could use your specialty-synthesis background. Excited to have you on the team.",
       teammateCount: 16,
       teammateInitials: ['PN', 'RI', 'SM'],
-      landingBenefit: 'Collaborate on molecule development, R&amp;D partner discovery, and specialty synthesis briefs on IONS.',
+      landingBenefit: 'Connect with your organization and get started on the platform.',
       approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.',
       workspaceFeature: { title: 'Pre-Configured Meridian Labs Workspace', desc: 'Connect directly with 16 colleagues across Research, Synthesis, and QA.' },
       profileActivity: 'molecule briefs, synthesis routes, and partner requests',
@@ -784,15 +895,11 @@
       inviteeName: 'Liam Chen', inviteeEmail: 'liam@novaspecialty.com',
       invitedByTitle: 'Procurement Lead',
       invitedByPhoto: 'https://i.pravatar.cc/64?img=44',
-      assignedRoleLabel: 'Procurement Member',
-      accessLevel: 'Full Member Access',
       teamDepartment: 'Procurement (Sourcing &amp; Vendor Management)',
-      companyDomain: 'novaspecialty.com',
-      accountType: 'Verified Enterprise Account',
       inviteMessage: "Hey Liam, welcome to Nova Specialty Chemicals! We're tracking a few active sourcing requests on Scinode and would love your eye on vendor selection. Glad to have you on board.",
       teammateCount: 31,
       teammateInitials: ['AV', 'VR', 'IS'],
-      landingBenefit: 'Collaborate on sourcing requests, manufacturer discovery, and order tracking on Scinode.',
+      landingBenefit: 'Connect with your organization and get started on the platform.',
       approvedSubtext: 'Start exploring the Scinode ecosystem.',
       workspaceFeature: { title: 'Pre-Configured Nova Specialty Workspace', desc: 'Connect directly with 31 colleagues across Procurement, Quality, and Compliance.' },
       profileActivity: 'sourcing requests, vendor quotes, and order updates',
@@ -820,15 +927,11 @@
       inviteeName: 'Noah Fischer', inviteeEmail: 'noah.fischer@caltech.edu',
       invitedByTitle: 'Principal Investigator',
       invitedByPhoto: 'https://i.pravatar.cc/64?img=45',
-      assignedRoleLabel: 'Research Member',
-      accessLevel: 'Full Member Access',
       teamDepartment: 'Research (Computational &amp; Experimental Chemistry)',
-      companyDomain: 'caltech.edu',
-      accountType: 'Verified Academic Tenant',
       inviteMessage: "Hey Noah, welcome to the lab! We're running a few compound and route searches on Deep Research this term and could use your help. Excited to have you on the team.",
       teammateCount: 12,
       teammateInitials: ['AR', 'WC', 'SM'],
-      landingBenefit: 'Collaborate on compound search, route feasibility, and literature review on Deep Research.',
+      landingBenefit: 'Connect with your organization and get started on the platform.',
       approvedSubtext: 'Start your first research workflow.',
       workspaceFeature: { title: 'Pre-Configured Caltech Lab Workspace', desc: 'Connect directly with 12 colleagues across Research, Computation, and Review.' },
       profileActivity: 'research queries, saved routes, and literature reviews',
@@ -856,6 +959,12 @@
     ivState.existing = false;
     ivState.orgApprovedOnPlatform = true;
     ivState.pendingAccount = false;
+    ivIndustries = [];
+    ivRenderIndustryChips();
+    ivHideOtherIndustry();
+    document.getElementById('iv-profiletype-input').value = '';
+    document.getElementById('iv-dr-role').value = '';
+    document.getElementById('iv-dr-orgtype').value = '';
     document.getElementById('iv-dev-account-active').classList.add('active');
     document.getElementById('iv-dev-account-pending').classList.remove('active');
     document.getElementById('iv-dev-org-approved').classList.add('active');
@@ -944,13 +1053,9 @@
     document.getElementById('iv-company-avatar').textContent = meta.company.charAt(0);
     document.getElementById('iv-company').textContent = meta.company;
     document.getElementById('iv-platform-badge').textContent = meta.label;
-    document.getElementById('iv-company-domain').innerHTML = meta.companyDomain + ' &middot; ' + meta.accountType;
     document.getElementById('iv-invited-by').textContent = meta.invitedBy;
     document.getElementById('iv-invited-by-title').textContent = '(' + meta.invitedByTitle + ')';
-    document.getElementById('iv-assigned-role').innerHTML = meta.assignedRoleLabel;
-    document.getElementById('iv-access-level').textContent = meta.accessLevel;
     document.getElementById('iv-team-department').innerHTML = meta.teamDepartment;
-    document.getElementById('iv-sent-to').textContent = meta.inviteeEmail;
     document.getElementById('iv-invite-message-from').textContent = 'Message from ' + meta.invitedBy + ':';
     document.getElementById('iv-invite-message-text').textContent = '"' + meta.inviteMessage + '"';
     var teammateStack = document.getElementById('iv-teammate-stack');
@@ -1016,6 +1121,19 @@
     document.getElementById('iv-phone-wrap').classList.toggle('hidden', !isNew);
     document.getElementById('iv-phone-input').required = isNew && showStep2;
     document.getElementById('iv-signup-consent').required = showStep2;
+
+    // Platform-specific field — same content as Sign Up's (see auth.html),
+    // joining an existing org so no Company Name here.
+    var isAtoms = ivState.platform === 'atoms';
+    var isIons = ivState.platform === 'ions';
+    var isDR = ivState.platform === 'deepresearch';
+    document.getElementById('iv-field-industries').classList.toggle('hidden', !isNew || !isAtoms);
+    document.getElementById('iv-field-profiletype').classList.toggle('hidden', !isNew || !isIons);
+    document.getElementById('iv-field-dr-role').classList.toggle('hidden', !isNew || !isDR);
+    document.getElementById('iv-field-dr-orgtype').classList.toggle('hidden', !isNew || !isDR);
+    document.getElementById('iv-profiletype-input').required = isNew && isIons && showStep2;
+    document.getElementById('iv-dr-role').required = isNew && isDR && showStep2;
+    document.getElementById('iv-dr-orgtype').required = isNew && isDR && showStep2;
 
     // Step 1 — account credentials. Email is locked to the invited address for
     // new users (they can't change it); existing users type it to sign in.
@@ -1252,6 +1370,11 @@
 
   function ivSubmitAuth(e) {
     if (e) e.preventDefault();
+    if (!ivState.existing && ivState.platform === 'atoms' && ivIndustries.length === 0) {
+      document.getElementById('iv-industries-error').classList.remove('hidden');
+      document.getElementById('iv-industries-select').focus();
+      return;
+    }
     // New invitees who created a password must verify their email first (the
     // link then opens sign-in). SSO already verifies identity, and existing
     // users are already verified, so both go straight through.

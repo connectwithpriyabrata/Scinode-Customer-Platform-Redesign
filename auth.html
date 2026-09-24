@@ -53,11 +53,19 @@
   </div>
   <span id="af-devbar-signup-only" style="display:contents;">
     <div class="af-devbar-sep"></div>
-    <span class="af-devbar-label">Step</span>
+    <span class="af-devbar-label">User Type</span>
     <div class="af-devbar-group">
-      <button id="af-dev-step-1" class="active" onclick="afSignupGoToStep(1)">1</button>
-      <button id="af-dev-step-2" onclick="afSignupGoToStep(2)">2</button>
+      <button id="af-dev-usertype-first" class="active" onclick="afSetSignupUserType('first')">First Time</button>
+      <button id="af-dev-usertype-recurring" onclick="afSetSignupUserType('recurring')">Recurring (same org)</button>
     </div>
+    <span id="af-devbar-usertype-captured-only" class="hidden" style="display:contents;">
+      <div class="af-devbar-sep"></div>
+      <span class="af-devbar-label">Platform Field</span>
+      <div class="af-devbar-group">
+        <button id="af-dev-usertype-notcaptured" class="active" onclick="afSetSignupFieldCaptured(false)">Not Captured</button>
+        <button id="af-dev-usertype-captured" onclick="afSetSignupFieldCaptured(true)">Already Captured</button>
+      </div>
+    </span>
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">Domain</span>
     <div class="af-devbar-group">
@@ -189,242 +197,79 @@
         </div>
 
         <div class="af-sub" id="af-signup-sub">Welcome to <b>Scinode for Manufacturers</b></div>
-        <div class="af-stepper-row">
-          <div class="af-h1" id="af-signup-h1">Get started with your account</div>
-          <span class="af-stepper-badge" id="af-signup-step-badge">Step 1 of 2</span>
-        </div>
-        <div class="af-stepper-track"><div class="af-stepper-fill" id="af-signup-step-fill"></div></div>
+        <div class="af-h1" id="af-signup-h1">Get started with your account</div>
 
         <form id="af-signup-form" onsubmit="afSubmitSignup(event)">
+          <div class="af-field" id="af-email-direct-wrap">
+            <label><span id="af-email-label">Email</span> <span class="af-req">*</span></label>
+            <input class="af-input" type="email" id="af-section3-email" placeholder="you@company.com" required>
+          </div>
 
-          <!-- ══ STEP 1 — Account credentials ══ -->
-          <div id="af-signup-step1">
-            <div class="af-field" id="af-email-direct-wrap">
-              <label><span id="af-email-label">Email</span> <span class="af-req">*</span></label>
-              <input class="af-input" type="email" id="af-section3-email" placeholder="you@company.com" required>
-            </div>
-
-            <!-- Email — locked once SSO has provided it -->
-            <div class="af-field hidden" id="af-email-sso-wrap">
-              <label>Email</label>
-              <div class="af-field-locked">
-                <div class="af-field-locked-val"><span id="af-email-sso-value">rahul@acme.com</span></div>
-                <span class="af-verified-chip">✓ Verified</span>
-              </div>
-            </div>
-
-            <!-- Company — 3-way branch: verified private / new private / public. Surfaces
-                 as soon as the email domain resolves, so the user knows who they're
-                 joining before they finish setting up credentials. -->
-            <div class="af-field" id="af-company-locked">
-              <label><span id="af-company-label-locked">Company Name</span></label>
-              <div class="af-field-locked is-verified">
-                <div class="af-field-locked-val">
-                  <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  <span id="af-company-locked-value">Acme Manufacturing</span>
-                </div>
-                <svg class="af-verified-check" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="m8 12.3 2.8 2.8L16 9.6" stroke="#fff" stroke-width="2.4"/></svg>
-              </div>
-              <div class="af-info-banner is-success" role="status" id="af-company-verified-banner"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span>Scinode has already identified your company. You can continue with your account setup.</span></div>
-            </div>
-            <div class="af-field hidden" id="af-company-editable">
-              <label><span id="af-company-label-editable">Company Name</span> <span class="af-req">*</span></label>
-              <input class="af-input" type="text" id="af-company-editable-input" placeholder="Enter company name" required>
-              <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>New domain — your company will go through a quick verification before activation.</span></div>
-              <div class="af-field" style="margin-top:14px;" id="af-company-website-wrap">
-                <label>Company Website</label>
-                <input class="af-input" type="url" id="af-company-website-input" placeholder="https://yourcompany.com">
-              </div>
-              <div class="af-field" style="margin-top:14px;margin-bottom:0;">
-                <label>Country</label>
-                <select class="af-select" id="af-company-country-input">
-                  <option value="" selected disabled>Select country</option>
-                  <option>India</option>
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>Germany</option>
-                  <option>China</option>
-                  <option>Singapore</option>
-                  <option>United Arab Emirates</option>
-                  <option>Australia</option>
-                  <option>Other</option>
-                </select>
-              </div>
-            </div>
-            <div class="af-field hidden" id="af-company-public">
-              <label><span id="af-company-label-public">Which company do you represent?</span> <span class="af-req">*</span></label>
-              <input class="af-input" type="text" id="af-company-public-input" placeholder="Enter company name" required>
-              <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>Public email domain — your access will need admin approval either way.</span></div>
-            </div>
-
-            <div id="af-signup-password-wrap">
-              <div class="af-field">
-                <label>Password <span class="af-req">*</span></label>
-                <div class="af-password-row">
-                  <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" minlength="8" required oninput="afUpdateSignupPasswordCriteria()">
-                  <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                </div>
-                <div class="af-criteria-box" id="af-signup-criteria-box">
-                  <div class="af-criteria-list">
-                    <div class="af-criteria-title">Password must contain:</div>
-                    <div class="af-criteria-row">
-                      <div class="af-criteria-item" id="af-signup-criteria-length"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>8+ characters</div>
-                      <div class="af-criteria-item" id="af-signup-criteria-upper"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Uppercase</div>
-                      <div class="af-criteria-item" id="af-signup-criteria-numsym"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Number or symbol</div>
-                    </div>
-                  </div>
-                  <div class="af-criteria-ok"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Password meets all requirements</div>
-                </div>
-              </div>
-
-              <div class="af-field">
-                <label>Confirm Password <span class="af-req">*</span></label>
-                <div class="af-password-row">
-                  <input class="af-input" type="password" id="af-section3-password-confirm" placeholder="Re-enter password" minlength="8" required>
-                  <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                </div>
-                <div class="af-field-error hidden" id="af-password-match-error">Passwords don't match.</div>
-              </div>
-            </div>
-
-            <button type="button" class="af-submit" onclick="afSignupContinue()">Continue to Workspace Details →</button>
-
-            <div id="af-signup-sso-section">
-              <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
-
-              <div class="af-sso-stack">
-                <div id="af-enterprise-btn-wrap">
-                  <button type="button" class="af-sso-btn af-sso-enterprise" id="af-enterprise-btn">
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    Continue with <span id="af-enterprise-company-name">Acme Manufacturing</span> SSO
-                  </button>
-                </div>
-                <button type="button" class="af-sso-btn" id="af-sso-btn-google" onclick="afSetSource('google')">
-                  <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
-                  <span class="af-sso-btn-label">Continue with Google</span>
-                </button>
-                <button type="button" class="af-sso-btn" id="af-sso-btn-linkedin" onclick="afSetSource('linkedin')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
-                  <span class="af-sso-btn-label">Continue with LinkedIn</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="af-sso-connected-note hidden" id="af-sso-connected-note">
-              <span>Signing up with <b id="af-sso-connected-method">Google</b> — no password needed.</span>
-              <button type="button" onclick="afSetSource('direct')">Use email instead</button>
+          <!-- Email — locked once SSO has provided it -->
+          <div class="af-field hidden" id="af-email-sso-wrap">
+            <label>Email</label>
+            <div class="af-field-locked">
+              <div class="af-field-locked-val"><span id="af-email-sso-value">rahul@acme.com</span></div>
+              <span class="af-verified-chip">✓ Verified</span>
             </div>
           </div>
 
-          <!-- ══ STEP 2 — Workspace setup ══ -->
-          <div id="af-signup-step2" class="hidden">
-            <button type="button" class="af-step-back" onclick="afSignupGoToStep(1)">← Back</button>
-
-            <div class="af-section-label" style="margin-top:0;">Platform signup details</div>
-
-            <!-- Name — direct vs SSO-verified -->
-            <div class="af-field" id="af-name-direct-wrap">
-              <label>Name <span class="af-req">*</span></label>
-              <input class="af-input" type="text" id="af-name-direct-input" placeholder="Enter your full name" required>
-            </div>
-            <div class="af-field hidden" id="af-name-sso-wrap">
-              <label>Name</label>
-              <div class="af-field-locked">
-                <div class="af-field-locked-val"><span id="af-name-sso-value">Rahul Mehta</span></div>
-                <span class="af-verified-chip" id="af-name-sso-chip">From Google</span>
+          <div id="af-signup-password-wrap">
+            <div class="af-field">
+              <label>Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" minlength="8" required oninput="afUpdateSignupPasswordCriteria()">
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
               </div>
-            </div>
-
-            <!-- Website — IONS only -->
-            <div class="af-field hidden" id="af-field-website">
-              <label>Organization / Institution Website <span class="af-req">*</span></label>
-              <input class="af-input" type="url" id="af-website-input" placeholder="https://yourlab.com">
+              <div class="af-criteria-box" id="af-signup-criteria-box">
+                <div class="af-criteria-list">
+                  <div class="af-criteria-title">Password must contain:</div>
+                  <div class="af-criteria-row">
+                    <div class="af-criteria-item" id="af-signup-criteria-length"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>8+ characters</div>
+                    <div class="af-criteria-item" id="af-signup-criteria-upper"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Uppercase</div>
+                    <div class="af-criteria-item" id="af-signup-criteria-numsym"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Number or symbol</div>
+                  </div>
+                </div>
+                <div class="af-criteria-ok"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Password meets all requirements</div>
+              </div>
             </div>
 
             <div class="af-field">
-              <label>Phone Number <span class="af-req">*</span></label>
-              <div class="af-phone-row">
-                <select class="af-select af-phone-code" id="af-phone-code" aria-label="Country code">
-                  <option value="+91" selected>+91</option>
-                  <option value="+1">+1</option>
-                  <option value="+44">+44</option>
-                  <option value="+49">+49</option>
-                  <option value="+61">+61</option>
-                  <option value="+65">+65</option>
-                  <option value="+86">+86</option>
-                  <option value="+971">+971</option>
-                </select>
-                <input class="af-input" type="tel" id="af-phone-input" placeholder="Enter phone number" required>
+              <label>Confirm Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password-confirm" placeholder="Re-enter password" minlength="8" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
               </div>
+              <div class="af-field-error hidden" id="af-password-match-error">Passwords don't match.</div>
             </div>
+          </div>
 
-            <!-- Industries — ATOMS only, multi-select -->
-            <div class="af-field" id="af-field-industries">
-              <label>Industries <span class="af-req">*</span></label>
-              <select class="af-select" id="af-industries-select" onchange="afAddIndustry()">
-                <option value="" selected disabled>Select industries</option>
-                <option>Agrochemicals</option>
-                <option>Beauty &amp; Personal Care</option>
-                <option>Critical Metals</option>
-                <option>Dyes and Pigments</option>
-                <option>Elemental Derivatives</option>
-                <option>Flame Retardants</option>
-                <option>Flavors &amp; Fragrances</option>
-                <option>Food &amp; Nutrition</option>
-                <option>Industrial Chemicals</option>
-                <option>Metallurgy Chemicals</option>
-                <option>Oleochemicals</option>
-                <option>Pharmaceutical</option>
-                <option value="__other__">Others</option>
-              </select>
-              <input class="af-input af-industry-other hidden" type="text" id="af-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="afOtherIndustryKey(event)">
-              <div class="af-field-hint hidden" id="af-industries-other-hint">Press Enter to add it to your industries.</div>
-              <div class="af-chip-row" id="af-industries-chips"></div>
-              <div class="af-field-error hidden" id="af-industries-error">Select at least one industry.</div>
+          <button type="submit" class="af-submit">Sign Up</button>
+
+          <div id="af-signup-sso-section">
+            <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+
+            <div class="af-sso-stack">
+              <div id="af-enterprise-btn-wrap">
+                <button type="button" class="af-sso-btn af-sso-enterprise" id="af-enterprise-btn">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Continue with <span id="af-enterprise-company-name">Acme Manufacturing</span> SSO
+                </button>
+              </div>
+              <button type="button" class="af-sso-btn" id="af-sso-btn-google" onclick="afSetSource('google')">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                <span class="af-sso-btn-label">Continue with Google</span>
+              </button>
+              <button type="button" class="af-sso-btn" id="af-sso-btn-linkedin" onclick="afSetSource('linkedin')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                <span class="af-sso-btn-label">Continue with LinkedIn</span>
+              </button>
             </div>
+          </div>
 
-            <!-- Profile Type — IONS only -->
-            <div class="af-field hidden" id="af-field-profiletype">
-              <label>Profile Type <span class="af-req">*</span></label>
-              <select class="af-select" id="af-profiletype-input" onchange="afUpdateProfileTypeHint()">
-                <option value="" selected disabled>Select the option that best describes you</option>
-                <option>Scientist / Research Lab</option>
-                <option>CRO / CDMO</option>
-                <option>Others</option>
-              </select>
-              <div class="af-field-hint" id="af-profiletype-hint"></div>
-            </div>
-
-            <!-- What describes you the best — Customers only, optional -->
-            <div class="af-field hidden" id="af-field-describe">
-              <label>What describes you the best?</label>
-              <select class="af-select" id="af-describe-input">
-                <option value="" selected disabled>Select one</option>
-                <option>Manufacturer</option>
-                <option>CRO / CDMO</option>
-                <option>Research Lab</option>
-                <option>Distributor</option>
-                <option>Brand / Product Company</option>
-                <option>Consultant / Advisor</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            <!-- Upload NDA — Customers only, optional, never blocks signup -->
-            <div class="af-field hidden" id="af-field-nda">
-              <label>Upload NDA <span class="af-optional">(Optional)</span></label>
-              <input class="af-input" type="file" id="af-nda-input" accept=".pdf,.doc,.docx">
-              <div class="af-field-hint">Built for IP-sensitive collaboration, Scinode ensures encrypted data handling and strict access control at every step.</div>
-            </div>
-
-            <div class="af-consent-row">
-              <label class="af-checkbox-label">
-                <input type="checkbox" id="af-signup-consent" required>
-                <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
-              </label>
-            </div>
-
-            <button type="submit" class="af-submit" id="af-signup-submit">Create Account</button>
+          <div class="af-sso-connected-note hidden" id="af-sso-connected-note">
+            <span>Signing up with <b id="af-sso-connected-method">Google</b> — no password needed.</span>
+            <button type="button" onclick="afSetSource('direct')">Use email instead</button>
           </div>
         </form>
       </div>
@@ -498,17 +343,43 @@
         </form>
       </div>
 
-      <!-- ══════════ EXISTING CUSTOMER → NEW PLATFORM: missing profile persona ══════════
-           Reached from afSubmitSignin() when an existing Scinode ecosystem
-           account (e.g. Scinode for Customers) signs into a platform it
-           hasn't set up a persona for yet — same identity, not a new
-           account, just the platform-specific field(s) already used on Sign
-           Up (Industries / Profile Type), reused here under their own ids
-           since they live in a different form. Deep Research has no
-           existing equivalent field on Sign Up, so its two questions are
-           new. On completion this reuses the existing Cross-Platform
-           Pending screen (afSubmitXpProfile → afShowResult('pending-platform')). -->
+      <!-- ══════════ "YOU'RE ALMOST THERE" — workspace/profile details ══════════
+           A single screen serving 3 entry paths (afState.xpMode):
+           - 'signup-first'    — brand-new signup, after Verify Email (or
+                                  immediately for SSO sources). Shows the
+                                  identity header, Company Name (first-timers
+                                  only — spec: company name is never shown to
+                                  recurring users), Name/Phone/Website + the
+                                  platform-specific field.
+           - 'signup-recurring'— another person from an already-known domain
+                                  signing up fresh (not via invite). Same as
+                                  above minus Company Name; the platform field
+                                  is itself skipped if a prior signup from the
+                                  same domain already supplied it
+                                  (afState.signupFieldCaptured).
+           - 'existing-customer'— existing Scinode ecosystem account signing
+                                  into a different platform (afSubmitSignin).
+                                  Only the platform-specific field — identity,
+                                  name/phone/company/website are already on
+                                  file for this account.
+           afShowXpProfile(mode) toggles all of the above; afSubmitXpProfile()
+           routes on completion (see its comment for the 3-way destination). -->
       <div class="af-screen hidden" id="af-screen-xp-profile">
+        <!-- Signup-only: shows the just-verified identity so this still feels
+             like a continuation of the account just created, not a new form. -->
+        <div class="iv-invite-card-v2 hidden" id="af-xp-identity" style="padding:14px 16px;margin-bottom:20px;">
+          <div class="iv-invite-card-header" style="align-items:center;">
+            <div class="iv-invite-card-avatar" id="af-xp-identity-avatar">R</div>
+            <div class="iv-invite-card-heading">
+              <div class="iv-invite-card-name-row">
+                <span id="af-xp-identity-name">Rahul Mehta</span>
+                <span class="iv-invite-verified-pill"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Email Verified</span>
+              </div>
+              <div class="iv-invite-card-domain" id="af-xp-identity-email">rahul@acme.com</div>
+            </div>
+          </div>
+        </div>
+
         <div class="af-h1">You're almost there</div>
         <div class="af-sub" id="af-xp-sub">Just confirm a couple of details to set up your workspace.</div>
 
@@ -541,6 +412,92 @@
         </div>
 
         <form onsubmit="afSubmitXpProfile(event)">
+          <!-- Company — signup, first-time users only (never shown to recurring
+               users or existing-customer sign-ins — spec: "Company Name will
+               only be visible to First time users, not recurring users").
+               Same 3-way verified/new/public branch that used to live on Sign
+               Up Step 1, relocated here wholesale. -->
+          <div class="hidden" id="af-xp-company-group">
+            <div class="af-field" id="af-company-locked">
+              <label><span id="af-company-label-locked">Company Name</span></label>
+              <div class="af-field-locked is-verified">
+                <div class="af-field-locked-val">
+                  <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span id="af-company-locked-value">Acme Manufacturing</span>
+                </div>
+                <svg class="af-verified-check" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="m8 12.3 2.8 2.8L16 9.6" stroke="#fff" stroke-width="2.4"/></svg>
+              </div>
+              <div class="af-info-banner is-success" role="status" id="af-company-verified-banner"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span>Scinode has already identified your company. You can continue with your account setup.</span></div>
+            </div>
+            <div class="af-field hidden" id="af-company-editable">
+              <label><span id="af-company-label-editable">Company Name</span> <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="af-company-editable-input" placeholder="Enter company name">
+              <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>New domain — your company will go through a quick verification before activation.</span></div>
+              <div class="af-field" style="margin-top:14px;" id="af-company-website-wrap">
+                <label>Company Website</label>
+                <input class="af-input" type="url" id="af-company-website-input" placeholder="https://yourcompany.com">
+              </div>
+              <div class="af-field" style="margin-top:14px;margin-bottom:0;">
+                <label>Country</label>
+                <select class="af-select" id="af-company-country-input">
+                  <option value="" selected disabled>Select country</option>
+                  <option>India</option>
+                  <option>United States</option>
+                  <option>United Kingdom</option>
+                  <option>Germany</option>
+                  <option>China</option>
+                  <option>Singapore</option>
+                  <option>United Arab Emirates</option>
+                  <option>Australia</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="af-field hidden" id="af-company-public">
+              <label><span id="af-company-label-public">Which company do you represent?</span> <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="af-company-public-input" placeholder="Enter company name">
+              <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>Public email domain — your access will need admin approval either way.</span></div>
+            </div>
+          </div>
+
+          <!-- Name — signup only, direct vs SSO-verified -->
+          <div class="af-field hidden" id="af-name-direct-wrap">
+            <label>Name <span class="af-req">*</span></label>
+            <input class="af-input" type="text" id="af-name-direct-input" placeholder="Enter your full name">
+          </div>
+          <div class="af-field hidden" id="af-name-sso-wrap">
+            <label>Name</label>
+            <div class="af-field-locked">
+              <div class="af-field-locked-val"><span id="af-name-sso-value">Rahul Mehta</span></div>
+              <span class="af-verified-chip" id="af-name-sso-chip">From Google</span>
+            </div>
+          </div>
+
+          <!-- Website — signup only. Required for IONS (unchanged); optional for
+               ATOMS/Customers (new); not asked for Deep Research. -->
+          <div class="af-field hidden" id="af-field-website">
+            <label><span id="af-website-label">Organization / Institution Website</span> <span class="af-req" id="af-website-req">*</span><span class="af-optional hidden" id="af-website-optional">(Optional)</span></label>
+            <input class="af-input" type="url" id="af-website-input" placeholder="https://yourcompany.com">
+          </div>
+
+          <!-- Phone — signup only -->
+          <div class="af-field hidden" id="af-field-phone">
+            <label>Phone Number <span class="af-req">*</span></label>
+            <div class="af-phone-row">
+              <select class="af-select af-phone-code" id="af-phone-code" aria-label="Country code">
+                <option value="+91" selected>+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
+                <option value="+49">+49</option>
+                <option value="+61">+61</option>
+                <option value="+65">+65</option>
+                <option value="+86">+86</option>
+                <option value="+971">+971</option>
+              </select>
+              <input class="af-input" type="tel" id="af-phone-input" placeholder="Enter phone number">
+            </div>
+          </div>
+
           <!-- Industries — ATOMS only, multi-select (mirrors #af-field-industries on Sign Up) -->
           <div class="af-field hidden" id="af-xp-field-industries">
             <label>Industries <span class="af-req">*</span></label>
@@ -605,6 +562,35 @@
               <option>Independent Researcher / Consultant</option>
               <option>Other</option>
             </select>
+          </div>
+
+          <!-- What describes you the best — signup + Customers only, optional -->
+          <div class="af-field hidden" id="af-field-describe">
+            <label>What describes you the best?</label>
+            <select class="af-select" id="af-describe-input">
+              <option value="" selected disabled>Select one</option>
+              <option>Manufacturer</option>
+              <option>CRO / CDMO</option>
+              <option>Research Lab</option>
+              <option>Distributor</option>
+              <option>Brand / Product Company</option>
+              <option>Consultant / Advisor</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Upload NDA — signup + Customers only, optional, never blocks signup -->
+          <div class="af-field hidden" id="af-field-nda">
+            <label>Upload NDA <span class="af-optional">(Optional)</span></label>
+            <input class="af-input" type="file" id="af-nda-input" accept=".pdf,.doc,.docx">
+            <div class="af-field-hint">Built for IP-sensitive collaboration, Scinode ensures encrypted data handling and strict access control at every step.</div>
+          </div>
+
+          <div class="af-consent-row hidden" id="af-xp-consent-row">
+            <label class="af-checkbox-label">
+              <input type="checkbox" id="af-signup-consent">
+              <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+            </label>
           </div>
 
           <button type="submit" class="af-submit" id="af-xp-submit" disabled>Continue</button>
@@ -1016,8 +1002,7 @@
     try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
   }
 
-  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, ssoDisplay: 'with', step: 1, existingCustomer: false, xpProfileComplete: false };
-  var afIndustries = [];
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, ssoDisplay: 'with', existingCustomer: false, xpProfileComplete: false, signupUserType: 'first', signupFieldCaptured: false, xpMode: null };
   var afXpIndustries = [];
   var afVerifyState = 'pending';
 
@@ -1197,19 +1182,32 @@
     afState.domain = 'verified';
     afState.orgApprovedOnPlatform = true;
     afState.source = 'direct';
-    afState.step = 1;
-    afIndustries = [];
-    afRenderIndustryChips();
-    afHideOtherIndustry();
-    document.getElementById('af-profiletype-input').value = '';
-    document.getElementById('af-profiletype-hint').textContent = '';
+    afXpIndustries = [];
+    afXpRenderIndustryChips();
+    afXpHideOtherIndustry();
+    document.getElementById('af-xp-profiletype-input').value = '';
+    document.getElementById('af-xp-profiletype-hint').textContent = '';
+    document.getElementById('af-xp-dr-role').value = '';
+    document.getElementById('af-xp-dr-orgtype').value = '';
     document.getElementById('af-describe-input').value = '';
     document.getElementById('af-nda-input').value = '';
     afState.existingCustomer = false;
     afState.xpProfileComplete = false;
+    afState.signupUserType = 'first';
+    afState.signupFieldCaptured = false;
     // Switching platform while sitting on a result/verify screen would otherwise
     // leave stale content (e.g. Deep Research's welcome copy) under the new brand panel.
     if (afState.screen === 'result' || afState.screen === 'verify') afShowScreen('signup');
+    afRender();
+  }
+
+  function afSetSignupUserType(val) {
+    afState.signupUserType = val;
+    afRender();
+  }
+
+  function afSetSignupFieldCaptured(val) {
+    afState.signupFieldCaptured = val;
     afRender();
   }
 
@@ -1303,78 +1301,8 @@
     document.getElementById('af-dev-sso-without').classList.toggle('active', !show);
   }
 
-  function afAddIndustry() {
-    var select = document.getElementById('af-industries-select');
-    var val = select.value;
-    select.value = '';
-    if (val === '__other__') {
-      afShowOtherIndustry();
-      return;
-    }
-    afPushIndustry(val);
-  }
-
-  // Adds an industry chip (deduped, case-insensitive). Shared by the dropdown
-  // options and the free-text "Others" entry so both behave identically.
-  function afPushIndustry(name) {
-    if (!name) return;
-    var lower = name.toLowerCase();
-    if (afIndustries.some(function (i) { return i.toLowerCase() === lower; })) return;
-    afIndustries.push(name);
-    afRenderIndustryChips();
-  }
-
-  function afShowOtherIndustry() {
-    var input = document.getElementById('af-industries-other');
-    input.classList.remove('hidden');
-    document.getElementById('af-industries-other-hint').classList.remove('hidden');
-    input.focus();
-  }
-
-  function afHideOtherIndustry() {
-    var input = document.getElementById('af-industries-other');
-    if (!input) return;
-    input.value = '';
-    input.classList.add('hidden');
-    document.getElementById('af-industries-other-hint').classList.add('hidden');
-  }
-
-  // Enter adds the typed industry (and must not submit the surrounding form);
-  // Escape cancels.
-  function afOtherIndustryKey(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      var name = e.target.value.replace(/\s+/g, ' ').trim();
-      if (!name) return;
-      afPushIndustry(name);
-      afHideOtherIndustry();
-      document.getElementById('af-industries-select').focus();
-    } else if (e.key === 'Escape') {
-      afHideOtherIndustry();
-      document.getElementById('af-industries-select').focus();
-    }
-  }
-
-  function afRemoveIndustryAt(index) {
-    afIndustries.splice(index, 1);
-    afRenderIndustryChips();
-  }
-
   function afEscapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  function afRenderIndustryChips() {
-    var row = document.getElementById('af-industries-chips');
-    if (!row) return;
-    row.innerHTML = afIndustries.map(function (industry, i) {
-      var safe = afEscapeHtml(industry);
-      return '<span class="af-chip">' + safe +
-        '<button type="button" onclick="afRemoveIndustryAt(' + i + ')" aria-label="Remove ' + safe + '">' +
-        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
-    }).join('');
-    var error = document.getElementById('af-industries-error');
-    if (error && afIndustries.length) error.classList.add('hidden');
   }
 
   function afTogglePassword(inputId, btn) {
@@ -1393,61 +1321,19 @@
     'Others': "Not listed here? We'll guide you."
   };
 
-  function afUpdateProfileTypeHint() {
-    var select = document.getElementById('af-profiletype-input');
-    var hint = document.getElementById('af-profiletype-hint');
-    hint.textContent = AF_PROFILE_TYPE_DESC[select.value] || '';
-  }
-
   function afRender() {
     var s = afState;
     var meta = AF_PLATFORM[s.platform];
 
-    document.getElementById('af-name-direct-wrap').classList.toggle('hidden', s.source !== 'direct');
-    document.getElementById('af-name-sso-wrap').classList.toggle('hidden', s.source === 'direct');
     document.getElementById('af-email-sso-wrap').classList.toggle('hidden', s.source === 'direct');
-
-    document.getElementById('af-company-locked').classList.toggle('hidden', s.domain !== 'verified');
-    document.getElementById('af-company-editable').classList.toggle('hidden', s.domain !== 'new');
-    document.getElementById('af-company-public').classList.toggle('hidden', s.domain !== 'public');
-    afUpdateOrgPlatformBanner(s, meta);
-
     document.getElementById('af-email-direct-wrap').classList.toggle('hidden', s.source !== 'direct');
     document.getElementById('af-signup-password-wrap').classList.toggle('hidden', s.source !== 'direct');
 
-    // Platform-specific Section 1 fields (see IDENTITY_ACCESS_SPEC.md §2.1).
-    document.getElementById('af-field-website').classList.toggle('hidden', s.platform !== 'ions');
-    document.getElementById('af-field-profiletype').classList.toggle('hidden', s.platform !== 'ions');
-    document.getElementById('af-field-industries').classList.toggle('hidden', s.platform !== 'atoms');
-    document.getElementById('af-field-describe').classList.toggle('hidden', s.platform !== 'customers');
-    document.getElementById('af-field-nda').classList.toggle('hidden', s.platform !== 'customers');
-    // IONS already asks for its Organization Website in Section 1 (above) — don't
-    // ask a second time in the shared New-Private-Domain block ("Atoms sign in/up/
-    // sso.pdf" §5B's Website field is redundant here).
-    document.getElementById('af-company-website-wrap').classList.toggle('hidden', s.platform === 'ions');
-
-    // Signup is a 2-step wizard — Step 1 (account credentials) and Step 2
-    // (workspace setup) live in the same <form>, so a hidden step's required
-    // fields must be un-required too or native validation blocks the other step.
-    document.getElementById('af-signup-step1').classList.toggle('hidden', s.step !== 1);
-    document.getElementById('af-signup-step2').classList.toggle('hidden', s.step !== 2);
-    document.getElementById('af-signup-step-badge').textContent = 'Step ' + s.step + ' of 2';
-    document.getElementById('af-signup-step-fill').style.width = (s.step === 1 ? '50%' : '100%');
-    document.getElementById('af-dev-step-1').classList.toggle('active', s.step === 1);
-    document.getElementById('af-dev-step-2').classList.toggle('active', s.step === 2);
-
     // Hidden branches must not block native form validation — toggle `required`
     // in lockstep with visibility rather than relying on display:none alone.
-    document.getElementById('af-name-direct-input').required = s.source === 'direct' && s.step === 2;
-    document.getElementById('af-company-editable-input').required = s.domain === 'new' && s.step === 1;
-    document.getElementById('af-company-public-input').required = s.domain === 'public' && s.step === 1;
-    document.getElementById('af-section3-email').required = s.source === 'direct' && s.step === 1;
-    document.getElementById('af-section3-password').required = s.source === 'direct' && s.step === 1;
-    document.getElementById('af-section3-password-confirm').required = s.source === 'direct' && s.step === 1;
-    document.getElementById('af-website-input').required = s.platform === 'ions' && s.step === 2;
-    document.getElementById('af-profiletype-input').required = s.platform === 'ions' && s.step === 2;
-    document.getElementById('af-phone-input').required = s.step === 2;
-    document.getElementById('af-signup-consent').required = s.step === 2;
+    document.getElementById('af-section3-email').required = s.source === 'direct';
+    document.getElementById('af-section3-password').required = s.source === 'direct';
+    document.getElementById('af-section3-password-confirm').required = s.source === 'direct';
     document.getElementById('af-sso-connected-note').classList.toggle('hidden', s.source === 'direct');
     document.getElementById('af-enterprise-btn-wrap').classList.toggle('hidden', s.domain !== 'verified');
 
@@ -1472,7 +1358,6 @@
     document.getElementById('af-company-editable-input').placeholder = meta.companyPlaceholder;
     document.getElementById('af-company-public-input').placeholder = meta.companyPlaceholder;
     document.getElementById('af-email-label').textContent = meta.emailLabel;
-    afUpdateProfileTypeHint();
 
     // Company name — locked field, Enterprise SSO button, Sign In org panel.
     document.getElementById('af-company-locked-value').textContent = meta.company;
@@ -1495,8 +1380,6 @@
       btn.querySelector('.af-sso-btn-label').textContent = connected ? ('✓ Connected as ' + AF_METHOD_LABEL[m]) : ('Continue with ' + AF_METHOD_LABEL[m]);
     });
 
-    document.getElementById('af-signup-submit').textContent = s.source === 'direct' ? 'Create Account' : 'Complete Sign Up';
-
     Object.keys(AF_PLATFORM).forEach(function (p) {
       var btn = document.getElementById('af-dev-platform-' + p);
       if (btn) btn.classList.toggle('active', s.platform === p);
@@ -1515,6 +1398,11 @@
     document.getElementById('af-devbar-xp-complete-only').classList.toggle('hidden', !s.existingCustomer || s.platform === 'customers');
     document.getElementById('af-dev-xp-missing').classList.toggle('active', !s.xpProfileComplete);
     document.getElementById('af-dev-xp-complete').classList.toggle('active', s.xpProfileComplete);
+    document.getElementById('af-dev-usertype-first').classList.toggle('active', s.signupUserType === 'first');
+    document.getElementById('af-dev-usertype-recurring').classList.toggle('active', s.signupUserType === 'recurring');
+    document.getElementById('af-devbar-usertype-captured-only').classList.toggle('hidden', s.signupUserType !== 'recurring');
+    document.getElementById('af-dev-usertype-notcaptured').classList.toggle('active', !s.signupFieldCaptured);
+    document.getElementById('af-dev-usertype-captured').classList.toggle('active', s.signupFieldCaptured);
   }
 
   function afShowScreen(name) {
@@ -1525,7 +1413,6 @@
     });
     afState.screen = name;
     if (name === 'signup') {
-      afState.step = 1;
       afRender();
     }
     ['signup', 'signin', 'reset'].forEach(function (n) {
@@ -1676,17 +1563,21 @@
     return checks;
   }
 
-  function afSignupGoToStep(step) {
-    afState.step = step;
-    afRender();
-    window.scrollTo(0, 0);
-  }
+  // Set once Sign Up (Screen 1) is submitted, read back at the "You're
+  // almost there" screen (Screen 3) — either directly (SSO, no email
+  // verification needed) or after "I've verified — Continue" (direct
+  // source). Domain/org-approval toggles are fixed at Screen 1 submission so
+  // the eventual routing doesn't drift if a reviewer nudges the devbar
+  // in between.
+  var afPendingResultReason = null;
 
-  // Step 1 → Step 2. Native reportValidity() only checks Step 1's fields here,
-  // since Step 2's required attributes are already off while step === 1.
-  function afSignupContinue() {
-    var form = document.getElementById('af-signup-form');
-    if (!form.reportValidity()) return;
+  // Sign Up (Screen 1) — just email/password/confirm-password (native
+  // `required` already blocks submission before this fires). Company Name
+  // and the platform-specific workspace details now live on Screen 3 (see
+  // afShowXpProfile), reached after Verify Email (direct) or immediately
+  // (SSO, identity already confirmed by the provider).
+  function afSubmitSignup(e) {
+    if (e) e.preventDefault();
 
     if (afState.source === 'direct') {
       var checks = afUpdateSignupPasswordCriteria();
@@ -1705,50 +1596,21 @@
       matchError.classList.add('hidden');
     }
 
-    afSignupGoToStep(2);
-  }
-
-  // Set once a direct signup is submitted, read back when "I've verified —
-  // Continue" is clicked on the Verify Email screen.
-  var afPendingResultReason = null;
-
-  function afSubmitSignup(e) {
-    if (e) e.preventDefault();
-
-    if (afState.platform === 'atoms' && afIndustries.length === 0) {
-      document.getElementById('af-industries-error').classList.remove('hidden');
-      document.getElementById('af-industries-select').focus();
-      return;
-    }
-
-    if (afState.source === 'direct') {
-      var pw = document.getElementById('af-section3-password').value;
-      var pwConfirm = document.getElementById('af-section3-password-confirm').value;
-      var matchError = document.getElementById('af-password-match-error');
-      if (pw !== pwConfirm) {
-        matchError.classList.remove('hidden');
-        document.getElementById('af-section3-password-confirm').focus();
-        return;
-      }
-      matchError.classList.add('hidden');
-    }
-
     // A fresh submission always reflects the current domain/platform toggles —
     // clear any pending status left over from an earlier demo run so the
     // pending screen doesn't show stale reason/domain data for this one.
     afState.pendingAccount = null;
     afSyncPendingBtn();
-    var reason = afComputeSignupReason();
+    afPendingResultReason = afComputeSignupReason();
+    var emailInput = document.getElementById('af-section3-email');
+    afState.signupEmail = emailInput && emailInput.value ? emailInput.value : '';
     if (afState.source === 'direct') {
       // Phase 1 authentication is Email → Password → Email Verification
       // (Phase 1 - User Management.pdf §"Phase 1 authentication") — SSO auth
       // already verifies the identity, so only the direct path stops here.
-      afPendingResultReason = reason;
-      var emailInput = document.getElementById('af-section3-email');
-      afState.signupEmail = emailInput && emailInput.value ? emailInput.value : '';
       afShowVerify(afState.signupEmail || null);
     } else {
-      afShowResult(reason);
+      afShowXpProfile(afState.signupUserType === 'recurring' ? 'signup-recurring' : 'signup-first');
     }
   }
 
@@ -1816,24 +1678,13 @@
     afShowVerify(null);
   }
 
-  // Simulates clicking the link in the verification email — this is the
-  // EMAIL_VERIFIED state. If the org is already on this platform, no admin
-  // approval is needed: the account is ACTIVE and can sign in right away.
-  // Otherwise (cross-platform, or a new/public domain) it's APPROVAL_PENDING —
-  // a distinct state from "just verified", never shown as a success/verified
-  // screen (spec: "Do NOT merge Verification Pending and Approval Pending").
+  // EMAIL_VERIFIED — always continues to Screen 3 ("You're almost there") to
+  // collect the remaining workspace details; afSubmitXpProfile() does the
+  // reason-based routing (activated / pending / pending-platform) once that
+  // screen is completed.
   function afVerifyEmailContinue() {
-    var reason = afPendingResultReason || afComputeSignupReason();
-    afPendingResultReason = null;
-    if (reason === 'activated') {
-      // Verified domain + same platform, already approved: no separate
-      // "your email is verified" stop — go straight to the same landing the
-      // admin-approval email link uses (mode 'verify' swaps in its own
-      // heading + info message, see afRenderSigninLanding).
-      afOpenSigninFromLink('verify');
-    } else {
-      afShowResult(reason);
-    }
+    if (afPendingResultReason === null) afPendingResultReason = afComputeSignupReason();
+    afShowXpProfile(afState.signupUserType === 'recurring' ? 'signup-recurring' : 'signup-first');
   }
 
   var afResendTimer = null;
@@ -1952,7 +1803,7 @@
       if (afState.xpProfileComplete) {
         afShowResult('pending-platform');
       } else {
-        afShowXpProfile();
+        afShowXpProfile('existing-customer');
       }
       return;
     }
@@ -1963,11 +1814,25 @@
   // Reuses the AF_PLATFORM meta and the same field content as Sign Up's
   // Industries / Profile Type, under separate af-xp-* ids/state since they
   // live in a different form on a different screen.
-  function afShowXpProfile() {
+  // mode: 'existing-customer' (afSubmitSignin) | 'signup-first' | 'signup-recurring'
+  // (afSubmitSignup / afVerifyEmailContinue) — see the screen's HTML comment
+  // for what each mode shows. Stored in afState.xpMode for afSubmitXpProfile
+  // to route on, and for afXpValidate to know which field(s) gate the button.
+  function afShowXpProfile(mode) {
+    afState.xpMode = mode;
     var meta = AF_PLATFORM[afState.platform];
     var isAtoms = afState.platform === 'atoms';
     var isIons = afState.platform === 'ions';
     var isDR = afState.platform === 'deepresearch';
+    var isCustomers = afState.platform === 'customers';
+    var isSignup = mode !== 'existing-customer';
+    var isFirst = mode === 'signup-first';
+    // Recurring users never see Company Name, and skip the platform-specific
+    // field(s) entirely if a prior signup from the same domain already
+    // supplied them (afState.signupFieldCaptured) — spec: "the optional
+    // fields of Step 2 ... shown to recurring users only if it has not been
+    // added by the previously signed up users of the same domain."
+    var skip = mode === 'signup-recurring' && afState.signupFieldCaptured;
 
     afXpIndustries = [];
     afXpRenderIndustryChips();
@@ -1976,14 +1841,80 @@
     document.getElementById('af-xp-profiletype-hint').textContent = '';
     document.getElementById('af-xp-dr-role').value = '';
     document.getElementById('af-xp-dr-orgtype').value = '';
+    document.getElementById('af-describe-input').value = '';
+    document.getElementById('af-nda-input').value = '';
+    document.getElementById('af-name-direct-input').value = '';
+    document.getElementById('af-website-input').value = '';
+    document.getElementById('af-phone-input').value = '';
+    document.getElementById('af-company-editable-input').value = '';
+    document.getElementById('af-company-public-input').value = '';
+    document.getElementById('af-company-website-input').value = '';
+    document.getElementById('af-company-country-input').value = '';
+    document.getElementById('af-signup-consent').checked = false;
 
-    document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms);
-    document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons);
-    document.getElementById('af-xp-field-dr-role').classList.toggle('hidden', !isDR);
-    document.getElementById('af-xp-field-dr-orgtype').classList.toggle('hidden', !isDR);
-    document.getElementById('af-xp-profiletype-input').required = isIons;
-    document.getElementById('af-xp-dr-role').required = isDR;
-    document.getElementById('af-xp-dr-orgtype').required = isDR;
+    document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms || skip);
+    document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons || skip);
+    document.getElementById('af-xp-field-dr-role').classList.toggle('hidden', !isDR || skip);
+    document.getElementById('af-xp-field-dr-orgtype').classList.toggle('hidden', !isDR || skip);
+    document.getElementById('af-xp-profiletype-input').required = isIons && !skip;
+    document.getElementById('af-xp-dr-role').required = isDR && !skip;
+    document.getElementById('af-xp-dr-orgtype').required = isDR && !skip;
+
+    // Identity header — signup only (existing-customer sign-ins already have
+    // a full profile, nothing to "just verified" about here).
+    document.getElementById('af-xp-identity').classList.toggle('hidden', !isSignup);
+    if (isSignup) {
+      var person = afPersonDisplay(meta.name);
+      document.getElementById('af-xp-identity-avatar').textContent = person.avatarInitial;
+      document.getElementById('af-xp-identity-name').textContent = meta.name;
+      document.getElementById('af-xp-identity-email').textContent = afState.signupEmail || meta.emailByDomain[afState.domain] || '';
+    }
+
+    // Company Name — signup + first-time only.
+    document.getElementById('af-xp-company-group').classList.toggle('hidden', !isFirst);
+    document.getElementById('af-company-locked').classList.toggle('hidden', !isFirst || afState.domain !== 'verified');
+    document.getElementById('af-company-editable').classList.toggle('hidden', !isFirst || afState.domain !== 'new');
+    document.getElementById('af-company-public').classList.toggle('hidden', !isFirst || afState.domain !== 'public');
+    document.getElementById('af-company-editable-input').required = isFirst && afState.domain === 'new';
+    document.getElementById('af-company-public-input').required = isFirst && afState.domain === 'public';
+    document.getElementById('af-company-website-wrap').classList.toggle('hidden', afState.platform === 'ions');
+    afUpdateOrgPlatformBanner(afState, meta);
+
+    // Name — signup only, direct vs SSO-verified.
+    document.getElementById('af-name-direct-wrap').classList.toggle('hidden', !isSignup || afState.source !== 'direct');
+    document.getElementById('af-name-sso-wrap').classList.toggle('hidden', !isSignup || afState.source === 'direct');
+    document.getElementById('af-name-direct-input').required = isSignup && afState.source === 'direct';
+    if (isSignup && afState.source !== 'direct') {
+      document.getElementById('af-name-sso-value').textContent = meta.name;
+      document.getElementById('af-name-sso-chip').textContent = 'From ' + AF_METHOD_LABEL[afState.source];
+    }
+
+    // Website — signup only. Required for IONS (unchanged); optional for
+    // ATOMS/Customers (new); not asked for Deep Research.
+    var showWebsite = isSignup && (isIons || isAtoms || isCustomers);
+    document.getElementById('af-field-website').classList.toggle('hidden', !showWebsite);
+    document.getElementById('af-website-input').required = isSignup && isIons;
+    document.getElementById('af-website-label').textContent = isIons ? 'Organization / Institution Website' : 'Company Website';
+    document.getElementById('af-website-req').classList.toggle('hidden', !isIons);
+    document.getElementById('af-website-optional').classList.toggle('hidden', isIons);
+    document.getElementById('af-website-input').placeholder = isIons ? 'https://yourlab.com' : 'https://yourcompany.com';
+
+    // Phone — signup only.
+    document.getElementById('af-field-phone').classList.toggle('hidden', !isSignup);
+    document.getElementById('af-phone-input').required = isSignup;
+
+    // Describe / NDA — signup + Customers only, optional, subject to the same
+    // "already captured" skip as the mandatory platform field.
+    document.getElementById('af-field-describe').classList.toggle('hidden', !isSignup || !isCustomers || skip);
+    document.getElementById('af-field-nda').classList.toggle('hidden', !isSignup || !isCustomers || skip);
+
+    // Consent — signup only.
+    document.getElementById('af-xp-consent-row').classList.toggle('hidden', !isSignup);
+    document.getElementById('af-signup-consent').required = isSignup;
+
+    document.getElementById('af-xp-submit').textContent = mode === 'existing-customer'
+      ? 'Continue'
+      : (afState.source === 'direct' ? 'Create Account' : 'Complete Sign Up');
 
     document.getElementById('af-xp-sub').innerHTML = 'Your Scinode account is all set — just confirm a couple of details to set up your <b>' + meta.label + '</b> workspace.';
 
@@ -2005,11 +1936,11 @@
   function afXpValidate() {
     var p = afState.platform;
     var valid = true;
-    if (p === 'atoms') {
+    if (p === 'atoms' && !document.getElementById('af-xp-field-industries').classList.contains('hidden')) {
       valid = afXpIndustries.length > 0;
-    } else if (p === 'ions') {
+    } else if (p === 'ions' && !document.getElementById('af-xp-field-profiletype').classList.contains('hidden')) {
       valid = !!document.getElementById('af-xp-profiletype-input').value;
-    } else if (p === 'deepresearch') {
+    } else if (p === 'deepresearch' && !document.getElementById('af-xp-field-dr-role').classList.contains('hidden')) {
       valid = !!document.getElementById('af-xp-dr-role').value && !!document.getElementById('af-xp-dr-orgtype').value;
     }
     document.getElementById('af-xp-submit').disabled = !valid;
@@ -2090,15 +2021,35 @@
 
   function afSubmitXpProfile(e) {
     if (e) e.preventDefault();
-    if (afState.platform === 'atoms' && afXpIndustries.length === 0) {
+    if (afState.platform === 'atoms' && !document.getElementById('af-xp-field-industries').classList.contains('hidden') && afXpIndustries.length === 0) {
       document.getElementById('af-xp-industries-error').classList.remove('hidden');
       document.getElementById('af-xp-industries-select').focus();
       return;
     }
-    // Missing-info collection done — same destination as the "already had
-    // the info" skip path (afSubmitSignin): the existing Cross-Platform
-    // Pending screen, reused rather than duplicated.
-    afShowResult('pending-platform');
+
+    if (afState.xpMode === 'existing-customer') {
+      // Same destination as the "already had the info" skip path
+      // (afSubmitSignin): the existing Cross-Platform Pending screen,
+      // reused rather than duplicated.
+      afShowResult('pending-platform');
+      return;
+    }
+
+    // Signup (first-time or recurring) — route by the reason fixed when Sign
+    // Up (Screen 1) was submitted.
+    var reason = afPendingResultReason || afComputeSignupReason();
+    afPendingResultReason = null;
+    if (reason === 'activated') {
+      // Recurring + already approved on this platform: nothing left pending,
+      // no dashboard exists in this prototype — reset straight back to a
+      // fresh Sign Up state (same placeholder the old success screen's CTA
+      // already used for "continue to workspace").
+      afShowScreen('signup');
+      afSetDomain('verified');
+      afSetSource('direct');
+    } else {
+      afShowResult(reason);
+    }
   }
 
   // Overlapping-avatar palette for the success screen's colleague stack —

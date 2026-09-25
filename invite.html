@@ -39,7 +39,6 @@
       <button id="iv-dev-screen-landing" class="active" onclick="ivShowScreen('landing')">Landing</button>
       <button id="iv-dev-screen-auth" onclick="ivShowScreen('auth')">Auth</button>
       <button id="iv-dev-screen-reset" onclick="ivShowScreen('reset')">Reset Password</button>
-      <button id="iv-dev-screen-confirmation" onclick="ivShowScreen('confirmation')">Confirmation</button>
       <button id="iv-dev-screen-pending" onclick="ivShowPending()">Pending Approval</button>
       <button id="iv-dev-screen-verify" onclick="ivShowVerify()">Verify Email</button>
       <button id="iv-dev-screen-approved" onclick="ivOpenSigninFromLink('approved')">Just Approved</button>
@@ -221,13 +220,7 @@
       <div class="af-screen hidden" id="iv-screen-auth">
         <div class="iv-auth-crumbs hidden" id="iv-auth-crumbs">
           <button type="button" onclick="ivShowScreen('landing')">← Invitation</button>
-          <span class="iv-auth-crumb-sep">/</span>
-          <span class="iv-auth-crumb-step" id="iv-auth-crumb-1">1. Account Security</span>
-          <span class="iv-auth-crumb-arrow">→</span>
-          <span class="iv-auth-crumb-step" id="iv-auth-crumb-2">2. Profile</span>
-          <span class="iv-auth-crumb-badge" id="iv-auth-step-badge">Step 1 of 2</span>
         </div>
-        <div class="af-stepper-track hidden" id="iv-auth-stepper-track"><div class="af-stepper-fill" id="iv-auth-step-fill"></div></div>
 
         <div class="iv-invite-badge hidden" id="iv-auth-status-badge"></div>
 
@@ -293,7 +286,7 @@
             </div>
 
             <button type="submit" class="af-submit hidden" id="iv-auth-existing-submit">Continue</button>
-            <button type="button" class="af-submit hidden" id="iv-auth-continue-btn" onclick="ivSignupContinue()">Continue to Profile Details →</button>
+            <button type="button" class="af-submit hidden" id="iv-auth-continue-btn" onclick="ivSignupContinue()">Sign Up</button>
 
             <div id="iv-auth-sso-section">
               <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
@@ -525,15 +518,52 @@
            this still requires Admin Approval before the invitee is activated,
            same "first user from an existing verified org entering a new platform"
            rule as the organic-signup flow in auth.html. Once approved, the
-           invitee gets an email whose link opens #iv-screen-signin.) ══════════ -->
+           invitee gets an email whose link opens #iv-screen-signin. Same
+           simplified rich layout as auth.html's #af-result-pending — screen 2
+           onwards mirrors the recurring-user signup flow exactly.) ══════════ -->
       <div class="af-screen hidden" id="iv-screen-pending">
-        <div class="af-result" id="iv-pending-result">
-          <div class="af-result-icon af-pending" id="iv-pending-icon"></div>
-          <div class="af-result-title" id="iv-pending-title">Requesting your workspace access</div>
-          <div class="af-result-body" id="iv-pending-body"></div>
-          <div class="af-info-banner is-info" role="status" id="iv-pending-note"></div>
-          <ul class="af-result-bullets" id="iv-pending-bullets"></ul>
-          <button type="button" class="af-submit hidden" id="iv-pending-cta"></button>
+        <div class="af-success" id="iv-pending-result">
+          <div class="af-success-hero af-signin-hero" id="iv-pending-hero">
+            <img src="assets/auth-visuals/pending-illustration.png" alt="Illustration of a chemist holding a flask, with a microscope, lab glassware and a DNA helix">
+          </div>
+
+          <div class="af-pending-head">
+            <div class="af-pending-icon-wrap">
+              <div class="af-result-icon af-pending" id="iv-pending-icon"></div>
+              <span class="af-pending-icon-badge"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            </div>
+            <div class="af-pending-head-text">
+              <div class="af-result-title" id="iv-pending-title">Your account is created with us</div>
+              <div class="af-result-body" id="iv-pending-body">We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.</div>
+            </div>
+          </div>
+
+          <!-- TODO: Abhishek's gif goes here (spec: "add Abhishek's gif across
+               all platforms") — not available yet, see conversation. -->
+
+          <!-- "While you wait, explore Scinode" — 2 platform-specific cards. -->
+          <div class="af-success-card">
+            <div class="af-lifecycle-header">
+              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>While you wait, explore Scinode</div>
+              <a href="#" onclick="return false;" class="af-lifecycle-refresh">scinode.com<svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a>
+            </div>
+            <div class="af-explore-grid">
+              <a href="#" onclick="return false;" class="af-explore-item">
+                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span>
+                <span class="af-explore-body">
+                  <span class="af-explore-title" id="iv-pending-explore1-title">Your CDMO Journey<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="iv-pending-explore1-desc">Explore how we can take your CDMO journey from idea to reality.</span>
+                </span>
+              </a>
+              <a href="#" onclick="return false;" class="af-explore-item">
+                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+                <span class="af-explore-body">
+                  <span class="af-explore-title" id="iv-pending-explore2-title">Talk to Scira<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="iv-pending-explore2-desc">What do you want to develop or manufacture today? Ask Scira.</span>
+                </span>
+              </a>
+            </div>
+          </div>
         </div>
         <div class="af-footnote" style="text-align:center;"><button type="button" onclick="ivShowScreen('landing')">Back to Invitation</button></div>
       </div>
@@ -872,6 +902,10 @@
       approvedSubtext: 'Start boosting your plant capacity utilization.',
       workspaceFeature: { title: 'Pre-Configured Acme Workspace', desc: 'Connect directly with 24 colleagues across R&amp;D, Synthesis, and QA.' },
       profileActivity: 'synthesis batches, spec reviews, and vendor RFQs',
+      exploreCard1Title: 'Your Growth, Unlocked',
+      exploreCard1Desc: 'Explore how your journey towards more opportunities and demand begins.',
+      exploreCard2Title: 'Beyond Manufacturing',
+      exploreCard2Desc: 'Discover the research, quality, compliance and market support behind global growth.',
       successData: {
         accountId: 'SCN-ATM-10433',
         avatarInitials: 'AM',
@@ -904,6 +938,10 @@
       approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.',
       workspaceFeature: { title: 'Pre-Configured Meridian Labs Workspace', desc: 'Connect directly with 16 colleagues across Research, Synthesis, and QA.' },
       profileActivity: 'molecule briefs, synthesis routes, and partner requests',
+      exploreCard1Title: 'Make Your Next Breakthrough',
+      exploreCard1Desc: 'Discover the people, capabilities, and opportunities that can help turn your research into what comes next.',
+      exploreCard2Title: 'Your Technology, Commercialised.',
+      exploreCard2Desc: 'Turn your scientific expertise into real-world opportunities through the right Projects, partnerships, and network.',
       successData: {
         accountId: 'SCN-ION-20188',
         avatarInitials: 'ML',
@@ -936,6 +974,10 @@
       approvedSubtext: 'Start exploring the Scinode ecosystem.',
       workspaceFeature: { title: 'Pre-Configured Nova Specialty Workspace', desc: 'Connect directly with 31 colleagues across Procurement, Quality, and Compliance.' },
       profileActivity: 'sourcing requests, vendor quotes, and order updates',
+      exploreCard1Title: 'Your CDMO Journey',
+      exploreCard1Desc: 'Explore how we can take your CDMO journey from idea to reality.',
+      exploreCard2Title: 'Talk to Scira',
+      exploreCard2Desc: 'What do you want to develop or manufacture today? Ask Scira.',
       successData: {
         accountId: 'SCN-CUS-30560',
         avatarInitials: 'NS',
@@ -968,6 +1010,10 @@
       approvedSubtext: 'Start your first research workflow.',
       workspaceFeature: { title: 'Pre-Configured Caltech Lab Workspace', desc: 'Connect directly with 12 colleagues across Research, Computation, and Review.' },
       profileActivity: 'research queries, saved routes, and literature reviews',
+      exploreCard1Title: 'From Idea to Molecule',
+      exploreCard1Desc: 'Discover how AI helps chemists move from a target molecule to practical, commercially viable synthesis routes.',
+      exploreCard2Title: 'Beyond AI: Intelligence for Chemistry',
+      exploreCard2Desc: 'Explore why chemistry needs more than AI alone — and how human expertise, scientific reasoning, and AI come together to accelerate discovery.',
       successData: {
         accountId: 'SCN-DR-40022',
         avatarInitials: 'CC',
@@ -1134,11 +1180,6 @@
     }
 
     document.getElementById('iv-auth-crumbs').classList.toggle('hidden', !isNew);
-    document.getElementById('iv-auth-crumb-1').classList.toggle('active', ivState.step === 1);
-    document.getElementById('iv-auth-crumb-2').classList.toggle('active', ivState.step === 2);
-    document.getElementById('iv-auth-step-badge').textContent = 'Step ' + ivState.step + ' of 2';
-    document.getElementById('iv-auth-stepper-track').classList.toggle('hidden', !isNew);
-    document.getElementById('iv-auth-step-fill').style.width = (ivState.step === 1 ? '50%' : '100%');
     document.getElementById('iv-dev-step-1').classList.toggle('active', ivState.step === 1);
     document.getElementById('iv-dev-step-2').classList.toggle('active', ivState.step === 2);
 
@@ -1163,13 +1204,17 @@
     document.getElementById('iv-signup-consent').required = showStep2;
 
     // Platform-specific field — same content as Sign Up's (see auth.html),
-    // joining an existing org so no Company Name here.
+    // joining an existing org so no Company Name here. An invitee always
+    // joins an org that's already verified elsewhere in Scinode (that's the
+    // premise of being invited) — same condition that hides Industries/
+    // Profile Type for recurring signups with a verified domain in
+    // auth.html's mandatorySkip, but here it's unconditionally true.
     var isAtoms = ivState.platform === 'atoms';
     var isIons = ivState.platform === 'ions';
     var isCustomers = ivState.platform === 'customers';
-    document.getElementById('iv-field-industries').classList.toggle('hidden', !isNew || !isAtoms);
-    document.getElementById('iv-field-profiletype').classList.toggle('hidden', !isNew || !isIons);
-    document.getElementById('iv-profiletype-input').required = isNew && isIons && showStep2;
+    document.getElementById('iv-field-industries').classList.add('hidden');
+    document.getElementById('iv-field-profiletype').classList.add('hidden');
+    document.getElementById('iv-profiletype-input').required = false;
 
     // Website — required for IONS, optional for ATOMS/Customers, not asked
     // for Deep Research. Invited users are always "recurring" (joining an
@@ -1259,7 +1304,7 @@
       document.getElementById('iv-reset-password-match-error').classList.add('hidden');
       ivUpdatePasswordCriteria();
     }
-    document.querySelector('.af-card').classList.toggle('af-card-wide', name === 'confirmation');
+    document.querySelector('.af-card').classList.toggle('af-card-wide', name === 'confirmation' || name === 'pending');
     window.scrollTo(0, 0);
   }
 
@@ -1394,9 +1439,11 @@
     window.scrollTo(0, 0);
   }
 
-  // Step 1 → Step 2 (new users only). Native reportValidity() only checks
+  // Step 1 ("Sign Up") — new users only. Native reportValidity() only checks
   // Step 1's fields here, since Step 2's required attributes are already off
-  // while step === 1.
+  // while step === 1. Direct signups must verify their email before Step 2
+  // (profile details), same order as the recurring-user signup flow in
+  // auth.html; SSO already verifies identity, so it skips straight to Step 2.
   function ivSignupContinue() {
     var form = document.getElementById('iv-auth-form');
     if (!form.reportValidity()) return;
@@ -1416,23 +1463,38 @@
         return;
       }
       matchError.classList.add('hidden');
+      ivShowVerify();
+    } else {
+      ivSignupGoToStep(2);
     }
-
-    ivSignupGoToStep(2);
   }
 
+  // "I've verified — Continue" on the Verify Email screen — always lands on
+  // Step 2 (profile details) regardless of same-platform/cross-platform;
+  // that branch is decided by ivSubmitAuth() once Step 2 is submitted, same
+  // as afVerifyEmailContinue() always landing on the workspace-details
+  // screen in auth.html.
+  function ivVerifyContinue() {
+    ivShowScreen('auth');
+    ivState.step = 2;
+    ivRender();
+  }
+
+  // Step 2 ("Complete Setup & Enter Workspace") for new users, or the
+  // single-step sign-in form for existing users. New users branch here:
+  // same-platform orgs go straight into the workspace — no separate sign-in
+  // prompt, since the password was already set and the email already
+  // verified earlier in this same flow; cross-platform (org not yet
+  // approved on this platform) has to wait for admin approval before they
+  // can sign in at all.
   function ivSubmitAuth(e) {
     if (e) e.preventDefault();
-    if (!ivState.existing && ivState.platform === 'atoms' && ivIndustries.length === 0) {
-      document.getElementById('iv-industries-error').classList.remove('hidden');
-      document.getElementById('iv-industries-trigger').focus();
-      return;
-    }
-    // New invitees who created a password must verify their email first (the
-    // link then opens sign-in). SSO already verifies identity, and existing
-    // users are already verified, so both go straight through.
-    if (!ivState.existing && ivState.source === 'direct') {
-      ivShowVerify();
+    if (!ivState.existing) {
+      if (ivState.orgApprovedOnPlatform) {
+        ivShowConfirmation();
+      } else {
+        ivShowPending('verify');
+      }
       return;
     }
     ivFinishAccept();
@@ -1461,42 +1523,32 @@
   var IV_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
   var IV_ICON_CLOCK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
 
-  // Status banner (icon + text) for the pending / approved org notes —
+  // Status banner (icon + text) for the sign-in-from-link success note —
   // same .af-info-banner component as auth.html's company-domain messages.
   var IV_BANNER_ICON = {
-    success: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
-    info: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+    success: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
   };
-  function ivSetPendingNote(kind, html) {
-    var el = document.getElementById('iv-pending-note');
-    el.className = 'af-info-banner ' + (kind === 'success' ? 'is-success' : 'is-info');
-    el.innerHTML = IV_BANNER_ICON[kind] + '<span>' + html + '</span>';
-  }
 
-  // Cross-platform invite: org already verified elsewhere in the Scinode
-  // ecosystem, but this is its first invite onto the current platform — see
-  // ivSetOrgApprovedOnPlatform(). Mirrors the copy pattern of auth.html's
-  // 'pending-platform' result branch.
-  // Shared copy for every "waiting on the admin" screen (spec §30 pending messaging).
-  var IV_PENDING_MESSAGE = 'Scinode is an invite-only platform. Your account is pending admin approval. You will be notified in your registered email ID once access is approved.';
+  // Shared copy for the pending screen — same simplified text as auth.html's
+  // AF_PENDING_MESSAGE (same for every reason/domain now, no reason-specific
+  // banner or Verification Lifecycle timeline).
+  var IV_PENDING_MESSAGE = "We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.";
 
   // APPROVAL_PENDING — always the same screen regardless of how the user got
   // here (just verified their email, or tried to accept/sign in again during
   // the 24-48h wait). via is only used to avoid re-flagging an account that's
-  // already marked pending.
+  // already marked pending. Mirrors auth.html's afRenderPending() exactly —
+  // screen 2 onwards follows the recurring-user signup flow.
   function ivShowPending(via) {
     var meta = IV_PLATFORM[ivState.platform];
-    var firstName = meta.inviteeName.split(' ')[0];
     if (via !== 'signin') ivSetAccountPending(true);
-    var icon = document.getElementById('iv-pending-icon');
-    icon.className = 'af-result-icon af-pending';
-    icon.innerHTML = IV_ICON_CLOCK;
-    document.getElementById('iv-pending-title').textContent = 'Your account is pending approval';
+    document.getElementById('iv-pending-icon').innerHTML = IV_ICON_CLOCK;
+    document.getElementById('iv-pending-title').textContent = 'Your account is created with us';
     document.getElementById('iv-pending-body').textContent = IV_PENDING_MESSAGE;
-    ivSetPendingNote('info', '<b>Cross-platform expansion</b> — ' + meta.company + " is verified on Scinode, but hasn't been approved for " + meta.accountNoun + ' yet. An admin will review and approve this workspace before ' + firstName + ' is activated. Approval usually takes 24–48 hours.');
-    document.getElementById('iv-pending-bullets').innerHTML =
-      '<li>' + meta.invitedBy + ' and the rest of your team have already set up your role &mdash; no further action needed from you.</li>';
-    document.getElementById('iv-pending-cta').classList.add('hidden');
+    document.getElementById('iv-pending-explore1-title').firstChild.textContent = meta.exploreCard1Title;
+    document.getElementById('iv-pending-explore1-desc').textContent = meta.exploreCard1Desc;
+    document.getElementById('iv-pending-explore2-title').firstChild.textContent = meta.exploreCard2Title;
+    document.getElementById('iv-pending-explore2-desc').textContent = meta.exploreCard2Desc;
     ivShowScreen('pending');
     document.getElementById('iv-dev-screen-pending').classList.add('active');
     document.getElementById('iv-dev-screen-approved').classList.remove('active');
@@ -1522,19 +1574,6 @@
       btn.textContent = 'Resend verification email';
       btn.disabled = false;
     }, 2500);
-  }
-
-  // Stands in for clicking the link in the verification email. Verified
-  // domain + org already on this platform: no separate "your email is
-  // verified" stop — go straight to the sign-in screen, same as
-  // auth.html's afVerifyEmailContinue(). Otherwise: the pending-approval
-  // message (org isn't on this platform yet).
-  function ivVerifyContinue() {
-    if (ivState.orgApprovedOnPlatform) {
-      ivOpenSigninFromLink('verify');
-    } else {
-      ivShowPending('verify');
-    }
   }
 
   // mode: 'verify' (from "Your email is verified" — the org is already on this

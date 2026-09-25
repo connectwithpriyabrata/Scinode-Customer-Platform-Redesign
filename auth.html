@@ -278,7 +278,7 @@
       <div class="af-screen hidden" id="af-screen-signin">
         <!-- Illustration — only when opened from the "you're approved" email link. -->
         <div class="af-success-hero af-signin-hero hidden" id="af-signin-hero">
-          <img src="assets/auth-visuals/success-illustration.svg" alt="Illustration of a chemist at a lab bench with a verified-supplier seal">
+          <img src="assets/auth-visuals/approved-illustration.svg" alt="Illustration of two people shaking hands over a signed document">
         </div>
         <div class="af-h1" id="af-signin-h1">Sign in</div>
         <div class="af-sub" id="af-signin-sub">Access your ATOMS workspace</div>
@@ -621,6 +621,9 @@
       <!-- ══════════ RESULT (pending review / activated / rejected / signed in) ══════════ -->
       <div class="af-screen hidden" id="af-screen-result">
         <div class="af-result" id="af-result-simple">
+          <div class="af-success-hero af-signin-hero hidden" id="af-rejected-hero" style="width:100%;">
+            <img src="assets/auth-visuals/rejected-illustration.svg" alt="Illustration of a person looking concerned at their laptop">
+          </div>
           <div class="af-result-icon" id="af-result-icon"></div>
           <div class="af-result-title" id="af-result-title"></div>
           <div class="af-result-body" id="af-result-body"></div>
@@ -654,7 +657,7 @@
           <div class="af-success-sub" id="af-success-sub"></div>
 
           <div class="af-success-hero" id="af-success-hero">
-            <img src="assets/auth-visuals/success-illustration.svg" alt="Illustration of a chemist at a lab bench with a verified-supplier seal" style="object-fit:contain;padding:24px;">
+            <img src="assets/auth-visuals/approved-illustration.svg" alt="Illustration of two people shaking hands over a signed document" style="object-fit:contain;padding:24px;">
           </div>
 
           <div class="af-success-card">
@@ -709,7 +712,7 @@
              cases. Content is populated per-scenario in afRenderPending(). -->
         <div class="af-success hidden" id="af-result-pending">
           <div class="af-success-hero af-signin-hero" id="af-pending-hero">
-            <img src="assets/auth-visuals/pending-illustration.png" alt="Illustration of a chemist holding a flask, with a microscope, lab glassware and a DNA helix">
+            <img src="assets/auth-visuals/access-pending-illustration.svg" alt="Illustration of a person sitting on top of an hourglass, waiting">
           </div>
 
           <div class="af-pending-head">
@@ -2194,6 +2197,7 @@
     note.classList.remove('hidden');
     note.innerHTML = '';
     document.getElementById('af-rejected-explore').classList.add('hidden');
+    document.getElementById('af-rejected-hero').classList.add('hidden');
 
     var resultSimple = document.getElementById('af-result-simple');
     var resultSuccess = document.getElementById('af-result-success');
@@ -2224,6 +2228,7 @@
     } else if (reason === 'rejected') {
       // Phase 1 - User Management.pdf §30.5 — reached after an admin rejects the
       // application; keep messaging neutral, never expose internal review reasons.
+      document.getElementById('af-rejected-hero').classList.remove('hidden');
       icon.className = 'af-result-icon af-danger';
       icon.innerHTML = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
       title.textContent = "We couldn't verify your company for this platform";

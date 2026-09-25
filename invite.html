@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Accept Invitation — Scinode</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260923k" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260923l" />
   <script src="assets/scinode.js?v=20260902a"></script>
 </head>
 <body>
@@ -75,6 +75,12 @@
     <div class="af-devbar-group">
       <button id="iv-dev-user-new" class="active" onclick="ivSetExisting(false)">New</button>
       <button id="iv-dev-user-existing" onclick="ivSetExisting(true)">Existing</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Org Field (Website)</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-field-notcaptured" class="active" onclick="ivSetFieldCaptured(false)">Not Captured</button>
+      <button id="iv-dev-field-captured" onclick="ivSetFieldCaptured(true)">Already Captured</button>
     </div>
     <div class="af-devbar-sep"></div>
     <span class="af-devbar-label">Step</span>
@@ -167,7 +173,7 @@
 
       <!-- ══════════ LANDING ══════════ -->
       <div class="af-screen" id="iv-screen-landing">
-        <div class="iv-invite-badge"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg> Workspace Invitation</div>
+        <div class="iv-invite-badge"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg> Platform Invitation</div>
         <div class="af-h1">You've been invited to join<br><span class="iv-invite-h1-company" id="iv-h1-company">Acme Manufacturing</span></div>
         <div class="af-sub" id="iv-landing-benefit">Connect with your organization and get started on the platform.</div>
 
@@ -334,6 +340,16 @@
               <input class="af-input" type="text" id="iv-jobtitle-input" placeholder="e.g. R&amp;D Scientist" required>
             </div>
 
+            <!-- Website — required for IONS, optional for ATOMS/Customers, not
+                 asked for Deep Research. Same as Sign Up's (auth.html): if a
+                 prior signup from the same domain already supplied it, shown
+                 pre-filled (autofilled) rather than hidden. -->
+            <div class="af-field hidden" id="iv-field-website">
+              <label><span id="iv-website-label">Organization / Institution Website</span> <span class="af-req" id="iv-website-req">*</span><span class="af-optional hidden" id="iv-website-optional">(Optional)</span></label>
+              <input class="af-input" type="url" id="iv-website-input" placeholder="https://yourcompany.com">
+              <div class="af-field-hint hidden" id="iv-website-autofill-hint">Pre-filled from your organization's existing profile — feel free to update it.</div>
+            </div>
+
             <div class="af-field" id="iv-phone-wrap">
               <label>Phone Number <span class="af-req">*</span></label>
               <input class="af-input" type="tel" id="iv-phone-input" placeholder="Enter phone number" required>
@@ -345,22 +361,27 @@
                  Sign Up"). -->
             <div class="af-field hidden" id="iv-field-industries">
               <label>Industries <span class="af-req">*</span></label>
-              <select class="af-select" id="iv-industries-select" onchange="ivAddIndustry()">
-                <option value="" selected disabled>Select industries</option>
-                <option>Agrochemicals</option>
-                <option>Beauty &amp; Personal Care</option>
-                <option>Critical Metals</option>
-                <option>Dyes and Pigments</option>
-                <option>Elemental Derivatives</option>
-                <option>Flame Retardants</option>
-                <option>Flavors &amp; Fragrances</option>
-                <option>Food &amp; Nutrition</option>
-                <option>Industrial Chemicals</option>
-                <option>Metallurgy Chemicals</option>
-                <option>Oleochemicals</option>
-                <option>Pharmaceutical</option>
-                <option value="__other__">Others</option>
-              </select>
+              <div class="af-msel" id="iv-industries-msel">
+                <button type="button" class="af-msel-trigger" id="iv-industries-trigger" onclick="ivToggleIndustriesPanel()" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="af-msel-trigger-label" id="iv-industries-trigger-label">Select industries</span>
+                  <svg class="af-msel-chevron" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="af-msel-panel hidden" id="iv-industries-panel" role="listbox" aria-multiselectable="true">
+                  <label class="af-msel-option"><span>Agrochemicals</span><input type="checkbox" value="Agrochemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Beauty &amp; Personal Care</span><input type="checkbox" value="Beauty &amp; Personal Care" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Critical Metals</span><input type="checkbox" value="Critical Metals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Dyes and Pigments</span><input type="checkbox" value="Dyes and Pigments" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Elemental Derivatives</span><input type="checkbox" value="Elemental Derivatives" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Flame Retardants</span><input type="checkbox" value="Flame Retardants" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Flavors &amp; Fragrances</span><input type="checkbox" value="Flavors &amp; Fragrances" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Food &amp; Nutrition</span><input type="checkbox" value="Food &amp; Nutrition" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Industrial Chemicals</span><input type="checkbox" value="Industrial Chemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Metallurgy Chemicals</span><input type="checkbox" value="Metallurgy Chemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Oleochemicals</span><input type="checkbox" value="Oleochemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Pharmaceutical</span><input type="checkbox" value="Pharmaceutical" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Others</span><input type="checkbox" id="iv-industries-other-checkbox" value="__other__" onchange="ivToggleOtherIndustry(this)"></label>
+                </div>
+              </div>
               <input class="af-input af-industry-other hidden" type="text" id="iv-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="ivOtherIndustryKey(event)">
               <div class="af-field-hint hidden" id="iv-industries-other-hint">Press Enter to add it to your industries.</div>
               <div class="af-chip-row" id="iv-industries-chips"></div>
@@ -375,34 +396,6 @@
                 <option>Others</option>
               </select>
             </div>
-            <div class="af-field hidden" id="iv-field-dr-role">
-              <label>What best describes your role? <span class="af-req">*</span></label>
-              <select class="af-select" id="iv-dr-role">
-                <option value="" selected disabled>Select one</option>
-                <option>Researcher / Scientist</option>
-                <option>Student / Research Scholar</option>
-                <option>R&amp;D / Innovation</option>
-                <option>Process / Manufacturing</option>
-                <option>Business / Product / Commercial</option>
-                <option>Procurement / Sourcing</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="af-field hidden" id="iv-field-dr-orgtype">
-              <label>What type of organisation are you part of? <span class="af-req">*</span></label>
-              <select class="af-select" id="iv-dr-orgtype">
-                <option value="" selected disabled>Select one</option>
-                <option>Industry / Enterprise</option>
-                <option>Manufacturer</option>
-                <option>CRO / CDMO / Research Services</option>
-                <option>University / Academic Institution</option>
-                <option>Research Institution / Government</option>
-                <option>Biotech / Deep Tech Company</option>
-                <option>Independent Researcher / Consultant</option>
-                <option>Other</option>
-              </select>
-            </div>
-
             <div class="af-consent-row">
               <label class="af-checkbox-label">
                 <input type="checkbox" id="iv-signup-consent" required>
@@ -744,23 +737,46 @@
 
   // ── Invitation flow state — see IDENTITY_ACCESS_SPEC.md screens #17–19
   // and "Phase 1 - User Management.pdf" §20–25, §35.
-  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, pendingAccount: false, ssoDisplay: 'with', step: 1 };
+  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, pendingAccount: false, ssoDisplay: 'with', step: 1, fieldCaptured: false };
   var ivIndustries = [];
 
   function ivEscapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  // Same dedupe/chip pattern as Sign Up's Industries field (auth.html).
-  function ivAddIndustry() {
-    var select = document.getElementById('iv-industries-select');
-    var val = select.value;
-    select.value = '';
-    if (val === '__other__') {
-      ivShowOtherIndustry();
+  // Industries — a checkbox-list dropdown (not a native <select>), same
+  // pattern as Sign Up's Industries field (auth.html): each row has its own
+  // checkbox on the right and the panel stays open across multiple picks.
+  function ivToggleIndustriesPanel() {
+    var msel = document.getElementById('iv-industries-msel');
+    if (msel.classList.contains('is-open')) {
+      ivCloseIndustriesPanel();
       return;
     }
-    ivPushIndustry(val);
+    var lower = ivIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#iv-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    msel.classList.add('is-open');
+    document.getElementById('iv-industries-panel').classList.remove('hidden');
+    document.getElementById('iv-industries-trigger').setAttribute('aria-expanded', 'true');
+  }
+  function ivCloseIndustriesPanel() {
+    document.getElementById('iv-industries-msel').classList.remove('is-open');
+    document.getElementById('iv-industries-panel').classList.add('hidden');
+    document.getElementById('iv-industries-trigger').setAttribute('aria-expanded', 'false');
+  }
+  function ivToggleIndustry(checkbox) {
+    if (checkbox.checked) {
+      ivPushIndustry(checkbox.value);
+    } else {
+      var lower = checkbox.value.toLowerCase();
+      var idx = ivIndustries.findIndex(function (i) { return i.toLowerCase() === lower; });
+      if (idx > -1) ivRemoveIndustryAt(idx);
+    }
+  }
+  function ivToggleOtherIndustry(checkbox) {
+    if (checkbox.checked) ivShowOtherIndustry(); else ivHideOtherIndustry();
   }
   function ivPushIndustry(name) {
     if (!name) return;
@@ -781,6 +797,8 @@
     input.value = '';
     input.classList.add('hidden');
     document.getElementById('iv-industries-other-hint').classList.add('hidden');
+    var otherCb = document.getElementById('iv-industries-other-checkbox');
+    if (otherCb) otherCb.checked = false;
   }
   function ivOtherIndustryKey(e) {
     if (e.key === 'Enter') {
@@ -789,10 +807,8 @@
       if (!name) return;
       ivPushIndustry(name);
       ivHideOtherIndustry();
-      document.getElementById('iv-industries-select').focus();
     } else if (e.key === 'Escape') {
       ivHideOtherIndustry();
-      document.getElementById('iv-industries-select').focus();
     }
   }
   function ivRemoveIndustryAt(index) {
@@ -810,7 +826,24 @@
     }).join('');
     var error = document.getElementById('iv-industries-error');
     if (error && ivIndustries.length) error.classList.add('hidden');
+    var lower = ivIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#iv-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    var triggerLabel = document.getElementById('iv-industries-trigger-label');
+    triggerLabel.textContent = ivIndustries.length ? ivIndustries.join(', ') : 'Select industries';
+    triggerLabel.classList.toggle('has-value', ivIndustries.length > 0);
   }
+
+  document.addEventListener('click', function (e) {
+    var msel = document.getElementById('iv-industries-msel');
+    if (msel && msel.classList.contains('is-open') && !msel.contains(e.target)) ivCloseIndustriesPanel();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var msel = document.getElementById('iv-industries-msel');
+    if (msel && msel.classList.contains('is-open')) ivCloseIndustriesPanel();
+  });
   var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
 
   // Shared Navy/Sage avatar palette for both the landing card's teammate
@@ -959,12 +992,12 @@
     ivState.existing = false;
     ivState.orgApprovedOnPlatform = true;
     ivState.pendingAccount = false;
+    ivState.fieldCaptured = false;
     ivIndustries = [];
     ivRenderIndustryChips();
     ivHideOtherIndustry();
+    ivCloseIndustriesPanel();
     document.getElementById('iv-profiletype-input').value = '';
-    document.getElementById('iv-dr-role').value = '';
-    document.getElementById('iv-dr-orgtype').value = '';
     document.getElementById('iv-dev-account-active').classList.add('active');
     document.getElementById('iv-dev-account-pending').classList.remove('active');
     document.getElementById('iv-dev-org-approved').classList.add('active');
@@ -1022,6 +1055,13 @@
 
   function ivSetExisting(val) {
     ivState.existing = val;
+    ivRender();
+  }
+
+  function ivSetFieldCaptured(val) {
+    ivState.fieldCaptured = val;
+    document.getElementById('iv-dev-field-notcaptured').classList.toggle('active', !val);
+    document.getElementById('iv-dev-field-captured').classList.toggle('active', val);
     ivRender();
   }
 
@@ -1126,14 +1166,27 @@
     // joining an existing org so no Company Name here.
     var isAtoms = ivState.platform === 'atoms';
     var isIons = ivState.platform === 'ions';
-    var isDR = ivState.platform === 'deepresearch';
+    var isCustomers = ivState.platform === 'customers';
     document.getElementById('iv-field-industries').classList.toggle('hidden', !isNew || !isAtoms);
     document.getElementById('iv-field-profiletype').classList.toggle('hidden', !isNew || !isIons);
-    document.getElementById('iv-field-dr-role').classList.toggle('hidden', !isNew || !isDR);
-    document.getElementById('iv-field-dr-orgtype').classList.toggle('hidden', !isNew || !isDR);
     document.getElementById('iv-profiletype-input').required = isNew && isIons && showStep2;
-    document.getElementById('iv-dr-role').required = isNew && isDR && showStep2;
-    document.getElementById('iv-dr-orgtype').required = isNew && isDR && showStep2;
+
+    // Website — required for IONS, optional for ATOMS/Customers, not asked
+    // for Deep Research. Invited users are always "recurring" (joining an
+    // existing org) — if a prior team member already supplied it, it's
+    // shown pre-filled (autofilled) rather than hidden, same as Sign Up's.
+    var showWebsite = isNew && (isIons || isAtoms || isCustomers);
+    var websiteAutofilled = isNew && ivState.fieldCaptured && (isAtoms || isCustomers);
+    document.getElementById('iv-field-website').classList.toggle('hidden', !showWebsite);
+    document.getElementById('iv-website-input').required = isNew && isIons && showStep2;
+    document.getElementById('iv-website-label').textContent = isIons ? 'Organization / Institution Website' : 'Company Website';
+    document.getElementById('iv-website-req').classList.toggle('hidden', !isIons);
+    document.getElementById('iv-website-optional').classList.toggle('hidden', isIons);
+    document.getElementById('iv-website-input').placeholder = isIons ? 'https://yourlab.com' : 'https://yourcompany.com';
+    document.getElementById('iv-website-input').value = websiteAutofilled ? ('https://' + (meta.inviteeEmail.split('@')[1] || 'company.com')) : '';
+    document.getElementById('iv-website-autofill-hint').classList.toggle('hidden', !websiteAutofilled);
+    document.getElementById('iv-dev-field-notcaptured').classList.toggle('active', !ivState.fieldCaptured);
+    document.getElementById('iv-dev-field-captured').classList.toggle('active', ivState.fieldCaptured);
 
     // Step 1 — account credentials. Email is locked to the invited address for
     // new users (they can't change it); existing users type it to sign in.
@@ -1372,7 +1425,7 @@
     if (e) e.preventDefault();
     if (!ivState.existing && ivState.platform === 'atoms' && ivIndustries.length === 0) {
       document.getElementById('iv-industries-error').classList.remove('hidden');
-      document.getElementById('iv-industries-select').focus();
+      document.getElementById('iv-industries-trigger').focus();
       return;
     }
     // New invitees who created a password must verify their email first (the

@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>Sign Up — Scinode</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/scinode.css?v=20260923k" />
+  <link rel="stylesheet" href="assets/scinode.css?v=20260923l" />
   <script src="assets/scinode.js?v=20260902a"></script>
 </head>
 <body>
@@ -474,10 +474,13 @@
           </div>
 
           <!-- Website — signup only. Required for IONS (unchanged); optional for
-               ATOMS/Customers (new); not asked for Deep Research. -->
+               ATOMS/Customers; not asked for Deep Research. For recurring
+               users, an already-captured Website is shown pre-filled
+               (autofilled) rather than hidden — see afShowXpProfile. -->
           <div class="af-field hidden" id="af-field-website">
             <label><span id="af-website-label">Organization / Institution Website</span> <span class="af-req" id="af-website-req">*</span><span class="af-optional hidden" id="af-website-optional">(Optional)</span></label>
             <input class="af-input" type="url" id="af-website-input" placeholder="https://yourcompany.com">
+            <div class="af-field-hint hidden" id="af-website-autofill-hint">Pre-filled from your organization's existing profile — feel free to update it.</div>
           </div>
 
           <!-- Phone — signup only -->
@@ -501,22 +504,27 @@
           <!-- Industries — ATOMS only, multi-select (mirrors #af-field-industries on Sign Up) -->
           <div class="af-field hidden" id="af-xp-field-industries">
             <label>Industries <span class="af-req">*</span></label>
-            <select class="af-select" id="af-xp-industries-select" onchange="afXpAddIndustry()">
-              <option value="" selected disabled>Select industries</option>
-              <option>Agrochemicals</option>
-              <option>Beauty &amp; Personal Care</option>
-              <option>Critical Metals</option>
-              <option>Dyes and Pigments</option>
-              <option>Elemental Derivatives</option>
-              <option>Flame Retardants</option>
-              <option>Flavors &amp; Fragrances</option>
-              <option>Food &amp; Nutrition</option>
-              <option>Industrial Chemicals</option>
-              <option>Metallurgy Chemicals</option>
-              <option>Oleochemicals</option>
-              <option>Pharmaceutical</option>
-              <option value="__other__">Others</option>
-            </select>
+            <div class="af-msel" id="af-xp-industries-msel">
+              <button type="button" class="af-msel-trigger" id="af-xp-industries-trigger" onclick="afXpToggleIndustriesPanel()" aria-haspopup="listbox" aria-expanded="false">
+                <span class="af-msel-trigger-label" id="af-xp-industries-trigger-label">Select industries</span>
+                <svg class="af-msel-chevron" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="af-msel-panel hidden" id="af-xp-industries-panel" role="listbox" aria-multiselectable="true">
+                <label class="af-msel-option"><span>Agrochemicals</span><input type="checkbox" value="Agrochemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Beauty &amp; Personal Care</span><input type="checkbox" value="Beauty &amp; Personal Care" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Critical Metals</span><input type="checkbox" value="Critical Metals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Dyes and Pigments</span><input type="checkbox" value="Dyes and Pigments" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Elemental Derivatives</span><input type="checkbox" value="Elemental Derivatives" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Flame Retardants</span><input type="checkbox" value="Flame Retardants" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Flavors &amp; Fragrances</span><input type="checkbox" value="Flavors &amp; Fragrances" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Food &amp; Nutrition</span><input type="checkbox" value="Food &amp; Nutrition" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Industrial Chemicals</span><input type="checkbox" value="Industrial Chemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Metallurgy Chemicals</span><input type="checkbox" value="Metallurgy Chemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Oleochemicals</span><input type="checkbox" value="Oleochemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Pharmaceutical</span><input type="checkbox" value="Pharmaceutical" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Others</span><input type="checkbox" id="af-xp-industries-other-checkbox" value="__other__" onchange="afXpToggleOtherIndustry(this)"></label>
+              </div>
+            </div>
             <input class="af-input af-industry-other hidden" type="text" id="af-xp-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="afXpOtherIndustryKey(event)">
             <div class="af-field-hint hidden" id="af-xp-industries-other-hint">Press Enter to add it to your industries.</div>
             <div class="af-chip-row" id="af-xp-industries-chips"></div>
@@ -533,35 +541,6 @@
               <option>Others</option>
             </select>
             <div class="af-field-hint" id="af-xp-profiletype-hint"></div>
-          </div>
-
-          <!-- Deep Research — two mandatory questions, no existing equivalent field on Sign Up -->
-          <div class="af-field hidden" id="af-xp-field-dr-role">
-            <label>What best describes your role? <span class="af-req">*</span></label>
-            <select class="af-select" id="af-xp-dr-role" onchange="afXpValidate()">
-              <option value="" selected disabled>Select one</option>
-              <option>Researcher / Scientist</option>
-              <option>Student / Research Scholar</option>
-              <option>R&amp;D / Innovation</option>
-              <option>Process / Manufacturing</option>
-              <option>Business / Product / Commercial</option>
-              <option>Procurement / Sourcing</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="af-field hidden" id="af-xp-field-dr-orgtype">
-            <label>What type of organisation are you part of? <span class="af-req">*</span></label>
-            <select class="af-select" id="af-xp-dr-orgtype" onchange="afXpValidate()">
-              <option value="" selected disabled>Select one</option>
-              <option>Industry / Enterprise</option>
-              <option>Manufacturer</option>
-              <option>CRO / CDMO / Research Services</option>
-              <option>University / Academic Institution</option>
-              <option>Research Institution / Government</option>
-              <option>Biotech / Deep Tech Company</option>
-              <option>Independent Researcher / Consultant</option>
-              <option>Other</option>
-            </select>
           </div>
 
           <!-- What describes you the best — signup + Customers only, optional -->
@@ -653,6 +632,7 @@
                reuses the pending screen's explore-card component. -->
           <div class="hidden" id="af-rejected-explore">
             <div class="af-section-label" style="margin-top:26px;">Explore Other Platforms</div>
+            <div class="af-sub" style="margin-bottom:14px;"><b>Don't worry! This doesn't mean you can't use Scinode.</b> You can still explore and access other platforms that may be relevant to your work.</div>
             <div class="af-explore-grid" id="af-rejected-explore-grid"></div>
           </div>
         </div>
@@ -1132,10 +1112,9 @@
     afXpIndustries = [];
     afXpRenderIndustryChips();
     afXpHideOtherIndustry();
+    afXpCloseIndustriesPanel();
     document.getElementById('af-xp-profiletype-input').value = '';
     document.getElementById('af-xp-profiletype-hint').textContent = '';
-    document.getElementById('af-xp-dr-role').value = '';
-    document.getElementById('af-xp-dr-orgtype').value = '';
     document.getElementById('af-describe-input').value = '';
     document.getElementById('af-nda-input').value = '';
     afState.existingCustomer = false;
@@ -1770,28 +1749,31 @@
     var meta = AF_PLATFORM[afState.platform];
     var isAtoms = afState.platform === 'atoms';
     var isIons = afState.platform === 'ions';
-    var isDR = afState.platform === 'deepresearch';
     var isCustomers = afState.platform === 'customers';
     var isSignup = mode !== 'existing-customer';
     var isFirst = mode === 'signup-first';
-    // Recurring users never see Company Name, and skip the platform-specific
-    // field(s) entirely if a prior signup from the same domain already
-    // supplied them (afState.signupFieldCaptured) — spec: "the optional
-    // fields of Step 2 ... shown to recurring users only if it has not been
-    // added by the previously signed up users of the same domain."
+    // Recurring users never see Company Name, and skip the optional Step 2
+    // fields (Describe/NDA, Website's autofill) entirely if a prior signup
+    // from the same domain already supplied them (afState.signupFieldCaptured)
+    // — spec: "the optional fields of Step 2 ... shown to recurring users
+    // only if it has not been added by the previously signed up users of the
+    // same domain."
     var skip = mode === 'signup-recurring' && afState.signupFieldCaptured;
+    // The platform's mandatory field (Industries/Profile Type) additionally
+    // drops for a verified-domain recurring signup regardless of that toggle
+    // — a verified domain means the org already exists in Scinode, so this
+    // was already established by whoever signed up first.
+    var mandatorySkip = mode === 'signup-recurring' && (afState.signupFieldCaptured || afState.domain === 'verified');
 
     afXpIndustries = [];
     afXpRenderIndustryChips();
     afXpHideOtherIndustry();
+    afXpCloseIndustriesPanel();
     document.getElementById('af-xp-profiletype-input').value = '';
     document.getElementById('af-xp-profiletype-hint').textContent = '';
-    document.getElementById('af-xp-dr-role').value = '';
-    document.getElementById('af-xp-dr-orgtype').value = '';
     document.getElementById('af-describe-input').value = '';
     document.getElementById('af-nda-input').value = '';
     document.getElementById('af-name-direct-input').value = '';
-    document.getElementById('af-website-input').value = '';
     document.getElementById('af-phone-input').value = '';
     document.getElementById('af-company-editable-input').value = '';
     document.getElementById('af-company-public-input').value = '';
@@ -1799,13 +1781,9 @@
     document.getElementById('af-company-country-input').value = '';
     document.getElementById('af-signup-consent').checked = false;
 
-    document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms || skip);
-    document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons || skip);
-    document.getElementById('af-xp-field-dr-role').classList.toggle('hidden', !isDR || skip);
-    document.getElementById('af-xp-field-dr-orgtype').classList.toggle('hidden', !isDR || skip);
-    document.getElementById('af-xp-profiletype-input').required = isIons && !skip;
-    document.getElementById('af-xp-dr-role').required = isDR && !skip;
-    document.getElementById('af-xp-dr-orgtype').required = isDR && !skip;
+    document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms || mandatorySkip);
+    document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons || mandatorySkip);
+    document.getElementById('af-xp-profiletype-input').required = isIons && !mandatorySkip;
 
     // Identity header — signup only (existing-customer sign-ins already have
     // a full profile, nothing to "just verified" about here).
@@ -1837,14 +1815,21 @@
     }
 
     // Website — signup only. Required for IONS (unchanged); optional for
-    // ATOMS/Customers (new); not asked for Deep Research.
+    // ATOMS/Customers. Unlike Industries/Profile Type/Describe/NDA, Website
+    // is never hidden for recurring users — if a prior signup from the same
+    // domain already supplied it, it's shown pre-filled (autofilled) and
+    // stays editable, rather than skipped (spec: "the website will be
+    // autofilled in the step 2 of the user and it will be editable").
     var showWebsite = isSignup && (isIons || isAtoms || isCustomers);
+    var websiteAutofilled = skip && (isAtoms || isCustomers);
     document.getElementById('af-field-website').classList.toggle('hidden', !showWebsite);
     document.getElementById('af-website-input').required = isSignup && isIons;
     document.getElementById('af-website-label').textContent = isIons ? 'Organization / Institution Website' : 'Company Website';
     document.getElementById('af-website-req').classList.toggle('hidden', !isIons);
     document.getElementById('af-website-optional').classList.toggle('hidden', isIons);
     document.getElementById('af-website-input').placeholder = isIons ? 'https://yourlab.com' : 'https://yourcompany.com';
+    document.getElementById('af-website-input').value = websiteAutofilled ? ('https://' + (meta.emailByDomain.verified.split('@')[1] || 'company.com')) : '';
+    document.getElementById('af-website-autofill-hint').classList.toggle('hidden', !websiteAutofilled);
 
     // Phone — signup only.
     document.getElementById('af-field-phone').classList.toggle('hidden', !isSignup);
@@ -1887,25 +1872,46 @@
       valid = afXpIndustries.length > 0;
     } else if (p === 'ions' && !document.getElementById('af-xp-field-profiletype').classList.contains('hidden')) {
       valid = !!document.getElementById('af-xp-profiletype-input').value;
-    } else if (p === 'deepresearch' && !document.getElementById('af-xp-field-dr-role').classList.contains('hidden')) {
-      valid = !!document.getElementById('af-xp-dr-role').value && !!document.getElementById('af-xp-dr-orgtype').value;
     }
     document.getElementById('af-xp-submit').disabled = !valid;
   }
 
-  // Same dedupe/chip pattern as afPushIndustry/afRenderIndustryChips (Sign
-  // Up's Industries field) — kept as a separate copy rather than a shared,
-  // prefix-parameterized function so this new screen can't affect the
+  // Industries — a checkbox-list dropdown (not a native <select>) so picking
+  // several industries in one go is obvious: each row has its own checkbox
+  // on the right, and the panel stays open across multiple picks. Kept as a
+  // separate copy from Sign Up's identical pattern (below) rather than a
+  // shared, prefix-parameterized function so this screen can't affect the
   // existing, already-verified Sign Up flow.
-  function afXpAddIndustry() {
-    var select = document.getElementById('af-xp-industries-select');
-    var val = select.value;
-    select.value = '';
-    if (val === '__other__') {
-      afXpShowOtherIndustry();
+  function afXpToggleIndustriesPanel() {
+    var msel = document.getElementById('af-xp-industries-msel');
+    if (msel.classList.contains('is-open')) {
+      afXpCloseIndustriesPanel();
       return;
     }
-    afXpPushIndustry(val);
+    var lower = afXpIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#af-xp-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    msel.classList.add('is-open');
+    document.getElementById('af-xp-industries-panel').classList.remove('hidden');
+    document.getElementById('af-xp-industries-trigger').setAttribute('aria-expanded', 'true');
+  }
+  function afXpCloseIndustriesPanel() {
+    document.getElementById('af-xp-industries-msel').classList.remove('is-open');
+    document.getElementById('af-xp-industries-panel').classList.add('hidden');
+    document.getElementById('af-xp-industries-trigger').setAttribute('aria-expanded', 'false');
+  }
+  function afXpToggleIndustry(checkbox) {
+    if (checkbox.checked) {
+      afXpPushIndustry(checkbox.value);
+    } else {
+      var lower = checkbox.value.toLowerCase();
+      var idx = afXpIndustries.findIndex(function (i) { return i.toLowerCase() === lower; });
+      if (idx > -1) afXpRemoveIndustryAt(idx);
+    }
+  }
+  function afXpToggleOtherIndustry(checkbox) {
+    if (checkbox.checked) afXpShowOtherIndustry(); else afXpHideOtherIndustry();
   }
   function afXpPushIndustry(name) {
     if (!name) return;
@@ -1926,6 +1932,8 @@
     input.value = '';
     input.classList.add('hidden');
     document.getElementById('af-xp-industries-other-hint').classList.add('hidden');
+    var otherCb = document.getElementById('af-xp-industries-other-checkbox');
+    if (otherCb) otherCb.checked = false;
   }
   function afXpOtherIndustryKey(e) {
     if (e.key === 'Enter') {
@@ -1934,10 +1942,8 @@
       if (!name) return;
       afXpPushIndustry(name);
       afXpHideOtherIndustry();
-      document.getElementById('af-xp-industries-select').focus();
     } else if (e.key === 'Escape') {
       afXpHideOtherIndustry();
-      document.getElementById('af-xp-industries-select').focus();
     }
   }
   function afXpRemoveIndustryAt(index) {
@@ -1955,8 +1961,25 @@
     }).join('');
     var error = document.getElementById('af-xp-industries-error');
     if (error && afXpIndustries.length) error.classList.add('hidden');
+    var lower = afXpIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#af-xp-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    var triggerLabel = document.getElementById('af-xp-industries-trigger-label');
+    triggerLabel.textContent = afXpIndustries.length ? afXpIndustries.join(', ') : 'Select industries';
+    triggerLabel.classList.toggle('has-value', afXpIndustries.length > 0);
     afXpValidate();
   }
+
+  document.addEventListener('click', function (e) {
+    var msel = document.getElementById('af-xp-industries-msel');
+    if (msel && msel.classList.contains('is-open') && !msel.contains(e.target)) afXpCloseIndustriesPanel();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var msel = document.getElementById('af-xp-industries-msel');
+    if (msel && msel.classList.contains('is-open')) afXpCloseIndustriesPanel();
+  });
 
   // Same copy source as Sign Up's Profile Type hint (AF_PROFILE_TYPE_DESC).
   function afXpUpdateProfileTypeHint() {
@@ -1970,7 +1993,7 @@
     if (e) e.preventDefault();
     if (afState.platform === 'atoms' && !document.getElementById('af-xp-field-industries').classList.contains('hidden') && afXpIndustries.length === 0) {
       document.getElementById('af-xp-industries-error').classList.remove('hidden');
-      document.getElementById('af-xp-industries-select').focus();
+      document.getElementById('af-xp-industries-trigger').focus();
       return;
     }
 
@@ -1987,13 +2010,11 @@
     var reason = afPendingResultReason || afComputeSignupReason();
     afPendingResultReason = null;
     if (reason === 'activated') {
-      // Recurring + already approved on this platform: nothing left pending,
-      // no dashboard exists in this prototype — reset straight back to a
-      // fresh Sign Up state (same placeholder the old success screen's CTA
-      // already used for "continue to workspace").
-      afShowScreen('signup');
-      afSetDomain('verified');
-      afSetSource('direct');
+      // Recurring + already approved on this platform: account is created —
+      // take the user to Sign In to log in with the credentials they just set.
+      afShowScreen('signin');
+      var signinEmail = document.getElementById('af-signin-email');
+      if (signinEmail) signinEmail.value = afState.signupEmail || '';
     } else {
       afShowResult(reason);
     }

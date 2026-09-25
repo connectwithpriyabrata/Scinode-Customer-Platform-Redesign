@@ -1,5 +1,7 @@
 # Deep Research — Sign-Up, Sign-In & Invitation UX Copy Spec
 
+**Revision note:** updated after `invite.html` was reworked to match `auth.html`'s recurring-user signup sequence (email verification now happens *before* Step 2 profile details, not after) and to pick up the Pending-screen redesign. This resolved the divergences flagged in the original audit — see §12 and §18 for what changed.
+
 **Handoff type:** designer-to-designer implementation spec, right-side authentication experience only.
 **Scope:** the Deep Research platform's behavior inside the shared Scinode auth prototype (`auth.html` for organic sign-up/sign-in, `invite.html` for the invitation flow). Both files implement the same 4-platform pattern (ATOMS, IONS, Scinode for Customers, Deep Research); this spec documents the pattern **as it exists today**, with every value that is Deep-Research-specific called out explicitly.
 **Do not modify the left side.** Everything on the left (brand panel: illustration carousel, headline, ecosystem sub-line, "Invited by" chip, trust/benefit cards, footer) is out of scope. This spec documents right-side content only: headings, subtext, form fields, labels, placeholders, helper text, validation, CTAs, links, system messages, and state transitions.
@@ -20,8 +22,8 @@ This is not a new flow. Every state below already exists in the codebase. Do not
 | Rejected | `auth.html` `#af-result-simple` (`reason==='rejected'` branch of `afShowResult()`) | Shared; **does not currently exist in `invite.html`** — see Open Questions |
 | Reset password | `auth.html` `#af-screen-reset` + 3 forgot-password modals | Shared |
 | Invitation landing | `invite.html` `#iv-screen-landing` | Invite-only |
-| Invitation auth (2-step: credentials → profile) | `invite.html` `#iv-screen-auth` | Invite-only |
-| Invitation Pending / Verify / Sign-in-from-link / Confirmation | `invite.html` `#iv-screen-pending` / `#iv-screen-verify` / `#iv-screen-signin` / `#iv-screen-confirmation` | Invite-only. **Not the same copy as `auth.html`'s equivalents** in every case — see §11 and Open Questions |
+| Invitation auth (2-step: credentials → profile) | `invite.html` `#iv-screen-auth` | Invite-only. Step order now matches `auth.html`'s recurring flow: credentials → Verify Email → profile details — see §12 |
+| Invitation Pending / Verify / Sign-in-from-link / Confirmation | `invite.html` `#iv-screen-pending` / `#iv-screen-verify` / `#iv-screen-signin` / `#iv-screen-confirmation` | Invite-only. Pending screen now uses the **same simplified layout/copy** as `auth.html`'s `#af-result-pending` — see §12 |
 
 **Dead code found during audit:** `auth.html` contains a rich "Signup Confirmed" success screen (`#af-result-success`, rendered by `afRenderSuccess()`) for `reason==='activated'`. As of the current implementation, **this branch is unreachable** — every path that used to lead there (`afSubmitXpProfile()`'s `activated` branch, SSO sign-up) now routes to the plain Sign In screen instead. Do not treat `#af-result-success` as a live Deep Research state; it is legacy markup. Flagged in Open Questions.
 
@@ -334,7 +336,12 @@ Deep Research invitation data currently in the codebase (`IV_PLATFORM.deepresear
 Authenticates using the existing account (single-step sign-in inside `#iv-screen-auth`, toggled via `ivState.existing`) — **does not create a duplicate account.** Skips directly to the Confirmation screen (no Step 2 profile fields — name/phone are already on file).
 
 ### New user + invitation
-May need to create a Scinode account before accessing Deep Research. Step 1 (credentials) → Step 2 (profile: Name, Phone; **no platform-specific field or Website for Deep Research**, consent) → Verify Email (direct source only) → Sign In → Confirmation.
+May need to create a Scinode account before accessing Deep Research. The step order now matches `auth.html`'s recurring-user signup exactly — verification happens *before* profile details, not after:
+
+**Step 1 (credentials) → "Sign Up" → Verify Email (direct source only; SSO skips straight to Step 2, identity already confirmed by the provider) → Step 2 (profile details) → branch on same-platform vs. cross-platform (see below).**
+
+- **Step 1 CTA:** "Sign Up" *(renamed — previously "Continue to Profile Details →")*
+- **Progress stepper removed:** the "Step X of 2" crumb badge and the progress-bar track that used to sit above the form are gone, matching `auth.html` (which never had one). Only the "← Invitation" back link remains above the form.
 
 ### Invitation email mismatch
 **Not implemented** — there is no check today for "the currently entered/authenticated email differs from the invited email." Flagged in Open Questions.
@@ -351,23 +358,29 @@ May need to create a Scinode account before accessing Deep Research. Step 1 (cre
 ### Step 2 — Profile details (screen-2 fields, invite-specific labels)
 - **Heading:** "Tell the team about your role"
 - **Subtext:** "{InvitedBy} and the {Company} team will see this on {profileActivity}." — for Deep Research: *"research queries, saved routes, and literature reviews"*
-- **Fields:** Full Name, Job Title *(invite.html asks Job Title; the organic sign-up flow in `auth.html` does not have this field — an existing divergence, not introduced by this spec)*, Phone Number, Terms/Privacy consent. No Deep-Research-specific field (§5), no Website field for Deep Research.
+- **Fields:** Full Name, Job Title *(invite.html asks Job Title; the organic sign-up flow in `auth.html` does not have this field — an existing divergence, not introduced by this spec — see Open Questions)*, Website *(ATOMS/IONS/Customers only — optional for ATOMS/Customers with the same "autofilled from a prior teammate's submission" behavior as `auth.html`'s recurring flow, required for IONS; **never shown for Deep Research**)*, Phone Number, Terms/Privacy consent.
+- **Industries (ATOMS) / Profile Type (IONS) are never shown for invitees**, on any platform — an invited org's domain is by definition already verified elsewhere in Scinode (that's the premise of being invited), so this permanently satisfies the same condition that hides those fields for recurring signups with a verified domain in `auth.html`. No Deep-Research-specific field either way (§5).
 - **Submit:** "Complete Setup & Enter Workspace →"
+- **On submit, branches same-platform vs. cross-platform** — see below.
 
-### Pending (cross-platform invite)
-⚠️ **This screen's copy has not been updated to match `auth.html`'s latest simplification** (§10) — it still uses the older, reason-specific pattern:
-- **Title:** "Your account is pending approval" *(not "Your account is created with us" — divergent from `auth.html`)*
-- **Body:** "Scinode is an invite-only platform. Your account is pending admin approval. You will be notified in your registered email ID once access is approved."
-- **Banner:** "**Cross-platform expansion** — {Company} is verified on Scinode, but hasn't been approved for Deep Research yet. An admin will review and approve this workspace before {FirstName} is activated. Approval usually takes 24–48 hours."
-- **Bullet:** "{InvitedBy} and the rest of your team have already set up your role — no further action needed from you."
-This is a real, current inconsistency between the two files — flagged in Open Questions rather than silently unified, since reconciling it is a product decision (which copy is correct going forward), not a documentation call.
+### Same-platform invite → straight into the workspace
+If the invited org is already approved on *this* platform, Step 2's submit goes **directly to the Confirmation screen** — no separate sign-in prompt. This is an intentional simplification specific to `invite.html`: unlike `auth.html`'s organic recurring-signup flow (where the equivalent `reason==='activated'` case routes to the Sign In screen so the user re-enters their password), an invitee has already set their password and verified their email earlier in this same flow, so asking them to sign in again would be redundant. **This is a deliberate, confirmed divergence from `auth.html` — not a bug to reconcile.**
+
+### Cross-platform invite → Pending, then admin approval
+If the invited org is verified elsewhere in Scinode but not yet approved on *this* platform, Step 2's submit goes to the Pending screen, which now uses **the same simplified layout and copy as `auth.html`'s `#af-result-pending`** (§10) — the older reason-specific banner/bullets pattern has been removed:
+- **Title:** "Your account is created with us"
+- **Body:** "We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours."
+- Icon: clock with a checkmark badge overlay; hero illustration above the title.
+- **"While you wait, explore Scinode"** — the same 2 Deep-Research-specific cards as §10 ("From Idea to Molecule" / "Beyond AI: Intelligence for Chemistry").
+- Same `TODO` marker for "Abhishek's gif" as `auth.html` — not yet supplied.
+- Once an admin approves, the invitee gets an email whose link opens the sign-in-from-link screen in `'approved'` mode (below).
 
 ### Sign-in-from-link states (approved / verified)
-- **Just approved:** heading "You're all set, {FirstName}!", subtext "Your account has been approved. Sign in to accept your invitation.", success banner "**{Company}** has been approved for Deep Research. Start your first research workflow."
-- **Just verified:** heading "{FirstName}, your email ID has been verified.", subtext "Sign in to join {Company} on Deep Research.", success banner "Your email is verified and {Company} is already verified. Sign in to accept your invitation."
+- **Just approved** *(the only one of these two reachable via the real flow today — the cross-platform invite's admin-approval email link)*: heading "You're all set, {FirstName}!", subtext "Your account has been approved. Sign in to accept your invitation.", success banner "**{Company}** has been approved for Deep Research. Start your first research workflow." Submitting this form leads to Confirmation.
+- **Just verified** *(devbar-preview-only, like `auth.html`'s equivalent — see §2 — not reached by the real flow, since same-platform invites now skip straight to Confirmation instead of stopping here)*: heading "{FirstName}, your email ID has been verified.", subtext "Sign in to join {Company} on Deep Research.", success banner "Your email is verified and {Company} is already verified. Sign in to accept your invitation."
 
 ### Confirmation (rich success screen)
-Unlike `auth.html` (where the equivalent screen is now dead code — see §0), **this screen is live and reachable** in `invite.html` via `ivFinishAccept()` when the org is already approved on this platform.
+Unlike `auth.html` (where the equivalent screen is now dead code — see §0), **this screen is live and reachable** in `invite.html` — via Step 2 submit directly (same-platform new user), via the sign-in-from-link form (existing user, or cross-platform new user after admin approval), or immediately on choosing an SSO method (existing user).
 - **Badge:** "Invitation accepted & access granted" (new user) / "Matched to your existing Scinode account" (existing user)
 - **Headline:** "You're in, {FirstName}!"
 - **Subtext:** "{InvitedBy} added you to **{Company}** on Deep Research. Your team is ready for you." (new user) / "Welcome back to **{Company}** on Deep Research — no new profile needed, you were matched to your existing Scinode account." (existing user)
@@ -443,7 +456,7 @@ Existing Scinode account?
                               Rejected
 ```
 
-**Invitation flow** (`invite.html`) branches the same way at "Existing Scinode account? YES/NO" but starts from the landing card's Accept CTA instead of Sign Up, and its Pending/Confirmation copy diverges from the above in the ways documented in §12.
+**Invitation flow** (`invite.html`) starts from the landing card's Accept CTA instead of Sign Up, and otherwise follows this exact same sequence — credentials → Verify Email → profile details, same Pending-screen copy — with one intentional exception: where the organic flow's `reason==='activated'` case routes to the Sign In screen, the invite flow's same-platform case skips that extra sign-in step and goes straight to its Confirmation screen instead, since the invitee already set a password and verified their email earlier in the same flow (see §12).
 
 ---
 
@@ -497,18 +510,19 @@ Implementation scope is limited to the right-side authentication experience desc
 
 Do not guess answers to these — confirm with product before implementing anything that depends on them.
 
+**Resolved since the last revision:** `invite.html`'s Pending screen copy now matches `auth.html`'s simplified version, and the step order (verify before profile details) now matches the recurring-signup flow — both were open questions previously; see §12 for the current behavior.
+
 1. **Deep Research's deferred onboarding questions** (§5): where exactly do "What best describes your role?" and "What type of organisation are you part of?" get asked now? A "first login, post-approval, inside the dashboard" surface doesn't exist yet in this prototype. Is that dashboard flow in scope for this project, or a separate initiative?
 2. **Existing-customer + Deep Research has an empty form.** Since Deep Research has no platform-specific field, the existing-customer workspace-details screen shows only "How it works" and an always-enabled Continue button. Is that the intended experience, or should this screen be skipped entirely for Deep Research (go straight to Cross-Platform Pending)?
-3. **`invite.html`'s Pending screen copy has not been updated** to match `auth.html`'s simplified version (§12) — it still shows the older reason-specific banner and title. Should it be brought in line, and if so, with which copy (the two files currently disagree)?
-4. **No "Rejected" state exists in `invite.html`.** If an invited user's organisation fails verification, what should happen? Should it reuse `auth.html`'s Rejected screen copy/logic?
-5. **Rejected-account recovery.** Can a rejected user reapply? Is "contact an administrator" (with the platform-specific support email) the only path? No CTA for this exists today.
-6. **Invitation email mismatch, expired invitation, already-accepted invitation, already-has-access** — none of these four states from the required list are implemented in `invite.html` today. Are they needed, and if so what should each say?
-7. **Domain verification mechanism.** All domain states (new/verified/public) are currently devbar-simulated with no real backend check. Out of scope for this spec, but the actual verification mechanism (whom it calls, how long it takes) isn't documented anywhere in the codebase.
-8. **Session/expiry behavior** not covered anywhere in the audited code: expired verification-link recovery beyond "click Resend," expired password-reset-link state, session timeout, rate limiting, network/server error states, loading states, or returning to an abandoned/incomplete flow mid-way. None of these exist today. Are any of them required for this spec's scope, or genuinely out of scope for this prototype?
-9. **Terminology: "Company" vs. "Organisation" for Deep Research** (§16) — confirm whether Deep Research should keep "Company Name" or switch to "Organisation Name"/"Organization / Institute Name" for consistency with the other research-context platform (IONS).
-10. **Accessibility requirements** — not specified anywhere in the current implementation or in available product docs; needs a separate accessibility pass/requirements doc if in scope.
-11. **`#af-result-success` dead code** (§0) — this rich "Signup Confirmed" screen is fully built but currently unreachable. Should it be deleted, or is there a scenario where it's meant to still fire?
-12. **invite.html's Step 2 asks "Job Title"; `auth.html`'s equivalent screen does not.** Is Job Title intentionally invite-only, or should it be added to (or removed from) one side for consistency?
+3. **No "Rejected" state exists in `invite.html`.** If an invited user's organisation fails verification, what should happen? Should it reuse `auth.html`'s Rejected screen copy/logic?
+4. **Rejected-account recovery.** Can a rejected user reapply? Is "contact an administrator" (with the platform-specific support email) the only path? No CTA for this exists today.
+5. **Invitation email mismatch, expired invitation, already-accepted invitation, already-has-access** — none of these four states from the required list are implemented in `invite.html` today. Are they needed, and if so what should each say?
+6. **Domain verification mechanism.** All domain states (new/verified/public) are currently devbar-simulated with no real backend check. Out of scope for this spec, but the actual verification mechanism (whom it calls, how long it takes) isn't documented anywhere in the codebase.
+7. **Session/expiry behavior** not covered anywhere in the audited code: expired verification-link recovery beyond "click Resend," expired password-reset-link state, session timeout, rate limiting, network/server error states, loading states, or returning to an abandoned/incomplete flow mid-way. None of these exist today. Are any of them required for this spec's scope, or genuinely out of scope for this prototype?
+8. **Terminology: "Company" vs. "Organisation" for Deep Research** (§16) — confirm whether Deep Research should keep "Company Name" or switch to "Organisation Name"/"Organization / Institute Name" for consistency with the other research-context platform (IONS).
+9. **Accessibility requirements** — not specified anywhere in the current implementation or in available product docs; needs a separate accessibility pass/requirements doc if in scope.
+10. **`#af-result-success` dead code** (§0) — this rich "Signup Confirmed" screen is fully built but currently unreachable. Should it be deleted, or is there a scenario where it's meant to still fire?
+11. **invite.html's Step 2 asks "Job Title"; `auth.html`'s equivalent screen does not.** Is Job Title intentionally invite-only, or should it be added to (or removed from) one side for consistency?
 
 ---
 
@@ -532,7 +546,7 @@ Do not guess answers to these — confirm with product before implementing anyth
 - [x] Existing Scinode user covered
 - [x] Existing Deep Research user covered (plain sign-in, already has access)
 - [x] Duplicate-account prevention covered (§1 — existing-customer routing never goes through sign-up)
-- [ ] Loading/error states — **not covered**, because none exist in the audited implementation (see Open Question 8)
-- [x] Edge cases covered where they exist in code; **not implemented** edge cases are explicitly listed rather than invented (Open Questions 3, 4, 5, 6, 8)
+- [ ] Loading/error states — **not covered**, because none exist in the audited implementation (see Open Question 7)
+- [x] Edge cases covered where they exist in code; **not implemented** edge cases are explicitly listed rather than invented (Open Questions 3, 4, 5, 7)
 - [x] Left-side scope explicitly excluded (§17)
 - [x] Open product decisions identified (§18)

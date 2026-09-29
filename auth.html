@@ -244,6 +244,13 @@
             </div>
           </div>
 
+          <div class="af-consent-row">
+            <label class="af-checkbox-label">
+              <input type="checkbox" id="af-section1-consent" required>
+              <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+            </label>
+          </div>
+
           <button type="submit" class="af-submit">Sign Up</button>
 
           <div id="af-signup-sso-section">
@@ -1782,7 +1789,9 @@
     document.getElementById('af-company-public-input').value = '';
     document.getElementById('af-company-website-input').value = '';
     document.getElementById('af-company-country-input').value = '';
-    document.getElementById('af-signup-consent').checked = false;
+    // Already agreed to on Screen 1 (af-section1-consent) — pre-checked here
+    // rather than asked again. Still shown and editable, just not blank.
+    document.getElementById('af-signup-consent').checked = isSignup;
 
     document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms || mandatorySkip);
     document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons || mandatorySkip);

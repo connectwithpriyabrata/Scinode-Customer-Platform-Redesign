@@ -51,7 +51,7 @@
       steps: function (c) {
         var head = [S('signup', 'Sign Up', 'Email, Password, Google SSO'), S('verify', 'Verify email'), S('step2', 'Step 2', 'Name, Phone (+ Website if empty)')];
         return c.domain === 'verified'
-          ? head.concat([S('dashboard', 'Dashboard', 'Direct entry')])
+          ? head.concat([S('approved', 'Sign In', 'Screen 5 · no approval')])
           : head.concat([S('pending', 'Pending', 'Public domain'), REVIEW]);
       }
     },
@@ -69,7 +69,7 @@
         var out = [S('signin', 'Sign In', 'Existing account, no access yet')];
         if (c.platform !== 'deepresearch') out.push(S('step2', 'Step 2', 'Platform fields only'));
         return c.platform === 'customers'
-          ? out.concat([S('dashboard', 'Dashboard', 'No approval*')])
+          ? out.concat([S('dashboard0', 'Scinode Dashboard', 'Day 0 · demo only')])
           : out.concat([S('pending', 'Pending'), REVIEW]);
       }
     },
@@ -84,7 +84,7 @@
       steps: function (c) {
         var head = [S('signup', 'Sign Up', 'Email, Password, Google SSO'), S('verify', 'Verify email'), S('step2', 'Step 2', 'Name, Phone, T&C + platform')];
         return c.platform === 'customers'
-          ? head.concat([S('dashboard', 'Dashboard', 'No approval*')])
+          ? head.concat([S('dashboard0', 'Scinode Dashboard', 'Day 0 · demo only')])
           : head.concat([S('pending', 'Pending'), REVIEW]);
       }
     },
@@ -104,7 +104,7 @@
       steps: function (c) {
         var head = [S('invite', 'Invitation', 'Platform Invitation pill'), S('signup', 'Sign Up', 'No email verification'), S('step2', 'Step 2', 'Username, Phone')];
         return c.domain === 'verified'
-          ? head.concat([S('dashboard', 'Dashboard', 'Direct entry')])
+          ? head.concat([S('dashboard0', 'Scinode Dashboard', 'Direct entry · Day 0 demo')])
           : head.concat([S('pending', 'Pending', 'Public domain'), REVIEW]);
       }
     },
@@ -123,7 +123,7 @@
       steps: function (c) {
         var head = [S('invite', 'Invitation', 'Platform Invitation pill'), S('signup', 'Sign Up', 'No email verification'), S('step2', 'Step 2', 'Username, Phone')];
         return c.domain === 'verified'
-          ? head.concat([S('dashboard', 'Dashboard', 'Direct entry')])
+          ? head.concat([S('dashboard0', 'Scinode Dashboard', 'Direct entry · Day 0 demo')])
           : head.concat([S('pending', 'Pending', c.domain === 'public' ? 'Public domain' : 'Domain’s 1st entry'), REVIEW]);
       }
     }
@@ -331,7 +331,7 @@
           }).join('') + '</span></li>';
       } else {
         var skipped = st.key === 'verify' && sso;
-        var endCls = st.key === 'dashboard' ? ' fl-out-approved' : (st.key === 'rejected' ? ' fl-out-rejected' : '');
+        var endCls = (st.key === 'dashboard' || st.key === 'dashboard0' || st.key === 'approved') ? ' fl-out-approved' : (st.key === 'rejected' ? ' fl-out-rejected' : '');
         html += '<li><button type="button" class="fl-chip' + state + endCls + (skipped ? ' skipped' : '') + '" data-k="' + st.key + '"' +
           (skipped ? ' title="Skipped: Google SSO already verifies the email"' : '') + '>' +
           '<span class="fl-dot">' + (i < curPos ? ICON.check : (i + 1)) + '</span>' +
@@ -377,5 +377,38 @@
     start(q.get('step'));
   }
 
-  window.Flows = { init: init, sync: sync, go: go, step: step, setScenario: setScenario };
+  // Day 0 Scinode dashboard (scinode-day10.html defaults to Day 0) in a
+  // full-screen frame under the scenario bar. Demo only: scrolling works,
+  // clicks/keys are swallowed and the dashboard's own Day toggle is hidden.
+  function showDashboard() {
+    hideDashboard();
+    var wrap = document.createElement('div');
+    wrap.className = 'fl-dash';
+    wrap.id = 'fl-dash';
+    wrap.innerHTML = '<iframe src="scinode-day10.html" title="Scinode dashboard, Day 0 (demo)"></iframe>';
+    wrap.querySelector('iframe').addEventListener('load', function () {
+      try {
+        var doc = this.contentDocument;
+        var st = doc.createElement('style');
+        st.textContent = '.day-toggle{display:none!important}';
+        doc.head.appendChild(st);
+        ['click', 'submit', 'keydown', 'mousedown'].forEach(function (t) {
+          doc.addEventListener(t, function (e) {
+            if (t === 'keydown' && /^(Arrow|Page|Home|End| )/.test(e.key)) return;
+            e.preventDefault(); e.stopPropagation();
+          }, true);
+        });
+      } catch (err) {}
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  function hideDashboard() {
+    var el = document.getElementById('fl-dash');
+    if (el) el.remove();
+  }
+  function dashboardOpen() { return !!document.getElementById('fl-dash'); }
+
+  window.Flows = { init: init, sync: sync, go: go, step: step, setScenario: setScenario,
+    showDashboard: showDashboard, hideDashboard: hideDashboard, dashboardOpen: dashboardOpen };
 })();

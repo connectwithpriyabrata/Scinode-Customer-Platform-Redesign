@@ -120,3 +120,11 @@ body.fl-on:has(.fl-bar.fl-min) .af-content { padding-bottom: 90px; }
   .fl-nav-next span { display: none; }
   .fl-nav-next { padding: 0; width: 32px; }
 }
+
+/* Illustrations (Pending / Approved / Rejected / success) sit directly on the
+   page — no cream card behind them. */
+body.fl-on .af-success-hero { background: none; box-shadow: none; border-radius: 0; }
+
+/* Scenario 3 on Scinode: Day 0 dashboard shown as a read-only demo frame. */
+.fl-dash { position: fixed; inset: 0; z-index: 550; background: var(--white, #fff); }
+.fl-dash iframe { width: 100%; height: 100%; border: 0; display: block; }

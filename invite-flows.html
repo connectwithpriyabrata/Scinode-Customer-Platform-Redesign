@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/scinode.css?v=20260923l" />
   <script src="assets/scinode.js?v=20260902a"></script>
-  <link rel="stylesheet" href="assets/flows/flows.css?v=1" />
+  <link rel="stylesheet" href="assets/flows/flows.css?v=3" />
 </head>
 <body>
 
@@ -213,7 +213,7 @@
           </div>
         </div>
 
-        <button type="button" class="af-submit" onclick="ivAccept()">Accept Invitation &amp; Create Account →</button>
+        <button type="button" class="af-submit" onclick="ivAccept()">Create Account</button>
       </div>
 
       <!-- ══════════ AUTHENTICATE (merged with profile completion — Name, Phone
@@ -321,27 +321,13 @@
               <label>Full Name <span class="af-req">*</span></label>
               <input class="af-input" type="text" id="iv-name-input" placeholder="Enter your full name" required>
             </div>
+            <!-- Scenario flows: User Name is prefilled from the invitation and locked. -->
             <div class="af-field hidden" id="iv-name-sso-wrap">
-              <label>Full Name</label>
+              <label>User Name</label>
               <div class="af-field-locked">
                 <div class="af-field-locked-val"><span id="iv-name-sso-value">Meera Joshi</span></div>
                 <span class="af-verified-chip" id="iv-name-sso-chip">From Google</span>
               </div>
-            </div>
-
-            <div class="af-field" id="iv-jobtitle-wrap">
-              <label>Job Title <span class="af-req">*</span></label>
-              <input class="af-input" type="text" id="iv-jobtitle-input" placeholder="e.g. R&amp;D Scientist" required>
-            </div>
-
-            <!-- Website — required for IONS, optional for ATOMS/Customers, not
-                 asked for Deep Research. Same as Sign Up's (auth.html): if a
-                 prior signup from the same domain already supplied it, shown
-                 pre-filled (autofilled) rather than hidden. -->
-            <div class="af-field hidden" id="iv-field-website">
-              <label><span id="iv-website-label">Organization / Institution Website</span> <span class="af-req" id="iv-website-req">*</span><span class="af-optional hidden" id="iv-website-optional">(Optional)</span></label>
-              <input class="af-input" type="url" id="iv-website-input" placeholder="https://yourcompany.com">
-              <div class="af-field-hint hidden" id="iv-website-autofill-hint">Pre-filled from your organization's existing profile — feel free to update it.</div>
             </div>
 
             <div class="af-field" id="iv-phone-wrap">
@@ -575,7 +561,6 @@
           <div class="af-success-hero af-signin-hero" style="width:100%;">
             <img src="assets/auth-visuals/rejected-illustration.svg" alt="Illustration of a person looking concerned at their laptop">
           </div>
-          <div class="af-result-icon af-danger"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></div>
           <div class="af-result-title">We couldn't verify your company for this platform</div>
           <div class="af-result-body">We were unable to verify your company or confirm your eligibility for this platform with the information provided.</div>
           <div class="af-info-banner is-info" role="status" id="iv-rejected-note"></div>
@@ -1169,6 +1154,7 @@
     document.getElementById('iv-teammate-count-text').textContent = 'Join ' + meta.teammateCount + ' teammates already in this workspace';
 
     document.getElementById('iv-name-sso-value').textContent = meta.inviteeName;
+    document.getElementById('iv-name-sso-chip').classList.toggle('hidden', ivState.source === 'direct');
     if (ivState.source !== 'direct') {
       document.getElementById('iv-name-sso-chip').textContent = 'From ' + IV_METHOD_LABEL[ivState.source];
     }
@@ -1212,10 +1198,9 @@
     document.getElementById('iv-auth-step2').classList.toggle('hidden', !showStep2);
 
     // Step 2 — profile details (new users only).
-    document.getElementById('iv-name-direct-wrap').classList.toggle('hidden', !isNew || !isDirect);
-    document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', !isNew || isDirect);
-    document.getElementById('iv-name-input').required = isNew && isDirect && showStep2;
-    document.getElementById('iv-jobtitle-input').required = isNew && showStep2;
+    document.getElementById('iv-name-direct-wrap').classList.add('hidden');
+    document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-name-input').required = false;
     document.getElementById('iv-phone-wrap').classList.toggle('hidden', !isNew);
     document.getElementById('iv-phone-input').required = isNew && showStep2;
     document.getElementById('iv-signup-consent').required = showStep2;
@@ -1232,21 +1217,6 @@
     document.getElementById('iv-field-industries').classList.add('hidden');
     document.getElementById('iv-field-profiletype').classList.add('hidden');
     document.getElementById('iv-profiletype-input').required = false;
-
-    // Website — required for IONS, optional for ATOMS/Customers, not asked
-    // for Deep Research. Invited users are always "recurring" (joining an
-    // existing org) — if a prior team member already supplied it, it's
-    // shown pre-filled (autofilled) rather than hidden, same as Sign Up's.
-    var showWebsite = isNew && (isIons || isAtoms || isCustomers);
-    var websiteAutofilled = isNew && ivState.fieldCaptured && (isAtoms || isCustomers);
-    document.getElementById('iv-field-website').classList.toggle('hidden', !showWebsite);
-    document.getElementById('iv-website-input').required = isNew && isIons && showStep2;
-    document.getElementById('iv-website-label').textContent = isIons ? 'Organization / Institution Website' : 'Company Website';
-    document.getElementById('iv-website-req').classList.toggle('hidden', !isIons);
-    document.getElementById('iv-website-optional').classList.toggle('hidden', isIons);
-    document.getElementById('iv-website-input').placeholder = isIons ? 'https://yourlab.com' : 'https://yourcompany.com';
-    document.getElementById('iv-website-input').value = websiteAutofilled ? ('https://' + (meta.inviteeEmail.split('@')[1] || 'company.com')) : '';
-    document.getElementById('iv-website-autofill-hint').classList.toggle('hidden', !websiteAutofilled);
     document.getElementById('iv-dev-field-notcaptured').classList.toggle('active', !ivState.fieldCaptured);
     document.getElementById('iv-dev-field-captured').classList.toggle('active', ivState.fieldCaptured);
 
@@ -1509,7 +1479,8 @@
     if (e) e.preventDefault();
     if (!ivState.existing) {
       if (ivState.orgApprovedOnPlatform) {
-        ivShowConfirmation();
+        // Scenario flows: direct entry → Day 0 Scinode dashboard (demo only).
+        Flows.showDashboard();
       } else {
         ivShowPending('verify');
       }
@@ -1769,7 +1740,7 @@
      Scenarios 6 (same platform) and 7 (cross platform). The email-domain
      choice decides ivState.orgApprovedOnPlatform, which is what the existing
      in-screen routing (ivSubmitAuth) branches on. -->
-<script src="assets/flows/flows.js?v=1"></script>
+<script src="assets/flows/flows.js?v=5"></script>
 <script>
   (function () {
     var SUPPORT = { atoms: 'support.atoms@scinode.ai', ions: 'support.ions@scinode.ai', customers: 'support@scinode.ai', deepresearch: 'support.deepresearch@scinode.ai' };
@@ -1810,6 +1781,7 @@
           var m = IV_PLATFORM[c.platform];
           m.inviteeEmail = m.inviteeName.toLowerCase().replace(/[^a-z ]/g, '').trim().replace(/\s+/g, '.') + '@gmail.com';
         }
+        Flows.hideDashboard();
         ivSetPlatform(c.platform);   // resets every other toggle, shows the landing
         ivSetOrgApprovedOnPlatform(c.domain === 'verified');
         ivSetAccountPending(false);
@@ -1817,7 +1789,9 @@
         ivRender();
       },
       go: function (key) {
+        Flows.hideDashboard();
         switch (key) {
+          case 'dashboard0': Flows.showDashboard(); break;
           case 'invite': ivShowScreen('landing'); break;
           case 'signup': ivShowScreen('auth'); break;
           case 'step2': ivShowScreen('auth'); ivSignupGoToStep(2); break;
@@ -1828,6 +1802,7 @@
         }
       },
       detect: function () {
+        if (Flows.dashboardOpen()) return 'dashboard0';
         var scr = ivState.screen;
         if (scr === 'landing') return 'invite';
         if (scr === 'auth') return ivState.existing ? null : (ivState.step === 2 ? 'step2' : 'signup');

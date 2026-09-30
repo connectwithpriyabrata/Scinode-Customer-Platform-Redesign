@@ -27,7 +27,7 @@ Global functions used by every page — do NOT redefine these per page:
 `toggleSidebar`, `openModal` / `closeModal` / `handleModalBackdropClick` (+ Escape-to-close), `hscroll`, `toggleAccordion`, `toggleCollapsible`, `switchTab`. All are null-safe (no-op if the target element isn't on the page).
 
 ## Dashboard-specific JS (inline in scinode-day10.html only)
-`switchDay` (day states), `openScira` (hero-coupled), `ecoScroll` + hero showcase carousel, the compliance module (`badge`/`filterCompliance`), the Scinode Secure banner injector (`.secure-mount`), the scinode-art generator + `SCINODE` data, the React Ecosystem app, and the Opportunities engine (`initOpps`, `openDrawer`, …). None of this belongs on module pages.
+`switchDay` (day states), `openScira` (hero-coupled), `ecoScroll` + hero showcase carousel, the compliance module (`badge`/`filterCompliance`), the Scinode Secure banner injector (`.secure-mount`), the Trust Center modal (`openTrustCenter`/`closeTrustCenterModal`), the scinode-art generator + `SCINODE` data, the React Ecosystem app, the Opportunities engine (`initOpps`, `openDrawer`, …), and the hero background — a p5.js (CDN, loaded in `<head>`) molecule/node network canvas layered behind `.hero-card` content via `#hero-p5-layer`. Instance-mode sketch; particle count scales with container area; `ResizeObserver` on the host (not `window.resize`) keeps it correct across viewport resize *and* sidebar collapse/expand; respects `prefers-reduced-motion` (including live toggling). None of this belongs on module pages.
 
 ## Sidebar navigation (shared markup, one active item per page)
 - **Workspace**: Dashboard → `scinode-day10.html`, Manufacturing → `manufacturing.html`, R&D → `rnd.html`, Products → `products.html`
@@ -49,10 +49,10 @@ Global functions used by every page — do NOT redefine these per page:
 
 ## Design system
 - Load the **`scinode-design-system`** skill before any visual/color/mockup decision — it's the source of truth.
-- Colors: Teal `--teal-500:#02968A`, Navy `--navy-500:#043E54`, Sage `#96DDA5`, Gold `#E5D62E`, Indigo `#6366F1`.
-- Cards: white surface, **no visible border**, subtle shadow, 12px radius (Stripe/Linear feel).
+- Colors: Teal `--teal-500:#02968A`, Navy `--navy-500:#033243`, Sage `#96DDA5`, Gold `#E5D62E`, Indigo `#6366F1`.
+- Cards: white surface, **no visible border**, use `--shadow-card`/`--shadow-hero`/`--shadow-nested` for separation, `--radius-lg` (16px) for primary cards (Stripe/Linear feel). Radius scale: `--radius-xs` 6px / `--radius-sm` 8px / `--radius-md` 12px / `--radius-lg` 16px / `--radius-full` 999px.
 - Layout: fixed sidebar (220px, collapsible ~56px) + fixed top nav + scrollable `.main`; `.content` provides horizontal gutters.
-- Brand logo gradient (`#016358 → #182133`) is **logo-only** per the design system — the ONE exception is the Scinode Secure banner background (applied deliberately at the user's request, with white/sage foreground for legibility).
+- Brand gradient (`--gradient`, `#016358 → #182133`) may be used on any dark surface where navy would otherwise be flat fill (hero banners, feature cards, dark section banners like the Scinode Secure banner) — not on small elements (badges/icons) or thin chrome (top nav, sidebar).
 
 ## Notable Dashboard sections
 - **Hero**: dark gradient banner, animated typing search, rotating insight cards.
@@ -73,3 +73,6 @@ Customer-facing Users & Access center + a stakeholder blueprint, built from the 
 - **Presenter bar** (bottom of users-access.html): View as Role (Superadmin/Admin/Member) × Plan (Free/Premium) × Stage (Day 0/Day 1) × Platform (Scinode / for Manufacturers / for Researchers / Deep Research), plus scenario jump, in-module preview, reset. Deep links: `users-access.html?role=&plan=&day=&platform=&tab=&open=preview|upgrade`.
 - **Rules encoded**: 3 platform roles; Free = 1 Superadmin + 2 Members + 0 Teams; Members never invite; Admin needs a Team and can't create Teams/invite Admins; effective permission = Team enabled AND user permission; Create Team CTA stays clickable on Free (opens upgrade popup); approvals change permission only, never role/Team; sent invites reserve a seat (assumption). Conflicts between the docs are listed (with the prototype's assumption) in `access-blueprint.html#s-open` — update that list when Product answers.
 - Data is in-memory per plan/day/platform (no persistence); Admin on Free renders an explanatory "not available" state by design.
+
+## Scenario flows (auth-flows.html / invite-flows.html)
+Clones of `auth.html` / `invite.html` (originals untouched) driven by the 7 states in "Scinode Sign Up: Flow and Design States". Shared engine `assets/flows/flows.js` + `flows.css` renders a bottom scenario bar (Scenario dropdown · Platform · Email domain · journey tracker with Back/Next + Approve/Reject fork · caption). Scenarios 1–5 live in auth-flows, 6–7 in invite-flows; picking one from the other page navigates there. Each page has an adapter (`Flows.init({page, apply, go, detect, source})`) at the end of the file mapping step keys → existing screen functions; screen functions are wrapped to call `Flows.sync()` so in-screen clicks move the tracker. The old devbar is kept as "Edge states" (hidden until toggled; its Platform group is hidden). Deep links: `?s=<1-7>&p=<atoms|ions|customers|deepresearch>&d=<domain>&step=<key>`.

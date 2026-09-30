@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Invite Flows — Scinode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/scinode.css?v=20260923l" />
+  <script src="assets/scinode.js?v=20260902a"></script>
+  <link rel="stylesheet" href="assets/flows/flows.css?v=1" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     PROTOTYPE DEV TOOLBAR — not part of the real product UI. Lets reviewers
+     jump directly to any invitation-flow state from IDENTITY_ACCESS_SPEC.md
+     (screens #17–19) without a real invite link/backend.
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="af-devbar" role="toolbar" aria-label="Prototype scenario controls" id="af-devbar">
+  <div class="af-devbar-handle" id="af-devbar-handle" title="Drag to move" aria-hidden="true">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>
+  </div>
+  <button type="button" class="af-devbar-toggle" id="af-devbar-toggle" onclick="afDevbarToggle()" title="Collapse toolbar" aria-label="Collapse toolbar" aria-expanded="true">
+    <svg id="af-devbar-toggle-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+  <div class="af-devbar-body" id="af-devbar-body">
+    <!-- Platform lives in the scenario bar on this page -->
+    <span class="fl-hidden"><span class="af-devbar-label">Platform</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-platform-atoms" class="active" onclick="ivSetPlatform('atoms')">ATOMS</button>
+      <button id="iv-dev-platform-ions" onclick="ivSetPlatform('ions')">IONS</button>
+      <button id="iv-dev-platform-customers" onclick="ivSetPlatform('customers')">Customers</button>
+      <button id="iv-dev-platform-deepresearch" onclick="ivSetPlatform('deepresearch')">Deep Research</button>
+    </div>
+    <div class="af-devbar-sep"></div></span>
+    <span class="af-devbar-label">Screen</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-screen-landing" class="active" onclick="ivShowScreen('landing')">Landing</button>
+      <button id="iv-dev-screen-auth" onclick="ivShowScreen('auth')">Auth</button>
+      <button id="iv-dev-screen-reset" onclick="ivShowScreen('reset')">Reset Password</button>
+      <button id="iv-dev-screen-pending" onclick="ivShowPending()">Pending Approval</button>
+      <button id="iv-dev-screen-verify" onclick="ivShowVerify()">Verify Email</button>
+      <button id="iv-dev-screen-approved" onclick="ivOpenSigninFromLink('approved')">Just Approved</button>
+      <button id="iv-dev-screen-verified" onclick="ivOpenSigninFromLink('verify')">Just Verified</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Org on This Platform</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-org-approved" class="active" onclick="ivSetOrgApprovedOnPlatform(true)">Approved</button>
+      <button id="iv-dev-org-firstentry" onclick="ivSetOrgApprovedOnPlatform(false)">First Entry</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Account</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-account-active" class="active" onclick="ivSetAccountPending(false)">Active</button>
+      <button id="iv-dev-account-pending" onclick="ivSetAccountPending(true)">Pending approval</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">SSO Display</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-sso-with" class="active" onclick="ivSetSSODisplay('with')">With SSO</button>
+      <button id="iv-dev-sso-without" onclick="ivSetSSODisplay('without')">Without SSO</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Auth</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-source-direct" class="active" onclick="ivSetSource('direct')">Direct</button>
+      <button id="iv-dev-source-google" onclick="ivSetSource('google')">Google</button>
+      <button id="iv-dev-source-linkedin" onclick="ivSetSource('linkedin')">LinkedIn</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">User</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-user-new" class="active" onclick="ivSetExisting(false)">New</button>
+      <button id="iv-dev-user-existing" onclick="ivSetExisting(true)">Existing</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Org Field (Website)</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-field-notcaptured" class="active" onclick="ivSetFieldCaptured(false)">Not Captured</button>
+      <button id="iv-dev-field-captured" onclick="ivSetFieldCaptured(true)">Already Captured</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Step</span>
+    <div class="af-devbar-group">
+      <button id="iv-dev-step-1" class="active" onclick="ivSignupGoToStep(1)">1</button>
+      <button id="iv-dev-step-2" onclick="ivSignupGoToStep(2)">2</button>
+    </div>
+  </div>
+</div>
+
+<div class="af-shell">
+
+  <!-- ── Brand panel ── -->
+  <div class="af-brand">
+    <div class="af-brand-carousel" aria-hidden="true">
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-1.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-2.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-3.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-4.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-5.jpg')"></div>
+    </div>
+    <div class="af-brand-scrim" aria-hidden="true"></div>
+    <svg class="af-brand-decor" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="af-dots" width="46" height="46" patternUnits="userSpaceOnUse">
+          <circle cx="4" cy="4" r="1.6" fill="rgba(255,255,255,.35)"/>
+          <line x1="4" y1="4" x2="34" y2="20" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+          <line x1="4" y1="4" x2="14" y2="40" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#af-dots)"/>
+    </svg>
+
+    <div class="iv-brand-header-row">
+      <div class="iv-brand-header-text">
+        <div class="iv-brand-wordmark-row">
+          <span class="iv-brand-wordmark">SCINODE</span>
+          <span class="iv-brand-platform-pill" id="iv-brand-platform-pill">ATOMS</span>
+        </div>
+        <div class="iv-brand-tagline" id="iv-brand-tagline">Platform for Chemistry &amp; Manufacturing</div>
+      </div>
+    </div>
+
+    <div class="af-brand-mid">
+      <!-- Invitation context — landing screen only; recedes to plain brand
+           messaging once the user moves past accepting the invite. -->
+      <div class="iv-invited-chip" id="iv-landing-extra-top">
+        <img class="iv-invited-avatar" id="iv-invited-avatar" src="" alt="">
+        <div class="iv-invited-text"><span class="iv-invited-name" id="iv-invited-chip-name">Rahul Mehta</span> invited you<br><span class="iv-invited-meta" id="iv-invited-chip-meta">Acme Manufacturing &middot; R&amp;D</span></div>
+      </div>
+
+      <div class="af-brand-platform" id="iv-brand-platform">ATOMS</div>
+      <div class="af-brand-headline" id="iv-brand-headline">Connect with verified manufacturers and suppliers.</div>
+      <div class="af-brand-sub">Invitations are the lowest-friction gateway into the Scinode ecosystem — your company profile, formulation specs, and team channels are already initialized.</div>
+
+      <div class="iv-feature-list" id="iv-landing-extra-features">
+        <div class="iv-feature-card">
+          <div class="iv-feature-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="iv-feature-text">
+            <div class="iv-feature-title" id="iv-feature1-title">Pre-Configured Acme Workspace</div>
+            <div class="iv-feature-desc" id="iv-feature1-desc">Connect directly with 24 colleagues across R&amp;D, Synthesis, and QA.</div>
+          </div>
+        </div>
+        <div class="iv-feature-card">
+          <div class="iv-feature-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg></div>
+          <div class="iv-feature-text">
+            <div class="iv-feature-title">Verified Chemical Execution</div>
+            <div class="iv-feature-desc">Direct batch sourcing, verified lab protocols, and real-time vendor audits.</div>
+          </div>
+        </div>
+        <div class="iv-feature-card">
+          <div class="iv-feature-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></div>
+          <div class="iv-feature-text">
+            <div class="iv-feature-title">SOC 2 Type II &amp; ISO Compliant</div>
+            <div class="iv-feature-desc">Strict multi-tenant security and end-to-end auditability for proprietary chemical IP.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="af-brand-foot">
+      <span>© Scinode — an agentic execution platform for chemistry &amp; manufacturing</span>
+      <span class="iv-brand-foot-links"><a href="#" onclick="return false;">Privacy</a> &middot; <a href="#" onclick="return false;">Security</a> &middot; <a href="#" onclick="return false;">Support</a></span>
+    </div>
+  </div>
+
+  <!-- ── Content ── -->
+  <div class="af-content">
+    <div class="af-card">
+
+      <!-- ══════════ LANDING ══════════ -->
+      <div class="af-screen" id="iv-screen-landing">
+        <div class="iv-invite-badge"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg> Platform Invitation</div>
+        <div class="af-h1">You've been invited to join<br><span class="iv-invite-h1-company" id="iv-h1-company">Acme Manufacturing</span></div>
+        <div class="af-sub" id="iv-landing-benefit">Connect with your organization and get started on the platform.</div>
+
+        <div class="iv-invite-card-v2">
+          <div class="iv-invite-card-header">
+            <div class="iv-invite-card-avatar" id="iv-company-avatar">A</div>
+            <div class="iv-invite-card-heading">
+              <div class="iv-invite-card-name-row">
+                <span id="iv-company">Acme Manufacturing</span>
+                <span class="af-invite-platform-badge" id="iv-platform-badge">ATOMS</span>
+              </div>
+            </div>
+            <span class="iv-invite-verified-pill"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Verified</span>
+          </div>
+
+          <div class="iv-invite-card-divider"></div>
+
+          <div class="iv-invite-meta-v2">
+            <div class="iv-invite-meta-row-v2">
+              <span>Who Invited You</span>
+              <span class="iv-invite-meta-value"><b id="iv-invited-by">Rahul Mehta</b> <span class="iv-invite-meta-sub" id="iv-invited-by-title">(Lead Process Chemist)</span></span>
+            </div>
+            <div class="iv-invite-meta-row-v2">
+              <span>Team</span>
+              <b id="iv-team-department">R&amp;D (Formulation &amp; Process Chemistry)</b>
+            </div>
+          </div>
+
+          <div class="iv-invite-message"><b id="iv-invite-message-from">Message from Rahul Mehta:</b> <i id="iv-invite-message-text">"Hey Meera, welcome to Acme! We're setting up our high-yield synthesis runs and batch scale-ups on ATOMS. Excited to have your formulation expertise on board."</i></div>
+
+          <div class="iv-invite-card-footer">
+            <div class="iv-invite-teammates">
+              <div class="af-success-avatar-stack" id="iv-teammate-stack"></div>
+              <span id="iv-teammate-count-text">Join 24 teammates already in this workspace</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="af-submit" onclick="ivAccept()">Accept Invitation &amp; Create Account →</button>
+      </div>
+
+      <!-- ══════════ AUTHENTICATE (merged with profile completion — Name, Phone
+           and Create Password live here too, so accepting an invite is a single
+           screen). SSO sits below Email/Password as the alternate path. ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-auth">
+        <div class="iv-auth-crumbs hidden" id="iv-auth-crumbs">
+          <button type="button" onclick="ivShowScreen('landing')">← Invitation</button>
+        </div>
+
+        <div class="iv-invite-badge hidden" id="iv-auth-status-badge"></div>
+
+        <div class="af-h1" id="iv-auth-h1">Sign up to accept</div>
+        <div class="af-sub" id="iv-auth-sub">Authenticate to join Acme Manufacturing on ATOMS.</div>
+
+        <form id="iv-auth-form" onsubmit="ivSubmitAuth(event)">
+
+          <!-- ══ STEP 1 — Account credentials (new users) / single step (existing users) ══ -->
+          <div id="iv-auth-step1">
+            <!-- Email — locked for new users, fixed by the invitation they accepted -->
+            <div class="af-field hidden" id="iv-email-locked-wrap">
+              <label>Email</label>
+              <div class="af-field-locked is-verified">
+                <div class="af-field-locked-val">
+                  <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span id="iv-email-locked-value">meera@acme.com</span>
+                </div>
+                <svg class="af-verified-check" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="m8 12.3 2.8 2.8L16 9.6" stroke="#fff" stroke-width="2.4"/></svg>
+              </div>
+              <div class="iv-auth-hint-row">
+                <span class="af-field-hint" id="iv-email-locked-hint">Locked to Acme Manufacturing's authorized domain.</span>
+                <button type="button" class="iv-auth-help-link" onclick="return false;">Need help?</button>
+              </div>
+            </div>
+
+            <!-- Email — editable, existing users signing in only -->
+            <div class="af-field" id="iv-email-wrap">
+              <label>Email <span class="af-req">*</span></label>
+              <input class="af-input" type="email" id="iv-email-input" placeholder="you@company.com" required>
+            </div>
+
+            <div class="af-field" id="iv-password-wrap">
+              <label><span id="iv-password-label">Create Password</span> <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="iv-password-input" placeholder="Create a password" minlength="8" required oninput="ivUpdateSignupPasswordCriteria()">
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-password-input', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-field-hint" id="iv-password-hint">Minimum 8 characters.</div>
+              <div class="af-criteria-box hidden" id="iv-signup-criteria-box">
+                <div class="af-criteria-list">
+                  <div class="af-criteria-title">Password must contain:</div>
+                  <div class="af-criteria-row">
+                    <div class="af-criteria-item" id="iv-signup-criteria-length"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>8+ characters</div>
+                    <div class="af-criteria-item" id="iv-signup-criteria-upper"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Uppercase</div>
+                    <div class="af-criteria-item" id="iv-signup-criteria-numsym"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Number or symbol</div>
+                  </div>
+                </div>
+                <div class="af-criteria-ok"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Password meets all requirements</div>
+              </div>
+              <div class="af-link-row hidden" id="iv-forgot-link-row"><button type="button" onclick="ivOpenForgotPassword()">Forgot password?</button></div>
+            </div>
+
+            <!-- Confirm Password — new users only -->
+            <div class="af-field hidden" id="iv-password-confirm-wrap">
+              <label>Confirm Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="iv-password-confirm-input" placeholder="Re-enter password" minlength="8" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-password-confirm-input', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-field-error hidden" id="iv-password-match-error">Passwords don't match.</div>
+            </div>
+
+            <button type="submit" class="af-submit hidden" id="iv-auth-existing-submit">Continue</button>
+            <button type="button" class="af-submit hidden" id="iv-auth-continue-btn" onclick="ivSignupContinue()">Sign Up</button>
+
+            <div id="iv-auth-sso-section">
+              <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+
+              <div class="af-sso-stack">
+                <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('google')">
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                  Continue with Google
+                </button>
+                <button type="button" class="af-sso-btn" onclick="ivChooseAuthMethod('linkedin')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                  Continue with LinkedIn
+                </button>
+              </div>
+            </div>
+
+            <div class="af-sso-connected-note hidden" id="iv-sso-connected-note">
+              <span>Continuing with <b id="iv-sso-connected-method">Google</b> — no password needed.</span>
+              <button type="button" onclick="ivChooseAuthMethod('direct')">Use email instead</button>
+            </div>
+
+            <div class="iv-auth-disclaimer hidden" id="iv-auth-disclaimer">Protected by Scinode Enterprise Guard. By continuing, you agree to Scinode's <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</div>
+          </div>
+
+          <!-- ══ STEP 2 — Profile details (new users only) ══ -->
+          <div id="iv-auth-step2" class="hidden">
+            <div class="af-section-label" style="margin-top:0;">Profile details</div>
+
+            <!-- Name — direct vs SSO-verified -->
+            <div class="af-field" id="iv-name-direct-wrap">
+              <label>Full Name <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="iv-name-input" placeholder="Enter your full name" required>
+            </div>
+            <div class="af-field hidden" id="iv-name-sso-wrap">
+              <label>Full Name</label>
+              <div class="af-field-locked">
+                <div class="af-field-locked-val"><span id="iv-name-sso-value">Meera Joshi</span></div>
+                <span class="af-verified-chip" id="iv-name-sso-chip">From Google</span>
+              </div>
+            </div>
+
+            <div class="af-field" id="iv-jobtitle-wrap">
+              <label>Job Title <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="iv-jobtitle-input" placeholder="e.g. R&amp;D Scientist" required>
+            </div>
+
+            <!-- Website — required for IONS, optional for ATOMS/Customers, not
+                 asked for Deep Research. Same as Sign Up's (auth.html): if a
+                 prior signup from the same domain already supplied it, shown
+                 pre-filled (autofilled) rather than hidden. -->
+            <div class="af-field hidden" id="iv-field-website">
+              <label><span id="iv-website-label">Organization / Institution Website</span> <span class="af-req" id="iv-website-req">*</span><span class="af-optional hidden" id="iv-website-optional">(Optional)</span></label>
+              <input class="af-input" type="url" id="iv-website-input" placeholder="https://yourcompany.com">
+              <div class="af-field-hint hidden" id="iv-website-autofill-hint">Pre-filled from your organization's existing profile — feel free to update it.</div>
+            </div>
+
+            <div class="af-field" id="iv-phone-wrap">
+              <label>Phone Number <span class="af-req">*</span></label>
+              <input class="af-input" type="tel" id="iv-phone-input" placeholder="Enter phone number" required>
+            </div>
+
+            <!-- Platform-specific field — same content as Sign Up's, joining
+                 an existing org so there's no Company Name here (spec:
+                 "Screen 2 onwards ... exactly the same as Recurring User
+                 Sign Up"). -->
+            <div class="af-field hidden" id="iv-field-industries">
+              <label>Industries <span class="af-req">*</span></label>
+              <div class="af-msel" id="iv-industries-msel">
+                <button type="button" class="af-msel-trigger" id="iv-industries-trigger" onclick="ivToggleIndustriesPanel()" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="af-msel-trigger-label" id="iv-industries-trigger-label">Select industries</span>
+                  <svg class="af-msel-chevron" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="af-msel-panel hidden" id="iv-industries-panel" role="listbox" aria-multiselectable="true">
+                  <label class="af-msel-option"><span>Agrochemicals</span><input type="checkbox" value="Agrochemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Beauty &amp; Personal Care</span><input type="checkbox" value="Beauty &amp; Personal Care" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Critical Metals</span><input type="checkbox" value="Critical Metals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Dyes and Pigments</span><input type="checkbox" value="Dyes and Pigments" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Elemental Derivatives</span><input type="checkbox" value="Elemental Derivatives" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Flame Retardants</span><input type="checkbox" value="Flame Retardants" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Flavors &amp; Fragrances</span><input type="checkbox" value="Flavors &amp; Fragrances" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Food &amp; Nutrition</span><input type="checkbox" value="Food &amp; Nutrition" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Industrial Chemicals</span><input type="checkbox" value="Industrial Chemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Metallurgy Chemicals</span><input type="checkbox" value="Metallurgy Chemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Oleochemicals</span><input type="checkbox" value="Oleochemicals" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Pharmaceutical</span><input type="checkbox" value="Pharmaceutical" onchange="ivToggleIndustry(this)"></label>
+                  <label class="af-msel-option"><span>Others</span><input type="checkbox" id="iv-industries-other-checkbox" value="__other__" onchange="ivToggleOtherIndustry(this)"></label>
+                </div>
+              </div>
+              <input class="af-input af-industry-other hidden" type="text" id="iv-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="ivOtherIndustryKey(event)">
+              <div class="af-field-hint hidden" id="iv-industries-other-hint">Press Enter to add it to your industries.</div>
+              <div class="af-chip-row" id="iv-industries-chips"></div>
+              <div class="af-field-error hidden" id="iv-industries-error">Select at least one industry.</div>
+            </div>
+            <div class="af-field hidden" id="iv-field-profiletype">
+              <label>Profile Type <span class="af-req">*</span></label>
+              <select class="af-select" id="iv-profiletype-input">
+                <option value="" selected disabled>Select the option that best describes you</option>
+                <option>Scientist / Research Lab</option>
+                <option>CRO / CDMO</option>
+                <option>Others</option>
+              </select>
+            </div>
+            <div class="af-consent-row">
+              <label class="af-checkbox-label">
+                <input type="checkbox" id="iv-signup-consent" required>
+                <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+              </label>
+            </div>
+
+            <div class="iv-auth-btn-row">
+              <button type="button" class="iv-auth-back-btn" onclick="ivSignupGoToStep(1)">Back</button>
+              <button type="submit" class="af-submit" id="iv-auth-submit">Complete Setup &amp; Enter Workspace →</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- ══════════ CONFIRMATION ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-confirmation">
+        <div class="af-success" id="iv-confirm-success">
+          <div class="af-success-badge" id="iv-success-badge">
+            <span id="iv-success-badge-text">Invitation accepted &amp; access granted</span>
+            <span class="af-success-badge-thin" id="iv-success-badge-account">&middot; Account #SCN-00000 &middot; Active</span>
+          </div>
+          <div class="af-success-headline" id="iv-success-headline">You're in!</div>
+          <div class="af-success-sub" id="iv-success-sub"></div>
+
+          <div class="af-success-hero" id="iv-success-hero">
+            <img src="assets/auth-visuals/approved-illustration.svg" alt="Illustration of two people shaking hands over a signed document" style="object-fit:contain;padding:24px;">
+          </div>
+
+          <div class="af-success-card">
+            <div class="af-success-company-row">
+              <div class="af-success-avatar" id="iv-success-company-avatar">AM</div>
+              <div class="af-success-company-info">
+                <div class="af-success-company-name">
+                  <span id="iv-success-company-name">Company</span>
+                  <span class="af-success-verified-badge">Verified Workspace</span>
+                </div>
+                <div class="af-success-company-meta" id="iv-success-company-meta"></div>
+              </div>
+              <div class="af-success-role">
+                <div class="af-success-role-label">Your Role</div>
+                <div class="af-success-role-value" id="iv-success-role-value"></div>
+              </div>
+            </div>
+            <div class="af-success-colleagues-row">
+              <div class="af-success-avatar-stack" id="iv-success-avatar-stack"></div>
+              <div class="af-success-colleagues-count" id="iv-success-colleagues-count"></div>
+              <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
+            </div>
+            <div class="af-success-activity" id="iv-success-activity"></div>
+          </div>
+
+          <div class="af-success-card">
+            <div class="af-success-checklist-header">
+              <span>Recommended First Steps</span>
+              <span id="iv-success-checklist-progress"></span>
+            </div>
+            <div class="af-steps-carousel" id="iv-success-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
+              <div class="af-steps-track" id="iv-success-checklist"></div>
+              <div class="af-steps-controls">
+                <div class="af-steps-dots" id="iv-success-checklist-dots"></div>
+                <button type="button" class="af-steps-pause" id="iv-success-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="af-submit" id="iv-success-cta"></button>
+          <div class="af-success-secondary-row" id="iv-success-secondary-row"></div>
+
+          <div class="af-success-footer">
+            <span><span class="af-success-footer-dot"></span><span id="iv-success-footnote">Need assistance? Your dedicated onboarding lead is online</span></span>
+            <span class="af-success-footer-links"><a href="#" onclick="return false;">Contact Support</a> &middot; <a href="#" onclick="return false;">IP Sovereignty Guarantee</a></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ VERIFY EMAIL (new invitees who signed up with email + password;
+           SSO sign-ups and existing users skip it) ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-verify">
+        <div class="af-result">
+          <div class="af-result-icon af-pending"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+          <div class="af-result-title">Verify your email</div>
+          <div class="af-result-body">We've sent a verification link to <b id="iv-verify-email">you@company.com</b>. Click the link in that email to continue.</div>
+          <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span id="iv-verify-note">Verify your email to finish accepting your invitation.</span></div>
+          <button type="button" class="af-submit" onclick="ivVerifyContinue()">I've verified — Continue</button>
+          <div class="af-result-ghost-row">
+            <button type="button" class="af-result-ghost-btn" id="iv-resend-btn" onclick="ivResendVerification()">Resend verification email</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ SIGN IN (opened from the verification email link, or from the
+           admin-approval email link — the latter adds the illustration) ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-signin">
+        <div class="af-success-hero af-signin-hero hidden" id="iv-signin-hero">
+          <img src="assets/auth-visuals/approved-illustration.svg" alt="Illustration of two people shaking hands over a signed document">
+        </div>
+        <div class="af-h1" id="iv-signin-h1">Sign in to accept</div>
+        <div class="af-sub" id="iv-signin-sub">Sign in to join Acme Manufacturing on ATOMS.</div>
+        <form onsubmit="ivSubmitSigninLink(event)">
+          <div class="af-field">
+            <label>Email</label>
+            <div class="af-field-locked is-verified">
+              <div class="af-field-locked-val">
+                <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span id="iv-signin-email-value">meera@acme.com</span>
+              </div>
+              <svg class="af-verified-check" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="m8 12.3 2.8 2.8L16 9.6" stroke="#fff" stroke-width="2.4"/></svg>
+            </div>
+            <div class="af-info-banner is-success" role="status" id="iv-signin-banner"></div>
+          </div>
+          <div class="af-field">
+            <label>Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="iv-signin-password" placeholder="Enter your password" required>
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-signin-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <div class="af-link-row"><button type="button" onclick="ivOpenForgotPassword()">Forgot password?</button></div>
+          <button type="submit" class="af-submit">Sign in &amp; accept invitation →</button>
+        </form>
+      </div>
+
+      <!-- ══════════ PENDING APPROVAL (cross-platform invite: the org's domain is
+           already verified elsewhere in the Scinode ecosystem, but this is its
+           first invite onto *this* platform — per the entry-flow decision logic
+           this still requires Admin Approval before the invitee is activated,
+           same "first user from an existing verified org entering a new platform"
+           rule as the organic-signup flow in auth.html. Once approved, the
+           invitee gets an email whose link opens #iv-screen-signin. Same
+           simplified rich layout as auth.html's #af-result-pending — screen 2
+           onwards mirrors the recurring-user signup flow exactly.) ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-pending">
+        <div class="af-success" id="iv-pending-result">
+          <div class="af-success-hero af-signin-hero" id="iv-pending-hero">
+            <img src="assets/auth-visuals/access-pending-illustration.svg" alt="Illustration of a person sitting on top of an hourglass, waiting">
+          </div>
+
+          <div class="af-pending-head">
+            <div class="af-pending-icon-wrap">
+              <div class="af-result-icon af-pending" id="iv-pending-icon"></div>
+              <span class="af-pending-icon-badge"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            </div>
+            <div class="af-pending-head-text">
+              <div class="af-result-title" id="iv-pending-title">Your account is created with us</div>
+              <div class="af-result-body" id="iv-pending-body">We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.</div>
+            </div>
+          </div>
+
+          <!-- TODO: Abhishek's gif goes here (spec: "add Abhishek's gif across
+               all platforms") — not available yet, see conversation. -->
+
+          <!-- "While you wait, explore Scinode" — 2 platform-specific cards. -->
+          <div class="af-success-card">
+            <div class="af-lifecycle-header">
+              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>While you wait, explore Scinode</div>
+              <a href="#" onclick="return false;" class="af-lifecycle-refresh">scinode.com<svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a>
+            </div>
+            <div class="af-explore-grid">
+              <a href="#" onclick="return false;" class="af-explore-item">
+                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span>
+                <span class="af-explore-body">
+                  <span class="af-explore-title" id="iv-pending-explore1-title">Your CDMO Journey<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="iv-pending-explore1-desc">Explore how we can take your CDMO journey from idea to reality.</span>
+                </span>
+              </a>
+              <a href="#" onclick="return false;" class="af-explore-item">
+                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+                <span class="af-explore-body">
+                  <span class="af-explore-title" id="iv-pending-explore2-title">Talk to Scira<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="iv-pending-explore2-desc">What do you want to develop or manufacture today? Ask Scira.</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="af-footnote" style="text-align:center;"><button type="button" onclick="ivShowScreen('landing')">Back to Invitation</button></div>
+      </div>
+
+      <!-- ══════════ REJECTED (scenario flows — same screen as auth.html state 5) ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-rejected">
+        <div class="af-result">
+          <div class="af-success-hero af-signin-hero" style="width:100%;">
+            <img src="assets/auth-visuals/rejected-illustration.svg" alt="Illustration of a person looking concerned at their laptop">
+          </div>
+          <div class="af-result-icon af-danger"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></div>
+          <div class="af-result-title">We couldn't verify your company for this platform</div>
+          <div class="af-result-body">We were unable to verify your company or confirm your eligibility for this platform with the information provided.</div>
+          <div class="af-info-banner is-info" role="status" id="iv-rejected-note"></div>
+          <div class="af-section-label" style="margin-top:26px;">Explore Other Platforms</div>
+          <div class="af-sub" style="margin-bottom:14px;"><b>Don't worry! This doesn't mean you can't use Scinode.</b> You can still explore and access other platforms that may be relevant to your work.</div>
+          <div class="af-explore-grid" id="iv-rejected-explore-grid"></div>
+        </div>
+      </div>
+
+      <!-- ══════════ RESET PASSWORD (existing user forgot their password while
+           accepting an invite — reached via the "reset link" in the email,
+           simulated here from the "Verify your email address" modal or the
+           devbar) ══════════ -->
+      <div class="af-screen hidden" id="iv-screen-reset">
+        <div class="af-h1">Reset your password</div>
+        <div class="af-sub">Choose a strong, unique password to secure your Scinode account.</div>
+
+        <form onsubmit="ivSubmitResetPassword(event)">
+          <div class="af-field">
+            <label>New Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="iv-reset-password" placeholder="Enter new password" minlength="8" required oninput="ivUpdatePasswordCriteria()">
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-reset-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="af-criteria-box" id="iv-criteria-box">
+              <div class="af-criteria-list">
+                <div class="af-criteria-title">Password must contain:</div>
+                <div class="af-criteria-row">
+                  <div class="af-criteria-item" id="iv-criteria-length"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>8+ characters</div>
+                  <div class="af-criteria-item" id="iv-criteria-upper"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Uppercase</div>
+                  <div class="af-criteria-item" id="iv-criteria-numsym"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Number or symbol</div>
+                </div>
+              </div>
+              <div class="af-criteria-ok"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Password meets all requirements</div>
+            </div>
+          </div>
+
+          <div class="af-field">
+            <label>Confirm your new Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="iv-reset-password-confirm" placeholder="Re-enter new password" minlength="8" required>
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('iv-reset-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="af-field-error hidden" id="iv-reset-password-match-error">Passwords don't match.</div>
+          </div>
+
+          <button type="submit" class="af-submit">Update Password</button>
+        </form>
+
+        <div class="af-footnote" style="text-align:center;"><button type="button" onclick="ivShowScreen('auth')">Back to Sign In</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ FORGOT PASSWORD MODALS (existing users only) ══════════ -->
+
+  <!-- Step 1: Check Your Email -->
+  <div class="af-modal-backdrop" id="iv-modal-forgot" onclick="ivModalBackdropClick(event,'iv-modal-forgot')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="ivCloseModal('iv-modal-forgot')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-pending" style="background:var(--teal-50);color:var(--teal-600);">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="af-result-title">Check Your Email</div>
+        <div class="af-result-body">Please add your email and click on 'Reset'</div>
+      </div>
+      <form onsubmit="ivSubmitForgotPassword(event)">
+        <div class="af-field">
+          <label>Work Email <span class="af-req">*</span></label>
+          <input class="af-input" type="email" id="iv-forgot-email" placeholder="you@company.com" required>
+        </div>
+        <div class="af-modal-info-box">
+          <ul>
+            <li>The link will expire in 24 hrs for security purposes.</li>
+            <li>If you do not see the email, check your spam folder or corporate quarantine.</li>
+          </ul>
+        </div>
+        <div class="af-modal-cloudflare">
+          <div class="af-modal-cloudflare-status"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> Success!</div>
+          <div class="af-modal-cloudflare-brand"><div class="cf-name">CLOUDFLARE</div><div class="cf-links"><a href="#" onclick="return false;">Privacy</a> &middot; <a href="#" onclick="return false;">Help</a></div></div>
+        </div>
+        <button type="submit" class="af-submit" style="margin-top:20px;">Reset</button>
+      </form>
+      <div class="af-footnote" style="text-align:center;margin-top:14px;"><button type="button" onclick="ivCloseModal('iv-modal-forgot')">Back to Sign In</button></div>
+    </div>
+  </div>
+
+  <!-- Step 2: Verify your email address -->
+  <div class="af-modal-backdrop" id="iv-modal-verify-email" onclick="ivModalBackdropClick(event,'iv-modal-verify-email')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="ivCloseModal('iv-modal-verify-email')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-pending" style="background:var(--teal-50);color:var(--teal-600);">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="af-result-title">Verify your email address</div>
+        <div class="af-result-body">We've sent a password reset link to your email. Please check your inbox (and spam folder) and follow the link to reset your password.</div>
+        <div class="af-modal-proto-link">
+          <button type="button" onclick="ivCloseModal('iv-modal-verify-email'); ivShowScreen('reset');">(Prototype) Simulate clicking the email link →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Password Updated Successfully -->
+  <div class="af-modal-backdrop" id="iv-modal-password-updated" onclick="ivModalBackdropClick(event,'iv-modal-password-updated')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="ivCloseModal('iv-modal-password-updated')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-success">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="af-result-title">Password Updated Successfully</div>
+        <div class="af-result-body">Your password has been updated. Please sign in with your new credentials.</div>
+        <button type="button" class="af-submit" onclick="ivCloseModal('iv-modal-password-updated'); ivShowScreen('auth');">Go to Sign in</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Prototype devbar: draggable + collapsible so it never blocks the page
+  // being reviewed. Position and collapsed state persist via localStorage.
+  (function () {
+    var bar = document.getElementById('af-devbar');
+    var handle = document.getElementById('af-devbar-handle');
+    if (!bar || !handle) return;
+
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+    function setPosition(left, top) {
+      left = clamp(left, 4, window.innerWidth - bar.offsetWidth - 4);
+      top = clamp(top, 4, window.innerHeight - bar.offsetHeight - 4);
+      bar.style.left = left + 'px';
+      bar.style.top = top + 'px';
+      bar.style.transform = 'none';
+    }
+
+    var dragging = false, moved = false, startX, startY, startLeft, startTop;
+
+    function startDrag(clientX, clientY) {
+      dragging = true;
+      moved = false;
+      bar.classList.add('af-devbar-dragging');
+      var rect = bar.getBoundingClientRect();
+      startX = clientX; startY = clientY;
+      startLeft = rect.left; startTop = rect.top;
+    }
+
+    function moveDrag(clientX, clientY) {
+      if (!dragging) return;
+      if (Math.abs(clientX - startX) > 2 || Math.abs(clientY - startY) > 2) moved = true;
+      setPosition(startLeft + (clientX - startX), startTop + (clientY - startY));
+    }
+
+    function stopDrag() {
+      if (!dragging) return;
+      dragging = false;
+      bar.classList.remove('af-devbar-dragging');
+      if (moved) {
+        try { localStorage.setItem('ivDevbarPos', JSON.stringify({ left: bar.style.left, top: bar.style.top })); } catch (err) {}
+      }
+    }
+
+    handle.addEventListener('mousedown', function (e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+    document.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', stopDrag);
+
+    handle.addEventListener('touchstart', function (e) { var t = e.touches[0]; startDrag(t.clientX, t.clientY); }, { passive: true });
+    document.addEventListener('touchmove', function (e) { if (!dragging) return; var t = e.touches[0]; moveDrag(t.clientX, t.clientY); }, { passive: true });
+    document.addEventListener('touchend', stopDrag);
+    document.addEventListener('touchcancel', stopDrag);
+
+    try {
+      var saved = JSON.parse(localStorage.getItem('ivDevbarPos'));
+      if (saved && saved.left && saved.top) { bar.style.left = saved.left; bar.style.top = saved.top; bar.style.transform = 'none'; }
+    } catch (err) {}
+    try {
+      if (localStorage.getItem('ivDevbarCollapsed') === '1') {
+        bar.classList.add('af-collapsed');
+        var t2 = document.getElementById('af-devbar-toggle');
+        t2.setAttribute('aria-expanded', 'false');
+        t2.title = 'Expand toolbar';
+        t2.setAttribute('aria-label', 'Expand toolbar');
+      }
+    } catch (err) {}
+
+    window.addEventListener('resize', function () {
+      if (!bar.style.left) return;
+      var rect = bar.getBoundingClientRect();
+      setPosition(rect.left, rect.top);
+    });
+  })();
+
+  function afDevbarToggle() {
+    var bar = document.getElementById('af-devbar');
+    var collapsed = bar.classList.toggle('af-collapsed');
+    var toggle = document.getElementById('af-devbar-toggle');
+    toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    toggle.title = collapsed ? 'Expand toolbar' : 'Collapse toolbar';
+    toggle.setAttribute('aria-label', collapsed ? 'Expand toolbar' : 'Collapse toolbar');
+    try { localStorage.setItem('ivDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
+  }
+
+  // ── Invitation flow state — see IDENTITY_ACCESS_SPEC.md screens #17–19
+  // and "Phase 1 - User Management.pdf" §20–25, §35.
+  var ivState = { screen: 'landing', platform: 'atoms', source: 'direct', existing: false, orgApprovedOnPlatform: true, pendingAccount: false, ssoDisplay: 'with', step: 1, fieldCaptured: false };
+  var ivIndustries = [];
+
+  function ivEscapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Industries — a checkbox-list dropdown (not a native <select>), same
+  // pattern as Sign Up's Industries field (auth.html): each row has its own
+  // checkbox on the right and the panel stays open across multiple picks.
+  function ivToggleIndustriesPanel() {
+    var msel = document.getElementById('iv-industries-msel');
+    if (msel.classList.contains('is-open')) {
+      ivCloseIndustriesPanel();
+      return;
+    }
+    var lower = ivIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#iv-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    msel.classList.add('is-open');
+    document.getElementById('iv-industries-panel').classList.remove('hidden');
+    document.getElementById('iv-industries-trigger').setAttribute('aria-expanded', 'true');
+  }
+  function ivCloseIndustriesPanel() {
+    document.getElementById('iv-industries-msel').classList.remove('is-open');
+    document.getElementById('iv-industries-panel').classList.add('hidden');
+    document.getElementById('iv-industries-trigger').setAttribute('aria-expanded', 'false');
+  }
+  function ivToggleIndustry(checkbox) {
+    if (checkbox.checked) {
+      ivPushIndustry(checkbox.value);
+    } else {
+      var lower = checkbox.value.toLowerCase();
+      var idx = ivIndustries.findIndex(function (i) { return i.toLowerCase() === lower; });
+      if (idx > -1) ivRemoveIndustryAt(idx);
+    }
+  }
+  function ivToggleOtherIndustry(checkbox) {
+    if (checkbox.checked) ivShowOtherIndustry(); else ivHideOtherIndustry();
+  }
+  function ivPushIndustry(name) {
+    if (!name) return;
+    var lower = name.toLowerCase();
+    if (ivIndustries.some(function (i) { return i.toLowerCase() === lower; })) return;
+    ivIndustries.push(name);
+    ivRenderIndustryChips();
+  }
+  function ivShowOtherIndustry() {
+    var input = document.getElementById('iv-industries-other');
+    input.classList.remove('hidden');
+    document.getElementById('iv-industries-other-hint').classList.remove('hidden');
+    input.focus();
+  }
+  function ivHideOtherIndustry() {
+    var input = document.getElementById('iv-industries-other');
+    if (!input) return;
+    input.value = '';
+    input.classList.add('hidden');
+    document.getElementById('iv-industries-other-hint').classList.add('hidden');
+    var otherCb = document.getElementById('iv-industries-other-checkbox');
+    if (otherCb) otherCb.checked = false;
+  }
+  function ivOtherIndustryKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var name = e.target.value.replace(/\s+/g, ' ').trim();
+      if (!name) return;
+      ivPushIndustry(name);
+      ivHideOtherIndustry();
+    } else if (e.key === 'Escape') {
+      ivHideOtherIndustry();
+    }
+  }
+  function ivRemoveIndustryAt(index) {
+    ivIndustries.splice(index, 1);
+    ivRenderIndustryChips();
+  }
+  function ivRenderIndustryChips() {
+    var row = document.getElementById('iv-industries-chips');
+    if (!row) return;
+    row.innerHTML = ivIndustries.map(function (industry, i) {
+      var safe = ivEscapeHtml(industry);
+      return '<span class="af-chip">' + safe +
+        '<button type="button" onclick="ivRemoveIndustryAt(' + i + ')" aria-label="Remove ' + safe + '">' +
+        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
+    }).join('');
+    var error = document.getElementById('iv-industries-error');
+    if (error && ivIndustries.length) error.classList.add('hidden');
+    var lower = ivIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#iv-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    var triggerLabel = document.getElementById('iv-industries-trigger-label');
+    triggerLabel.textContent = ivIndustries.length ? ivIndustries.join(', ') : 'Select industries';
+    triggerLabel.classList.toggle('has-value', ivIndustries.length > 0);
+  }
+
+  document.addEventListener('click', function (e) {
+    var msel = document.getElementById('iv-industries-msel');
+    if (msel && msel.classList.contains('is-open') && !msel.contains(e.target)) ivCloseIndustriesPanel();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var msel = document.getElementById('iv-industries-msel');
+    if (msel && msel.classList.contains('is-open')) ivCloseIndustriesPanel();
+  });
+  var IV_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
+
+  // Shared Navy/Sage avatar palette for both the landing card's teammate
+  // stack and the confirmation screen's colleague stack.
+  var IV_AVATAR_COLORS = [
+    { bg: 'var(--navy-500)', fg: '#fff' },
+    { bg: 'var(--sage)', fg: 'var(--navy-500)' },
+    { bg: 'var(--navy-700)', fg: '#fff' }
+  ];
+
+  var IV_PLATFORM = {
+    atoms: {
+      label: 'Scinode for Manufacturers', accountNoun: 'ATOMS',
+      tagline: 'Platform for Chemistry &amp; Manufacturing',
+      pillBg: 'var(--teal-500)', pillFg: '#fff',
+      headline: 'Connect with verified manufacturers and suppliers.',
+      company: 'Acme Manufacturing', role: 'Member', team: 'R&amp;D', invitedBy: 'Rahul Mehta',
+      inviteeName: 'Meera Joshi', inviteeEmail: 'meera@acme.com',
+      invitedByTitle: 'Lead Process Chemist',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=12',
+      teamDepartment: 'R&amp;D (Formulation &amp; Process Chemistry)',
+      inviteMessage: "Hey Meera, welcome to Acme! We're setting up our high-yield synthesis runs and batch scale-ups on ATOMS. Excited to have your formulation expertise on board.",
+      teammateCount: 24,
+      teammateInitials: ['RM', 'AS', 'NK'],
+      landingBenefit: 'Connect with your organization and get started on the platform.',
+      approvedSubtext: 'Start boosting your plant capacity utilization.',
+      workspaceFeature: { title: 'Pre-Configured Acme Workspace', desc: 'Connect directly with 24 colleagues across R&amp;D, Synthesis, and QA.' },
+      profileActivity: 'synthesis batches, spec reviews, and vendor RFQs',
+      exploreCard1Title: 'Your Growth, Unlocked',
+      exploreCard1Desc: 'Explore how your journey towards more opportunities and demand begins.',
+      exploreCard2Title: 'Beyond Manufacturing',
+      exploreCard2Desc: 'Discover the research, quality, compliance and market support behind global growth.',
+      successData: {
+        accountId: 'SCN-ATM-10433',
+        avatarInitials: 'AM',
+        tenantLine: 'Enterprise Tenant &middot; Specialty &amp; Industrial Chemicals',
+        colleagueInitials: ['RM', 'AS'],
+        colleagueOverflow: 6,
+        activityLine: 'Rahul Mehta, Amit Sharma &amp; 6 others are already active in R&amp;D.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Acme Manufacturing's R&amp;D team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Explore 420+ Live Demand Opportunities', desc: 'Browse buyer RFQs and demand signals matched to your product catalogue and plant capabilities.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add a photo and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Browse Demand Opportunities', 'Start Deep Research']
+      }
+    },
+    ions: {
+      label: 'Scinode for Researchers', accountNoun: 'IONS',
+      tagline: 'Platform for R&amp;D &amp; Chemistry',
+      pillBg: 'var(--sage)', pillFg: 'var(--navy-500)',
+      headline: 'Partner with R&amp;D teams, CROs, and specialty labs.',
+      company: 'Meridian Labs', role: 'Member', team: 'Research', invitedBy: 'Priya Nair',
+      inviteeName: 'Karan Shah', inviteeEmail: 'karan@meridianlabs.com',
+      invitedByTitle: 'Principal Research Scientist',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=47',
+      teamDepartment: 'Research (Specialty Synthesis &amp; Custom APIs)',
+      inviteMessage: "Hey Karan, welcome to Meridian Labs! We're scoping a few custom API synthesis routes on IONS and could use your specialty-synthesis background. Excited to have you on the team.",
+      teammateCount: 16,
+      teammateInitials: ['PN', 'RI', 'SM'],
+      landingBenefit: 'Connect with your organization and get started on the platform.',
+      approvedSubtext: 'Start exploring R&amp;D opportunities based on your capabilities.',
+      workspaceFeature: { title: 'Pre-Configured Meridian Labs Workspace', desc: 'Connect directly with 16 colleagues across Research, Synthesis, and QA.' },
+      profileActivity: 'molecule briefs, synthesis routes, and partner requests',
+      exploreCard1Title: 'Make Your Next Breakthrough',
+      exploreCard1Desc: 'Discover the people, capabilities, and opportunities that can help turn your research into what comes next.',
+      exploreCard2Title: 'Your Technology, Commercialised.',
+      exploreCard2Desc: 'Turn your scientific expertise into real-world opportunities through the right Projects, partnerships, and network.',
+      successData: {
+        accountId: 'SCN-ION-20188',
+        avatarInitials: 'ML',
+        tenantLine: 'Research Tenant &middot; Specialty Synthesis &amp; Custom APIs',
+        colleagueInitials: ['PN', 'RI'],
+        colleagueOverflow: 4,
+        activityLine: 'Priya Nair, Dr. Rohan Iyer &amp; 4 others are already active in Research.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Meridian Labs' Research team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Discover R&amp;D Opportunities Matched to Your Capabilities', desc: 'Browse active research and molecule-development briefs from manufacturers and brands.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add your expertise and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Browse Opportunities', 'Start Deep Research']
+      }
+    },
+    customers: {
+      label: 'Scinode for Customers', accountNoun: 'Scinode',
+      tagline: 'Platform for Chemistry Sourcing',
+      pillBg: 'var(--navy-500)', pillFg: '#fff',
+      headline: 'Source chemistry products and manage requests in one place.',
+      company: 'Nova Specialty Chemicals', role: 'Member', team: 'Procurement', invitedBy: 'Ananya Verma',
+      inviteeName: 'Liam Chen', inviteeEmail: 'liam@novaspecialty.com',
+      invitedByTitle: 'Procurement Lead',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=44',
+      teamDepartment: 'Procurement (Sourcing &amp; Vendor Management)',
+      inviteMessage: "Hey Liam, welcome to Nova Specialty Chemicals! We're tracking a few active sourcing requests on Scinode and would love your eye on vendor selection. Glad to have you on board.",
+      teammateCount: 31,
+      teammateInitials: ['AV', 'VR', 'IS'],
+      landingBenefit: 'Connect with your organization and get started on the platform.',
+      approvedSubtext: 'Start exploring the Scinode ecosystem.',
+      workspaceFeature: { title: 'Pre-Configured Nova Specialty Workspace', desc: 'Connect directly with 31 colleagues across Procurement, Quality, and Compliance.' },
+      profileActivity: 'sourcing requests, vendor quotes, and order updates',
+      exploreCard1Title: 'Your CDMO Journey',
+      exploreCard1Desc: 'Explore how we can take your CDMO journey from idea to reality.',
+      exploreCard2Title: 'Talk to Scira',
+      exploreCard2Desc: 'What do you want to develop or manufacture today? Ask Scira.',
+      successData: {
+        accountId: 'SCN-CUS-30560',
+        avatarInitials: 'NS',
+        tenantLine: 'Customer Tenant &middot; Specialty &amp; Industrial Chemicals Sourcing',
+        colleagueInitials: ['AV', 'VR'],
+        colleagueOverflow: 9,
+        activityLine: 'Ananya Verma, Vikram Rao &amp; 9 others are already active in Procurement.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Nova Specialty Chemicals' Procurement team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Explore Manufacturers &amp; R&amp;D Capabilities', desc: "Browse verified manufacturers and R&amp;D partners across Scinode's ecosystem.", meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add a photo and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Browse Manufacturers', 'Ask Scira']
+      }
+    },
+    deepresearch: {
+      label: 'Deep Research', accountNoun: 'Deep Research',
+      tagline: 'Platform for Chemistry Research',
+      pillBg: 'var(--indigo)', pillFg: '#fff',
+      headline: 'Turn your research questions into answers, instantly.',
+      company: 'Caltech Chemistry Lab', role: 'Member', team: 'Research', invitedBy: 'Dr. Ananya Rao',
+      inviteeName: 'Noah Fischer', inviteeEmail: 'noah.fischer@caltech.edu',
+      invitedByTitle: 'Principal Investigator',
+      invitedByPhoto: 'https://i.pravatar.cc/64?img=45',
+      teamDepartment: 'Research (Computational &amp; Experimental Chemistry)',
+      inviteMessage: "Hey Noah, welcome to the lab! We're running a few compound and route searches on Deep Research this term and could use your help. Excited to have you on the team.",
+      teammateCount: 12,
+      teammateInitials: ['AR', 'WC', 'SM'],
+      landingBenefit: 'Connect with your organization and get started on the platform.',
+      approvedSubtext: 'Start your first research workflow.',
+      workspaceFeature: { title: 'Pre-Configured Caltech Lab Workspace', desc: 'Connect directly with 12 colleagues across Research, Computation, and Review.' },
+      profileActivity: 'research queries, saved routes, and literature reviews',
+      exploreCard1Title: 'From Idea to Molecule',
+      exploreCard1Desc: 'Discover how AI helps chemists move from a target molecule to practical, commercially viable synthesis routes.',
+      exploreCard2Title: 'Beyond AI: Intelligence for Chemistry',
+      exploreCard2Desc: 'Explore why chemistry needs more than AI alone — and how human expertise, scientific reasoning, and AI come together to accelerate discovery.',
+      successData: {
+        accountId: 'SCN-DR-40022',
+        avatarInitials: 'CC',
+        tenantLine: 'Research Tenant &middot; Computational &amp; Experimental Chemistry',
+        colleagueInitials: ['AR', 'WC'],
+        colleagueOverflow: 2,
+        activityLine: 'Dr. Ananya Rao, Dr. Wei Chen &amp; 2 others are already active in Research.',
+        checklist: [
+          { title: 'Invitation Accepted', desc: "You've joined Caltech Chemistry Lab's Research team as a Member.", meta: 'Completed just now', done: true },
+          { title: 'Run Your First Deep Research Query', desc: 'Search compounds, routes, literature and patents in one unified workspace.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Complete Your Profile', desc: 'Add your expertise and contact details so your team can recognize and reach you.', meta: '2 mins', done: false }
+        ],
+        secondary: ['Start Research', 'Meet Your Team']
+      }
+    }
+  };
+
+  function ivSetPlatform(p) {
+    if (!IV_PLATFORM[p]) return;
+    ivState.platform = p;
+    ivState.source = 'direct';
+    ivState.existing = false;
+    ivState.orgApprovedOnPlatform = true;
+    ivState.pendingAccount = false;
+    ivState.fieldCaptured = false;
+    ivIndustries = [];
+    ivRenderIndustryChips();
+    ivHideOtherIndustry();
+    ivCloseIndustriesPanel();
+    document.getElementById('iv-profiletype-input').value = '';
+    document.getElementById('iv-dev-account-active').classList.add('active');
+    document.getElementById('iv-dev-account-pending').classList.remove('active');
+    document.getElementById('iv-dev-org-approved').classList.add('active');
+    document.getElementById('iv-dev-org-firstentry').classList.remove('active');
+    ivShowScreen('landing');
+    ivRender();
+  }
+
+  function ivSetSource(m) {
+    ivState.source = m;
+    ivRender();
+  }
+
+  // Cross-platform invite matrix: the inviting org's domain is already
+  // verified elsewhere in the Scinode ecosystem, but this may still be its
+  // first invite onto *this* platform (e.g. Customer → DR/Atoms/Ions) — that
+  // first invite requires Admin Approval before the invitee is activated;
+  // once the org is approved on this platform, later invites skip straight
+  // through (the existing 2-step Confirmation flow). Same rule as
+  // afSetOrgApprovedOnPlatform() in auth.html's organic-signup flow.
+  function ivSetOrgApprovedOnPlatform(val) {
+    ivState.orgApprovedOnPlatform = val;
+    document.getElementById('iv-dev-org-approved').classList.toggle('active', val);
+    document.getElementById('iv-dev-org-firstentry').classList.toggle('active', !val);
+    if (val) ivSetAccountPending(false);
+  }
+
+  // The invitee has already signed up but is waiting on the admin (24-48h), so
+  // trying to sign in / accept again shows the pending message instead. Only
+  // makes sense while the org isn't approved on this platform yet.
+  function ivSetAccountPending(val) {
+    ivState.pendingAccount = val;
+    document.getElementById('iv-dev-account-active').classList.toggle('active', !val);
+    document.getElementById('iv-dev-account-pending').classList.toggle('active', val);
+    if (val && ivState.orgApprovedOnPlatform) ivSetOrgApprovedOnPlatform(false);
+  }
+
+  // Demo-only toggle: lets reviewers show the Auth screen with the SSO options
+  // visible or hidden entirely, without walking through the Auth devbar group
+  // each time. Not part of the real product.
+  function ivSetSSODisplay(mode) {
+    ivState.ssoDisplay = mode;
+    if (mode === 'without' && ivState.source !== 'direct') ivState.source = 'direct';
+    ivApplySSODisplay();
+    ivRender();
+  }
+
+  function ivApplySSODisplay() {
+    var show = ivState.ssoDisplay !== 'without';
+    var section = document.getElementById('iv-auth-sso-section');
+    if (section) section.classList.toggle('hidden', !show);
+    document.getElementById('iv-dev-sso-with').classList.toggle('active', show);
+    document.getElementById('iv-dev-sso-without').classList.toggle('active', !show);
+  }
+
+  function ivSetExisting(val) {
+    ivState.existing = val;
+    ivRender();
+  }
+
+  function ivSetFieldCaptured(val) {
+    ivState.fieldCaptured = val;
+    document.getElementById('iv-dev-field-notcaptured').classList.toggle('active', !val);
+    document.getElementById('iv-dev-field-captured').classList.toggle('active', val);
+    ivRender();
+  }
+
+  function ivRender() {
+    var meta = IV_PLATFORM[ivState.platform];
+
+    document.getElementById('iv-brand-platform').textContent = meta.label;
+    var ivPill = document.getElementById('iv-brand-platform-pill');
+    ivPill.textContent = meta.label;
+    ivPill.style.background = meta.pillBg;
+    ivPill.style.color = meta.pillFg;
+    document.getElementById('iv-brand-tagline').innerHTML = meta.tagline;
+    document.getElementById('iv-brand-headline').innerHTML = meta.headline;
+
+    // Invited-by chip + trust/benefit cards in the brand panel — landing
+    // screen only (toggled in ivShowScreen), but kept populated here so
+    // they're correct the instant that screen becomes visible.
+    document.getElementById('iv-invited-avatar').src = meta.invitedByPhoto;
+    document.getElementById('iv-invited-avatar').alt = meta.invitedBy;
+    document.getElementById('iv-invited-chip-name').textContent = meta.invitedBy;
+    document.getElementById('iv-invited-chip-meta').innerHTML = meta.company + ' &middot; ' + meta.team;
+    document.getElementById('iv-feature1-title').textContent = meta.workspaceFeature.title;
+    document.getElementById('iv-feature1-desc').innerHTML = meta.workspaceFeature.desc;
+
+    // Landing card — company header, verified/domain line, meta rows,
+    // personal invite message, and the teammate/expiry footer.
+    document.getElementById('iv-h1-company').textContent = meta.company;
+    document.getElementById('iv-landing-benefit').innerHTML = meta.landingBenefit;
+    document.getElementById('iv-company-avatar').textContent = meta.company.charAt(0);
+    document.getElementById('iv-company').textContent = meta.company;
+    document.getElementById('iv-platform-badge').textContent = meta.label;
+    document.getElementById('iv-invited-by').textContent = meta.invitedBy;
+    document.getElementById('iv-invited-by-title').textContent = '(' + meta.invitedByTitle + ')';
+    document.getElementById('iv-team-department').innerHTML = meta.teamDepartment;
+    document.getElementById('iv-invite-message-from').textContent = 'Message from ' + meta.invitedBy + ':';
+    document.getElementById('iv-invite-message-text').textContent = '"' + meta.inviteMessage + '"';
+    var teammateStack = document.getElementById('iv-teammate-stack');
+    teammateStack.innerHTML = meta.teammateInitials.map(function (initials, i) {
+      var s = IV_AVATAR_COLORS[i % IV_AVATAR_COLORS.length];
+      return '<span style="background:' + s.bg + ';color:' + s.fg + ';">' + initials + '</span>';
+    }).join('');
+    document.getElementById('iv-teammate-count-text').textContent = 'Join ' + meta.teammateCount + ' teammates already in this workspace';
+
+    document.getElementById('iv-name-sso-value').textContent = meta.inviteeName;
+    if (ivState.source !== 'direct') {
+      document.getElementById('iv-name-sso-chip').textContent = 'From ' + IV_METHOD_LABEL[ivState.source];
+    }
+
+    // New users go through a 2-step signup (Step 1: credentials, Step 2:
+    // profile details); existing users sign in on a single step. Hidden-but-
+    // required fields must not block native form validation, so `required`
+    // toggles in lockstep with visibility — now factoring in both isNew and
+    // which step is showing.
+    var isNew = !ivState.existing;
+    var isDirect = ivState.source === 'direct';
+    var showStep2 = isNew && ivState.step === 2;
+    var firstName = meta.inviteeName.split(' ')[0];
+
+    // Headline/sub/status-badge copy — different per step for new users,
+    // unchanged sign-in copy for existing users.
+    if (!isNew) {
+      document.getElementById('iv-auth-h1').textContent = 'Sign in to accept';
+      document.getElementById('iv-auth-sub').textContent = 'Authenticate to join ' + meta.company + ' on ' + meta.accountNoun + '.';
+    } else if (ivState.step === 1) {
+      document.getElementById('iv-auth-h1').textContent = 'Welcome, ' + firstName + '!';
+      document.getElementById('iv-auth-sub').textContent = 'Set a secure password to activate your account and collaborate with ' + meta.invitedBy + ' and ' + meta.teammateCount + ' teammates.';
+    } else {
+      document.getElementById('iv-auth-h1').textContent = 'Tell the team about your role';
+      document.getElementById('iv-auth-sub').textContent = meta.invitedBy + ' and the ' + meta.company + ' team will see this on ' + meta.profileActivity + '.';
+    }
+
+    document.getElementById('iv-auth-crumbs').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-dev-step-1').classList.toggle('active', ivState.step === 1);
+    document.getElementById('iv-dev-step-2').classList.toggle('active', ivState.step === 2);
+
+    var statusBadge = document.getElementById('iv-auth-status-badge');
+    statusBadge.classList.toggle('hidden', !isNew);
+    if (isNew) {
+      statusBadge.innerHTML = ivState.step === 1
+        ? '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Invited to join ' + meta.company
+        : '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Password secured';
+    }
+
+    document.getElementById('iv-auth-step1').classList.toggle('hidden', showStep2);
+    document.getElementById('iv-auth-step2').classList.toggle('hidden', !showStep2);
+
+    // Step 2 — profile details (new users only).
+    document.getElementById('iv-name-direct-wrap').classList.toggle('hidden', !isNew || !isDirect);
+    document.getElementById('iv-name-sso-wrap').classList.toggle('hidden', !isNew || isDirect);
+    document.getElementById('iv-name-input').required = isNew && isDirect && showStep2;
+    document.getElementById('iv-jobtitle-input').required = isNew && showStep2;
+    document.getElementById('iv-phone-wrap').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-phone-input').required = isNew && showStep2;
+    document.getElementById('iv-signup-consent').required = showStep2;
+
+    // Platform-specific field — same content as Sign Up's (see auth.html),
+    // joining an existing org so no Company Name here. An invitee always
+    // joins an org that's already verified elsewhere in Scinode (that's the
+    // premise of being invited) — same condition that hides Industries/
+    // Profile Type for recurring signups with a verified domain in
+    // auth.html's mandatorySkip, but here it's unconditionally true.
+    var isAtoms = ivState.platform === 'atoms';
+    var isIons = ivState.platform === 'ions';
+    var isCustomers = ivState.platform === 'customers';
+    document.getElementById('iv-field-industries').classList.add('hidden');
+    document.getElementById('iv-field-profiletype').classList.add('hidden');
+    document.getElementById('iv-profiletype-input').required = false;
+
+    // Website — required for IONS, optional for ATOMS/Customers, not asked
+    // for Deep Research. Invited users are always "recurring" (joining an
+    // existing org) — if a prior team member already supplied it, it's
+    // shown pre-filled (autofilled) rather than hidden, same as Sign Up's.
+    var showWebsite = isNew && (isIons || isAtoms || isCustomers);
+    var websiteAutofilled = isNew && ivState.fieldCaptured && (isAtoms || isCustomers);
+    document.getElementById('iv-field-website').classList.toggle('hidden', !showWebsite);
+    document.getElementById('iv-website-input').required = isNew && isIons && showStep2;
+    document.getElementById('iv-website-label').textContent = isIons ? 'Organization / Institution Website' : 'Company Website';
+    document.getElementById('iv-website-req').classList.toggle('hidden', !isIons);
+    document.getElementById('iv-website-optional').classList.toggle('hidden', isIons);
+    document.getElementById('iv-website-input').placeholder = isIons ? 'https://yourlab.com' : 'https://yourcompany.com';
+    document.getElementById('iv-website-input').value = websiteAutofilled ? ('https://' + (meta.inviteeEmail.split('@')[1] || 'company.com')) : '';
+    document.getElementById('iv-website-autofill-hint').classList.toggle('hidden', !websiteAutofilled);
+    document.getElementById('iv-dev-field-notcaptured').classList.toggle('active', !ivState.fieldCaptured);
+    document.getElementById('iv-dev-field-captured').classList.toggle('active', ivState.fieldCaptured);
+
+    // Step 1 — account credentials. Email is locked to the invited address for
+    // new users (they can't change it); existing users type it to sign in.
+    document.getElementById('iv-email-locked-wrap').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-email-locked-value').textContent = meta.inviteeEmail;
+    document.getElementById('iv-email-locked-hint').textContent = "Locked to " + meta.company + "'s authorized domain.";
+    document.getElementById('iv-auth-disclaimer').classList.toggle('hidden', !isNew);
+    document.getElementById('iv-email-wrap').classList.toggle('hidden', isNew || !isDirect);
+    document.getElementById('iv-email-input').required = !isNew && isDirect;
+    document.getElementById('iv-password-wrap').classList.toggle('hidden', !isDirect);
+    document.getElementById('iv-password-input').required = isDirect && !showStep2;
+    document.getElementById('iv-signup-criteria-box').classList.toggle('hidden', !isNew || !isDirect);
+    document.getElementById('iv-password-hint').classList.toggle('hidden', isNew && isDirect);
+    document.getElementById('iv-password-confirm-wrap').classList.toggle('hidden', !isNew || !isDirect);
+    document.getElementById('iv-password-confirm-input').required = isNew && isDirect && !showStep2;
+    // Existing users are signing in with a password they already have, not
+    // creating one — label and Forgot-password affordance reflect that.
+    document.getElementById('iv-password-label').textContent = isNew ? 'Create Password' : 'Password';
+    document.getElementById('iv-password-input').placeholder = isNew ? 'Create a password' : 'Enter your password';
+    document.getElementById('iv-forgot-link-row').classList.toggle('hidden', isNew || !isDirect);
+    document.getElementById('iv-sso-connected-note').classList.toggle('hidden', isDirect);
+    if (!isDirect) {
+      document.getElementById('iv-sso-connected-method').textContent = IV_METHOD_LABEL[ivState.source];
+    }
+
+    document.getElementById('iv-auth-existing-submit').classList.toggle('hidden', isNew);
+    document.getElementById('iv-auth-continue-btn').classList.toggle('hidden', !isNew);
+
+    Object.keys(IV_PLATFORM).forEach(function (p) {
+      var btn = document.getElementById('iv-dev-platform-' + p);
+      if (btn) btn.classList.toggle('active', ivState.platform === p);
+    });
+    ['direct', 'google', 'linkedin'].forEach(function (m) {
+      document.getElementById('iv-dev-source-' + m).classList.toggle('active', ivState.source === m);
+    });
+    document.getElementById('iv-dev-user-new').classList.toggle('active', !ivState.existing);
+    document.getElementById('iv-dev-user-existing').classList.toggle('active', ivState.existing);
+  }
+
+  function ivShowScreen(name) {
+    ['landing', 'auth', 'reset', 'confirmation', 'pending', 'verify', 'signin', 'rejected'].forEach(function (n) {
+      var el = document.getElementById('iv-screen-' + n);
+      if (el) el.classList.toggle('hidden', n !== name);
+    });
+    ivState.screen = name;
+    if (name !== 'signin') ivLink = null;
+    document.getElementById('iv-dev-screen-approved').classList.remove('active');
+    document.getElementById('iv-dev-screen-verified').classList.remove('active');
+    document.getElementById('iv-dev-screen-pending').classList.remove('active');
+    document.getElementById('iv-dev-screen-verify').classList.toggle('active', name === 'verify');
+    // Invitation context (who invited you + trust/benefit cards) only makes
+    // sense while deciding whether to accept — recede to plain brand
+    // messaging on every other screen.
+    document.getElementById('iv-landing-extra-top').classList.toggle('hidden', name !== 'landing');
+    document.getElementById('iv-landing-extra-features').classList.toggle('hidden', name !== 'landing');
+    if (name === 'auth') {
+      ivState.step = 1;
+      ivRender();
+    }
+    // 'pending', 'verify' and 'signin' are excluded here — 'signin' is shared by
+    // two entry points (verification link / approval link) with their own devbar
+    // handling, toggled directly by the functions that open them.
+    ['landing', 'auth', 'reset', 'confirmation'].forEach(function (n) {
+      var b = document.getElementById('iv-dev-screen-' + n);
+      if (b) b.classList.toggle('active', n === name);
+    });
+    if (name === 'reset') {
+      document.getElementById('iv-reset-password').value = '';
+      document.getElementById('iv-reset-password-confirm').value = '';
+      document.getElementById('iv-reset-password-match-error').classList.add('hidden');
+      ivUpdatePasswordCriteria();
+    }
+    document.querySelector('.af-card').classList.toggle('af-card-wide', name === 'confirmation' || name === 'pending');
+    window.scrollTo(0, 0);
+  }
+
+  // ── Forgot-password modals (existing users only — new users are creating a
+  // password, not recovering one). Self-contained, mirrors auth.html's system
+  // but under an iv- prefix to match this file's own naming convention. ──────
+  function ivOpenModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.classList.add('af-modal-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function ivCloseModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.classList.remove('af-modal-open');
+    document.body.style.overflow = '';
+  }
+
+  function ivModalBackdropClick(e, id) {
+    if (e.target.id === id) ivCloseModal(id);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.af-modal-backdrop.af-modal-open').forEach(function (m) { ivCloseModal(m.id); });
+  });
+
+  function ivOpenForgotPassword() {
+    var emailInput = document.getElementById('iv-email-input');
+    document.getElementById('iv-forgot-email').value = ivState.screen === 'signin'
+      ? IV_PLATFORM[ivState.platform].inviteeEmail
+      : (emailInput ? emailInput.value : '');
+    ivOpenModal('iv-modal-forgot');
+  }
+
+  function ivSubmitForgotPassword(e) {
+    if (e) e.preventDefault();
+    ivCloseModal('iv-modal-forgot');
+    ivOpenModal('iv-modal-verify-email');
+  }
+
+  // Presentation only — toggles the compact criteria row between "list" and
+  // "meets all requirements" and keeps it visible once the field has a value.
+  // The rule checks themselves live in the updaters below, unchanged.
+  function ivSyncCriteriaBox(boxId, val, checks) {
+    var box = document.getElementById(boxId);
+    box.classList.toggle('has-value', val.length > 0);
+    box.classList.toggle('is-complete', Object.keys(checks).every(function (k) { return checks[k]; }));
+  }
+
+  // Live criteria checklist — same gap-fix as auth.html: each rule lights up
+  // as it's actually satisfied instead of sitting there as static text.
+  function ivUpdatePasswordCriteria() {
+    var val = document.getElementById('iv-reset-password').value;
+    var checks = {
+      'iv-criteria-length': val.length >= 8,
+      'iv-criteria-upper': /[A-Z]/.test(val),
+      'iv-criteria-numsym': /[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)
+    };
+    Object.keys(checks).forEach(function (id) {
+      document.getElementById(id).classList.toggle('met', checks[id]);
+    });
+    ivSyncCriteriaBox('iv-criteria-box', val, checks);
+    return checks;
+  }
+
+  function ivSubmitResetPassword(e) {
+    if (e) e.preventDefault();
+    var checks = ivUpdatePasswordCriteria();
+    var allMet = checks['iv-criteria-length'] && checks['iv-criteria-upper'] && checks['iv-criteria-numsym'];
+    var pw = document.getElementById('iv-reset-password').value;
+    var confirmPw = document.getElementById('iv-reset-password-confirm').value;
+    var error = document.getElementById('iv-reset-password-match-error');
+    if (!allMet) {
+      document.getElementById('iv-criteria-box').scrollIntoView({ block: 'center' });
+      return;
+    }
+    if (pw !== confirmPw) {
+      error.classList.remove('hidden');
+      return;
+    }
+    error.classList.add('hidden');
+    ivOpenModal('iv-modal-password-updated');
+  }
+
+  function afTogglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    btn.innerHTML = showing
+      ? '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>'
+      : '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="M2 2l20 20"/></svg>';
+  }
+
+  // SSO buttons are type=button so they don't submit the form — they just
+  // switch the auth method and let ivRender() show the right fields (Name
+  // locked from SSO, Email/Password hidden). Existing users have nothing left
+  // to provide (Name/Phone already on file, SSO handles auth), so they go
+  // straight to confirmation; new users still need Step 2 (Profile details).
+  function ivChooseAuthMethod(source) {
+    ivState.source = source;
+    ivRender();
+    if (ivState.existing) {
+      ivShowConfirmation();
+    }
+  }
+
+  // Live criteria checklist for the new-user signup password — same pattern as
+  // ivUpdatePasswordCriteria() on the Reset Password screen, separate copy
+  // because it targets a different set of element ids.
+  function ivUpdateSignupPasswordCriteria() {
+    var val = document.getElementById('iv-password-input').value;
+    var checks = {
+      'iv-signup-criteria-length': val.length >= 8,
+      'iv-signup-criteria-upper': /[A-Z]/.test(val),
+      'iv-signup-criteria-numsym': /[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)
+    };
+    Object.keys(checks).forEach(function (id) {
+      document.getElementById(id).classList.toggle('met', checks[id]);
+    });
+    ivSyncCriteriaBox('iv-signup-criteria-box', val, checks);
+    return checks;
+  }
+
+  function ivSignupGoToStep(step) {
+    if (step === 2 && ivState.existing) return;
+    ivState.step = step;
+    ivRender();
+    window.scrollTo(0, 0);
+  }
+
+  // Step 1 ("Sign Up") — new users only. Native reportValidity() only checks
+  // Step 1's fields here, since Step 2's required attributes are already off
+  // while step === 1. Direct signups must verify their email before Step 2
+  // (profile details), same order as the recurring-user signup flow in
+  // auth.html; SSO already verifies identity, so it skips straight to Step 2.
+  function ivSignupContinue() {
+    var form = document.getElementById('iv-auth-form');
+    if (!form.reportValidity()) return;
+
+    if (ivState.source === 'direct') {
+      var checks = ivUpdateSignupPasswordCriteria();
+      if (!checks['iv-signup-criteria-length'] || !checks['iv-signup-criteria-upper'] || !checks['iv-signup-criteria-numsym']) {
+        document.getElementById('iv-signup-criteria-box').scrollIntoView({ block: 'center' });
+        return;
+      }
+      var pw = document.getElementById('iv-password-input').value;
+      var pwConfirm = document.getElementById('iv-password-confirm-input').value;
+      var matchError = document.getElementById('iv-password-match-error');
+      if (pw !== pwConfirm) {
+        matchError.classList.remove('hidden');
+        document.getElementById('iv-password-confirm-input').focus();
+        return;
+      }
+      matchError.classList.add('hidden');
+      // Scenario flows (doc §4): invitation sign up skips email verification.
+      ivSignupGoToStep(2);
+    } else {
+      ivSignupGoToStep(2);
+    }
+  }
+
+  // "I've verified — Continue" on the Verify Email screen — always lands on
+  // Step 2 (profile details) regardless of same-platform/cross-platform;
+  // that branch is decided by ivSubmitAuth() once Step 2 is submitted, same
+  // as afVerifyEmailContinue() always landing on the workspace-details
+  // screen in auth.html.
+  function ivVerifyContinue() {
+    ivShowScreen('auth');
+    ivState.step = 2;
+    ivRender();
+  }
+
+  // Step 2 ("Complete Setup & Enter Workspace") for new users, or the
+  // single-step sign-in form for existing users. New users branch here:
+  // same-platform orgs go straight into the workspace — no separate sign-in
+  // prompt, since the password was already set and the email already
+  // verified earlier in this same flow; cross-platform (org not yet
+  // approved on this platform) has to wait for admin approval before they
+  // can sign in at all.
+  function ivSubmitAuth(e) {
+    if (e) e.preventDefault();
+    if (!ivState.existing) {
+      if (ivState.orgApprovedOnPlatform) {
+        ivShowConfirmation();
+      } else {
+        ivShowPending('verify');
+      }
+      return;
+    }
+    ivFinishAccept();
+  }
+
+  function ivFinishAccept() {
+    if (!ivState.orgApprovedOnPlatform) {
+      // Already applied and still waiting -> the pending message; otherwise this
+      // is the first time through, so it leads with "Your email is verified".
+      ivShowPending(ivState.pendingAccount ? 'signin' : 'verify');
+    } else {
+      ivShowConfirmation();
+    }
+  }
+
+  // Landing CTA. An invitee who already signed up and is still pending sees the
+  // pending message instead of the sign-up form.
+  function ivAccept() {
+    if (ivState.pendingAccount && !ivState.orgApprovedOnPlatform) {
+      ivShowPending('signin');
+    } else {
+      ivShowScreen('auth');
+    }
+  }
+
+  var IV_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var IV_ICON_CLOCK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+
+  // Status banner (icon + text) for the sign-in-from-link success note —
+  // same .af-info-banner component as auth.html's company-domain messages.
+  var IV_BANNER_ICON = {
+    success: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
+  };
+
+  // Shared copy for the pending screen — same simplified text as auth.html's
+  // AF_PENDING_MESSAGE (same for every reason/domain now, no reason-specific
+  // banner or Verification Lifecycle timeline).
+  var IV_PENDING_MESSAGE = "We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.";
+
+  // APPROVAL_PENDING — always the same screen regardless of how the user got
+  // here (just verified their email, or tried to accept/sign in again during
+  // the 24-48h wait). via is only used to avoid re-flagging an account that's
+  // already marked pending. Mirrors auth.html's afRenderPending() exactly —
+  // screen 2 onwards follows the recurring-user signup flow.
+  function ivShowPending(via) {
+    var meta = IV_PLATFORM[ivState.platform];
+    if (via !== 'signin') ivSetAccountPending(true);
+    document.getElementById('iv-pending-icon').innerHTML = IV_ICON_CLOCK;
+    document.getElementById('iv-pending-title').textContent = 'Your account is created with us';
+    document.getElementById('iv-pending-body').textContent = IV_PENDING_MESSAGE;
+    document.getElementById('iv-pending-explore1-title').firstChild.textContent = meta.exploreCard1Title;
+    document.getElementById('iv-pending-explore1-desc').textContent = meta.exploreCard1Desc;
+    document.getElementById('iv-pending-explore2-title').firstChild.textContent = meta.exploreCard2Title;
+    document.getElementById('iv-pending-explore2-desc').textContent = meta.exploreCard2Desc;
+    ivShowScreen('pending');
+    document.getElementById('iv-dev-screen-pending').classList.add('active');
+    document.getElementById('iv-dev-screen-approved').classList.remove('active');
+  }
+
+  var ivLink = null;
+
+  function ivShowVerify() {
+    var meta = IV_PLATFORM[ivState.platform];
+    document.getElementById('iv-verify-email').textContent = meta.inviteeEmail;
+    document.getElementById('iv-verify-note').textContent = 'Verify your email to finish accepting your invitation to ' + meta.company + '.';
+    ivShowScreen('verify');
+  }
+
+  var ivResendTimer = null;
+  function ivResendVerification() {
+    var btn = document.getElementById('iv-resend-btn');
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Verification email resent ✓';
+    clearTimeout(ivResendTimer);
+    ivResendTimer = setTimeout(function () {
+      btn.textContent = 'Resend verification email';
+      btn.disabled = false;
+    }, 2500);
+  }
+
+  // mode: 'verify' (from "Your email is verified" — the org is already on this
+  // platform, no approval needed) or 'approved' (link in the admin-approval
+  // email — same sign-in page, plus the illustration and "You're all set").
+  function ivOpenSigninFromLink(mode) {
+    var meta = IV_PLATFORM[ivState.platform];
+    var firstName = meta.inviteeName.split(' ')[0];
+    ivShowScreen('signin');
+    ivLink = { mode: mode };
+    var approved = mode === 'approved';
+    var verified = mode === 'verify';
+
+    document.getElementById('iv-signin-hero').classList.toggle('hidden', !approved);
+    document.getElementById('iv-signin-h1').textContent = approved
+      ? "You're all set, " + firstName + '!'
+      : verified
+        ? firstName + ', your email ID has been verified.'
+        : 'Sign in to accept';
+    document.getElementById('iv-signin-sub').textContent = approved
+      ? 'Your account has been approved. Sign in to accept your invitation.'
+      : 'Sign in to join ' + meta.company + ' on ' + meta.accountNoun + '.';
+    document.getElementById('iv-signin-email-value').textContent = meta.inviteeEmail;
+    document.getElementById('iv-signin-password').value = '';
+
+    var html = approved
+      ? '<b>' + meta.company + '</b> has been approved for ' + meta.accountNoun + '. ' + meta.approvedSubtext
+      : 'Your email is verified and ' + meta.company + ' is already verified. Sign in to accept your invitation.';
+    var banner = document.getElementById('iv-signin-banner');
+    banner.className = 'af-info-banner is-success';
+    banner.innerHTML = IV_BANNER_ICON.success + '<span>' + html + '</span>';
+
+    document.getElementById('iv-dev-screen-approved').classList.toggle('active', approved);
+    document.getElementById('iv-dev-screen-verified').classList.toggle('active', verified);
+  }
+
+  function ivSubmitSigninLink(e) {
+    if (e) e.preventDefault();
+    if (ivLink && ivLink.mode === 'approved') ivSetOrgApprovedOnPlatform(true);
+    ivFinishAccept();
+  }
+
+  // "Recommended First Steps" carousel — auto-advances every 5s, pauses on
+  // hover / focus / touch, via the pause button, when the tab is hidden, or
+  // when the screen isn't showing; auto-advance is off entirely for users who
+  // prefer reduced motion. Content/slides come from the render function.
+  function ivInitStepsCarousel() {
+    var wrap = document.getElementById('iv-success-carousel');
+    var track = document.getElementById('iv-success-checklist');
+    var dotsEl = document.getElementById('iv-success-checklist-dots');
+    var pauseBtn = document.getElementById('iv-success-checklist-pause');
+    var slides = track.children;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function current() {
+      var best = 0, dist = Infinity;
+      for (var i = 0; i < slides.length; i++) {
+        var d = Math.abs(slides[i].offsetLeft - track.scrollLeft);
+        if (d < dist) { dist = d; best = i; }
+      }
+      return best;
+    }
+    function sync() {
+      var cur = current();
+      [].forEach.call(dotsEl.children, function (dot, i) {
+        dot.classList.toggle('active', i === cur);
+        if (i === cur) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current');
+      });
+    }
+    function goTo(i) {
+      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    track.scrollLeft = 0;
+    dotsEl.innerHTML = [].map.call(slides, function (_, i) {
+      return '<button type="button" class="af-steps-dot' + (i === 0 ? ' active' : '') + '" aria-label="Go to step ' + (i + 1) + '"></button>';
+    }).join('');
+
+    if (wrap._tick) clearInterval(wrap._tick);
+    wrap._userPaused = !!reduce;
+    wrap._hoverPaused = false;
+    pauseBtn.classList.toggle('is-paused', wrap._userPaused);
+    pauseBtn.setAttribute('aria-label', wrap._userPaused ? 'Play auto-scroll' : 'Pause auto-scroll');
+    pauseBtn.style.display = reduce ? 'none' : '';
+
+    if (!wrap._bound) {
+      wrap._bound = true;
+      var raf = null;
+      track.addEventListener('scroll', function () {
+        if (raf) return;
+        raf = requestAnimationFrame(function () { raf = null; sync(); });
+      });
+      dotsEl.addEventListener('click', function (e) {
+        var i = [].indexOf.call(dotsEl.children, e.target.closest('.af-steps-dot'));
+        if (i > -1) goTo(i);
+      });
+      pauseBtn.addEventListener('click', function () {
+        wrap._userPaused = !wrap._userPaused;
+        pauseBtn.classList.toggle('is-paused', wrap._userPaused);
+        pauseBtn.setAttribute('aria-label', wrap._userPaused ? 'Play auto-scroll' : 'Pause auto-scroll');
+      });
+      ['mouseenter', 'focusin', 'touchstart'].forEach(function (ev) {
+        wrap.addEventListener(ev, function () { wrap._hoverPaused = true; }, { passive: true });
+      });
+      ['mouseleave', 'focusout', 'touchend'].forEach(function (ev) {
+        wrap.addEventListener(ev, function () { wrap._hoverPaused = false; }, { passive: true });
+      });
+    }
+
+    wrap._tick = setInterval(function () {
+      if (wrap._userPaused || wrap._hoverPaused || document.hidden || !track.offsetParent) return;
+      goTo((current() + 1) % slides.length);
+    }, 5000);
+  }
+
+  function ivRenderSuccess(meta) {
+    var d = meta.successData;
+    if (!d) return;
+    var firstName = meta.inviteeName.split(' ')[0];
+    document.getElementById('iv-success-badge-text').textContent = ivState.existing
+      ? 'Matched to your existing Scinode account'
+      : 'Invitation accepted & access granted';
+    document.getElementById('iv-success-badge-account').textContent = '· Account #' + d.accountId + ' · Active';
+    document.getElementById('iv-success-headline').textContent = "You're in, " + firstName + '!';
+    document.getElementById('iv-success-sub').innerHTML = ivState.existing
+      ? 'Welcome back to <b>' + meta.company + '</b> on ' + meta.accountNoun + ' — no new profile needed, you were matched to your existing Scinode account.'
+      : meta.invitedBy + ' added you to <b>' + meta.company + '</b> on ' + meta.accountNoun + '. Your team is ready for you.';
+    document.getElementById('iv-success-company-avatar').textContent = d.avatarInitials;
+    document.getElementById('iv-success-company-name').textContent = meta.company;
+    document.getElementById('iv-success-company-meta').innerHTML = d.tenantLine;
+    document.getElementById('iv-success-role-value').textContent = meta.role + ' · ' + meta.team.replace(/&amp;/g, '&');
+
+    var stack = document.getElementById('iv-success-avatar-stack');
+    var avatars = d.colleagueInitials.map(function (initials, i) {
+      var s = IV_AVATAR_COLORS[i % IV_AVATAR_COLORS.length];
+      return '<span style="background:' + s.bg + ';color:' + s.fg + ';">' + initials + '</span>';
+    });
+    avatars.push('<span style="background:var(--border-h);color:var(--text-2);">+' + d.colleagueOverflow + '</span>');
+    stack.innerHTML = avatars.join('');
+    document.getElementById('iv-success-colleagues-count').textContent = (d.colleagueInitials.length + d.colleagueOverflow) + ' colleagues active';
+    document.getElementById('iv-success-activity').innerHTML = d.activityLine;
+
+    var doneCount = d.checklist.filter(function (item) { return item.done; }).length;
+    document.getElementById('iv-success-checklist-progress').textContent = doneCount + ' of ' + d.checklist.length + ' complete';
+    document.getElementById('iv-success-checklist').innerHTML = d.checklist.map(function (item) {
+      return '<div class="af-success-checklist-item' + (item.done ? ' done' : '') + '">' +
+        '<span class="af-success-checklist-check">' + (item.done ? IV_ICON_CHECK : '') + '</span>' +
+        '<div class="af-success-checklist-body">' +
+          '<div class="af-success-checklist-title-row"><span class="af-success-checklist-title">' + item.title + '</span>' +
+          '<span class="af-success-checklist-meta' + (!item.done && item.meta.indexOf('Recommended') === 0 ? ' next' : '') + '">' + item.meta + '</span></div>' +
+          '<div class="af-success-checklist-desc">' + item.desc + '</div>' +
+        '</div></div>';
+    }).join('');
+    ivInitStepsCarousel();
+
+    var successCta = document.getElementById('iv-success-cta');
+    successCta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';
+    successCta.onclick = function () { ivShowScreen('landing'); };
+
+    document.getElementById('iv-success-secondary-row').innerHTML = d.secondary.map(function (label) {
+      return '<button type="button" class="af-success-ghost-btn" onclick="return false;">' + label + '</button>';
+    }).join('');
+  }
+
+  function ivShowConfirmation() {
+    ivRenderSuccess(IV_PLATFORM[ivState.platform]);
+    ivShowScreen('confirmation');
+  }
+
+  ivRender();
+  ivApplySSODisplay();
+</script>
+
+<!-- ══════════ SCENARIO FLOWS adapter (see assets/flows/flows.js) ══════════
+     Scenarios 6 (same platform) and 7 (cross platform). The email-domain
+     choice decides ivState.orgApprovedOnPlatform, which is what the existing
+     in-screen routing (ivSubmitAuth) branches on. -->
+<script src="assets/flows/flows.js?v=1"></script>
+<script>
+  (function () {
+    var SUPPORT = { atoms: 'support.atoms@scinode.ai', ions: 'support.ions@scinode.ai', customers: 'support@scinode.ai', deepresearch: 'support.deepresearch@scinode.ai' };
+    var BLURB = {
+      atoms: 'For manufacturers looking to grow demand, capabilities, and global opportunities.',
+      ions: 'For researchers working on R&amp;D, synthesis, and scientific projects.',
+      customers: 'For customers managing their product journey from development to manufacturing.',
+      deepresearch: 'For deep, AI-powered research across chemicals, markets, and scientific intelligence.'
+    };
+    var WORK_EMAIL = {};
+    Object.keys(IV_PLATFORM).forEach(function (k) { WORK_EMAIL[k] = IV_PLATFORM[k].inviteeEmail; });
+
+    window.ivShowRejected = function () {
+      var meta = IV_PLATFORM[ivState.platform];
+      document.getElementById('iv-rejected-note').innerHTML = '<span>If you believe this is incorrect, please contact our team at <b>' + SUPPORT[ivState.platform] + '</b>.</span>';
+      document.getElementById('iv-rejected-explore-grid').innerHTML = Object.keys(IV_PLATFORM)
+        .filter(function (k) { return k !== ivState.platform; })
+        .map(function (k) {
+          return '<a href="#" onclick="return false;" class="af-explore-item">' +
+            '<span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>' +
+            '<span class="af-explore-body"><span class="af-explore-title">' + IV_PLATFORM[k].label + '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>' +
+            '<span class="af-explore-desc">' + BLURB[k] + '</span></span></a>';
+        }).join('');
+      ivShowScreen('rejected');
+    };
+
+    ['ivShowScreen', 'ivShowPending', 'ivOpenSigninFromLink', 'ivShowConfirmation', 'ivSignupGoToStep'].forEach(function (n) {
+      var fn = window[n];
+      window[n] = function () { var r = fn.apply(this, arguments); Flows.sync(); return r; };
+    });
+
+    Flows.init({
+      page: 'invite',
+      apply: function (c) {
+        // Public domain: show the invitee on a Gmail address instead of their work email.
+        Object.keys(WORK_EMAIL).forEach(function (k) { IV_PLATFORM[k].inviteeEmail = WORK_EMAIL[k]; });
+        if (c.domain === 'public') {
+          var m = IV_PLATFORM[c.platform];
+          m.inviteeEmail = m.inviteeName.toLowerCase().replace(/[^a-z ]/g, '').trim().replace(/\s+/g, '.') + '@gmail.com';
+        }
+        ivSetPlatform(c.platform);   // resets every other toggle, shows the landing
+        ivSetOrgApprovedOnPlatform(c.domain === 'verified');
+        ivSetAccountPending(false);
+        ivState.existing = false;
+        ivRender();
+      },
+      go: function (key) {
+        switch (key) {
+          case 'invite': ivShowScreen('landing'); break;
+          case 'signup': ivShowScreen('auth'); break;
+          case 'step2': ivShowScreen('auth'); ivSignupGoToStep(2); break;
+          case 'pending': ivShowPending('verify'); break;
+          case 'approved': ivOpenSigninFromLink('approved'); break;
+          case 'rejected': ivShowRejected(); break;
+          case 'dashboard': ivShowConfirmation(); break;
+        }
+      },
+      detect: function () {
+        var scr = ivState.screen;
+        if (scr === 'landing') return 'invite';
+        if (scr === 'auth') return ivState.existing ? null : (ivState.step === 2 ? 'step2' : 'signup');
+        if (scr === 'pending') return 'pending';
+        if (scr === 'signin') return ivLink && ivLink.mode === 'approved' ? 'approved' : null;
+        if (scr === 'confirmation') return 'dashboard';
+        if (scr === 'rejected') return 'rejected';
+        return null;
+      },
+      source: function () { return ivState.source; }
+    });
+  })();
+</script>
+
+</body>
+</html>

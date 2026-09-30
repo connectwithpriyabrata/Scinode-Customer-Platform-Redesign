@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Sign Up Flows — Scinode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/scinode.css?v=20260923l" />
+  <script src="assets/scinode.js?v=20260902a"></script>
+  <link rel="stylesheet" href="assets/flows/flows.css?v=1" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     PROTOTYPE DEV TOOLBAR — not part of the real product UI. Lets reviewers
+     jump directly to any of the screen states from IDENTITY_ACCESS_SPEC.md
+     without needing real backend logic (email domain lookup, SSO, etc).
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="af-devbar" role="toolbar" aria-label="Prototype scenario controls" id="af-devbar">
+  <div class="af-devbar-handle" id="af-devbar-handle" title="Drag to move" aria-hidden="true">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>
+  </div>
+  <button type="button" class="af-devbar-toggle" id="af-devbar-toggle" onclick="afDevbarToggle()" title="Collapse toolbar" aria-label="Collapse toolbar" aria-expanded="true">
+    <svg id="af-devbar-toggle-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+  <div class="af-devbar-body" id="af-devbar-body">
+  <!-- Platform lives in the scenario bar on this page -->
+  <span class="fl-hidden"><span class="af-devbar-label">Platform</span>
+  <div class="af-devbar-group">
+    <button id="af-dev-platform-atoms" class="active" onclick="afSetPlatform('atoms')">ATOMS</button>
+    <button id="af-dev-platform-ions" onclick="afSetPlatform('ions')">IONS</button>
+    <button id="af-dev-platform-customers" onclick="afSetPlatform('customers')">Customers</button>
+    <button id="af-dev-platform-deepresearch" onclick="afSetPlatform('deepresearch')">Deep Research</button>
+  </div>
+  <div class="af-devbar-sep"></div></span>
+  <span class="af-devbar-label">Screen</span>
+  <div class="af-devbar-group">
+    <button id="af-dev-screen-signup" class="active" onclick="afShowScreen('signup')">Sign Up</button>
+    <button id="af-dev-screen-signin" onclick="afShowScreen('signin')">Sign In</button>
+    <button id="af-dev-screen-reset" onclick="afShowScreen('reset')">Reset Password</button>
+    <button id="af-dev-screen-verify" onclick="afPreviewVerify()">Verify Email</button>
+    <button id="af-dev-screen-rejected" onclick="afShowResult('rejected')">Rejected</button>
+    <button id="af-dev-screen-pending-platform" onclick="afShowResult('pending-platform')">Cross-Platform Pending</button>
+    <button id="af-dev-screen-approved" onclick="afOpenSigninFromLink('approved')">Just Approved</button>
+    <button id="af-dev-screen-verified" onclick="afOpenSigninFromLink('verify')">Just Verified</button>
+  </div>
+  <div class="af-devbar-sep"></div>
+  <span class="af-devbar-label">SSO Display</span>
+  <div class="af-devbar-group">
+    <button id="af-dev-sso-with" class="active" onclick="afSetSSODisplay('with')">With SSO</button>
+    <button id="af-dev-sso-without" onclick="afSetSSODisplay('without')">Without SSO</button>
+  </div>
+  <span id="af-devbar-signup-only" style="display:contents;">
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">User Type</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-usertype-first" class="active" onclick="afSetSignupUserType('first')">First Time</button>
+      <button id="af-dev-usertype-recurring" onclick="afSetSignupUserType('recurring')">Recurring (same org)</button>
+    </div>
+    <span id="af-devbar-usertype-captured-only" class="hidden" style="display:contents;">
+      <div class="af-devbar-sep"></div>
+      <span class="af-devbar-label">Platform Field</span>
+      <div class="af-devbar-group">
+        <button id="af-dev-usertype-notcaptured" class="active" onclick="afSetSignupFieldCaptured(false)">Not Captured</button>
+        <button id="af-dev-usertype-captured" onclick="afSetSignupFieldCaptured(true)">Already Captured</button>
+      </div>
+    </span>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Domain</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-domain-verified" class="active" onclick="afSetDomain('verified')">Verified</button>
+      <button id="af-dev-domain-new" onclick="afSetDomain('new')">New</button>
+      <button id="af-dev-domain-public" onclick="afSetDomain('public')">Public</button>
+    </div>
+    <span id="af-devbar-crossplatform-only" style="display:contents;">
+      <div class="af-devbar-sep"></div>
+      <span class="af-devbar-label">Org on This Platform</span>
+      <div class="af-devbar-group">
+        <button id="af-dev-org-approved" class="active" onclick="afSetOrgApprovedOnPlatform(true)">Approved</button>
+        <button id="af-dev-org-firstentry" onclick="afSetOrgApprovedOnPlatform(false)">First Entry</button>
+      </div>
+    </span>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Auth</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-source-direct" class="active" onclick="afSetSource('direct')">Direct</button>
+      <button id="af-dev-source-google" onclick="afSetSource('google')">Google</button>
+      <button id="af-dev-source-linkedin" onclick="afSetSource('linkedin')">LinkedIn</button>
+    </div>
+  </span>
+  <span id="af-devbar-signin-only" class="hidden" style="display:contents;">
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Sign In</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-signinsso" onclick="afToggleSigninSSO()">SSO org detected</button>
+      <button id="af-dev-signin-pending" onclick="afToggleSigninPending()">Account pending approval</button>
+    </div>
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Existing Customer</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-xp-off" class="active" onclick="afSetExistingCustomer(false)">Off</button>
+      <button id="af-dev-xp-on" onclick="afSetExistingCustomer(true)">On</button>
+    </div>
+    <span id="af-devbar-xp-complete-only" class="hidden" style="display:contents;">
+      <div class="af-devbar-sep"></div>
+      <span class="af-devbar-label">Platform Profile Info</span>
+      <div class="af-devbar-group">
+        <button id="af-dev-xp-missing" class="active" onclick="afSetXpProfileComplete(false)">Missing</button>
+        <button id="af-dev-xp-complete" onclick="afSetXpProfileComplete(true)">Complete</button>
+      </div>
+    </span>
+  </span>
+  <span id="af-devbar-verify-only" class="hidden" style="display:contents;">
+    <div class="af-devbar-sep"></div>
+    <span class="af-devbar-label">Verify</span>
+    <div class="af-devbar-group">
+      <button id="af-dev-verify-pending" class="active" onclick="afSetVerifyState('pending')">Pending</button>
+      <button id="af-dev-verify-expired" onclick="afSetVerifyState('expired')">Expired</button>
+      <button id="af-dev-verify-verified" onclick="afSetVerifyState('verified')">Verified</button>
+    </div>
+  </span>
+  </div>
+</div>
+
+<div class="af-shell">
+
+  <!-- ── Brand panel ── -->
+  <div class="af-brand">
+    <div class="af-brand-carousel" aria-hidden="true">
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-1.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-2.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-3.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-4.jpg')"></div>
+      <div class="af-brand-slide" style="background-image:url('assets/auth-visuals/visual-5.jpg')"></div>
+    </div>
+    <div class="af-brand-scrim" aria-hidden="true"></div>
+    <svg class="af-brand-decor" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="af-dots" width="46" height="46" patternUnits="userSpaceOnUse">
+          <circle cx="4" cy="4" r="1.6" fill="rgba(255,255,255,.35)"/>
+          <line x1="4" y1="4" x2="34" y2="20" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+          <line x1="4" y1="4" x2="14" y2="40" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#af-dots)"/>
+    </svg>
+
+    <div class="iv-brand-header-row">
+      <div class="iv-brand-header-text">
+        <div class="iv-brand-wordmark-row">
+          <span class="iv-brand-wordmark">SCINODE</span>
+          <span class="iv-brand-platform-pill" id="af-brand-platform-pill">ATOMS</span>
+        </div>
+        <div class="iv-brand-tagline" id="af-brand-tagline">Platform for Chemistry &amp; Manufacturing</div>
+      </div>
+    </div>
+
+    <div class="af-brand-mid" id="af-brand-mid-default">
+      <div class="af-brand-platform" id="af-brand-platform">ATOMS</div>
+      <div class="af-brand-headline" id="af-brand-headline">Connect with verified manufacturers and suppliers.</div>
+      <div class="af-brand-sub" id="af-brand-sub">One account gets you into every Scinode platform — ATOMS, IONS, Scinode for Customers, and Deep Research.</div>
+    </div>
+
+    <!-- Just-approved sign-in only: Recommended First Steps lives here instead
+         of the right-hand form column, so the panel stays useful the moment
+         someone lands here from the approval email. -->
+    <div class="af-brand-mid hidden" id="af-brand-mid-approved">
+      <div class="af-success-card af-brand-steps-card">
+        <div class="af-success-checklist-header">
+          <span>Recommended First Steps</span>
+          <span id="af-brand-steps-checklist-progress"></span>
+        </div>
+        <div class="af-steps-carousel" id="af-brand-steps-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
+          <div class="af-steps-track" id="af-brand-steps-checklist"></div>
+          <div class="af-steps-controls">
+            <div class="af-steps-dots" id="af-brand-steps-checklist-dots"></div>
+            <button type="button" class="af-steps-pause" id="af-brand-steps-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="af-brand-foot">© Scinode — an agentic execution platform for chemistry &amp; manufacturing</div>
+  </div>
+
+  <!-- ── Form content ── -->
+  <div class="af-content">
+    <div class="af-card">
+
+      <!-- ══════════ SIGN UP ══════════ -->
+      <div class="af-screen" id="af-screen-signup">
+        <div class="af-eyebrow-banner">
+          <b>Already a part of the Scinode ecosystem?</b><span class="af-info-tip-wrap" tabindex="0"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="af-info-tip-popover"><div class="af-info-tip-title">What's part of the Scinode Ecosystem?</div><ul class="af-info-tip-list"><li>Scinode</li><li>Scinode for Researchers</li><li>Scinode for Manufacturers</li><li>Deep Research</li></ul></div></span><br>
+          Your Scinode account works across the ecosystem. Use your existing account here. No need to create another one.
+          <button type="button" onclick="afShowScreen('signin')">Sign In →</button>
+        </div>
+
+        <div class="af-sub" id="af-signup-sub">Welcome to <b>Scinode for Manufacturers</b></div>
+        <div class="af-h1" id="af-signup-h1">Get started with your account</div>
+
+        <form id="af-signup-form" onsubmit="afSubmitSignup(event)">
+          <div class="af-field" id="af-email-direct-wrap">
+            <label><span id="af-email-label">Email</span> <span class="af-req">*</span></label>
+            <input class="af-input" type="email" id="af-section3-email" placeholder="you@company.com" required>
+          </div>
+
+          <!-- Email — locked once SSO has provided it -->
+          <div class="af-field hidden" id="af-email-sso-wrap">
+            <label>Email</label>
+            <div class="af-field-locked">
+              <div class="af-field-locked-val"><span id="af-email-sso-value">rahul@acme.com</span></div>
+              <span class="af-verified-chip">✓ Verified</span>
+            </div>
+          </div>
+
+          <div id="af-signup-password-wrap">
+            <div class="af-field">
+              <label>Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password" placeholder="Create a password" minlength="8" required oninput="afUpdateSignupPasswordCriteria()">
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-criteria-box" id="af-signup-criteria-box">
+                <div class="af-criteria-list">
+                  <div class="af-criteria-title">Password must contain:</div>
+                  <div class="af-criteria-row">
+                    <div class="af-criteria-item" id="af-signup-criteria-length"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>8+ characters</div>
+                    <div class="af-criteria-item" id="af-signup-criteria-upper"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Uppercase</div>
+                    <div class="af-criteria-item" id="af-signup-criteria-numsym"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Number or symbol</div>
+                  </div>
+                </div>
+                <div class="af-criteria-ok"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Password meets all requirements</div>
+              </div>
+            </div>
+
+            <div class="af-field">
+              <label>Confirm Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-section3-password-confirm" placeholder="Re-enter password" minlength="8" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-section3-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="af-field-error hidden" id="af-password-match-error">Passwords don't match.</div>
+            </div>
+          </div>
+
+          <div class="af-consent-row">
+            <label class="af-checkbox-label">
+              <input type="checkbox" id="af-section1-consent" required>
+              <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="af-submit">Sign Up</button>
+
+          <div id="af-signup-sso-section">
+            <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+
+            <div class="af-sso-stack">
+              <div id="af-enterprise-btn-wrap">
+                <button type="button" class="af-sso-btn af-sso-enterprise" id="af-enterprise-btn">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Continue with <span id="af-enterprise-company-name">Acme Manufacturing</span> SSO
+                </button>
+              </div>
+              <button type="button" class="af-sso-btn" id="af-sso-btn-google" onclick="afSetSource('google')">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                <span class="af-sso-btn-label">Continue with Google</span>
+              </button>
+              <button type="button" class="af-sso-btn" id="af-sso-btn-linkedin" onclick="afSetSource('linkedin')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                <span class="af-sso-btn-label">Continue with LinkedIn</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="af-sso-connected-note hidden" id="af-sso-connected-note">
+            <span>Signing up with <b id="af-sso-connected-method">Google</b> — no password needed.</span>
+            <button type="button" onclick="afSetSource('direct')">Use email instead</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ══════════ SIGN IN ══════════ -->
+      <div class="af-screen hidden" id="af-screen-signin">
+        <!-- Illustration — only when opened from the "you're approved" email link. -->
+        <div class="af-success-hero af-signin-hero hidden" id="af-signin-hero">
+          <img src="assets/auth-visuals/approved-illustration.svg" alt="Illustration of two people shaking hands over a signed document">
+        </div>
+        <div class="af-h1" id="af-signin-h1">Sign in</div>
+        <div class="af-sub" id="af-signin-sub">Access your ATOMS workspace</div>
+
+        <!-- Approved-via-email-link only: colleagues/team context right under
+             the heading. Company name/role and Recommended First Steps used to
+             live here too — the former was redundant with the Company Name
+             field that used to sit in the form below, the latter now lives
+             on the brand panel instead. -->
+        <div class="hidden" id="af-signin-approved-extra">
+          <div class="af-success-card">
+            <div class="af-success-colleagues-row">
+              <div class="af-success-avatar-stack" id="af-signin-success-avatar-stack"></div>
+              <div class="af-success-colleagues-count" id="af-signin-success-colleagues-count"></div>
+              <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
+            </div>
+            <div class="af-success-activity" id="af-signin-success-activity"></div>
+          </div>
+        </div>
+
+        <form onsubmit="afSubmitSignin(event)">
+          <div id="af-signin-normal">
+            <div class="af-field">
+              <label>Email <span class="af-req">*</span></label>
+              <input class="af-input" type="email" id="af-signin-email" placeholder="you@company.com" required>
+            </div>
+
+            <div class="af-field">
+              <label>Password <span class="af-req">*</span></label>
+              <div class="af-password-row">
+                <input class="af-input" type="password" id="af-signin-password" placeholder="Enter your password" required>
+                <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-signin-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+            </div>
+            <div class="af-link-row"><button type="button" onclick="afOpenForgotPassword()">Forgot password?</button></div>
+            <button type="submit" class="af-submit" id="af-signin-submit">Sign In</button>
+
+            <div id="af-signin-sso-section">
+              <div class="af-divider-row"><span class="af-divider-text">Or continue with</span></div>
+              <div class="af-sso-stack">
+                <button type="button" class="af-sso-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.48-1.13 2.73-2.4 3.58v2.98h3.88c2.27-2.09 3.54-5.17 3.54-8.8z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-2.98c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.07C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.31 14.34c-.24-.72-.38-1.49-.38-2.34s.14-1.62.38-2.34V6.59H1.29A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.29 5.41l4.02-3.07z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.59l4.02 3.07C6.25 6.84 8.89 4.77 12 4.77z"/></svg>
+                  Continue with Google
+                </button>
+                <button type="button" class="af-sso-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+                  Continue with LinkedIn
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hidden" id="af-signin-sso-panel">
+            <div class="af-sso-org-panel">
+              <div class="af-sso-org-panel-label">We found your organization:</div>
+              <div class="af-sso-org-panel-name" id="af-signin-org-name">Acme Manufacturing</div>
+              <button type="submit" class="af-sso-btn af-sso-enterprise" style="width:100%;">Continue with <span id="af-signin-org-sso-label">Acme</span> SSO</button>
+            </div>
+          </div>
+
+          <div class="af-footnote">Don't have an account? <button type="button" onclick="afShowScreen('signup')">Sign Up</button></div>
+        </form>
+      </div>
+
+      <!-- ══════════ "YOU'RE ALMOST THERE" — workspace/profile details ══════════
+           A single screen serving 3 entry paths (afState.xpMode):
+           - 'signup-first'    — brand-new signup, after Verify Email (or
+                                  immediately for SSO sources). Shows the
+                                  identity header, Company Name (first-timers
+                                  only — spec: company name is never shown to
+                                  recurring users), Name/Phone/Website + the
+                                  platform-specific field.
+           - 'signup-recurring'— another person from an already-known domain
+                                  signing up fresh (not via invite). Same as
+                                  above minus Company Name; the platform field
+                                  is itself skipped if a prior signup from the
+                                  same domain already supplied it
+                                  (afState.signupFieldCaptured).
+           - 'existing-customer'— existing Scinode ecosystem account signing
+                                  into a different platform (afSubmitSignin).
+                                  Only the platform-specific field — identity,
+                                  name/phone/company/website are already on
+                                  file for this account.
+           afShowXpProfile(mode) toggles all of the above; afSubmitXpProfile()
+           routes on completion (see its comment for the 3-way destination). -->
+      <div class="af-screen hidden" id="af-screen-xp-profile">
+        <!-- Signup-only: shows the just-verified identity so this still feels
+             like a continuation of the account just created, not a new form. -->
+        <div class="iv-invite-card-v2 hidden" id="af-xp-identity" style="padding:14px 16px;margin-bottom:20px;">
+          <div class="iv-invite-card-header" style="align-items:center;">
+            <div class="iv-invite-card-avatar" id="af-xp-identity-avatar">R</div>
+            <div class="iv-invite-card-heading">
+              <div class="iv-invite-card-name-row">
+                <span id="af-xp-identity-name">Rahul Mehta</span>
+                <span class="iv-invite-verified-pill"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Email Verified</span>
+              </div>
+              <div class="iv-invite-card-domain" id="af-xp-identity-email">rahul@acme.com</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="af-h1">You're almost there</div>
+        <div class="af-sub" id="af-xp-sub">Just confirm a couple of details to set up your workspace.</div>
+
+        <!-- Basic infographic, not a progress stepper — all 3 items are equal,
+             just explaining the flow. Collapsed by default (afToggleHowItWorks). -->
+        <div class="af-howitworks" id="af-xp-howitworks">
+          <button type="button" class="af-howitworks-toggle" id="af-xp-howitworks-toggle" onclick="afToggleHowItWorks()" aria-expanded="false" aria-controls="af-xp-howitworks-body">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="af-howitworks-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <span class="af-howitworks-toggle-label">How it works</span>
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="af-howitworks-chevron"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="af-howitworks-body hidden" id="af-xp-howitworks-body">
+            <div class="af-howitworks-steps">
+              <div class="af-howitworks-step">
+                <div class="af-howitworks-step-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+                <div class="af-howitworks-step-title">Add Details</div>
+              </div>
+              <div class="af-howitworks-connector"></div>
+              <div class="af-howitworks-step">
+                <div class="af-howitworks-step-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+                <div class="af-howitworks-step-title">Get Verified</div>
+              </div>
+              <div class="af-howitworks-connector"></div>
+              <div class="af-howitworks-step">
+                <div class="af-howitworks-step-icon"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+                <div class="af-howitworks-step-title">Access in 24 Hours</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form onsubmit="afSubmitXpProfile(event)">
+          <!-- Company — signup, first-time users only (never shown to recurring
+               users or existing-customer sign-ins — spec: "Company Name will
+               only be visible to First time users, not recurring users").
+               Same 3-way verified/new/public branch that used to live on Sign
+               Up Step 1, relocated here wholesale. -->
+          <div class="hidden" id="af-xp-company-group">
+            <div class="af-field" id="af-company-locked">
+              <label><span id="af-company-label-locked">Company Name</span></label>
+              <div class="af-field-locked is-verified">
+                <div class="af-field-locked-val">
+                  <svg class="af-lock-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span id="af-company-locked-value">Acme Manufacturing</span>
+                </div>
+                <svg class="af-verified-check" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Verified"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="m8 12.3 2.8 2.8L16 9.6" stroke="#fff" stroke-width="2.4"/></svg>
+              </div>
+              <div class="af-info-banner is-success" role="status" id="af-company-verified-banner"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span>Scinode has already identified your company. You can continue with your account setup.</span></div>
+            </div>
+            <div class="af-field hidden" id="af-company-editable">
+              <label><span id="af-company-label-editable">Company Name</span> <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="af-company-editable-input" placeholder="Enter company name">
+              <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>New domain — your company will go through a quick verification before activation.</span></div>
+              <div class="af-field" style="margin-top:14px;" id="af-company-website-wrap">
+                <label>Company Website</label>
+                <input class="af-input" type="url" id="af-company-website-input" placeholder="https://yourcompany.com">
+              </div>
+              <div class="af-field" style="margin-top:14px;margin-bottom:0;">
+                <label>Country</label>
+                <select class="af-select" id="af-company-country-input">
+                  <option value="" selected disabled>Select country</option>
+                  <option>India</option>
+                  <option>United States</option>
+                  <option>United Kingdom</option>
+                  <option>Germany</option>
+                  <option>China</option>
+                  <option>Singapore</option>
+                  <option>United Arab Emirates</option>
+                  <option>Australia</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="af-field hidden" id="af-company-public">
+              <label><span id="af-company-label-public">Which company do you represent?</span> <span class="af-req">*</span></label>
+              <input class="af-input" type="text" id="af-company-public-input" placeholder="Enter company name">
+              <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>Public email domain — your access will need admin approval either way.</span></div>
+            </div>
+          </div>
+
+          <!-- Name — signup only, direct vs SSO-verified -->
+          <div class="af-field hidden" id="af-name-direct-wrap">
+            <label>Name <span class="af-req">*</span></label>
+            <input class="af-input" type="text" id="af-name-direct-input" placeholder="Enter your full name">
+          </div>
+          <div class="af-field hidden" id="af-name-sso-wrap">
+            <label>Name</label>
+            <div class="af-field-locked">
+              <div class="af-field-locked-val"><span id="af-name-sso-value">Rahul Mehta</span></div>
+              <span class="af-verified-chip" id="af-name-sso-chip">From Google</span>
+            </div>
+          </div>
+
+          <!-- Website — signup only. Required for IONS (unchanged); optional for
+               ATOMS/Customers; not asked for Deep Research. For recurring
+               users, an already-captured Website is shown pre-filled
+               (autofilled) rather than hidden — see afShowXpProfile. -->
+          <div class="af-field hidden" id="af-field-website">
+            <label><span id="af-website-label">Organization / Institution Website</span> <span class="af-req" id="af-website-req">*</span><span class="af-optional hidden" id="af-website-optional">(Optional)</span></label>
+            <input class="af-input" type="url" id="af-website-input" placeholder="https://yourcompany.com">
+            <div class="af-field-hint hidden" id="af-website-autofill-hint">Pre-filled from your organization's existing profile — feel free to update it.</div>
+          </div>
+
+          <!-- Phone — signup only -->
+          <div class="af-field hidden" id="af-field-phone">
+            <label>Phone Number <span class="af-req">*</span></label>
+            <div class="af-phone-row">
+              <select class="af-select af-phone-code" id="af-phone-code" aria-label="Country code">
+                <option value="+91" selected>+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
+                <option value="+49">+49</option>
+                <option value="+61">+61</option>
+                <option value="+65">+65</option>
+                <option value="+86">+86</option>
+                <option value="+971">+971</option>
+              </select>
+              <input class="af-input" type="tel" id="af-phone-input" placeholder="Enter phone number">
+            </div>
+          </div>
+
+          <!-- Industries — ATOMS only, multi-select (mirrors #af-field-industries on Sign Up) -->
+          <div class="af-field hidden" id="af-xp-field-industries">
+            <label>Industries <span class="af-req">*</span></label>
+            <div class="af-msel" id="af-xp-industries-msel">
+              <button type="button" class="af-msel-trigger" id="af-xp-industries-trigger" onclick="afXpToggleIndustriesPanel()" aria-haspopup="listbox" aria-expanded="false">
+                <span class="af-msel-trigger-label" id="af-xp-industries-trigger-label">Select industries</span>
+                <svg class="af-msel-chevron" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="af-msel-panel hidden" id="af-xp-industries-panel" role="listbox" aria-multiselectable="true">
+                <label class="af-msel-option"><span>Agrochemicals</span><input type="checkbox" value="Agrochemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Beauty &amp; Personal Care</span><input type="checkbox" value="Beauty &amp; Personal Care" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Critical Metals</span><input type="checkbox" value="Critical Metals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Dyes and Pigments</span><input type="checkbox" value="Dyes and Pigments" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Elemental Derivatives</span><input type="checkbox" value="Elemental Derivatives" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Flame Retardants</span><input type="checkbox" value="Flame Retardants" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Flavors &amp; Fragrances</span><input type="checkbox" value="Flavors &amp; Fragrances" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Food &amp; Nutrition</span><input type="checkbox" value="Food &amp; Nutrition" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Industrial Chemicals</span><input type="checkbox" value="Industrial Chemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Metallurgy Chemicals</span><input type="checkbox" value="Metallurgy Chemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Oleochemicals</span><input type="checkbox" value="Oleochemicals" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Pharmaceutical</span><input type="checkbox" value="Pharmaceutical" onchange="afXpToggleIndustry(this)"></label>
+                <label class="af-msel-option"><span>Others</span><input type="checkbox" id="af-xp-industries-other-checkbox" value="__other__" onchange="afXpToggleOtherIndustry(this)"></label>
+              </div>
+            </div>
+            <input class="af-input af-industry-other hidden" type="text" id="af-xp-industries-other" maxlength="60" placeholder="Type your industry and press Enter" aria-label="Other industry" autocomplete="off" onkeydown="afXpOtherIndustryKey(event)">
+            <div class="af-field-hint hidden" id="af-xp-industries-other-hint">Press Enter to add it to your industries.</div>
+            <div class="af-chip-row" id="af-xp-industries-chips"></div>
+            <div class="af-field-error hidden" id="af-xp-industries-error">Select at least one industry.</div>
+          </div>
+
+          <!-- Profile Type — IONS only (mirrors #af-field-profiletype on Sign Up) -->
+          <div class="af-field hidden" id="af-xp-field-profiletype">
+            <label>Profile Type <span class="af-req">*</span></label>
+            <select class="af-select" id="af-xp-profiletype-input" onchange="afXpUpdateProfileTypeHint()">
+              <option value="" selected disabled>Select the option that best describes you</option>
+              <option>Scientist / Research Lab</option>
+              <option>CRO / CDMO</option>
+              <option>Others</option>
+            </select>
+            <div class="af-field-hint" id="af-xp-profiletype-hint"></div>
+          </div>
+
+          <!-- What describes you the best — signup + Customers only, optional -->
+          <div class="af-field hidden" id="af-field-describe">
+            <label>What describes you the best?</label>
+            <select class="af-select" id="af-describe-input">
+              <option value="" selected disabled>Select one</option>
+              <option>Manufacturer</option>
+              <option>CRO / CDMO</option>
+              <option>Research Lab</option>
+              <option>Distributor</option>
+              <option>Brand / Product Company</option>
+              <option>Consultant / Advisor</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Upload NDA — signup + Customers only, optional, never blocks signup -->
+          <div class="af-field hidden" id="af-field-nda">
+            <label>Upload NDA <span class="af-optional">(Optional)</span></label>
+            <input class="af-input" type="file" id="af-nda-input" accept=".pdf,.doc,.docx">
+            <div class="af-field-hint">Built for IP-sensitive collaboration, Scinode ensures encrypted data handling and strict access control at every step.</div>
+          </div>
+
+          <div class="af-consent-row hidden" id="af-xp-consent-row">
+            <label class="af-checkbox-label">
+              <input type="checkbox" id="af-signup-consent">
+              <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="af-submit" id="af-xp-submit" disabled>Continue</button>
+        </form>
+      </div>
+
+      <!-- ══════════ RESET PASSWORD (reached via the "reset link" in the email —
+           simulated in this prototype from the "Verify your email address" modal
+           or the devbar) ══════════ -->
+      <div class="af-screen hidden" id="af-screen-reset">
+        <div class="af-h1">Reset your password</div>
+        <div class="af-sub">Choose a strong, unique password to secure your Scinode account.</div>
+
+        <form onsubmit="afSubmitResetPassword(event)">
+          <div class="af-field">
+            <label>New Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="af-reset-password" placeholder="Enter new password" minlength="8" required oninput="afUpdatePasswordCriteria()">
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-reset-password', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="af-criteria-box" id="af-criteria-box">
+              <div class="af-criteria-list">
+                <div class="af-criteria-title">Password must contain:</div>
+                <div class="af-criteria-row">
+                  <div class="af-criteria-item" id="af-criteria-length"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>8+ characters</div>
+                  <div class="af-criteria-item" id="af-criteria-upper"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Uppercase</div>
+                  <div class="af-criteria-item" id="af-criteria-numsym"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Number or symbol</div>
+                </div>
+              </div>
+              <div class="af-criteria-ok"><span class="af-criteria-dot"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Password meets all requirements</div>
+            </div>
+          </div>
+
+          <div class="af-field">
+            <label>Confirm your new Password <span class="af-req">*</span></label>
+            <div class="af-password-row">
+              <input class="af-input" type="password" id="af-reset-password-confirm" placeholder="Re-enter new password" minlength="8" required>
+              <button type="button" class="af-password-toggle" onclick="afTogglePassword('af-reset-password-confirm', this)" aria-label="Show password"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+            <div class="af-field-error hidden" id="af-reset-password-match-error">Passwords don't match.</div>
+          </div>
+
+          <button type="submit" class="af-submit">Update Password</button>
+        </form>
+
+        <div class="af-footnote" style="text-align:center;"><button type="button" onclick="afShowScreen('signin')">Back to Sign In</button></div>
+      </div>
+
+      <!-- ══════════ RESULT (pending review / activated / rejected / signed in) ══════════ -->
+      <div class="af-screen hidden" id="af-screen-result">
+        <div class="af-result" id="af-result-simple">
+          <div class="af-success-hero af-signin-hero hidden" id="af-rejected-hero" style="width:100%;">
+            <img src="assets/auth-visuals/rejected-illustration.svg" alt="Illustration of a person looking concerned at their laptop">
+          </div>
+          <div class="af-result-icon" id="af-result-icon"></div>
+          <div class="af-result-title" id="af-result-title"></div>
+          <div class="af-result-body" id="af-result-body"></div>
+          <div class="af-info-banner is-info" role="status" id="af-result-note"></div>
+          <ul class="af-result-bullets hidden" id="af-result-bullets"></ul>
+          <button type="button" class="af-submit hidden" id="af-result-cta"></button>
+
+          <!-- Rejected-only: the platforms this account WASN'T rejected for —
+               reuses the pending screen's explore-card component. -->
+          <div class="hidden" id="af-rejected-explore">
+            <div class="af-section-label" style="margin-top:26px;">Explore Other Platforms</div>
+            <div class="af-sub" style="margin-bottom:14px;"><b>Don't worry! This doesn't mean you can't use Scinode.</b> You can still explore and access other platforms that may be relevant to your work.</div>
+            <div class="af-explore-grid" id="af-rejected-explore-grid"></div>
+          </div>
+        </div>
+
+        <!-- Rich post-signup success screen — used for reason==='activated' on all
+             4 platforms, replacing the minimal .af-result block above for that
+             case only. Content is populated per-platform in afShowResult(). -->
+        <div class="af-success hidden" id="af-result-success">
+          <div class="af-success-status">
+            <span class="af-success-status-icon"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div>
+              <div class="af-success-status-label">Signup Confirmed</div>
+              <div class="af-success-status-meta" id="af-success-account">Account #SCN-00000 &middot; Active</div>
+            </div>
+          </div>
+
+          <div class="af-success-badge" id="af-success-badge">Workspace provisioned &amp; ready</div>
+          <div class="af-success-headline" id="af-success-headline">You're all set!</div>
+          <div class="af-success-sub" id="af-success-sub"></div>
+
+          <div class="af-success-hero" id="af-success-hero">
+            <img src="assets/auth-visuals/approved-illustration.svg" alt="Illustration of two people shaking hands over a signed document" style="object-fit:contain;padding:24px;">
+          </div>
+
+          <div class="af-success-card">
+            <div class="af-success-company-row">
+              <div class="af-success-avatar" id="af-success-company-avatar">AM</div>
+              <div class="af-success-company-info">
+                <div class="af-success-company-name">
+                  <span id="af-success-company-name">Company</span>
+                  <span class="af-success-verified-badge">Verified Workspace</span>
+                </div>
+                <div class="af-success-company-meta" id="af-success-company-meta"></div>
+              </div>
+              <div class="af-success-role">
+                <div class="af-success-role-label">Your Role</div>
+                <div class="af-success-role-value" id="af-success-role-value"></div>
+              </div>
+            </div>
+            <div class="af-success-colleagues-row">
+              <div class="af-success-avatar-stack" id="af-success-avatar-stack"></div>
+              <div class="af-success-colleagues-count" id="af-success-colleagues-count"></div>
+              <button type="button" class="af-success-invite-link" onclick="return false;">+ Invite colleague</button>
+            </div>
+            <div class="af-success-activity" id="af-success-activity"></div>
+          </div>
+
+          <div class="af-success-card">
+            <div class="af-success-checklist-header">
+              <span>Recommended First Steps</span>
+              <span id="af-success-checklist-progress"></span>
+            </div>
+            <div class="af-steps-carousel" id="af-success-carousel" role="group" aria-roledescription="carousel" aria-label="Recommended first steps">
+              <div class="af-steps-track" id="af-success-checklist"></div>
+              <div class="af-steps-controls">
+                <div class="af-steps-dots" id="af-success-checklist-dots"></div>
+                <button type="button" class="af-steps-pause" id="af-success-checklist-pause" aria-label="Pause auto-scroll"><svg class="icon-pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="icon-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="af-submit" id="af-success-cta"></button>
+          <div class="af-success-secondary-row" id="af-success-secondary-row"></div>
+
+          <div class="af-success-footer">
+            <span><span class="af-success-footer-dot"></span><span id="af-success-footnote"></span></span>
+            <span class="af-success-footer-links"><a href="#" onclick="return false;">Contact Support</a> &middot; <a href="#" onclick="return false;">IP Sovereignty Guarantee</a></span>
+          </div>
+        </div>
+
+        <!-- Rich pending-approval screen — used for reason==='pending' /
+             'pending-platform' (new/public domain, or verified-org cross-platform
+             expansion), replacing the minimal .af-result block above for those
+             cases. Content is populated per-scenario in afRenderPending(). -->
+        <div class="af-success hidden" id="af-result-pending">
+          <div class="af-success-hero af-signin-hero" id="af-pending-hero">
+            <img src="assets/auth-visuals/access-pending-illustration.svg" alt="Illustration of a person sitting on top of an hourglass, waiting">
+          </div>
+
+          <div class="af-pending-head">
+            <div class="af-pending-icon-wrap">
+              <div class="af-result-icon af-pending" id="af-pending-icon"></div>
+              <span class="af-pending-icon-badge"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            </div>
+            <div class="af-pending-head-text">
+              <div class="af-result-title" id="af-pending-title">Your account is created with us</div>
+              <div class="af-result-body" id="af-pending-body">We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.</div>
+            </div>
+          </div>
+
+          <!-- TODO: Abhishek's gif goes here (spec: "add Abhishek's gif across
+               all platforms") — not available yet, see conversation. -->
+
+          <!-- "While you wait, explore Scinode" — 2 platform-specific cards. -->
+          <div class="af-success-card">
+            <div class="af-lifecycle-header">
+              <div class="af-lifecycle-header-title"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>While you wait, explore Scinode</div>
+              <a href="#" onclick="return false;" class="af-lifecycle-refresh">scinode.com<svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a>
+            </div>
+            <div class="af-explore-grid">
+              <a href="#" onclick="return false;" class="af-explore-item">
+                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span>
+                <span class="af-explore-body">
+                  <span class="af-explore-title" id="af-pending-explore1-title">Your CDMO Journey<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="af-pending-explore1-desc">Explore how we can take your CDMO journey from idea to reality.</span>
+                </span>
+              </a>
+              <a href="#" onclick="return false;" class="af-explore-item">
+                <span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+                <span class="af-explore-body">
+                  <span class="af-explore-title" id="af-pending-explore2-title">Talk to Scira<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                  <span class="af-explore-desc" id="af-pending-explore2-desc">What do you want to develop or manufacture today? Ask Scira.</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ VERIFY EMAIL (Phase 1 direct-signup step, before Company/User resolution) ══════════ -->
+      <div class="af-screen hidden" id="af-screen-verify">
+        <div class="af-result">
+          <div class="af-result-icon af-pending" id="af-verify-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <div class="af-result-title" id="af-verify-title">Verify your email</div>
+          <div class="af-result-body" id="af-verify-body">We've sent a verification link to <b id="af-verify-email">you@company.com</b>. Click the link in that email to continue.</div>
+          <div class="af-info-banner is-info" role="status"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span id="af-verify-note">Verify your email to finish setting up your ATOMS account.</span></div>
+          <button type="button" class="af-submit" id="af-verify-cta" onclick="afVerifyEmailContinue()">I've verified — Continue</button>
+          <div class="af-result-ghost-row" id="af-verify-resend-row">
+            <button type="button" class="af-result-ghost-btn" onclick="afResendVerification()" id="af-resend-btn">Resend verification email</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ FORGOT PASSWORD MODALS ══════════ -->
+
+  <!-- Step 1: Check Your Email -->
+  <div class="af-modal-backdrop" id="af-modal-forgot" onclick="afModalBackdropClick(event,'af-modal-forgot')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="afCloseModal('af-modal-forgot')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-pending" style="background:var(--teal-50);color:var(--teal-600);">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="af-result-title">Check Your Email</div>
+        <div class="af-result-body">Please add your email and click on 'Reset'</div>
+      </div>
+      <form onsubmit="afSubmitForgotPassword(event)">
+        <div class="af-field">
+          <label>Work Email <span class="af-req">*</span></label>
+          <input class="af-input" type="email" id="af-forgot-email" placeholder="you@company.com" required>
+        </div>
+        <div class="af-modal-info-box">
+          <ul>
+            <li>The link will expire in 24 hrs for security purposes.</li>
+            <li>If you do not see the email, check your spam folder or corporate quarantine.</li>
+          </ul>
+        </div>
+        <div class="af-modal-cloudflare">
+          <div class="af-modal-cloudflare-status"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> Success!</div>
+          <div class="af-modal-cloudflare-brand"><div class="cf-name">CLOUDFLARE</div><div class="cf-links"><a href="#" onclick="return false;">Privacy</a> &middot; <a href="#" onclick="return false;">Help</a></div></div>
+        </div>
+        <button type="submit" class="af-submit" style="margin-top:20px;">Reset</button>
+      </form>
+      <div class="af-footnote" style="text-align:center;margin-top:14px;"><button type="button" onclick="afCloseModal('af-modal-forgot'); afShowScreen('signin');">Back to Sign In</button></div>
+    </div>
+  </div>
+
+  <!-- Step 2: Verify your email address (confirms the reset email was "sent") -->
+  <div class="af-modal-backdrop" id="af-modal-verify-email" onclick="afModalBackdropClick(event,'af-modal-verify-email')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="afCloseModal('af-modal-verify-email')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-pending" style="background:var(--teal-50);color:var(--teal-600);">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="af-result-title">Verify your email address</div>
+        <div class="af-result-body">We've sent a password reset link to your email. Please check your inbox (and spam folder) and follow the link to reset your password.</div>
+        <div class="af-modal-proto-link">
+          <button type="button" onclick="afCloseModal('af-modal-verify-email'); afShowScreen('reset');">(Prototype) Simulate clicking the email link →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Password Updated Successfully -->
+  <div class="af-modal-backdrop" id="af-modal-password-updated" onclick="afModalBackdropClick(event,'af-modal-password-updated')">
+    <div class="af-modal-box">
+      <button type="button" class="af-modal-close" onclick="afCloseModal('af-modal-password-updated')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div class="af-result">
+        <div class="af-result-icon af-success">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <div class="af-result-title">Password Updated Successfully</div>
+        <div class="af-result-body">Your password has been updated. Please sign in with your new credentials.</div>
+        <button type="button" class="af-submit" onclick="afCloseModal('af-modal-password-updated'); afShowScreen('signin');">Go to Sign in</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Prototype devbar: draggable + collapsible so it never blocks the page
+  // being reviewed. Position and collapsed state persist via localStorage.
+  (function () {
+    var bar = document.getElementById('af-devbar');
+    var handle = document.getElementById('af-devbar-handle');
+    if (!bar || !handle) return;
+
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+    function setPosition(left, top) {
+      left = clamp(left, 4, window.innerWidth - bar.offsetWidth - 4);
+      top = clamp(top, 4, window.innerHeight - bar.offsetHeight - 4);
+      bar.style.left = left + 'px';
+      bar.style.top = top + 'px';
+      bar.style.transform = 'none';
+    }
+
+    var dragging = false, moved = false, startX, startY, startLeft, startTop;
+
+    function startDrag(clientX, clientY) {
+      dragging = true;
+      moved = false;
+      bar.classList.add('af-devbar-dragging');
+      var rect = bar.getBoundingClientRect();
+      startX = clientX; startY = clientY;
+      startLeft = rect.left; startTop = rect.top;
+    }
+
+    function moveDrag(clientX, clientY) {
+      if (!dragging) return;
+      if (Math.abs(clientX - startX) > 2 || Math.abs(clientY - startY) > 2) moved = true;
+      setPosition(startLeft + (clientX - startX), startTop + (clientY - startY));
+    }
+
+    function stopDrag() {
+      if (!dragging) return;
+      dragging = false;
+      bar.classList.remove('af-devbar-dragging');
+      if (moved) {
+        try { localStorage.setItem('afDevbarPos', JSON.stringify({ left: bar.style.left, top: bar.style.top })); } catch (err) {}
+      }
+    }
+
+    // Classic document-level mousedown/mousemove/mouseup drag (works with both
+    // real input and CDP-style automated mouse events — Pointer Events alone
+    // aren't reliably synthesized by every driver).
+    handle.addEventListener('mousedown', function (e) {
+      startDrag(e.clientX, e.clientY);
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', stopDrag);
+
+    handle.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      var t = e.touches[0];
+      moveDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', stopDrag);
+    document.addEventListener('touchcancel', stopDrag);
+
+    // Restore saved position / collapsed state from a previous visit.
+    try {
+      var saved = JSON.parse(localStorage.getItem('afDevbarPos'));
+      if (saved && saved.left && saved.top) { bar.style.left = saved.left; bar.style.top = saved.top; bar.style.transform = 'none'; }
+    } catch (err) {}
+    try {
+      if (localStorage.getItem('afDevbarCollapsed') === '1') {
+        bar.classList.add('af-collapsed');
+        var t = document.getElementById('af-devbar-toggle');
+        t.setAttribute('aria-expanded', 'false');
+        t.title = 'Expand toolbar';
+        t.setAttribute('aria-label', 'Expand toolbar');
+      }
+    } catch (err) {}
+
+    // Keep it on-screen if the viewport shrinks after a manual drag.
+    window.addEventListener('resize', function () {
+      if (!bar.style.left) return;
+      var rect = bar.getBoundingClientRect();
+      setPosition(rect.left, rect.top);
+    });
+  })();
+
+  function afDevbarToggle() {
+    var bar = document.getElementById('af-devbar');
+    var collapsed = bar.classList.toggle('af-collapsed');
+    var toggle = document.getElementById('af-devbar-toggle');
+    toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    toggle.title = collapsed ? 'Expand toolbar' : 'Collapse toolbar';
+    toggle.setAttribute('aria-label', collapsed ? 'Expand toolbar' : 'Collapse toolbar');
+    try { localStorage.setItem('afDevbarCollapsed', collapsed ? '1' : '0'); } catch (err) {}
+  }
+
+  var afState = { screen: 'signup', platform: 'atoms', domain: 'verified', orgApprovedOnPlatform: true, signinLink: null, pendingAccount: null, signupEmail: '', source: 'direct', signinSSO: false, ssoDisplay: 'with', existingCustomer: false, xpProfileComplete: false, signupUserType: 'first', signupFieldCaptured: false, xpMode: null };
+  var afXpIndustries = [];
+  var afVerifyState = 'pending';
+
+  var AF_ICON_CHECK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  // Hand is a separate <g> (not baked into one static path) so it can be
+  // spun independently via CSS — see #af-pending-icon .af-clock-hand.
+  var AF_ICON_CLOCK = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><g class="af-clock-hand"><path d="M12 6v6l4 2"/></g></svg>';
+  var AF_ICON_MAIL = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>';
+  var AF_ICON_WARNING = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>';
+
+  var AF_METHOD_LABEL = { google: 'Google', linkedin: 'LinkedIn' };
+
+  // Everything that varies by platform — see IDENTITY_ACCESS_SPEC.md §Platforms
+  // and "Phase 1 - User Management.pdf" (pending/approved copy, §15 &amp; §30.1).
+  var AF_PLATFORM = {
+    atoms: {
+      label: 'Scinode for Manufacturers',
+      tagline: 'Platform for Chemistry &amp; Manufacturing',
+      pillBg: 'var(--teal-500)', pillFg: '#fff',
+      headline: 'Connect with verified manufacturers and suppliers.',
+      accountNoun: 'ATOMS',
+      supportEmail: 'support.atoms@scinode.ai',
+      rejectedBlurb: 'For manufacturers looking to grow demand, capabilities, and global opportunities.',
+      exploreCard1Title: 'Your Growth, Unlocked',
+      exploreCard1Desc: 'Explore how your journey towards more opportunities and demand begins.',
+      exploreCard2Title: 'Beyond Manufacturing',
+      exploreCard2Desc: 'Discover the research, quality, compliance and market support behind global growth.',
+      companyLabel: 'Company Name',
+      companyLabelPublic: 'Which company do you represent?',
+      companyPlaceholder: 'Enter company name',
+      emailLabel: 'Email',
+      company: 'Acme Manufacturing',
+      name: 'Rahul Mehta',
+      emailByDomain: { verified: 'rahul@acme.com', 'new': 'rahul@newcompany.com', public: 'rahul@gmail.com' },
+      successData: {
+        accountId: 'SCN-ATM-10432',
+        firstName: 'Rahul',
+        avatarInitials: 'AM',
+        tenantLine: 'Enterprise Tenant &middot; Specialty &amp; Industrial Chemicals',
+        role: 'Business Development Lead',
+        colleagueInitials: ['AS', 'NK'],
+        colleagueOverflow: 6,
+        activityLine: 'Amit Sharma, Neha Kapoor &amp; 6 others are already reviewing demand opportunities.',
+        checklist: [
+          { title: 'Workspace &amp; Compliance Clearance', desc: 'Acme Manufacturing enterprise workspace provisioned with REACH &amp; ISO-9001 compliance standards.', meta: 'Completed just now', done: true },
+          { title: 'Explore 420+ Live Demand Opportunities', desc: 'Browse buyer RFQs and demand signals matched to your product catalogue and plant capabilities.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'List Your First Product on ATOMS', desc: 'Add your manufacturing capabilities and capacity so buyers can discover and request quotes.', meta: '5 mins', done: false }
+        ],
+        secondary: ['Browse Demand Opportunities', 'Start Deep Research']
+      }
+    },
+    ions: {
+      label: 'Scinode for Researchers',
+      tagline: 'Platform for R&amp;D &amp; Chemistry',
+      pillBg: 'var(--sage)', pillFg: 'var(--navy-500)',
+      headline: 'Partner with R&amp;D teams, CROs, and specialty labs.',
+      accountNoun: 'IONS',
+      supportEmail: 'support.ions@scinode.ai',
+      rejectedBlurb: 'For researchers working on R&amp;D, synthesis, and scientific projects.',
+      exploreCard1Title: 'Make Your Next Breakthrough',
+      exploreCard1Desc: 'Discover the people, capabilities, and opportunities that can help turn your research into what comes next.',
+      exploreCard2Title: 'Your Technology, Commercialised.',
+      exploreCard2Desc: 'Turn your scientific expertise into real-world opportunities through the right Projects, partnerships, and network.',
+      companyLabel: 'Organization / Institute Name',
+      companyLabelPublic: 'Which organization / institute do you represent?',
+      companyPlaceholder: 'Enter organization / institute name',
+      emailLabel: 'Organization Email Address',
+      company: 'Meridian Labs',
+      name: 'Priya Nair',
+      emailByDomain: { verified: 'priya@meridianlabs.com', 'new': 'priya@newlab.com', public: 'priya@gmail.com' },
+      successData: {
+        accountId: 'SCN-ION-20187',
+        firstName: 'Priya',
+        avatarInitials: 'ML',
+        tenantLine: 'Research Tenant &middot; Specialty Synthesis &amp; Custom APIs',
+        role: 'Principal Research Scientist',
+        colleagueInitials: ['RI', 'SM'],
+        colleagueOverflow: 4,
+        activityLine: 'Dr. Rohan Iyer, Sara Malik &amp; 4 others are already reviewing R&amp;D opportunities.',
+        checklist: [
+          { title: 'Workspace &amp; Research Credentials', desc: 'Meridian Labs research workspace provisioned and verified for collaborative project access.', meta: 'Completed just now', done: true },
+          { title: 'Discover R&amp;D Opportunities Matched to Your Capabilities', desc: 'Browse active research and molecule-development briefs from manufacturers and brands.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Publish Your Lab Capabilities Profile', desc: 'List your instrumentation, synthesis expertise, and specialties so partners can find and engage you.', meta: '5 mins', done: false }
+        ],
+        secondary: ['Browse Opportunities', 'Start Deep Research']
+      }
+    },
+    customers: {
+      label: 'Scinode for Customers',
+      tagline: 'Platform for Chemistry Sourcing',
+      pillBg: 'var(--navy-500)', pillFg: '#fff',
+      headline: 'Source chemistry products and manage requests in one place.',
+      accountNoun: 'Scinode',
+      supportEmail: 'support@scinode.ai',
+      rejectedBlurb: 'For customers managing their product journey from development to manufacturing.',
+      exploreCard1Title: 'Your CDMO Journey',
+      exploreCard1Desc: 'Explore how we can take your CDMO journey from idea to reality.',
+      exploreCard2Title: 'Talk to Scira',
+      exploreCard2Desc: 'What do you want to develop or manufacture today? Ask Scira.',
+      companyLabel: 'Organisation Name',
+      companyLabelPublic: 'Which organisation do you represent?',
+      companyPlaceholder: 'Enter organisation name',
+      emailLabel: 'Work Email',
+      company: 'Nova Specialty Chemicals',
+      name: 'Ananya Verma',
+      emailByDomain: { verified: 'ananya@novaspecialty.com', 'new': 'ananya@newbuyer.com', public: 'ananya@gmail.com' },
+      successData: {
+        accountId: 'SCN-CUS-30559',
+        firstName: 'Ananya',
+        avatarInitials: 'NS',
+        tenantLine: 'Customer Tenant &middot; Specialty &amp; Industrial Chemicals Sourcing',
+        role: 'Procurement Manager',
+        colleagueInitials: ['VR', 'IS'],
+        colleagueOverflow: 9,
+        activityLine: 'Vikram Rao, Ishita Sen &amp; 9 others are already tracking active requests.',
+        checklist: [
+          { title: 'Workspace &amp; Access Verified', desc: 'Nova Specialty Chemicals workspace provisioned and ready to source across the Scinode ecosystem.', meta: 'Completed just now', done: true },
+          { title: 'Explore Manufacturers &amp; R&amp;D Capabilities', desc: "Browse verified manufacturers and R&amp;D partners across Scinode's ecosystem.", meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Raise Your First Request', desc: 'Submit a Compliance, Manufacturing, Quality, or Development request and start tracking it end-to-end.', meta: '5 mins', done: false }
+        ],
+        secondary: ['Browse Manufacturers', 'Ask Scira']
+      }
+    },
+    deepresearch: {
+      label: 'Deep Research',
+      tagline: 'Platform for Chemistry Research',
+      pillBg: 'var(--indigo)', pillFg: '#fff',
+      headline: 'Turn your research questions into answers, instantly.',
+      accountNoun: 'Deep Research',
+      supportEmail: 'support.deepresearch@scinode.ai',
+      rejectedBlurb: 'For deep, AI-powered research across chemicals, markets, and scientific intelligence.',
+      exploreCard1Title: 'From Idea to Molecule',
+      exploreCard1Desc: 'Discover how AI helps chemists move from a target molecule to practical, commercially viable synthesis routes.',
+      exploreCard2Title: 'Beyond AI: Intelligence for Chemistry',
+      exploreCard2Desc: 'Explore why chemistry needs more than AI alone — and how human expertise, scientific reasoning, and AI come together to accelerate discovery.',
+      companyLabel: 'Company Name',
+      companyLabelPublic: 'Which company do you represent?',
+      companyPlaceholder: 'Enter company name',
+      emailLabel: 'Email',
+      company: 'Caltech Chemistry Lab',
+      name: 'Dr. Ananya Rao',
+      emailByDomain: { verified: 'ananya.rao@caltech.edu', 'new': 'ananya.rao@newlab.edu', public: 'ananya.rao@gmail.com' },
+      successData: {
+        accountId: 'SCN-DR-40021',
+        firstName: 'Dr. Ananya',
+        avatarInitials: 'CC',
+        tenantLine: 'Research Tenant &middot; Computational &amp; Experimental Chemistry',
+        role: 'Principal Investigator',
+        colleagueInitials: ['WC', 'SM'],
+        colleagueOverflow: 2,
+        activityLine: 'Dr. Wei Chen, Sofia Martins &amp; 2 others are already exploring research workflows.',
+        checklist: [
+          { title: 'Workspace Ready', desc: 'Caltech Chemistry Lab workspace provisioned and ready to explore Deep Research.', meta: 'Completed just now', done: true },
+          { title: 'Run Your First Deep Research Query', desc: 'Search compounds, routes, literature and patents in one unified workspace.', meta: 'Recommended next &middot; 3 mins', done: false },
+          { title: 'Save Your First Research Result', desc: 'Get ranked routes, feasibility, cost and IP-risk insights, and save them for later.', meta: '5 mins', done: false }
+        ],
+        secondary: ['Start Research', 'Meet Your Team']
+      }
+    }
+  };
+  var AF_ECOSYSTEM_SUB = 'One account gets you into every Scinode platform — Scinode for Manufacturers, Scinode for Researchers, Scinode for Customers, and Deep Research.';
+
+  function afSetPlatform(p) {
+    if (!AF_PLATFORM[p]) return;
+    afClearSigninLink();
+    afState.pendingAccount = null;
+    afSyncPendingBtn();
+    afState.platform = p;
+    afState.domain = 'verified';
+    afState.orgApprovedOnPlatform = true;
+    afState.source = 'direct';
+    afXpIndustries = [];
+    afXpRenderIndustryChips();
+    afXpHideOtherIndustry();
+    afXpCloseIndustriesPanel();
+    document.getElementById('af-xp-profiletype-input').value = '';
+    document.getElementById('af-xp-profiletype-hint').textContent = '';
+    document.getElementById('af-describe-input').value = '';
+    document.getElementById('af-nda-input').value = '';
+    afState.existingCustomer = false;
+    afState.xpProfileComplete = false;
+    afState.signupUserType = 'first';
+    afState.signupFieldCaptured = false;
+    // Switching platform while sitting on a result/verify screen would otherwise
+    // leave stale content (e.g. Deep Research's welcome copy) under the new brand panel.
+    if (afState.screen === 'result' || afState.screen === 'verify') afShowScreen('signup');
+    afRender();
+  }
+
+  function afSetSignupUserType(val) {
+    afState.signupUserType = val;
+    afRender();
+  }
+
+  function afSetSignupFieldCaptured(val) {
+    afState.signupFieldCaptured = val;
+    afRender();
+  }
+
+  function afSetDomain(d) {
+    afState.domain = d;
+    afRender();
+  }
+
+  // Verified-domain orgs can still be brand new to *this specific platform* —
+  // per the entry-flow decision logic, the first user from an already-verified
+  // org entering a new platform (ATOMS/IONS/DR) needs Admin Approval; once the
+  // org is approved on that platform, later users skip straight through. Only
+  // meaningful when domain === 'verified' (a new/public domain is already
+  // pending for its own reason, see afComputeSignupReason).
+  function afSetOrgApprovedOnPlatform(val) {
+    afState.orgApprovedOnPlatform = val;
+    // Approving the org for this platform means there's nothing left pending.
+    if (val && afState.pendingAccount) {
+      afState.pendingAccount = null;
+      afSyncPendingBtn();
+    }
+    afRender();
+  }
+
+  // Gives the "Org on This Platform" devbar toggle an immediate visible effect
+  // on the signup form itself — same treatment as the Domain toggle above it —
+  // instead of only showing up several steps later, after "I've verified —
+  // Continue". Swaps the Company Name info banner between the normal
+  // all-clear message and a preview of the cross-platform-expansion approval
+  // this signup will actually hit (see afShowResult's 'pending-platform' copy).
+  function afUpdateOrgPlatformBanner(s, meta) {
+    var banner = document.getElementById('af-company-verified-banner');
+    if (!banner) return;
+    if (s.orgApprovedOnPlatform) {
+      banner.className = 'af-info-banner is-success';
+      banner.innerHTML = AF_BANNER_ICON.success + '<span>Scinode has already identified your company. You can continue with your account setup.</span>';
+    } else {
+      banner.className = 'af-info-banner is-info';
+      banner.innerHTML = AF_BANNER_ICON.info + '<span><b>Cross-platform expansion</b> — ' + meta.company + ' is verified on Scinode, but this will be its first account on ' + meta.accountNoun + '. Admin approval will be required after email verification.</span>';
+    }
+  }
+
+  function afComputeSignupReason() {
+    if (afState.domain !== 'verified') return 'pending';
+    return afState.orgApprovedOnPlatform ? 'activated' : 'pending-platform';
+  }
+
+  // Demo toggles for the "existing Scinode ecosystem account signs into a
+  // different platform" flow (see afSubmitSignin / afShowXpProfile below).
+  // Existing Customer = the account belongs to the shared ecosystem already
+  // (e.g. Scinode for Customers); Platform Profile Info = whether this
+  // account already has the platform-specific persona field(s) on file, so
+  // both branches of that flow (question screen shown vs. skipped) are
+  // independently demoable.
+  function afSetExistingCustomer(val) {
+    afState.existingCustomer = val;
+    if (val && afState.pendingAccount) {
+      afState.pendingAccount = null;
+      afSyncPendingBtn();
+    }
+    afRender();
+  }
+
+  function afSetXpProfileComplete(val) {
+    afState.xpProfileComplete = val;
+    afRender();
+  }
+
+  function afSetSource(m) {
+    afState.source = m;
+    afRender();
+  }
+
+  // Demo-only toggle: lets reviewers show the Sign Up / Sign In forms with the
+  // SSO options visible or hidden entirely, without walking through the Auth
+  // devbar group each time. Not part of the real product.
+  function afSetSSODisplay(mode) {
+    afState.ssoDisplay = mode;
+    if (mode === 'without' && afState.source !== 'direct') afState.source = 'direct';
+    afApplySSODisplay();
+    afRender();
+  }
+
+  function afApplySSODisplay() {
+    var show = afState.ssoDisplay !== 'without';
+    var signupSection = document.getElementById('af-signup-sso-section');
+    var signinSection = document.getElementById('af-signin-sso-section');
+    if (signupSection) signupSection.classList.toggle('hidden', !show);
+    if (signinSection) signinSection.classList.toggle('hidden', !show);
+    document.getElementById('af-dev-sso-with').classList.toggle('active', show);
+    document.getElementById('af-dev-sso-without').classList.toggle('active', !show);
+  }
+
+  function afEscapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function afTogglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    btn.innerHTML = showing
+      ? '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>'
+      : '<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="M2 2l20 20"/></svg>';
+  }
+
+  var AF_PROFILE_TYPE_DESC = {
+    'Scientist / Research Lab': 'PI, Professor, academic lab, or independent researcher',
+    'CRO / CDMO': 'CRO, CDMO, or lab providing R&D services',
+    'Others': "Not listed here? We'll guide you."
+  };
+
+  function afRender() {
+    var s = afState;
+    var meta = AF_PLATFORM[s.platform];
+
+    document.getElementById('af-email-sso-wrap').classList.toggle('hidden', s.source === 'direct');
+    document.getElementById('af-email-direct-wrap').classList.toggle('hidden', s.source !== 'direct');
+    document.getElementById('af-signup-password-wrap').classList.toggle('hidden', s.source !== 'direct');
+
+    // Hidden branches must not block native form validation — toggle `required`
+    // in lockstep with visibility rather than relying on display:none alone.
+    document.getElementById('af-section3-email').required = s.source === 'direct';
+    document.getElementById('af-section3-password').required = s.source === 'direct';
+    document.getElementById('af-section3-password-confirm').required = s.source === 'direct';
+    document.getElementById('af-sso-connected-note').classList.toggle('hidden', s.source === 'direct');
+    document.getElementById('af-enterprise-btn-wrap').classList.toggle('hidden', s.domain !== 'verified');
+
+    // Brand panel + headings.
+    document.getElementById('af-brand-platform').textContent = meta.label;
+    var afPill = document.getElementById('af-brand-platform-pill');
+    afPill.textContent = meta.label;
+    afPill.style.background = meta.pillBg;
+    afPill.style.color = meta.pillFg;
+    document.getElementById('af-brand-tagline').innerHTML = meta.tagline;
+    document.getElementById('af-brand-headline').innerHTML = meta.headline;
+    document.getElementById('af-brand-sub').textContent = AF_ECOSYSTEM_SUB;
+    document.getElementById('af-signup-sub').innerHTML = 'Welcome to <b>' + meta.label + '</b>';
+    document.getElementById('af-signin-sub').textContent = 'Access your ' + meta.accountNoun + ' workspace';
+    document.getElementById('af-verify-note').textContent = 'Verify your email to finish setting up your ' + meta.accountNoun + ' account.';
+
+    // Platform-specific field terminology ("Atoms sign in/up/sso.pdf" §11 vs
+    // "Ions sign in/up/sso.pdf" §11 — e.g. "Company Name" vs "Organization / Institute Name").
+    document.getElementById('af-company-label-locked').textContent = meta.companyLabel;
+    document.getElementById('af-company-label-editable').textContent = meta.companyLabel;
+    document.getElementById('af-company-label-public').textContent = meta.companyLabelPublic;
+    document.getElementById('af-company-editable-input').placeholder = meta.companyPlaceholder;
+    document.getElementById('af-company-public-input').placeholder = meta.companyPlaceholder;
+    document.getElementById('af-email-label').textContent = meta.emailLabel;
+
+    // Company name — locked field, Enterprise SSO button, Sign In org panel.
+    document.getElementById('af-company-locked-value').textContent = meta.company;
+    document.getElementById('af-enterprise-company-name').textContent = meta.company;
+    document.getElementById('af-signin-org-name').textContent = meta.company;
+    document.getElementById('af-signin-org-sso-label').textContent = meta.company.split(' ')[0];
+
+    if (s.source !== 'direct') {
+      document.getElementById('af-name-sso-value').textContent = meta.name;
+      document.getElementById('af-name-sso-chip').textContent = 'From ' + AF_METHOD_LABEL[s.source];
+      document.getElementById('af-email-sso-value').textContent = meta.emailByDomain[s.domain];
+      document.getElementById('af-sso-connected-method').textContent = AF_METHOD_LABEL[s.source];
+    }
+
+    ['google', 'linkedin'].forEach(function (m) {
+      var btn = document.getElementById('af-sso-btn-' + m);
+      if (!btn) return;
+      var connected = s.source === m;
+      btn.classList.toggle('af-sso-connected', connected);
+      btn.querySelector('.af-sso-btn-label').textContent = connected ? ('✓ Connected as ' + AF_METHOD_LABEL[m]) : ('Continue with ' + AF_METHOD_LABEL[m]);
+    });
+
+    Object.keys(AF_PLATFORM).forEach(function (p) {
+      var btn = document.getElementById('af-dev-platform-' + p);
+      if (btn) btn.classList.toggle('active', s.platform === p);
+    });
+    ['verified', 'new', 'public'].forEach(function (d) {
+      document.getElementById('af-dev-domain-' + d).classList.toggle('active', s.domain === d);
+    });
+    document.getElementById('af-devbar-crossplatform-only').classList.toggle('hidden', s.domain !== 'verified');
+    document.getElementById('af-dev-org-approved').classList.toggle('active', s.orgApprovedOnPlatform);
+    document.getElementById('af-dev-org-firstentry').classList.toggle('active', !s.orgApprovedOnPlatform);
+    ['direct', 'google', 'linkedin'].forEach(function (m) {
+      document.getElementById('af-dev-source-' + m).classList.toggle('active', s.source === m);
+    });
+    document.getElementById('af-dev-xp-off').classList.toggle('active', !s.existingCustomer);
+    document.getElementById('af-dev-xp-on').classList.toggle('active', s.existingCustomer);
+    document.getElementById('af-devbar-xp-complete-only').classList.toggle('hidden', !s.existingCustomer || s.platform === 'customers');
+    document.getElementById('af-dev-xp-missing').classList.toggle('active', !s.xpProfileComplete);
+    document.getElementById('af-dev-xp-complete').classList.toggle('active', s.xpProfileComplete);
+    document.getElementById('af-dev-usertype-first').classList.toggle('active', s.signupUserType === 'first');
+    document.getElementById('af-dev-usertype-recurring').classList.toggle('active', s.signupUserType === 'recurring');
+    document.getElementById('af-devbar-usertype-captured-only').classList.toggle('hidden', s.signupUserType !== 'recurring');
+    document.getElementById('af-dev-usertype-notcaptured').classList.toggle('active', !s.signupFieldCaptured);
+    document.getElementById('af-dev-usertype-captured').classList.toggle('active', s.signupFieldCaptured);
+  }
+
+  function afShowScreen(name) {
+    afClearSigninLink();
+    ['signup', 'signin', 'reset', 'result', 'verify', 'xp-profile'].forEach(function (n) {
+      var el = document.getElementById('af-screen-' + n);
+      if (el) el.classList.toggle('hidden', n !== name);
+    });
+    afState.screen = name;
+    if (name === 'signup') {
+      afRender();
+    }
+    ['signup', 'signin', 'reset'].forEach(function (n) {
+      var b = document.getElementById('af-dev-screen-' + n);
+      if (b) b.classList.toggle('active', n === name);
+    });
+    document.getElementById('af-devbar-signup-only').classList.toggle('hidden', name !== 'signup');
+    document.getElementById('af-devbar-signin-only').classList.toggle('hidden', name !== 'signin');
+    document.getElementById('af-devbar-verify-only').classList.toggle('hidden', name !== 'verify');
+    if (name === 'reset') {
+      document.getElementById('af-reset-password').value = '';
+      document.getElementById('af-reset-password-confirm').value = '';
+      document.getElementById('af-reset-password-match-error').classList.add('hidden');
+      afUpdatePasswordCriteria();
+    }
+    if (name !== 'result') {
+      document.querySelector('.af-card').classList.remove('af-card-wide');
+    }
+    afRenderSigninLanding();
+    afSyncPendingBtn();
+    window.scrollTo(0, 0);
+  }
+
+  // ── Forgot-password modals ──────────────────────────────────────────────
+  // Self-contained (doesn't reuse the dashboard's openModal/closeModal, which
+  // are hardcoded to the #create-request-modal element only).
+  function afOpenModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.classList.add('af-modal-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function afCloseModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.classList.remove('af-modal-open');
+    document.body.style.overflow = '';
+  }
+
+  function afModalBackdropClick(e, id) {
+    if (e.target.id === id) afCloseModal(id);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.af-modal-backdrop.af-modal-open').forEach(function (m) { afCloseModal(m.id); });
+  });
+
+  function afOpenForgotPassword() {
+    var signinEmail = document.getElementById('af-signin-email').value;
+    document.getElementById('af-forgot-email').value = signinEmail || '';
+    afOpenModal('af-modal-forgot');
+  }
+
+  function afSubmitForgotPassword(e) {
+    if (e) e.preventDefault();
+    afCloseModal('af-modal-forgot');
+    afOpenModal('af-modal-verify-email');
+  }
+
+  // Presentation only — toggles the compact criteria row between "list" and
+  // "meets all requirements" and keeps it visible once the field has a value.
+  // The rule checks themselves live in the updaters below, unchanged.
+  function afSyncCriteriaBox(boxId, val, checks) {
+    var box = document.getElementById(boxId);
+    box.classList.toggle('has-value', val.length > 0);
+    box.classList.toggle('is-complete', Object.keys(checks).every(function (k) { return checks[k]; }));
+  }
+
+  // Live criteria checklist — closes the UX gap where the real product's list
+  // is static text with no indication of which rules are actually satisfied.
+  function afUpdatePasswordCriteria() {
+    var val = document.getElementById('af-reset-password').value;
+    var checks = {
+      'af-criteria-length': val.length >= 8,
+      'af-criteria-upper': /[A-Z]/.test(val),
+      'af-criteria-numsym': /[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)
+    };
+    Object.keys(checks).forEach(function (id) {
+      document.getElementById(id).classList.toggle('met', checks[id]);
+    });
+    afSyncCriteriaBox('af-criteria-box', val, checks);
+    return checks;
+  }
+
+  function afSubmitResetPassword(e) {
+    if (e) e.preventDefault();
+    var checks = afUpdatePasswordCriteria();
+    var allMet = checks['af-criteria-length'] && checks['af-criteria-upper'] && checks['af-criteria-numsym'];
+    var pw = document.getElementById('af-reset-password').value;
+    var confirmPw = document.getElementById('af-reset-password-confirm').value;
+    var error = document.getElementById('af-reset-password-match-error');
+    if (!allMet) {
+      document.getElementById('af-criteria-box').scrollIntoView({ block: 'center' });
+      return;
+    }
+    if (pw !== confirmPw) {
+      error.classList.remove('hidden');
+      return;
+    }
+    error.classList.add('hidden');
+    afOpenModal('af-modal-password-updated');
+  }
+
+  function afToggleSigninSSO() {
+    afState.signinSSO = !afState.signinSSO;
+    document.getElementById('af-signin-normal').classList.toggle('hidden', afState.signinSSO);
+    document.getElementById('af-signin-sso-panel').classList.toggle('hidden', !afState.signinSSO);
+    document.getElementById('af-dev-signinsso').classList.toggle('active', afState.signinSSO);
+    document.getElementById('af-signin-email').required = !afState.signinSSO;
+    document.getElementById('af-signin-password').required = !afState.signinSSO;
+  }
+
+  // Demo toggle: puts the account in (or out of) the "waiting on admin approval"
+  // state. Covers both ways a Sign In can end up here — an existing Scinode
+  // identity with no membership on this platform yet ("Atoms sign in/up/
+  // sso.pdf" §8: shared identity is not automatic platform access), and an
+  // account that already submitted a signup and is still waiting — since both
+  // are the same underlying case (verified domain, different/no platform
+  // membership) and show the identical Approval Pending screen. Turning it on
+  // only makes sense when the org isn't approved for this platform yet, so it
+  // flips that toggle too (mirrors ivSetAccountPending()).
+  function afToggleSigninPending() {
+    var turningOn = !afState.pendingAccount;
+    afState.pendingAccount = turningOn ? { reason: 'pending-platform', domain: 'verified' } : null;
+    afSyncPendingBtn();
+    if (turningOn && afState.orgApprovedOnPlatform) afSetOrgApprovedOnPlatform(false);
+  }
+  function afSyncPendingBtn() {
+    document.getElementById('af-dev-signin-pending').classList.toggle('active', !!afState.pendingAccount);
+  }
+
+  // Live criteria checklist for the Step 1 signup password — same pattern as
+  // afUpdatePasswordCriteria() on the Reset Password screen, separate copy
+  // because it targets a different set of element ids.
+  function afUpdateSignupPasswordCriteria() {
+    var val = document.getElementById('af-section3-password').value;
+    var checks = {
+      'af-signup-criteria-length': val.length >= 8,
+      'af-signup-criteria-upper': /[A-Z]/.test(val),
+      'af-signup-criteria-numsym': /[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)
+    };
+    Object.keys(checks).forEach(function (id) {
+      document.getElementById(id).classList.toggle('met', checks[id]);
+    });
+    afSyncCriteriaBox('af-signup-criteria-box', val, checks);
+    return checks;
+  }
+
+  // Set once Sign Up (Screen 1) is submitted, read back at the "You're
+  // almost there" screen (Screen 3) — either directly (SSO, no email
+  // verification needed) or after "I've verified — Continue" (direct
+  // source). Domain/org-approval toggles are fixed at Screen 1 submission so
+  // the eventual routing doesn't drift if a reviewer nudges the devbar
+  // in between.
+  var afPendingResultReason = null;
+
+  // Sign Up (Screen 1) — just email/password/confirm-password (native
+  // `required` already blocks submission before this fires). Company Name
+  // and the platform-specific workspace details now live on Screen 3 (see
+  // afShowXpProfile), reached after Verify Email (direct) or immediately
+  // (SSO, identity already confirmed by the provider).
+  function afSubmitSignup(e) {
+    if (e) e.preventDefault();
+
+    if (afState.source === 'direct') {
+      var checks = afUpdateSignupPasswordCriteria();
+      if (!checks['af-signup-criteria-length'] || !checks['af-signup-criteria-upper'] || !checks['af-signup-criteria-numsym']) {
+        document.getElementById('af-signup-criteria-box').scrollIntoView({ block: 'center' });
+        return;
+      }
+      var pw = document.getElementById('af-section3-password').value;
+      var pwConfirm = document.getElementById('af-section3-password-confirm').value;
+      var matchError = document.getElementById('af-password-match-error');
+      if (pw !== pwConfirm) {
+        matchError.classList.remove('hidden');
+        document.getElementById('af-section3-password-confirm').focus();
+        return;
+      }
+      matchError.classList.add('hidden');
+    }
+
+    // A fresh submission always reflects the current domain/platform toggles —
+    // clear any pending status left over from an earlier demo run so the
+    // pending screen doesn't show stale reason/domain data for this one.
+    afState.pendingAccount = null;
+    afSyncPendingBtn();
+    afPendingResultReason = afComputeSignupReason();
+    var emailInput = document.getElementById('af-section3-email');
+    afState.signupEmail = emailInput && emailInput.value ? emailInput.value : '';
+    if (afState.source === 'direct') {
+      // Phase 1 authentication is Email → Password → Email Verification
+      // (Phase 1 - User Management.pdf §"Phase 1 authentication") — SSO auth
+      // already verifies the identity, so only the direct path stops here.
+      afShowVerify(afState.signupEmail || null);
+    } else {
+      afShowXpProfile(afState.signupUserType === 'recurring' ? 'signup-recurring' : 'signup-first');
+    }
+  }
+
+  function afShowVerify(email) {
+    var meta = AF_PLATFORM[afState.platform];
+    afSetVerifyState('pending');
+    document.getElementById('af-verify-email').textContent = email || meta.emailByDomain[afState.domain] || 'you@company.com';
+    document.getElementById('af-resend-btn').textContent = 'Resend verification email';
+    afShowScreen('verify');
+  }
+
+  // Email verification support states — "Atoms sign in/up/sso.pdf" §4 calls out
+  // Successful verification, Resend, Expired link, and Already verified.
+  // Per the signup/verification/approval spec: "I've verified — Continue" is the
+  // screen's primary action, "Resend verification email" is secondary — except
+  // when the link has expired, where Continue is unavailable and Resend becomes
+  // the only (primary) action.
+  function afSetVerifyState(state) {
+    afVerifyState = state;
+    var icon = document.getElementById('af-verify-icon');
+    var title = document.getElementById('af-verify-title');
+    var body = document.getElementById('af-verify-body');
+    var cta = document.getElementById('af-verify-cta');
+    var resendBtn = document.getElementById('af-resend-btn');
+    var resendRow = document.getElementById('af-verify-resend-row');
+    var emailNow = document.getElementById('af-verify-email') ? document.getElementById('af-verify-email').textContent : 'you@company.com';
+
+    if (state === 'expired') {
+      icon.className = 'af-result-icon af-danger';
+      icon.innerHTML = AF_ICON_WARNING;
+      title.textContent = 'This link has expired';
+      body.textContent = 'Verification links expire after 24 hours for security. Request a new one below.';
+      cta.classList.add('hidden');
+      resendBtn.className = 'af-submit';
+      resendRow.classList.remove('hidden');
+    } else if (state === 'verified') {
+      icon.className = 'af-result-icon af-success';
+      icon.innerHTML = AF_ICON_CHECK;
+      title.textContent = 'Your email is already verified';
+      body.textContent = 'You can continue setting up your account.';
+      cta.classList.remove('hidden');
+      resendRow.classList.add('hidden');
+    } else {
+      icon.className = 'af-result-icon af-pending';
+      icon.innerHTML = AF_ICON_MAIL;
+      title.textContent = 'Verify your email';
+      body.innerHTML = "We've sent a verification link to <b id=\"af-verify-email\">" + emailNow + '</b>. Click the link in that email to continue.';
+      cta.classList.remove('hidden');
+      resendBtn.className = 'af-result-ghost-btn';
+      resendRow.classList.remove('hidden');
+    }
+
+    ['pending', 'expired', 'verified'].forEach(function (s) {
+      var btn = document.getElementById('af-dev-verify-' + s);
+      if (btn) btn.classList.toggle('active', state === s);
+    });
+  }
+
+  // Devbar quick-jump — lets reviewers preview this screen without submitting
+  // the form first. Falls back to the current scenario's example email.
+  function afPreviewVerify() {
+    if (afPendingResultReason === null) {
+      afPendingResultReason = afComputeSignupReason();
+    }
+    afShowVerify(null);
+  }
+
+  // EMAIL_VERIFIED — always continues to Screen 3 ("You're almost there") to
+  // collect the remaining workspace details; afSubmitXpProfile() does the
+  // reason-based routing (activated / pending / pending-platform) once that
+  // screen is completed.
+  function afVerifyEmailContinue() {
+    if (afPendingResultReason === null) afPendingResultReason = afComputeSignupReason();
+    afShowXpProfile(afState.signupUserType === 'recurring' ? 'signup-recurring' : 'signup-first');
+  }
+
+  var afResendTimer = null;
+  function afResendVerification() {
+    var btn = document.getElementById('af-resend-btn');
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Verification email resent ✓';
+    clearTimeout(afResendTimer);
+    afResendTimer = setTimeout(function () {
+      btn.textContent = 'Resend verification email';
+      btn.disabled = false;
+    }, 2500);
+  }
+
+  // mode: 'verify' (verified domain + same platform, already approved — "I've
+  // verified — Continue" on the Verify Email screen lands here directly, no
+  // separate approval gate) or 'approved' (link in the admin-approval email).
+  // Both land on the same rich confirmation screen — illustration, colleagues
+  // card, Recommended First Steps on the brand panel — and differ only in the
+  // heading and the info message below the company name (afRenderSigninLanding).
+  function afOpenSigninFromLink(mode) {
+    var meta = AF_PLATFORM[afState.platform];
+    afShowScreen('signin');
+    afState.signinLink = { mode: mode };
+    afResetSigninForm();
+    document.getElementById('af-signin-email').value = afState.signupEmail || meta.emailByDomain[afState.domain] || '';
+    // The confirmation content (colleagues card, recommended steps) is
+    // embedded right on this screen, so the card widens to match — same
+    // width the dashboard uses for the identical cards.
+    document.querySelector('.af-card').classList.toggle('af-card-wide', mode === 'approved' || mode === 'verify');
+    afRenderSigninLanding();
+  }
+
+  function afClearSigninLink() {
+    if (!afState.signinLink) return;
+    afState.signinLink = null;
+    afResetSigninForm();
+    document.getElementById('af-signin-email').value = '';
+    afRenderSigninLanding();
+  }
+
+  // Undoes afCompleteApprovedSignin()'s disabled/"Signed in" state so a fresh
+  // visit to this screen (a new link, or navigating back to it) starts clean.
+  function afResetSigninForm() {
+    document.getElementById('af-signin-email').disabled = false;
+    document.getElementById('af-signin-password').disabled = false;
+    document.getElementById('af-signin-password').value = '';
+    var submit = document.getElementById('af-signin-submit');
+    submit.disabled = false;
+    submit.textContent = 'Sign In';
+  }
+
+  function afRenderSigninLanding() {
+    var link = afState.signinLink;
+    var meta = AF_PLATFORM[afState.platform];
+    var approved = !!link && link.mode === 'approved';
+    var verified = !!link && link.mode === 'verify';
+    // 'verify' and 'approved' share the same rich layout (illustration,
+    // colleagues card, Recommended First Steps on the brand panel) — only
+    // the heading and subtext differ.
+    var rich = approved || verified;
+    document.getElementById('af-signin-hero').classList.toggle('hidden', !rich);
+    // Colleagues card is Just Verified-only — on Just Approved (an admin
+    // just granted access to this platform) there's no established team
+    // activity on it yet to show, unlike Just Verified where the org/team
+    // was already active on this platform beforehand.
+    document.getElementById('af-signin-approved-extra').classList.toggle('hidden', !verified);
+    // Recommended First Steps moves to the brand panel for this screen only —
+    // swap which of the two .af-brand-mid blocks is showing.
+    document.getElementById('af-brand-mid-default').classList.toggle('hidden', rich);
+    document.getElementById('af-brand-mid-approved').classList.toggle('hidden', !rich);
+    if (verified) {
+      afRenderColleagues('af-signin-success', meta);
+    }
+    if (rich) {
+      afRenderChecklist('af-brand-steps', meta);
+    }
+    document.getElementById('af-signin-h1').textContent = approved
+      ? 'Welcome to ' + meta.label + ', ' + meta.successData.firstName + '! Your account is approved.'
+      : verified
+        ? meta.successData.firstName + ', your email is verified and your account is approved.'
+        : 'Sign in';
+    document.getElementById('af-signin-sub').innerHTML = approved
+      ? 'Sign in to get started.'
+      : verified
+        ? 'Welcome to <b>' + meta.company + "</b>'s space on " + meta.accountNoun + '. Your team and workspace are ready—sign in to continue and get started'
+        : 'Access your ' + meta.accountNoun + ' workspace';
+  }
+
+  function afSubmitSignin(e) {
+    if (e) e.preventDefault();
+    var link = afState.signinLink;
+    if (link && (link.mode === 'approved' || link.mode === 'verify')) {
+      // Everything (headline, colleagues card, recommended steps) is already
+      // shown on this screen — there's no separate destination to send the
+      // user to, so this just confirms inline instead of adding a screen back.
+      afState.pendingAccount = null;
+      var submit = document.getElementById('af-signin-submit');
+      document.getElementById('af-signin-email').disabled = true;
+      document.getElementById('af-signin-password').disabled = true;
+      submit.disabled = true;
+      submit.textContent = 'Signed in ✓';
+      return;
+    }
+    // Still waiting on the admin (24-48h): signing in shows the pending message.
+    if (afState.pendingAccount) {
+      afShowResult(afState.pendingAccount.reason);
+      return;
+    }
+    // Existing Scinode ecosystem account (e.g. Scinode for Customers) signing
+    // into a different platform — same identity, not a new account, but the
+    // platform-specific persona info may still be missing. Scinode for
+    // Customers itself needs no extra persona info (spec Example 4).
+    if (afState.existingCustomer) {
+      if (afState.xpProfileComplete) {
+        afShowResult('pending-platform');
+      } else {
+        afShowXpProfile('existing-customer');
+      }
+      return;
+    }
+    afShowResult('signin');
+  }
+
+  // ── Existing Customer → new platform: missing profile persona screen ────
+  // Reuses the AF_PLATFORM meta and the same field content as Sign Up's
+  // Industries / Profile Type, under separate af-xp-* ids/state since they
+  // live in a different form on a different screen.
+  // mode: 'existing-customer' (afSubmitSignin) | 'signup-first' | 'signup-recurring'
+  // (afSubmitSignup / afVerifyEmailContinue) — see the screen's HTML comment
+  // for what each mode shows. Stored in afState.xpMode for afSubmitXpProfile
+  // to route on, and for afXpValidate to know which field(s) gate the button.
+  function afShowXpProfile(mode) {
+    afState.xpMode = mode;
+    var meta = AF_PLATFORM[afState.platform];
+    var isAtoms = afState.platform === 'atoms';
+    var isIons = afState.platform === 'ions';
+    var isCustomers = afState.platform === 'customers';
+    var isSignup = mode !== 'existing-customer';
+    var isFirst = mode === 'signup-first';
+    // Recurring users never see Company Name, and skip the optional Step 2
+    // fields (Describe/NDA, Website's autofill) entirely if a prior signup
+    // from the same domain already supplied them (afState.signupFieldCaptured)
+    // — spec: "the optional fields of Step 2 ... shown to recurring users
+    // only if it has not been added by the previously signed up users of the
+    // same domain."
+    var skip = mode === 'signup-recurring' && afState.signupFieldCaptured;
+    // The platform's mandatory field (Industries/Profile Type) additionally
+    // drops for a verified-domain recurring signup regardless of that toggle
+    // — a verified domain means the org already exists in Scinode, so this
+    // was already established by whoever signed up first.
+    var mandatorySkip = mode === 'signup-recurring' && (afState.signupFieldCaptured || (afState.domain === 'verified' && afState.orgApprovedOnPlatform));
+
+    afXpIndustries = [];
+    afXpRenderIndustryChips();
+    afXpHideOtherIndustry();
+    afXpCloseIndustriesPanel();
+    document.getElementById('af-xp-profiletype-input').value = '';
+    document.getElementById('af-xp-profiletype-hint').textContent = '';
+    document.getElementById('af-describe-input').value = '';
+    document.getElementById('af-nda-input').value = '';
+    document.getElementById('af-name-direct-input').value = '';
+    document.getElementById('af-phone-input').value = '';
+    document.getElementById('af-company-editable-input').value = '';
+    document.getElementById('af-company-public-input').value = '';
+    document.getElementById('af-company-website-input').value = '';
+    document.getElementById('af-company-country-input').value = '';
+    // Already agreed to on Screen 1 (af-section1-consent) — pre-checked here
+    // rather than asked again. Still shown and editable, just not blank.
+    document.getElementById('af-signup-consent').checked = isSignup;
+
+    document.getElementById('af-xp-field-industries').classList.toggle('hidden', !isAtoms || mandatorySkip);
+    document.getElementById('af-xp-field-profiletype').classList.toggle('hidden', !isIons || mandatorySkip);
+    document.getElementById('af-xp-profiletype-input').required = isIons && !mandatorySkip;
+
+    // Identity header — signup only (existing-customer sign-ins already have
+    // a full profile, nothing to "just verified" about here).
+    document.getElementById('af-xp-identity').classList.toggle('hidden', !isSignup);
+    if (isSignup) {
+      var person = afPersonDisplay(meta.name);
+      document.getElementById('af-xp-identity-avatar').textContent = person.avatarInitial;
+      document.getElementById('af-xp-identity-name').textContent = meta.name;
+      document.getElementById('af-xp-identity-email').textContent = afState.signupEmail || meta.emailByDomain[afState.domain] || '';
+    }
+
+    // Company Name — signup + first-time only.
+    document.getElementById('af-xp-company-group').classList.toggle('hidden', !isFirst);
+    document.getElementById('af-company-locked').classList.toggle('hidden', !isFirst || afState.domain !== 'verified');
+    document.getElementById('af-company-editable').classList.toggle('hidden', !isFirst || afState.domain !== 'new');
+    document.getElementById('af-company-public').classList.toggle('hidden', !isFirst || afState.domain !== 'public');
+    document.getElementById('af-company-editable-input').required = isFirst && afState.domain === 'new';
+    document.getElementById('af-company-public-input').required = isFirst && afState.domain === 'public';
+    document.getElementById('af-company-website-wrap').classList.toggle('hidden', afState.platform === 'ions');
+    afUpdateOrgPlatformBanner(afState, meta);
+
+    // Name — signup only, direct vs SSO-verified.
+    document.getElementById('af-name-direct-wrap').classList.toggle('hidden', !isSignup || afState.source !== 'direct');
+    document.getElementById('af-name-sso-wrap').classList.toggle('hidden', !isSignup || afState.source === 'direct');
+    document.getElementById('af-name-direct-input').required = isSignup && afState.source === 'direct';
+    if (isSignup && afState.source !== 'direct') {
+      document.getElementById('af-name-sso-value').textContent = meta.name;
+      document.getElementById('af-name-sso-chip').textContent = 'From ' + AF_METHOD_LABEL[afState.source];
+    }
+
+    // Website — signup only. Required for IONS (unchanged); optional for
+    // ATOMS/Customers. Unlike Industries/Profile Type/Describe/NDA, Website
+    // is never hidden for recurring users — if a prior signup from the same
+    // domain already supplied it, it's shown pre-filled (autofilled) and
+    // stays editable, rather than skipped (spec: "the website will be
+    // autofilled in the step 2 of the user and it will be editable").
+    var isCase1 = mode === 'existing-customer';
+    var showWebsite = (isSignup || isCase1) && (isIons || isAtoms || isCustomers);
+    var websiteAutofilled = (skip && (isAtoms || isCustomers)) || isCase1;
+    document.getElementById('af-field-website').classList.toggle('hidden', !showWebsite);
+    document.getElementById('af-website-input').required = isSignup && isIons;
+    document.getElementById('af-website-label').textContent = isIons ? 'Organization / Institution Website' : 'Company Website';
+    document.getElementById('af-website-req').classList.toggle('hidden', !isIons);
+    document.getElementById('af-website-optional').classList.toggle('hidden', isIons);
+    document.getElementById('af-website-input').placeholder = isIons ? 'https://yourlab.com' : 'https://yourcompany.com';
+    document.getElementById('af-website-input').value = websiteAutofilled ? ('https://' + (meta.emailByDomain.verified.split('@')[1] || 'company.com')) : '';
+    document.getElementById('af-website-autofill-hint').classList.toggle('hidden', !websiteAutofilled);
+
+    // Phone — signup only.
+    document.getElementById('af-field-phone').classList.toggle('hidden', !isSignup);
+    document.getElementById('af-phone-input').required = isSignup;
+
+    // Describe / NDA — signup + Customers only, optional, subject to the same
+    // "already captured" skip as the mandatory platform field.
+    document.getElementById('af-field-describe').classList.toggle('hidden', !(isSignup || isCase1) || !isCustomers || skip);
+    document.getElementById('af-field-nda').classList.toggle('hidden', !(isSignup || isCase1) || !isCustomers || skip);
+
+    // Consent — signup only.
+    document.getElementById('af-xp-consent-row').classList.toggle('hidden', !isSignup);
+    document.getElementById('af-signup-consent').required = isSignup;
+
+    document.getElementById('af-xp-submit').textContent = mode === 'existing-customer'
+      ? 'Continue'
+      : (afState.source === 'direct' ? 'Create Account' : 'Complete Sign Up');
+
+    document.getElementById('af-xp-sub').innerHTML = 'Your Scinode account is all set — just confirm a couple of details to set up your <b>' + meta.label + '</b> workspace.';
+
+    document.getElementById('af-xp-howitworks').classList.remove('is-open');
+    document.getElementById('af-xp-howitworks-body').classList.add('hidden');
+    document.getElementById('af-xp-howitworks-toggle').setAttribute('aria-expanded', 'false');
+
+    afXpValidate();
+    afShowScreen('xp-profile');
+  }
+
+  function afToggleHowItWorks() {
+    var panel = document.getElementById('af-xp-howitworks');
+    var open = panel.classList.toggle('is-open');
+    document.getElementById('af-xp-howitworks-body').classList.toggle('hidden', !open);
+    document.getElementById('af-xp-howitworks-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function afXpValidate() {
+    var p = afState.platform;
+    var valid = true;
+    if (p === 'atoms' && !document.getElementById('af-xp-field-industries').classList.contains('hidden')) {
+      valid = afXpIndustries.length > 0;
+    } else if (p === 'ions' && !document.getElementById('af-xp-field-profiletype').classList.contains('hidden')) {
+      valid = !!document.getElementById('af-xp-profiletype-input').value;
+    }
+    document.getElementById('af-xp-submit').disabled = !valid;
+  }
+
+  // Industries — a checkbox-list dropdown (not a native <select>) so picking
+  // several industries in one go is obvious: each row has its own checkbox
+  // on the right, and the panel stays open across multiple picks. Kept as a
+  // separate copy from Sign Up's identical pattern (below) rather than a
+  // shared, prefix-parameterized function so this screen can't affect the
+  // existing, already-verified Sign Up flow.
+  function afXpToggleIndustriesPanel() {
+    var msel = document.getElementById('af-xp-industries-msel');
+    if (msel.classList.contains('is-open')) {
+      afXpCloseIndustriesPanel();
+      return;
+    }
+    var lower = afXpIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#af-xp-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    msel.classList.add('is-open');
+    document.getElementById('af-xp-industries-panel').classList.remove('hidden');
+    document.getElementById('af-xp-industries-trigger').setAttribute('aria-expanded', 'true');
+  }
+  function afXpCloseIndustriesPanel() {
+    document.getElementById('af-xp-industries-msel').classList.remove('is-open');
+    document.getElementById('af-xp-industries-panel').classList.add('hidden');
+    document.getElementById('af-xp-industries-trigger').setAttribute('aria-expanded', 'false');
+  }
+  function afXpToggleIndustry(checkbox) {
+    if (checkbox.checked) {
+      afXpPushIndustry(checkbox.value);
+    } else {
+      var lower = checkbox.value.toLowerCase();
+      var idx = afXpIndustries.findIndex(function (i) { return i.toLowerCase() === lower; });
+      if (idx > -1) afXpRemoveIndustryAt(idx);
+    }
+  }
+  function afXpToggleOtherIndustry(checkbox) {
+    if (checkbox.checked) afXpShowOtherIndustry(); else afXpHideOtherIndustry();
+  }
+  function afXpPushIndustry(name) {
+    if (!name) return;
+    var lower = name.toLowerCase();
+    if (afXpIndustries.some(function (i) { return i.toLowerCase() === lower; })) return;
+    afXpIndustries.push(name);
+    afXpRenderIndustryChips();
+  }
+  function afXpShowOtherIndustry() {
+    var input = document.getElementById('af-xp-industries-other');
+    input.classList.remove('hidden');
+    document.getElementById('af-xp-industries-other-hint').classList.remove('hidden');
+    input.focus();
+  }
+  function afXpHideOtherIndustry() {
+    var input = document.getElementById('af-xp-industries-other');
+    if (!input) return;
+    input.value = '';
+    input.classList.add('hidden');
+    document.getElementById('af-xp-industries-other-hint').classList.add('hidden');
+    var otherCb = document.getElementById('af-xp-industries-other-checkbox');
+    if (otherCb) otherCb.checked = false;
+  }
+  function afXpOtherIndustryKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var name = e.target.value.replace(/\s+/g, ' ').trim();
+      if (!name) return;
+      afXpPushIndustry(name);
+      afXpHideOtherIndustry();
+    } else if (e.key === 'Escape') {
+      afXpHideOtherIndustry();
+    }
+  }
+  function afXpRemoveIndustryAt(index) {
+    afXpIndustries.splice(index, 1);
+    afXpRenderIndustryChips();
+  }
+  function afXpRenderIndustryChips() {
+    var row = document.getElementById('af-xp-industries-chips');
+    if (!row) return;
+    row.innerHTML = afXpIndustries.map(function (industry, i) {
+      var safe = afEscapeHtml(industry);
+      return '<span class="af-chip">' + safe +
+        '<button type="button" onclick="afXpRemoveIndustryAt(' + i + ')" aria-label="Remove ' + safe + '">' +
+        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>';
+    }).join('');
+    var error = document.getElementById('af-xp-industries-error');
+    if (error && afXpIndustries.length) error.classList.add('hidden');
+    var lower = afXpIndustries.map(function (i) { return i.toLowerCase(); });
+    document.querySelectorAll('#af-xp-industries-panel input[type=checkbox]').forEach(function (cb) {
+      if (cb.value !== '__other__') cb.checked = lower.indexOf(cb.value.toLowerCase()) > -1;
+    });
+    var triggerLabel = document.getElementById('af-xp-industries-trigger-label');
+    triggerLabel.textContent = afXpIndustries.length ? afXpIndustries.join(', ') : 'Select industries';
+    triggerLabel.classList.toggle('has-value', afXpIndustries.length > 0);
+    afXpValidate();
+  }
+
+  document.addEventListener('click', function (e) {
+    var msel = document.getElementById('af-xp-industries-msel');
+    if (msel && msel.classList.contains('is-open') && !msel.contains(e.target)) afXpCloseIndustriesPanel();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var msel = document.getElementById('af-xp-industries-msel');
+    if (msel && msel.classList.contains('is-open')) afXpCloseIndustriesPanel();
+  });
+
+  // Same copy source as Sign Up's Profile Type hint (AF_PROFILE_TYPE_DESC).
+  function afXpUpdateProfileTypeHint() {
+    var select = document.getElementById('af-xp-profiletype-input');
+    var hint = document.getElementById('af-xp-profiletype-hint');
+    hint.textContent = AF_PROFILE_TYPE_DESC[select.value] || '';
+    afXpValidate();
+  }
+
+  function afSubmitXpProfile(e) {
+    if (e) e.preventDefault();
+    if (afState.platform === 'atoms' && !document.getElementById('af-xp-field-industries').classList.contains('hidden') && afXpIndustries.length === 0) {
+      document.getElementById('af-xp-industries-error').classList.remove('hidden');
+      document.getElementById('af-xp-industries-trigger').focus();
+      return;
+    }
+
+    if (afState.xpMode === 'existing-customer') {
+      if (afState.platform === 'customers') { afShowResult('activated'); return; }
+      // Same destination as the "already had the info" skip path
+      // (afSubmitSignin): the existing Cross-Platform Pending screen,
+      // reused rather than duplicated.
+      afShowResult('pending-platform');
+      return;
+    }
+
+    // Signup (first-time or recurring) — route by the reason fixed when Sign
+    // Up (Screen 1) was submitted.
+    var reason = afPendingResultReason || afComputeSignupReason();
+    afPendingResultReason = null;
+    if (reason === 'activated') {
+      // Scenario flows: verified domain, org already on this platform →
+      // straight into the dashboard (doc lane B/C "Dashboard · direct entry").
+      afShowResult('activated');
+    } else {
+      afShowResult(reason);
+    }
+  }
+
+  // Overlapping-avatar palette for the success screen's colleague stack —
+  // cycles through brand-safe tones, never gold (gold is reserved for
+  // premium/rating markers per the design system).
+  var AF_AVATAR_COLORS = ['var(--teal-500)', 'var(--navy-500)', 'var(--text-3)'];
+
+  // "Recommended First Steps" carousel — auto-advances every 5s, pauses on
+  // hover / focus / touch, via the pause button, when the tab is hidden, or
+  // when the screen isn't showing; auto-advance is off entirely for users who
+  // prefer reduced motion. Content/slides come from the render function.
+  // prefix selects which instance (the dashboard's af-success-* or the merged
+  // approved-signin screen's af-signin-success-*).
+  function afInitStepsCarousel(prefix) {
+    var wrap = document.getElementById(prefix + '-carousel');
+    var track = document.getElementById(prefix + '-checklist');
+    var dotsEl = document.getElementById(prefix + '-checklist-dots');
+    var pauseBtn = document.getElementById(prefix + '-checklist-pause');
+    var slides = track.children;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function current() {
+      var best = 0, dist = Infinity;
+      for (var i = 0; i < slides.length; i++) {
+        var d = Math.abs(slides[i].offsetLeft - track.scrollLeft);
+        if (d < dist) { dist = d; best = i; }
+      }
+      return best;
+    }
+    function sync() {
+      var cur = current();
+      [].forEach.call(dotsEl.children, function (dot, i) {
+        dot.classList.toggle('active', i === cur);
+        if (i === cur) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current');
+      });
+    }
+    function goTo(i) {
+      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    track.scrollLeft = 0;
+    dotsEl.innerHTML = [].map.call(slides, function (_, i) {
+      return '<button type="button" class="af-steps-dot' + (i === 0 ? ' active' : '') + '" aria-label="Go to step ' + (i + 1) + '"></button>';
+    }).join('');
+
+    if (wrap._tick) clearInterval(wrap._tick);
+    wrap._userPaused = !!reduce;
+    wrap._hoverPaused = false;
+    pauseBtn.classList.toggle('is-paused', wrap._userPaused);
+    pauseBtn.setAttribute('aria-label', wrap._userPaused ? 'Play auto-scroll' : 'Pause auto-scroll');
+    pauseBtn.style.display = reduce ? 'none' : '';
+
+    if (!wrap._bound) {
+      wrap._bound = true;
+      var raf = null;
+      track.addEventListener('scroll', function () {
+        if (raf) return;
+        raf = requestAnimationFrame(function () { raf = null; sync(); });
+      });
+      dotsEl.addEventListener('click', function (e) {
+        var i = [].indexOf.call(dotsEl.children, e.target.closest('.af-steps-dot'));
+        if (i > -1) goTo(i);
+      });
+      pauseBtn.addEventListener('click', function () {
+        wrap._userPaused = !wrap._userPaused;
+        pauseBtn.classList.toggle('is-paused', wrap._userPaused);
+        pauseBtn.setAttribute('aria-label', wrap._userPaused ? 'Play auto-scroll' : 'Pause auto-scroll');
+      });
+      ['mouseenter', 'focusin', 'touchstart'].forEach(function (ev) {
+        wrap.addEventListener(ev, function () { wrap._hoverPaused = true; }, { passive: true });
+      });
+      ['mouseleave', 'focusout', 'touchend'].forEach(function (ev) {
+        wrap.addEventListener(ev, function () { wrap._hoverPaused = false; }, { passive: true });
+      });
+    }
+
+    wrap._tick = setInterval(function () {
+      if (wrap._userPaused || wrap._hoverPaused || document.hidden || !track.offsetParent) return;
+      goTo((current() + 1) % slides.length);
+    }, 5000);
+  }
+
+  // Company card (avatar/name/role, colleagues, activity) — shared by the
+  // dashboard's success screen (prefix 'af-success') and the merged
+  // approved-signin screen (prefix 'af-signin-success'), which mirrors the
+  // same id suffixes under its own prefix.
+  // Company avatar/name/meta/role — dashboard only (af-success prefix); the
+  // merged approved-signin screen dropped this in favor of just the Company
+  // Name field already shown above it.
+  function afRenderCompanyInfo(prefix, meta) {
+    var d = meta.successData;
+    document.getElementById(prefix + '-company-avatar').textContent = d.avatarInitials;
+    document.getElementById(prefix + '-company-name').textContent = meta.company;
+    document.getElementById(prefix + '-company-meta').innerHTML = d.tenantLine;
+    document.getElementById(prefix + '-role-value').textContent = d.role;
+  }
+
+  // Colleagues avatar stack + count + activity line — shared by the dashboard
+  // (prefix af-success) and the merged approved-signin screen (af-signin-success).
+  function afRenderColleagues(prefix, meta) {
+    var d = meta.successData;
+    var stack = document.getElementById(prefix + '-avatar-stack');
+    var avatars = d.colleagueInitials.map(function (initials, i) {
+      return '<span style="background:' + AF_AVATAR_COLORS[i % AF_AVATAR_COLORS.length] + ';">' + initials + '</span>';
+    });
+    avatars.push('<span style="background:var(--border-h);color:var(--text-2);">+' + d.colleagueOverflow + '</span>');
+    stack.innerHTML = avatars.join('');
+    document.getElementById(prefix + '-colleagues-count').textContent = (d.colleagueInitials.length + d.colleagueOverflow) + ' colleagues active';
+    document.getElementById(prefix + '-activity').innerHTML = d.activityLine;
+  }
+
+  // "Recommended First Steps" list + carousel — same prefix convention as above.
+  function afRenderChecklist(prefix, meta) {
+    var d = meta.successData;
+    var doneCount = d.checklist.filter(function (item) { return item.done; }).length;
+    document.getElementById(prefix + '-checklist-progress').textContent = doneCount + ' of ' + d.checklist.length + ' complete';
+    document.getElementById(prefix + '-checklist').innerHTML = d.checklist.map(function (item) {
+      return '<div class="af-success-checklist-item' + (item.done ? ' done' : '') + '">' +
+        '<span class="af-success-checklist-check">' + (item.done ? AF_ICON_CHECK : '') + '</span>' +
+        '<div class="af-success-checklist-body">' +
+          '<div class="af-success-checklist-title-row"><span class="af-success-checklist-title">' + item.title + '</span>' +
+          '<span class="af-success-checklist-meta' + (!item.done && item.meta.indexOf('Recommended') === 0 ? ' next' : '') + '">' + item.meta + '</span></div>' +
+          '<div class="af-success-checklist-desc">' + item.desc + '</div>' +
+        '</div></div>';
+    }).join('');
+    afInitStepsCarousel(prefix);
+  }
+
+  function afRenderSuccess(meta) {
+    var d = meta.successData;
+    if (!d) return;
+    document.getElementById('af-success-account').textContent = 'Account #' + d.accountId + ' · Active';
+    document.getElementById('af-success-headline').textContent = "You're all set, " + d.firstName + '!';
+    document.getElementById('af-success-sub').innerHTML = 'Welcome to the <b>' + meta.company + '</b> space on Scinode. Your team and workspace are ready.';
+    afRenderCompanyInfo('af-success', meta);
+    afRenderColleagues('af-success', meta);
+    afRenderChecklist('af-success', meta);
+
+    var successCta = document.getElementById('af-success-cta');
+    successCta.textContent = 'Continue to ' + meta.accountNoun + ' Workspace →';
+    successCta.onclick = function () { afShowScreen('signup'); afSetDomain('verified'); afSetSource('direct'); };
+
+    document.getElementById('af-success-secondary-row').innerHTML = d.secondary.map(function (label) {
+      return '<button type="button" class="af-success-ghost-btn" onclick="return false;">' + label + '</button>';
+    }).join('');
+
+    document.getElementById('af-success-footnote').textContent = 'Need assistance? Your dedicated onboarding lead is online';
+  }
+
+  // Result-screen note as a status banner (icon + text) — same .af-info-banner
+  // component as the company-domain messages on the sign-up form.
+  var AF_BANNER_ICON = {
+    success: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
+    info: '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+  };
+  function afSetResultNote(kind, html) {
+    var el = document.getElementById('af-result-note');
+    el.className = 'af-info-banner ' + (kind === 'success' ? 'is-success' : 'is-info');
+    el.innerHTML = AF_BANNER_ICON[kind] + '<span>' + html + '</span>';
+  }
+
+  var AF_PENDING_MESSAGE = "We're reviewing your profile and will notify you by email as soon as your access is ready, usually within 24–48 hours.";
+
+  function afShowResult(reason) {
+    var meta = AF_PLATFORM[afState.platform];
+    var icon = document.getElementById('af-result-icon');
+    var title = document.getElementById('af-result-title');
+    var body = document.getElementById('af-result-body');
+    var note = document.getElementById('af-result-note');
+    var bullets = document.getElementById('af-result-bullets');
+    var cta = document.getElementById('af-result-cta');
+    bullets.classList.add('hidden');
+    bullets.innerHTML = '';
+    note.classList.remove('hidden');
+    note.innerHTML = '';
+    document.getElementById('af-rejected-explore').classList.add('hidden');
+    document.getElementById('af-rejected-hero').classList.add('hidden');
+
+    var resultSimple = document.getElementById('af-result-simple');
+    var resultSuccess = document.getElementById('af-result-success');
+    var resultPending = document.getElementById('af-result-pending');
+    var isPending = reason === 'pending' || reason === 'pending-platform';
+    var card = document.querySelector('.af-card');
+    resultSimple.classList.toggle('hidden', reason === 'activated' || isPending);
+    resultSuccess.classList.toggle('hidden', reason !== 'activated');
+    resultPending.classList.toggle('hidden', !isPending);
+    card.classList.toggle('af-card-wide', reason === 'activated' || isPending);
+
+    if (reason === 'activated') {
+      // Rich post-signup success screen — same template for all 4 platforms,
+      // content driven entirely by meta.successData (see AF_PLATFORM above).
+      afRenderSuccess(meta);
+    } else if (isPending) {
+      // APPROVAL_PENDING: a new/public domain, or a verified org's first signup
+      // on this platform (cross-platform expansion). Always the same screen
+      // regardless of how the user got here (just verified their email, or
+      // tried to sign in again during the 24-48h wait) — the account's
+      // approval reason/domain is fixed at signup, remembered in
+      // afState.pendingAccount so a later sign-in attempt shows this same
+      // message instead of re-deriving it from whatever the devbar is
+      // currently set to.
+      var pending = afState.pendingAccount || { reason: reason, domain: afState.domain };
+      afState.pendingAccount = pending;
+      afRenderPending(pending, meta);
+    } else if (reason === 'rejected') {
+      // Phase 1 - User Management.pdf §30.5 — reached after an admin rejects the
+      // application; keep messaging neutral, never expose internal review reasons.
+      document.getElementById('af-rejected-hero').classList.remove('hidden');
+      icon.className = 'af-result-icon af-danger';
+      icon.innerHTML = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
+      title.textContent = "We couldn't verify your company for this platform";
+      body.textContent = 'We were unable to verify your company or confirm your eligibility for this platform with the information provided.';
+      afSetResultNote('info', 'If you believe this is incorrect, please contact our team at <b>' + meta.supportEmail + '</b>.');
+      cta.classList.add('hidden');
+
+      var explore = document.getElementById('af-rejected-explore');
+      explore.classList.remove('hidden');
+      document.getElementById('af-rejected-explore-grid').innerHTML = Object.keys(AF_PLATFORM)
+        .filter(function (p) { return p !== afState.platform; })
+        .map(function (p) {
+          var m = AF_PLATFORM[p];
+          return '<a href="#" onclick="return false;" class="af-explore-item">' +
+            '<span class="af-explore-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>' +
+            '<span class="af-explore-body">' +
+              '<span class="af-explore-title">' + m.label + '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>' +
+              '<span class="af-explore-desc">' + m.rejectedBlurb + '</span>' +
+            '</span></a>';
+        }).join('');
+    } else if (reason === 'signin') {
+      icon.className = 'af-result-icon af-success';
+      icon.innerHTML = AF_ICON_CHECK;
+      title.textContent = 'Welcome back!';
+      body.textContent = 'Taking you straight to your workspace — no signup needed.';
+      afSetResultNote('success', 'Existing users always skip signup: matched to your existing account and company via the shared Scinode identity.');
+      cta.classList.remove('hidden');
+      cta.textContent = 'Continue to ' + meta.accountNoun + ' →';
+      cta.onclick = function () { afShowScreen('signin'); };
+    }
+
+    afShowScreen('result');
+  }
+
+  // "Rahul Mehta" -> {displayName:"Rahul M.", avatarInitial:"R"}. Strips a
+  // leading title ("Dr.") out of the first-name/avatar calculation but keeps
+  // it in the displayed name, e.g. "Dr. Ananya Rao" -> "Dr. Ananya R." / "A".
+  function afPersonDisplay(fullName) {
+    var words = (fullName || 'User').split(' ');
+    var titleWords = [];
+    while (words.length > 1 && /\.$/.test(words[0]) && words[0].length <= 4) {
+      titleWords.push(words.shift());
+    }
+    var first = words[0] || 'User';
+    var last = words.length > 1 ? words[words.length - 1] : '';
+    return {
+      displayName: (titleWords.length ? titleWords.join(' ') + ' ' : '') + first + (last ? ' ' + last.charAt(0) + '.' : ''),
+      avatarInitial: first.charAt(0).toUpperCase()
+    };
+  }
+
+  // Renders the simplified pending screen: icon/title/body (same copy for
+  // every reason/domain now — spec dropped the reason-specific banner and
+  // Verification Lifecycle timeline) plus the 2 platform-specific
+  // "While you wait" cards.
+  function afRenderPending(pending, meta) {
+    document.getElementById('af-pending-icon').innerHTML = AF_ICON_CLOCK;
+    document.getElementById('af-pending-title').textContent = 'Your account is created with us';
+    document.getElementById('af-pending-body').textContent = AF_PENDING_MESSAGE;
+
+    document.getElementById('af-pending-explore1-title').firstChild.textContent = meta.exploreCard1Title;
+    document.getElementById('af-pending-explore1-desc').textContent = meta.exploreCard1Desc;
+    document.getElementById('af-pending-explore2-title').firstChild.textContent = meta.exploreCard2Title;
+    document.getElementById('af-pending-explore2-desc').textContent = meta.exploreCard2Desc;
+  }
+
+  afRender();
+  afApplySSODisplay();
+</script>
+
+<!-- ══════════ SCENARIO FLOWS adapter (see assets/flows/flows.js) ══════════
+     Maps the doc's step keys onto this page's existing screen functions, and
+     sets afState per scenario so the in-screen buttons route the same way the
+     scenario bar does. -->
+<script src="assets/flows/flows.js?v=1"></script>
+<script>
+  (function () {
+    // Keep the tracker in step with in-screen clicks.
+    ['afShowScreen', 'afShowResult', 'afOpenSigninFromLink', 'afShowXpProfile', 'afShowVerify'].forEach(function (n) {
+      var fn = window[n];
+      window[n] = function () { var r = fn.apply(this, arguments); Flows.sync(); return r; };
+    });
+
+    function xpMode(s) { return s === '1' ? 'signup-first' : (s === '3' ? 'existing-customer' : 'signup-recurring'); }
+
+    Flows.init({
+      page: 'auth',
+      apply: function (c) {
+        afSetPlatform(c.platform);   // resets every other toggle to its default
+        var s = c.scenario;
+        afState.existingCustomer = s === '3';
+        afState.xpProfileComplete = s === '3' && c.platform === 'deepresearch';
+        afState.signupUserType = (s === '1' || s === '5') ? 'first' : 'recurring';
+        afState.domain = s === '1' ? c.domain : (s === '2' ? c.domain : (s === '5' ? 'new' : 'verified'));
+        // Scinode: verified cross-platform needs no approval (doc assumption).
+        afState.orgApprovedOnPlatform = (s === '3' || s === '4') ? c.platform === 'customers' : true;
+        afState.pendingAccount = null;
+        afPendingResultReason = null;
+        afState.signupEmail = '';
+        var em = document.getElementById('af-section3-email');
+        if (em) em.value = AF_PLATFORM[c.platform].emailByDomain[afState.domain] || '';
+        afRender();
+      },
+      go: function (key, c) {
+        switch (key) {
+          case 'signup': afShowScreen('signup'); break;
+          case 'signin': afShowScreen('signin'); break;
+          case 'verify': afShowVerify(afState.signupEmail || null); break;
+          case 'step2': afShowXpProfile(xpMode(c.scenario)); break;
+          case 'pending':
+            afState.pendingAccount = null;
+            afShowResult((c.scenario === '3' || c.scenario === '4') ? 'pending-platform' : 'pending');
+            break;
+          case 'approved': afOpenSigninFromLink('approved'); break;
+          case 'rejected': afShowResult('rejected'); break;
+          case 'dashboard': afState.pendingAccount = null; afShowResult('activated'); break;
+        }
+      },
+      detect: function () {
+        var scr = afState.screen;
+        if (scr === 'signup' || scr === 'verify') return scr;
+        if (scr === 'xp-profile') return 'step2';
+        if (scr === 'signin') return afState.signinLink && afState.signinLink.mode === 'approved' ? 'approved' : (afState.signinLink ? null : 'signin');
+        if (scr === 'result') {
+          if (!document.getElementById('af-result-pending').classList.contains('hidden')) return 'pending';
+          if (!document.getElementById('af-result-success').classList.contains('hidden')) return 'dashboard';
+          if (!document.getElementById('af-rejected-hero').classList.contains('hidden')) return 'rejected';
+        }
+        return null;
+      },
+      source: function () { return afState.source; }
+    });
+  })();
+</script>
+
+</body>
+</html>

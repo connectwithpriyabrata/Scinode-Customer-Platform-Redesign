@@ -128,3 +128,14 @@ body.fl-on .af-success-hero { background: none; box-shadow: none; border-radius:
 /* Scenario 3 on Scinode: Day 0 dashboard shown as a read-only demo frame. */
 .fl-dash { position: fixed; inset: 0; z-index: 550; background: var(--white, #fff); }
 .fl-dash iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Sign Up: "Already a part of the Scinode ecosystem?" — secondary-text gray, 500. */
+.fl-eco > span:first-child { color: var(--text-2); font-weight: 500; }
+.fl-eco .af-info-tip-wrap { color: var(--text-2); }
+.fl-eco .af-info-tip-wrap:hover, .fl-eco .af-info-tip-wrap:focus-visible { color: var(--text-1); }
+/* Its "Sign In →" link: primary teal, darker teal on hover, arrow nudges right (no underline). */
+.fl-eco button { color: var(--teal-500); transition: color .15s; }
+.fl-eco button:hover, .fl-eco button:focus-visible { color: var(--teal-600); text-decoration: none; }
+.fl-eco-arrow { display: inline-block; transition: transform .15s ease; }
+.fl-eco button:hover .fl-eco-arrow, .fl-eco button:focus-visible .fl-eco-arrow { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .fl-eco-arrow { transition: none; } }

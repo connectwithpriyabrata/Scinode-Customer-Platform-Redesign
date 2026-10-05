@@ -23,24 +23,24 @@
     return t;
   };
   UA.go = function (tab) { S.tab = tab; UA.render(); window.scrollTo({ top: 0 }); };
+  UA.toggleDir = function () { S.dirOpen = !S.dirOpen; UA.render(); if (UA.syncDemo) UA.syncDemo(); };
 
   UA.render = function () {
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
     const tabs = UA.tabList(); if (!tabs.find((t) => t.id === S.tab)) S.tab = 'organization';
-    const pl = UA.plat();
     const planChip = UA.premium()
       ? '<span class="ua-chip gold">' + ic('gem', 14) + 'Plan: <b>Premium</b></span>'
       : '<span class="ua-chip">' + ic('gem', 14) + 'Plan: <b>Free</b>' + (UA.isSA() ? ' · <button type="button" class="ua-link" onclick="UA.upgrade(\'tab\',\'Header plan chip\')">Upgrade</button>' : '') + '</span>';
     let h = '<div class="ua-crumb">Organization Settings <span class="ua-faint">›</span> <b>Users &amp; Access</b></div>' +
       '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div>' +
-      '<div class="ua-ctx"><span class="ua-chip">' + ic('building', 14) + 'Organization: <b>' + esc(UA.db.org.name) + '</b></span><span class="ua-chip">' + ic('layers', 14) + 'Platform: <b>' + esc(pl.name) + '</b>' + (pl.legacy ? ' <span class="ua-faint">(' + pl.legacy + ')</span>' : '') + '</span>' + planChip +
-      '<span class="ua-chip">' + ic(S.role === 'superadmin' ? 'crown' : S.role === 'admin' ? 'shield' : 'user', 14) + 'Your role: <b>' + UA.roleLabel(S.role) + '</b></span></div></div></div>';
+      '<div class="ua-ctx"><span class="ua-chip">' + ic('building', 14) + 'Organization: <b>' + esc(UA.db.org.name) + '</b></span>' + planChip + '</div></div></div>';
 
     if (S.role === 'admin' && !UA.premium()) {
       h += '<div class="ua-card">' + UA.emptyState('lock', 'Admin isn’t available on the Free plan', 'Admin is a Team-scoped role — it requires at least one Team, and Teams are a Premium capability. On Free, an organization has 1 Superadmin and up to 2 Members.',
         '<div class="ua-row wrap" style="justify-content:center;margin-top:6px"><span class="ua-proto">Prototype</span>' + btn('View as Premium Admin', "UA.setState({plan:'premium'})", 'btn-outline') + btn('View as Free Superadmin', "UA.setState({role:'superadmin'})", 'btn-ghost-v') + '</div>', 'gray') + '</div>';
       rootEl.innerHTML = h; return;
     }
+    if (UA.isSA()) h += saBar();
     h += '<div class="ua-tabs" role="tablist">' + tabs.map((t) => '<button type="button" role="tab" class="ua-tab" aria-selected="' + (S.tab === t.id) + '" onclick="UA.go(\'' + t.id + '\')">' + t.label +
       (t.lock ? '<span class="lk">' + ic('lock', 12) + '</span>' : '') + (t.n ? '<span class="n ' + (t.gray ? 'gray' : '') + '">' + t.n + '</span>' : '') + '</button>').join('') + '</div>';
     h += '<div id="ua-tab">' + ({ organization: vOrg, teams: vTeams, members: vMembers, invitations: vInvites, approvals: vApprovals }[S.tab])() + '</div>';
@@ -64,14 +64,29 @@
   }
   UA.accessRows = accessRows;
 
+  function transferBanner() {
+    const t = UA.db.transfer; if (!t) return '';
+    const to = UA.person(t.to);
+    return '<div class="ua-banner warn" style="margin-top:8px"><span>' + ic('clock', 16) + '</span><div class="grow"><div class="t">Transfer to ' + esc(to.name) + ' is awaiting Scinode review</div><div>You remain Superadmin until it is approved. Submitted ' + esc(t.at) + '.</div></div></div>' +
+      '<div class="ua-sim" style="margin-top:8px"><span class="ua-proto">Prototype</span><span>Nucleus reviewer:</span>' + btn('Approve', 'UA.simTransfer(true)', 'btn-outline btn-sm') + btn('Reject', 'UA.simTransfer(false)', 'btn-danger-ghost btn-sm') + '</div>' +
+      '<div style="margin-top:8px">' + btn('Cancel request', 'UA.cancelTransfer()', 'btn-ghost-v btn-sm') + '</div>';
+  }
+
+  function saBar() {
+    const sas = UA.people().filter((p) => p.role === 'superadmin');
+    return '<div class="ua-card" style="margin-bottom:16px;display:flex;flex-direction:column;gap:10px">' + sas.map((p) => {
+      const isMe = p.id === 'me';
+      return '<div><div class="ua-node" style="max-width:none">' + UA.av(p) + '<div class="grow"><div class="t">' + esc(p.name) + (isMe ? ' <span class="ua-you">You</span>' : '') + '</div><div class="s">Superadmin · platform-wide</div></div>' + UA.roleBadge('superadmin') +
+        (isMe && !UA.db.transfer ? btn('Transfer', 'UA.openTransfer()', 'btn-ghost-v btn-sm', 'swap') : '') + '</div>' + (isMe ? transferBanner() : '') + '</div>';
+    }).join('') + '</div>';
+  }
+
   function tree(scope) {
-    const db = UA.db, pp = UA.people(), pl = UA.plat();
-    const sas = pp.filter((p) => p.role === 'superadmin');
+    const pp = UA.people();
     let ts = UA.teams(); if (scope === 'mine') ts = UA.myTeams();
     const none = pp.filter((p) => p.role !== 'superadmin' && !(p.teams || []).length && scope !== 'mine');
-    const leaf = (p) => '<div class="ua-leaf">' + UA.av(p, 'sm') + '<span>' + esc(p.name) + (p.id === 'me' ? ' <span class="ua-you">You</span>' : '') + '</span>' + UA.roleBadge(p.role).replace('class="ub', 'class="r ub') + (p.status !== 'active' ? UA.statusBadge(p.status) : '') + '<span class="ua-xs ua-faint">' + UA.accessSummary(p) + '</span></div>';
-    let h = '<div class="ua-tree"><div class="ua-tree-root"><span class="a">' + esc(db.org.name[0]) + '</span><div><div class="n">' + esc(db.org.name) + '</div><div class="s">' + esc(pl.name) + ' · ' + pp.length + ' ' + (pp.length === 1 ? 'person' : 'people') + ' · ' + ts.length + ' Team' + (ts.length === 1 ? '' : 's') + '</div></div></div><div class="ua-branches">';
-    if (scope !== 'mine') sas.forEach((p) => { h += '<div class="ua-branch"><div class="ua-node">' + UA.av(p) + '<div><div class="t">' + esc(p.name) + (p.id === 'me' ? ' <span class="ua-you">You</span>' : '') + '</div><div class="s">Superadmin · platform-wide</div></div>' + UA.roleBadge('superadmin') + '</div></div>'; });
+    const leaf = (p) => '<div class="ua-leaf">' + UA.av(p, 'sm') + '<span>' + esc(p.name) + (p.id === 'me' ? ' <span class="ua-you">You</span>' : '') + '</span>' + UA.roleBadge(p.role).replace('class="ub', 'class="r ub') + (p.status !== 'active' ? UA.statusBadge(p.status) : '') + '</div>';
+    let h = '<div class="ua-tree"><div class="ua-branches">';
     ts.forEach((t) => {
       const mem = pp.filter((p) => (p.teams || []).indexOf(t.id) > -1);
       h += '<div class="ua-branch"><div class="ua-node team"><span class="ua-ic">' + ic('users', 16) + '</span><div><div class="t">' + esc(t.name) + '</div><div class="s">Admin: ' + (UA.adminOf(t).map((a) => esc(a.name)).join(', ') || '—') + ' · ' + mem.length + ' member' + (mem.length === 1 ? '' : 's') + '</div></div></div>' +
@@ -81,28 +96,15 @@
     return h + '</div></div>';
   }
 
-  function transferCard() {
-    const t = UA.db.transfer, me = UA.me();
-    if (t) {
-      const to = UA.person(t.to);
-      return card('Superadmin ownership', 'Transfer requests are reviewed by Scinode before they take effect.',
-        '<div class="ua-banner warn"><span>' + ic('clock', 16) + '</span><div class="grow"><div class="t">Transfer to ' + esc(to.name) + ' is awaiting Scinode review</div><div>You remain Superadmin until it is approved. Submitted ' + esc(t.at) + '.</div></div></div>' +
-        '<div class="ua-sim" style="margin-top:12px"><span class="ua-proto">Prototype</span><span>Nucleus reviewer:</span>' + btn('Approve', 'UA.simTransfer(true)', 'btn-outline btn-sm') + btn('Reject', 'UA.simTransfer(false)', 'btn-danger-ghost btn-sm') + '</div>' +
-        '<div style="margin-top:12px">' + btn('Cancel request', 'UA.cancelTransfer()', 'btn-ghost-v btn-sm') + '</div>');
-    }
-    return card('Superadmin ownership', 'Ownership is per platform — a Superadmin here is not automatically Superadmin elsewhere.',
-      '<div class="ua-li" style="padding-top:0"><span class="ua-ic navy">' + ic('crown', 16) + '</span><div class="grow"><div class="t">' + esc(me.name) + ' <span class="ua-you">You</span></div><div class="s">Current Superadmin · ' + esc(UA.plat().name) + '</div></div></div>' +
-      '<div style="margin-top:10px">' + btn('Request ownership transfer', 'UA.openTransfer()', 'btn-outline', 'swap') + '</div>');
-  }
-
   function vOrg() {
     if (UA.isMem()) return vOrgMember();
     if (UA.isAdm()) return vOrgAdmin();
-    const db = UA.db, L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
-    const id = card(esc(db.org.name), 'Verified organization · ' + esc(pl.name),
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gray">Company ID · ' + db.org.id + '</span><span class="ub teal">' + ic('check', 11) + 'Verified domain · ' + db.org.domain + '</span><span class="ub gray">On Scinode since ' + db.org.since + '</span></div>' +
+    const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
+    const id = card(esc(UA.db.org.name), null,
+      '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + UA.db.org.status + '</span><span class="ub gray">Company ID · ' + UA.db.org.id + '</span><span class="ub teal">' + ic('check', 11) + 'Verified domain · ' + UA.db.org.domain + '</span><span class="ub gray">On ' + esc(pl.name) + ' since ' + UA.db.org.since + '</span></div>' +
       (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
-      UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default') : btn('Edit organization details', "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')", 'btn-outline', 'pencil'));
+      UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default')
+        : '<div class="ua-row" style="gap:8px">' + btn('Edit organization details', "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')", 'btn-outline', 'pencil') + btn('Billing', "location.href='settings.html#billing'", 'btn-ghost-v', 'gem') + '</div>');
     const modsOn = (function () { let c = 0; for (let i = 0; i < UA.n(); i++) if (UA.teams().some((t) => t.mods[i] === '1')) c++; return c; })();
     let caps = cap('Superadmins', 'crown', U.sa, L.sa, U.sa / L.sa * 100, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'Additional Superadmins are available on Premium.') +
       cap('Member seats', 'users', U.mem, L.mem, U.mem / L.mem * 100, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'Limits are configuration-driven.');
@@ -110,23 +112,12 @@
     caps += free ? '<div class="ua-card ua-cap"><div class="lbl">' + ic('gem', 14) + 'Plan</div><div class="num">Free</div><div class="foot">Superadmin, Members and access management within Free capacity.</div><div style="margin-top:12px">' + btn('Upgrade to Premium', "UA.upgrade('tab','Organization › Plan card')", 'btn-premium btn-sm') + '</div></div>'
       : cap('Modules', 'grid', modsOn, UA.n(), modsOn / UA.n() * 100, 'Modules enabled by at least one Team on ' + esc(pl.name) + '.');
     let mid = '';
-    if (UA.db.day === 1) {
-      if (free) mid = card('Plan limitations', 'What your Free plan includes — and what Premium adds.',
-        '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
-        '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
-      else mid = card('Access summary', 'A snapshot of how access is set up on this platform.',
-        '<div class="ua-grid c3"><div><div class="ua-xs ua-muted">Teams</div><div style="font-size:24px;font-weight:600">' + U.teams + '</div></div><div><div class="ua-xs ua-muted">People with access</div><div style="font-size:24px;font-weight:600">' + UA.people().filter((p) => p.status === 'active').length + '</div></div><div><div class="ua-xs ua-muted">Pending access requests</div><div style="font-size:24px;font-weight:600">' + UA.pendingCount() + '</div>' + (UA.pendingCount() ? '<button type="button" class="ua-link" onclick="UA.go(\'approvals\')">Review ' + ic('arrow', 12) + '</button>' : '') + '</div></div>');
-    } else if (!free) mid = card('Get started', 'Premium is active — set up how your organization works.', '<div class="ua-row wrap">' + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') + btn('Add Member', 'UA.openAddUser()', 'btn-outline', 'user-plus') + '</div><div class="ua-hint" style="margin-top:10px">Invite roles available to you: Superadmin, Admin, Member.</div>');
-    const pend = UA.pendingCount();
-    const admin = card('Administration', null,
-      '<div class="ua-list">' +
-      '<div class="ua-li"><span class="ua-ic">' + ic('inbox', 16) + '</span><div class="grow"><div class="t">Access &amp; Approvals</div><div class="s">' + (pend ? pend + ' waiting on you' : 'Nothing waiting on you') + '</div></div><button type="button" class="btn btn-ghost-v btn-sm" onclick="UA.go(\'approvals\')">Open</button></div>' +
-      '<div class="ua-li"><span class="ua-ic">' + ic('mail', 16) + '</span><div class="grow"><div class="t">Invitations / Applications</div><div class="s">' + UA.db.invites.length + ' total</div></div><button type="button" class="btn btn-ghost-v btn-sm" onclick="UA.go(\'invitations\')">Open</button></div>' +
-      '<div class="ua-li"><span class="ua-ic">' + ic('history', 16) + '</span><div class="grow"><div class="t">Audit history</div><div class="s">Every request, approval, denial and permission change</div></div><button type="button" class="btn btn-ghost-v btn-sm" onclick="UA.openAudit()">View</button></div>' +
-      '<div class="ua-li"><span class="ua-ic gold">' + ic('gem', 16) + '</span><div class="grow"><div class="t">Subscription</div><div class="s">' + (free ? 'Free plan' : 'Premium plan') + ' · managed in Billing</div></div><button type="button" class="btn btn-ghost-v btn-sm" onclick="UA.toast(\'Billing is the source of truth\',\'Users &amp; Access links out — it never duplicates the Billing page.\')">' + (free ? 'Compare' : 'View') + '</button></div></div>');
-    return '<div class="ua-grid side"><div style="display:flex;flex-direction:column;gap:16px;min-width:0">' + id + '<div class="ua-grid c4">' + caps + '</div>' + mid +
-      card('Organization directory', 'A directory for access — not an HR hierarchy. Superadmin, then Teams with members, then No Team.', tree('all')) + '</div>' +
-      '<div style="display:flex;flex-direction:column;gap:16px;min-width:0">' + admin + transferCard() + '</div></div>';
+    if (UA.db.day === 1 && free) mid = card('Plan limitations', 'What your Free plan includes — and what Premium adds.',
+      '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
+      '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
+    else if (UA.db.day !== 1 && !free) mid = card('Get started', 'Premium is active — set up how your organization works.', '<div class="ua-row wrap">' + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') + btn('Add Member', 'UA.openAddUser()', 'btn-outline', 'user-plus') + '</div><div class="ua-hint" style="margin-top:10px">Invite roles available to you: Superadmin, Admin, Member.</div>');
+    const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
+    return '<div style="display:flex;flex-direction:column;gap:16px">' + id + '<div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
   }
   function steps() {
     const u = UA.usage(), free = !UA.premium();

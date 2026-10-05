@@ -21,6 +21,7 @@
       '<div class="grp" title="Plan belongs to the platform you\'re viewing, not the organization as a whole — switch platforms to see its own."><span class="gl">Plan · this platform</span>' + sg('plan', [['free', 'Free'], ['premium', 'Premium']]) + '</div><span class="dv"></span>' +
       '<div class="grp" title="Stage belongs to the platform you\'re viewing, not the organization as a whole — switch platforms to see its own."><span class="gl">Stage · this platform</span>' + sg('day', [[0, 'Day 0'], [1, 'Day 1']]) + '</div><span class="dv"></span>' +
       '<div class="grp"><span class="gl">Platform</span><select onchange="UA.setDemo(\'platform\',this.value)" id="ua-plat-sel">' + Object.keys(UA.PLATFORMS).map((k) => '<option value="' + k + '">' + UA.PLATFORMS[k].name + '</option>').join('') + '</select></div><span class="dv"></span>' +
+      '<div class="grp"><span class="gl">Show directory</span><button type="button" class="ua-switch" id="ua-dir-switch" onclick="UA.toggleDir()" aria-label="Toggle organization directory"></button></div><span class="dv"></span>' +
       '<div class="grp"><select onchange="UA.scenario(this.value);this.value=\'\'"><option value="">Jump to scenario…</option>' + SCEN.map((s, i) => '<option value="' + i + '">' + s[0] + '</option>').join('') + '</select>' +
       '<button type="button" class="lk" onclick="UA.openModulePreview()">' + ic('activity', 14) + 'In-module preview</button><a class="lk" href="access-blueprint.html">' + ic('layers', 14) + 'Blueprint</a><button type="button" class="lk" onclick="UA.resetData();UA.render();UA.toast(\'Demo data reset\')" title="Reset demo data">' + ic('refresh', 14) + 'Reset</button></div>' +
       '<button type="button" class="ua-demo-collapse" onclick="document.getElementById(\'ua-demo\').classList.add(\'min\')" aria-label="Collapse presenter bar">' + ic('chevd', 14) + '</button></div>' +
@@ -30,6 +31,7 @@
     const d = document.getElementById('ua-demo'); if (!d) return;
     d.querySelectorAll('.sg').forEach((g) => { const k = g.getAttribute('data-k'); const cur = (k === 'plan' || k === 'day') ? UA.db[k] : S[k]; g.querySelectorAll('button').forEach((b) => b.classList.toggle('on', String(cur) === b.getAttribute('data-v'))); });
     const ps = document.getElementById('ua-plat-sel'); if (ps) ps.value = S.platform;
+    const dt = document.getElementById('ua-dir-switch'); if (dt) dt.classList.toggle('on', !!S.dirOpen);
   };
 
   function init() {

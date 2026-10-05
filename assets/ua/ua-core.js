@@ -101,7 +101,7 @@
      one per Company x Platform per the PRD's DB model). They live on UA.db.plan / UA.db.day instead, so a
      Company can genuinely be Premium on one platform and Free on another at the same time — see
      UA.PLATFORM_DEFAULTS, UA.ensurePlatform, UA.setPlanDay below. */
-  const S = (UA.state = { role: 'superadmin', platform: 'scinode', tab: 'organization', f: { q: '', role: 'all', team: 'all', status: 'all', rtype: 'all', rstat: 'pending' } });
+  const S = (UA.state = { role: 'superadmin', platform: 'scinode', tab: 'organization', dirOpen: false, f: { q: '', role: 'all', team: 'all', status: 'all', rtype: 'all', rstat: 'pending' } });
   UA.cache = {};
   UA.db = null;
   /* Default Plan/Stage shown the first time each platform is visited this session (persists per-platform

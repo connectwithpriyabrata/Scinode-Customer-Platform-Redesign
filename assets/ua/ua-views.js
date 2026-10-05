@@ -101,8 +101,8 @@
     const db = UA.db, L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
     const id = card(esc(db.org.name), 'Verified organization · ' + esc(pl.name),
       '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gray">Company ID · ' + db.org.id + '</span><span class="ub teal">' + ic('check', 11) + 'Verified domain · ' + db.org.domain + '</span><span class="ub gray">On Scinode since ' + db.org.since + '</span></div>' +
-      (S.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
-      S.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default') : btn('Edit organization details', "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')", 'btn-outline', 'pencil'));
+      (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
+      UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default') : btn('Edit organization details', "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')", 'btn-outline', 'pencil'));
     const modsOn = (function () { let c = 0; for (let i = 0; i < UA.n(); i++) if (UA.teams().some((t) => t.mods[i] === '1')) c++; return c; })();
     let caps = cap('Superadmins', 'crown', U.sa, L.sa, U.sa / L.sa * 100, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'Additional Superadmins are available on Premium.') +
       cap('Member seats', 'users', U.mem, L.mem, U.mem / L.mem * 100, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'Limits are configuration-driven.');
@@ -110,7 +110,7 @@
     caps += free ? '<div class="ua-card ua-cap"><div class="lbl">' + ic('gem', 14) + 'Plan</div><div class="num">Free</div><div class="foot">Superadmin, Members and access management within Free capacity.</div><div style="margin-top:12px">' + btn('Upgrade to Premium', "UA.upgrade('tab','Organization › Plan card')", 'btn-premium btn-sm') + '</div></div>'
       : cap('Modules', 'grid', modsOn, UA.n(), modsOn / UA.n() * 100, 'Modules enabled by at least one Team on ' + esc(pl.name) + '.');
     let mid = '';
-    if (S.day === 1) {
+    if (UA.db.day === 1) {
       if (free) mid = card('Plan limitations', 'What your Free plan includes — and what Premium adds.',
         '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
         '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
@@ -152,12 +152,12 @@
   function vOrgMember() {
     const me = UA.me(), db = UA.db, ts = UA.myTeams();
     const useN = [...Array(UA.n()).keys()].filter((i) => UA.access(me, i).lvl === 'use').length, viewN = [...Array(UA.n()).keys()].filter((i) => UA.access(me, i).lvl === 'view').length;
-    const hd = card(S.day === 0 ? 'You are a Member of this organization' : 'My organization', esc(db.org.name) + ' · ' + esc(UA.plat().name),
+    const hd = card(UA.db.day === 0 ? 'You are a Member of this organization' : 'My organization', esc(db.org.name) + ' · ' + esc(UA.plat().name),
       '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">Role · Member</span><span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? 'Premium' : 'Free') + '</span>' + (ts.length ? ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') : '<span class="ub gray">No Team</span>') + '</div>' +
       '<div class="ua-grid c3" style="margin-top:16px"><div class="ua-card" style="background:#F8FAFC;box-shadow:none"><div class="ua-xs ua-muted">Where do I belong?</div><div class="t" style="font-weight:500;margin-top:4px">' + esc(db.org.name) + '</div></div><div class="ua-card" style="background:#F8FAFC;box-shadow:none"><div class="ua-xs ua-muted">Which Team(s)?</div><div style="font-weight:500;margin-top:4px">' + (ts.map((t) => esc(t.name)).join(', ') || 'None — organization-level access') + '</div></div><div class="ua-card" style="background:#F8FAFC;box-shadow:none"><div class="ua-xs ua-muted">What can I use?</div><div style="font-weight:500;margin-top:4px">' + useN + ' Use · ' + viewN + ' View</div></div></div>');
-    const acc = S.day === 0 ? '' : card('My access', 'Team-disabled always overrides an individual permission. Upgrade requests go to ' + (ts.length ? 'your Team Admin' : 'the Superadmin') + '.', '<div class="ua-list">' + accessRows() + '</div>',
+    const acc = UA.db.day === 0 ? '' : card('My access', 'Team-disabled always overrides an individual permission. Upgrade requests go to ' + (ts.length ? 'your Team Admin' : 'the Superadmin') + '.', '<div class="ua-list">' + accessRows() + '</div>',
       btn('Browse organization activity', 'UA.openModulePreview()', 'btn-outline btn-sm', 'activity'));
-    return '<div style="display:flex;flex-direction:column;gap:16px">' + hd + acc + (S.day === 0 ? card('Your access', 'Ask your Superadmin if you need more.', '<div class="ua-hint">Detailed per-module access appears here once you start working. Members can’t invite people, edit access, or manage Teams.</div>') : '') + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px">' + hd + acc + (UA.db.day === 0 ? card('Your access', 'Ask your Superadmin if you need more.', '<div class="ua-hint">Detailed per-module access appears here once you start working. Members can’t invite people, edit access, or manage Teams.</div>') : '') + '</div>';
   }
 
   /* ───────────── TEAMS ───────────── */
@@ -170,7 +170,7 @@
   function vTeams() {
     if (!UA.premium()) {
       if (UA.isMem()) return '<div class="ua-card">' + UA.emptyState('lock', 'Teams aren’t available on your current plan', 'Teams let an organization group people and control which modules each group can access.', btn('Learn about Premium', "UA.upgrade('learn','Teams tab (Member)')", 'btn-outline'), 'gold') + '</div>';
-      const d1 = S.day === 1;
+      const d1 = UA.db.day === 1;
       return '<div class="ua-card ua-gate"><div><span class="ub gold" style="margin-bottom:10px">' + ic('gem', 11) + 'Premium</span><h3 class="ua-h" style="font-size:22px;margin-top:8px">' + (d1 ? 'Organize your organization with Teams' : 'Teams are available with Premium.') + '</h3>' +
         '<p class="ua-sub" style="margin-top:8px">' + (d1 ? 'Teams let you group members and control which modules they can access.' : 'Create teams to organize members and control module access at the team level.') + '</p>' +
         '<ul>' + ['Group Members and give each Team its own module access', 'Assign Team Admins who manage their own people', 'Enable or disable modules per Team — Team settings always win', 'Team-scoped approvals for access requests'].map((x) => '<li>' + ic('check', 15) + x + '</li>').join('') + '</ul>' +
@@ -187,7 +187,7 @@
   function memberRows() {
     const f = S.f, q = f.q.toLowerCase(); let list = UA.membersVisible();
     list = list.filter((p) => (!q || (p.name + ' ' + p.email).toLowerCase().indexOf(q) > -1) && (f.role === 'all' || p.role === f.role) && (f.status === 'all' || p.status === f.status) && (f.team === 'all' || (f.team === 'none' ? !(p.teams || []).length : (p.teams || []).indexOf(f.team) > -1)));
-    const showAct = UA.isMem() ? false : true, d1p = UA.premium() && S.day === 1;
+    const showAct = UA.isMem() ? false : true, d1p = UA.premium() && UA.db.day === 1;
     if (!list.length) return '<tr><td colspan="7" style="padding:36px;text-align:center;color:var(--text-2)">No members match these filters.</td></tr>';
     return list.map((p) => {
       const clickable = !UA.isMem() || p.id === 'me';
@@ -211,8 +211,8 @@
       '<select class="ua-select" onchange="UA.setF(\'status\',this.value)"><option value="all">All statuses</option><option value="active"' + (S.f.status === 'active' ? ' selected' : '') + '>Active</option><option value="pending"' + (S.f.status === 'pending' ? ' selected' : '') + '>Pending Approval</option><option value="suspended"' + (S.f.status === 'suspended' ? ' selected' : '') + '>Suspended</option></select><span class="ua-spacer"></span>' +
       (free && !UA.isMem() ? '<span class="ua-xs ua-muted ua-tnum">Members <b style="color:var(--text-1)">' + U.mem + '/' + L.mem + '</b> used</span>' : '') +
       (canAdd ? btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus') : '') + '</div>' +
-      (free && UA.isSA() && S.day === 1 ? '<div class="ua-lockrow" style="padding:10px 16px;background:#FCFBEF"><span class="ua-xs ua-muted">Locked on Free — discoverable, not hidden:</span><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Members › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Members › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Members › Locked actions\')">' + ic('lock', 12) + 'Create Team</button></div>' : '') +
-      '<div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Member</th><th>Role</th><th>Team</th><th>Status</th><th>Access</th><th>' + (UA.premium() && S.day === 1 ? 'Last active' : 'Joined') + '</th><th></th></tr></thead><tbody id="ua-mrows">' + memberRows() + '</tbody></table></div></div>' +
+      (free && UA.isSA() && UA.db.day === 1 ? '<div class="ua-lockrow" style="padding:10px 16px;background:#FCFBEF"><span class="ua-xs ua-muted">Locked on Free — discoverable, not hidden:</span><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Members › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Members › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Members › Locked actions\')">' + ic('lock', 12) + 'Create Team</button></div>' : '') +
+      '<div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Member</th><th>Role</th><th>Team</th><th>Status</th><th>Access</th><th>' + (UA.premium() && UA.db.day === 1 ? 'Last active' : 'Joined') + '</th><th></th></tr></thead><tbody id="ua-mrows">' + memberRows() + '</tbody></table></div></div>' +
       (UA.isMem() ? '<div class="ua-hint" style="margin-top:12px">Members can see basic directory info and their own access. Only Superadmins and Admins can invite people or edit access.</div>' : '');
     return '<div style="display:flex;flex-direction:column;gap:16px">' + h + '</div>';
   }

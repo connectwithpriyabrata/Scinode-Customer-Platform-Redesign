@@ -97,9 +97,28 @@
   const MOD_PATS = ['11101011', '10111110', '11110100'];
 
   /* ───────────── State ───────────── */
-  const S = (UA.state = { role: 'superadmin', plan: 'free', day: 1, platform: 'scinode', tab: 'organization', f: { q: '', role: 'all', team: 'all', status: 'all', rtype: 'all', rstat: 'pending' } });
+  /* Note: plan/day are NOT global — they belong to the current platform (Organization Subscription is
+     one per Company x Platform per the PRD's DB model). They live on UA.db.plan / UA.db.day instead, so a
+     Company can genuinely be Premium on one platform and Free on another at the same time — see
+     UA.PLATFORM_DEFAULTS, UA.ensurePlatform, UA.setPlanDay below. */
+  const S = (UA.state = { role: 'superadmin', platform: 'scinode', tab: 'organization', f: { q: '', role: 'all', team: 'all', status: 'all', rtype: 'all', rstat: 'pending' } });
   UA.cache = {};
   UA.db = null;
+  /* Default Plan/Stage shown the first time each platform is visited this session (persists per-platform
+     after that, same as a real per-platform subscription would). Deliberately varied so switching the
+     Platform selector alone — with no other click — already demonstrates "one organization, independent
+     access per platform": Scinode + Scinode for Manufacturers are mature Premium orgs; Scinode for
+     Researchers is Free-but-populated; Deep Research is a brand-new Free/Day-0 platform membership. */
+  UA.PLATFORM_DEFAULTS = {
+    scinode: { plan: 'premium', day: 1 },
+    manufacturers: { plan: 'premium', day: 1 },
+    researchers: { plan: 'free', day: 1 },
+    deepresearch: { plan: 'free', day: 0 }
+  };
+  /* Shared Company identity — the SAME object reference across every platform's dataset (one Company ID,
+     never duplicated per platform; only Platform Membership, Teams, Subscription and Entitlement are
+     platform-specific — see Consolidated PRD §3/§8). */
+  UA.ORG = { name: 'Acme Chemicals', id: 'CMP-182', domain: 'acme.com', status: 'Approved', since: 'Jun 2026' };
   UA.PERSONA = { id: 'me', name: 'Priya Sharma', email: 'priya@acme.com' };
   UA.PUBLIC_DOMAINS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'icloud.com'];
   UA.domainType = (email) => (UA.PUBLIC_DOMAINS.indexOf(String(email).split('@')[1]) > -1 ? 'public' : 'private');
@@ -122,7 +141,7 @@
     const fit = (p) => { p.perm = n === 1 ? (p.dr || p.perm8[0]) : p.perm8.slice(0, n); return p; };
     const tnames = pl.teams;
     const mkTeam = (i, admins, extra) => Object.assign({ id: 't' + (i + 1), name: tnames[i], desc: TEAM_DESC[i], admins: admins, mods: n === 1 ? '1' : MOD_PATS[i].slice(0, n), status: 'active' }, extra || {});
-    const db = { org: { name: 'Acme Chemicals', id: 'CMP-182', domain: 'acme.com', status: 'Approved', since: 'Jun 2026' }, people: [], teams: [], invites: [], requests: [], audit: [], transfer: null, unlocked: {}, seq: 100 };
+    const db = { org: UA.ORG, plan: plan, day: day, people: [], teams: [], invites: [], requests: [], audit: [], transfer: null, unlocked: {}, seq: 100 };
     const me = fit(mk('me', 'Priya Sharma', 'priya@acme.com', 'superadmin', [], 'active', 'UVNUVUUN', { dr: 'V', joined: '02 Jun 2026', last: 'Just now' }));
     const rahul = fit(mk('rahul', 'Rahul Mehta', 'rahul@acme.com', 'member', [], 'active', 'UUUUUUUU', { dr: 'U', joined: '02 Jun 2026' }));
     if (plan === 'free' && day === 0) {
@@ -187,7 +206,7 @@
     } else {
       if (rahul.role !== 'superadmin') { rahul.role = 'superadmin'; rahul.teams = []; }
       me.role = role;
-      if (S.plan === 'premium') {
+      if (db.plan === 'premium') {
         const t = db.teams.find((x) => x.id === 't1') || db.teams[0];
         if (t) {
           me.teams = [t.id];
@@ -195,16 +214,43 @@
           if (role !== 'admin') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
         }
       } else me.teams = [];
-      if (role === 'member' && S.plan === 'premium') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
+      if (role === 'member' && db.plan === 'premium') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
     }
   };
+  /* ensurePlatform seeds a platform with its own default Plan/Stage the first time it's looked at — either
+     by actually visiting it, or indirectly via UA.footprint() — and never touches whichever platform is
+     currently active. */
+  UA.ensurePlatform = function (plat) {
+    if (!UA.cache[plat]) { const d = UA.PLATFORM_DEFAULTS[plat]; UA.cache[plat] = seed(d.plan, d.day, plat); }
+    return UA.cache[plat];
+  };
   UA.load = function () {
-    const key = S.plan + '|' + S.day + '|' + S.platform;
-    if (!UA.cache[key]) UA.cache[key] = seed(S.plan, S.day, S.platform);
-    UA.db = UA.cache[key];
+    UA.db = UA.ensurePlatform(S.platform);
+    UA.applyViewer();
+  };
+  /* Changing Plan or Stage re-seeds ONLY the current platform's own dataset — switching away and back
+     keeps that choice, and every other platform keeps whatever Plan/Stage it already had. This is the
+     mechanism behind "Organization Subscription is one per Company x Platform, never shared." */
+  UA.setPlanDay = function (which, val) {
+    const plan = which === 'plan' ? val : UA.db.plan, day = which === 'day' ? val : UA.db.day;
+    UA.cache[S.platform] = seed(plan, day, S.platform);
+    UA.db = UA.cache[S.platform];
     UA.applyViewer();
   };
   UA.resetData = function () { UA.cache = {}; UA.load(); };
+
+  /* One identity, many platform memberships (Consolidated PRD §4): look up this same person id across all
+     four platforms without disturbing whichever platform is currently on screen. Each platform resolves
+     its own team names from its OWN team list — team ids are only unique within a platform. */
+  UA.footprint = function (id) {
+    return Object.keys(UA.PLATFORMS).map((plat) => {
+      const db = UA.ensurePlatform(plat);
+      const person = db.people.find((x) => x.id === id);
+      const active = person && person.status !== 'removed' ? person : null;
+      const teamNames = active ? (active.teams || []).map((tid) => { const t = db.teams.find((x) => x.id === tid); return t ? t.name : tid; }) : [];
+      return { platform: plat, plan: db.plan, day: db.day, person: active, teamNames: teamNames };
+    });
+  };
 
   /* ───────────── Accessors ───────────── */
   UA.people = () => UA.db.people.filter((p) => p.hideWhen !== S.role && p.status !== 'removed');
@@ -217,7 +263,7 @@
   UA.isSA = () => S.role === 'superadmin';
   UA.isAdm = () => S.role === 'admin';
   UA.isMem = () => S.role === 'member';
-  UA.premium = () => S.plan === 'premium';
+  UA.premium = () => UA.db.plan === 'premium';
   UA.roleLabel = (r) => ({ superadmin: 'Superadmin', admin: 'Admin', member: 'Member' }[r]);
   UA.myTeams = () => UA.teamsOf(UA.me());
   UA.adminOf = (t) => (t.admins || []).map(UA.person).filter(Boolean);
@@ -377,9 +423,17 @@
   UA.emptyState = function (icon, title, text, cta, cls) {
     return '<div class="ua-empty"><span class="ic ' + (cls || '') + '">' + ic(icon, 22) + '</span><h3>' + title + '</h3><p>' + text + '</p>' + (cta || '') + '</div>';
   };
+  /* Plan/day in a patch are routed to the CURRENT (possibly just-switched) platform rather than written
+     onto the global state object — see UA.setPlanDay. Every existing call site (UA.setState({plan:'premium'}),
+     scenario presets with {plan, day, ...}) keeps working unchanged. */
   UA.setState = function (patch) {
+    const pd = {};
+    if ('plan' in patch) { pd.plan = patch.plan; delete patch.plan; }
+    if ('day' in patch) { pd.day = patch.day; delete patch.day; }
     Object.assign(S, patch);
-    if (S.role === 'admin' && S.plan === 'free') { /* Admin unavailable on Free — view renders the explanatory state */ }
-    UA.load(); if (UA.render) UA.render(); if (UA.syncDemo) UA.syncDemo();
+    UA.load();
+    if ('plan' in pd) UA.setPlanDay('plan', pd.plan);
+    if ('day' in pd) UA.setPlanDay('day', pd.day);
+    if (UA.render) UA.render(); if (UA.syncDemo) UA.syncDemo();
   };
 })();

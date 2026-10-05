@@ -1448,3 +1448,37 @@ function showToast(text) {
   wrap.appendChild(el);
   setTimeout(function () { el.remove(); }, 2200);
 }
+
+/* ── Account menu (top-nav avatar dropdown) ── */
+function toggleAcctMenu(ev) {
+  if (ev) ev.stopPropagation();
+  const menu = document.getElementById('acct-menu');
+  const trigger = document.getElementById('acct-trigger');
+  if (!menu || !trigger) return;
+  if (menu.classList.contains('open')) { closeAcctMenu(); return; }
+  const r = trigger.getBoundingClientRect();
+  menu.style.top = (r.bottom + 8) + 'px';
+  menu.style.right = (window.innerWidth - r.right) + 'px';
+  menu.classList.add('open');
+  trigger.classList.add('open');
+}
+function closeAcctMenu() {
+  const menu = document.getElementById('acct-menu');
+  const trigger = document.getElementById('acct-trigger');
+  if (menu) menu.classList.remove('open');
+  if (trigger) trigger.classList.remove('open');
+}
+function acctLogout() {
+  closeAcctMenu();
+  showToast('Logged out (prototype — no auth backend)');
+}
+document.addEventListener('click', function (e) {
+  const menu = document.getElementById('acct-menu');
+  const trigger = document.getElementById('acct-trigger');
+  if (!menu || !menu.classList.contains('open')) return;
+  if (menu.contains(e.target) || (trigger && trigger.contains(e.target))) return;
+  closeAcctMenu();
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeAcctMenu();
+});

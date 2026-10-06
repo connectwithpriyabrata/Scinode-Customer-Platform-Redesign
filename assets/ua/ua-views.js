@@ -31,6 +31,12 @@
       { lbl: 'Future actions' }
     ]);
   };
+  UA.copyOrgId = function (ev) {
+    if (ev) ev.stopPropagation();
+    const id = UA.db.org.id;
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).catch(() => {});
+    UA.toast('Copied', id + ' copied to clipboard');
+  };
 
   UA.render = function () {
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
@@ -102,9 +108,14 @@
     if (UA.isMem()) return vOrgMember();
     if (UA.isAdm()) return vOrgAdmin();
     const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
-    const id = card(esc(UA.db.org.name), null,
-      '<div class="ua-row" style="gap:8px;align-items:center"><span style="color:var(--teal-600);display:flex">' + ic('check-circle', 16) + '</span><span style="font-weight:600;font-size:13px;color:var(--text-1)">' + esc(UA.db.org.status) + '</span><span class="ua-xs ua-muted">Since ' + esc(UA.db.org.since) + '</span></div>' +
-      '<div class="ua-fact-grid" style="margin-top:14px"><div><div class="ua-fact-label">Company ID</div><div class="ua-fact-val">' + esc(UA.db.org.id) + '</div></div><div><div class="ua-fact-label">Domain</div><div class="ua-fact-val">' + esc(UA.db.org.domain) + '</div></div><div><div class="ua-fact-label">Plan</div><div class="ua-fact-val">' + (free ? 'Free' : 'Premium') + '</div></div></div>' +
+    const id = card(esc(UA.db.org.name) + ' <span class="ub success" style="font-family:var(--font);vertical-align:middle;margin-left:4px">' + esc(UA.db.org.status) + '</span>',
+      'Verified member since ' + esc(UA.db.org.since),
+      '<div class="ua-fact-grid">' +
+      '<div class="ua-fact"><div><div class="ua-fact-label">Domain</div><div class="ua-fact-val">' + esc(UA.db.org.domain) + '</div></div><span class="ua-fact-icon">' + ic('globe', 16) + '</span></div>' +
+      '<div class="ua-fact"><div><div class="ua-fact-label">Account ID</div><div class="ua-fact-val">' + esc(UA.db.org.id) + '</div></div><button type="button" class="ua-fact-icon" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 15) + '</button></div>' +
+      '<div class="ua-fact"><div><div class="ua-fact-label">Plan</div><div class="ua-fact-val">' + (free ? 'Free' : 'Premium') + '</div></div></div>' +
+      '<div class="ua-fact"><div><div class="ua-fact-label">Location</div><div class="ua-fact-val">' + esc(UA.db.org.location) + '</div></div><span class="ua-fact-icon">' + ic('pin', 16) + '</span></div>' +
+      '</div>' +
       (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
       UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default')
         : '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');

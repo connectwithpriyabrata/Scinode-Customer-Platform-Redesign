@@ -56,7 +56,10 @@
     file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
     trend: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
     grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
-    play: '<polygon points="6 3 20 12 6 21 6 3"/>'
+    play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+    pin: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>'
   };
   UA.ic = function (name, size, color) {
     const p = ICONS[name];
@@ -118,7 +121,7 @@
   /* Shared Company identity — the SAME object reference across every platform's dataset (one Company ID,
      never duplicated per platform; only Platform Membership, Teams, Subscription and Entitlement are
      platform-specific — see Consolidated PRD §3/§8). */
-  UA.ORG = { name: 'Acme Chemicals', id: 'CMP-182', domain: 'acme.com', status: 'Approved', since: 'Jun 2026' };
+  UA.ORG = { name: 'Acme Chemicals', id: 'CMP-182', domain: 'acme.com', status: 'Approved', since: 'Jun 2026', location: 'Maharashtra, India' };
   UA.PERSONA = { id: 'me', name: 'Priya Sharma', email: 'priya@acme.com' };
   UA.PUBLIC_DOMAINS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'icloud.com'];
   UA.domainType = (email) => (UA.PUBLIC_DOMAINS.indexOf(String(email).split('@')[1]) > -1 ? 'public' : 'private');

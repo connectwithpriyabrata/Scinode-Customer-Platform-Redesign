@@ -28,19 +28,14 @@
   UA.render = function () {
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
     const tabs = UA.tabList(); if (!tabs.find((t) => t.id === S.tab)) S.tab = 'organization';
-    const planChip = UA.premium()
-      ? '<span class="ua-chip gold">' + ic('gem', 14) + 'Plan: <b>Premium</b></span>'
-      : '<span class="ua-chip">' + ic('gem', 14) + 'Plan: <b>Free</b>' + (UA.isSA() ? ' · <button type="button" class="ua-link" onclick="UA.upgrade(\'tab\',\'Header plan chip\')">Upgrade</button>' : '') + '</span>';
     let h = '<div class="ua-crumb">Organization Settings <span class="ua-faint">›</span> <b>Users &amp; Access</b></div>' +
-      '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div>' +
-      '<div class="ua-ctx"><span class="ua-chip">' + ic('building', 14) + 'Organization: <b>' + esc(UA.db.org.name) + '</b></span>' + planChip + '</div></div></div>';
+      '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div></div>';
 
     if (S.role === 'admin' && !UA.premium()) {
       h += '<div class="ua-card">' + UA.emptyState('lock', 'Admin isn’t available on the Free plan', 'Admin is a Team-scoped role — it requires at least one Team, and Teams are a Premium capability. On Free, an organization has 1 Superadmin and up to 2 Members.',
         '<div class="ua-row wrap" style="justify-content:center;margin-top:6px"><span class="ua-proto">Prototype</span>' + btn('View as Premium Admin', "UA.setState({plan:'premium'})", 'btn-outline') + btn('View as Free Superadmin', "UA.setState({role:'superadmin'})", 'btn-ghost-v') + '</div>', 'gray') + '</div>';
       rootEl.innerHTML = h; return;
     }
-    if (UA.isSA()) h += saBar();
     h += '<div class="ua-tabs" role="tablist">' + tabs.map((t) => '<button type="button" role="tab" class="ua-tab" aria-selected="' + (S.tab === t.id) + '" onclick="UA.go(\'' + t.id + '\')">' + t.label +
       (t.lock ? '<span class="lk">' + ic('lock', 12) + '</span>' : '') + (t.n ? '<span class="n ' + (t.gray ? 'gray' : '') + '">' + t.n + '</span>' : '') + '</button>').join('') + '</div>';
     h += '<div id="ua-tab">' + ({ organization: vOrg, teams: vTeams, members: vMembers, invitations: vInvites, approvals: vApprovals }[S.tab])() + '</div>';
@@ -74,7 +69,7 @@
 
   function saBar() {
     const sas = UA.people().filter((p) => p.role === 'superadmin');
-    return '<div class="ua-card" style="margin-bottom:16px;display:flex;flex-direction:column;gap:10px">' + sas.map((p) => {
+    return '<div class="ua-card" style="display:flex;flex-direction:column;gap:10px;justify-content:center">' + sas.map((p) => {
       const isMe = p.id === 'me';
       return '<div><div class="ua-node" style="max-width:none">' + UA.av(p) + '<div class="grow"><div class="t">' + esc(p.name) + (isMe ? ' <span class="ua-you">You</span>' : '') + '</div><div class="s">Superadmin · platform-wide</div></div>' + UA.roleBadge('superadmin') +
         (isMe && !UA.db.transfer ? btn('Transfer', 'UA.openTransfer()', 'btn-ghost-v btn-sm', 'swap') : '') + '</div>' + (isMe ? transferBanner() : '') + '</div>';
@@ -101,7 +96,7 @@
     if (UA.isAdm()) return vOrgAdmin();
     const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
     const id = card(esc(UA.db.org.name), null,
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + UA.db.org.status + '</span><span class="ub gray">Company ID · ' + UA.db.org.id + '</span><span class="ub teal">' + ic('check', 11) + 'Verified domain · ' + UA.db.org.domain + '</span><span class="ub gray">On ' + esc(pl.name) + ' since ' + UA.db.org.since + '</span></div>' +
+      '<div class="ua-row wrap" style="gap:8px"><span class="ub ' + (free ? 'gray' : 'gold') + '">' + ic('gem', 11) + 'Plan: ' + (free ? 'Free' : 'Premium') + '</span><span class="ub success dot">' + UA.db.org.status + '</span><span class="ub gray">Company ID · ' + UA.db.org.id + '</span><span class="ub teal">' + ic('check', 11) + 'Verified domain · ' + UA.db.org.domain + '</span><span class="ub gray">On ' + esc(pl.name) + ' since ' + UA.db.org.since + '</span></div>' +
       (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
       UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default')
         : '<div class="ua-row" style="gap:8px">' + btn('Edit organization details', "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')", 'btn-outline', 'pencil') + btn('Billing', "location.href='settings.html#billing'", 'btn-ghost-v', 'gem') + '</div>');
@@ -117,7 +112,7 @@
       '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
     else if (UA.db.day !== 1 && !free) mid = card('Get started', 'Premium is active — set up how your organization works.', '<div class="ua-row wrap">' + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') + btn('Add Member', 'UA.openAddUser()', 'btn-outline', 'user-plus') + '</div><div class="ua-hint" style="margin-top:10px">Invite roles available to you: Superadmin, Admin, Member.</div>');
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
-    return '<div style="display:flex;flex-direction:column;gap:16px">' + id + '<div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + saBar() + '</div><div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
   }
   function steps() {
     const u = UA.usage(), free = !UA.premium();

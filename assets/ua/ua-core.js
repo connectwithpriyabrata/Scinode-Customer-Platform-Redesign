@@ -59,7 +59,8 @@
     play: '<polygon points="6 3 20 12 6 21 6 3"/>',
     globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
     pin: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
-    copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>'
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    briefcase: '<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>'
   };
   UA.ic = function (name, size, color) {
     const p = ICONS[name];
@@ -145,7 +146,7 @@
     const tnames = pl.teams;
     const mkTeam = (i, admins, extra) => Object.assign({ id: 't' + (i + 1), name: tnames[i], desc: TEAM_DESC[i], admins: admins, mods: n === 1 ? '1' : MOD_PATS[i].slice(0, n), status: 'active' }, extra || {});
     const db = { org: UA.ORG, plan: plan, day: day, people: [], teams: [], invites: [], requests: [], audit: [], transfer: null, unlocked: {}, seq: 100 };
-    const me = fit(mk('me', 'Priya Sharma', 'priya@acme.com', 'superadmin', [], 'active', 'UVNUVUUN', { dr: 'V', joined: '02 Jun 2026', last: 'Just now' }));
+    const me = fit(mk('me', 'Priya Sharma', 'priya@acme.com', 'superadmin', [], 'active', 'UVNUVUUN', { dr: 'V', joined: '02 Jun 2026', last: 'Just now', dept: 'Chemical Operations', title: 'VP of Chemical Operations' }));
     const rahul = fit(mk('rahul', 'Rahul Mehta', 'rahul@acme.com', 'member', [], 'active', 'UUUUUUUU', { dr: 'U', joined: '02 Jun 2026' }));
     if (plan === 'free' && day === 0) {
       rahul.role = 'superadmin'; rahul.hideWhen = 'superadmin'; db.people = [me, rahul];

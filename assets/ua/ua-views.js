@@ -24,6 +24,13 @@
   };
   UA.go = function (tab) { S.tab = tab; UA.render(); window.scrollTo({ top: 0 }); };
   UA.toggleDir = function () { S.dirOpen = !S.dirOpen; UA.render(); if (UA.syncDemo) UA.syncDemo(); };
+  UA.orgMenu = function (ev) {
+    UA.menu(ev, [
+      { label: 'Edit organization details', icon: 'pencil', fn: "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')" },
+      { sep: 1 },
+      { lbl: 'Future actions' }
+    ]);
+  };
 
   UA.render = function () {
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
@@ -96,10 +103,11 @@
     if (UA.isAdm()) return vOrgAdmin();
     const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
     const id = card(esc(UA.db.org.name), null,
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub ' + (free ? 'gray' : 'gold') + '">' + ic('gem', 11) + 'Plan: ' + (free ? 'Free' : 'Premium') + '</span><span class="ub success dot">' + UA.db.org.status + '</span><span class="ub gray">Company ID · ' + UA.db.org.id + '</span><span class="ub teal">' + ic('check', 11) + 'Verified domain · ' + UA.db.org.domain + '</span><span class="ub gray">On ' + esc(pl.name) + ' since ' + UA.db.org.since + '</span></div>' +
+      '<div class="ua-row" style="gap:8px;align-items:center"><span style="color:var(--teal-600);display:flex">' + ic('check-circle', 16) + '</span><span style="font-weight:600;font-size:13px;color:var(--text-1)">' + esc(UA.db.org.status) + '</span><span class="ua-xs ua-muted">Since ' + esc(UA.db.org.since) + '</span></div>' +
+      '<div class="ua-fact-grid" style="margin-top:14px"><div><div class="ua-fact-label">Company ID</div><div class="ua-fact-val">' + esc(UA.db.org.id) + '</div></div><div><div class="ua-fact-label">Domain</div><div class="ua-fact-val">' + esc(UA.db.org.domain) + '</div></div><div><div class="ua-fact-label">Plan</div><div class="ua-fact-val">' + (free ? 'Free' : 'Premium') + '</div></div></div>' +
       (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
       UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default')
-        : btn('Edit organization details', "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')", 'btn-outline', 'pencil'));
+        : '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');
     const modsOn = (function () { let c = 0; for (let i = 0; i < UA.n(); i++) if (UA.teams().some((t) => t.mods[i] === '1')) c++; return c; })();
     let caps = cap('Superadmins', 'crown', U.sa, L.sa, U.sa / L.sa * 100, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'Additional Superadmins are available on Premium.') +
       cap('Member seats', 'users', U.mem, L.mem, U.mem / L.mem * 100, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'Limits are configuration-driven.');

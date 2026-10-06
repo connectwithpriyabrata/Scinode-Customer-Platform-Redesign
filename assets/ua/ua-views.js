@@ -99,7 +99,7 @@
     return sas.map((p) => {
       const isMe = p.id === 'me';
       const roleAction = isMe && !UA.db.transfer ? btn('Transfer', 'UA.openTransfer()', 'btn-ghost-v btn-sm', 'swap') : '';
-      const emailAction = isMe ? btn('Copy', 'UA.copyEmail(event)', 'btn-ghost-v btn-sm', 'copy') : '';
+      const emailAction = isMe ? '<button type="button" class="ua-fact-copy" onclick="UA.copyEmail(event)" aria-label="Copy email">' + ic('copy', 12) + '</button>' : '';
       const title = '<div class="ua-row" style="gap:10px">' + UA.av(p).replace('class="ua-av', 'style="font-family:var(--font)" class="ua-av') + '<span>' + esc(p.name) + '</span>' + (isMe ? ' <span class="ua-you" style="font-family:var(--font)">You</span>' : '') + ' <span class="ub navy" style="font-family:var(--font)">' + ic('crown', 11) + 'Superadmin</span></div>';
       return card(title, 'Platform-wide access since ' + esc(UA.db.org.since),
         '<div class="ua-fact-grid">' +
@@ -135,7 +135,7 @@
       'Verified member since ' + esc(UA.db.org.since),
       '<div class="ua-fact-grid">' +
       fact('Domain', esc(UA.db.org.domain), 'globe') +
-      fact('Account ID', esc(UA.db.org.id), 'key', btn('Copy', 'UA.copyOrgId(event)', 'btn-ghost-v btn-sm', 'copy')) +
+      fact('Account ID', esc(UA.db.org.id), 'key', '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
       fact('Plan', free ? 'Free' : 'Premium', 'gem') +
       fact('Location', esc(UA.db.org.location), 'pin') +
       '</div>' +

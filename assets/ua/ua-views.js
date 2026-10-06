@@ -54,8 +54,14 @@
   UA.render = function () {
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
     const tabs = UA.tabList(); if (!tabs.find((t) => t.id === S.tab)) S.tab = 'organization';
+    let headerActions = '';
+    if (!UA.isMem()) {
+      if (UA.isSA()) headerActions += btn('Create Team', UA.premium() ? 'UA.openCreateTeam()' : "UA.upgrade('team','Header button')", 'btn-outline', 'plus');
+      headerActions += btn(UA.isAdm() ? 'Invite Member' : 'Add Member', 'UA.openAddUser()', 'btn-default', 'user-plus');
+    }
     let h = '<div class="ua-crumb">Organization Settings <span class="ua-faint">›</span> <b>Users &amp; Access</b></div>' +
-      '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div></div>';
+      '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div>' +
+      (headerActions ? '<div class="ua-row" style="gap:8px">' + headerActions + '</div>' : '') + '</div>';
 
     if (S.role === 'admin' && !UA.premium()) {
       h += '<div class="ua-card">' + UA.emptyState('lock', 'Admin isn’t available on the Free plan', 'Admin is a Team-scoped role — it requires at least one Team, and Teams are a Premium capability. On Free, an organization has 1 Superadmin and up to 2 Members.',

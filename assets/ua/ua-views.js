@@ -10,7 +10,7 @@
     return '<div class="ua-card ua-cap ' + (opts.locked ? 'locked' : '') + '"><div class="lbl">' + ic(icon, 14) + label + (opts.tag || '') + '</div><div class="num">' + num + (of != null ? ' <small>/ ' + of + '</small>' : '') + '</div>' +
       (pct != null ? '<div class="ua-bar ' + (pct >= 100 ? 'full' : pct >= 80 ? 'warn' : '') + '"><i style="width:' + Math.min(100, pct) + '%"></i></div>' : '') + '<div class="foot">' + foot + '</div></div>';
   };
-  const fact = (label, val, labelIcon, action) => '<div class="ua-fact"><div class="ua-fact-row"><span class="ua-fact-label">' + label + '</span>' + (labelIcon ? '<span class="ua-fact-icon">' + ic(labelIcon, 13) + '</span>' : '') + '</div><div class="ua-fact-row"><span class="ua-fact-val">' + val + '</span>' + (action || '') + '</div></div>';
+  const fact = (label, val, action) => '<div class="ua-fact"><div class="ua-fact-row"><span class="ua-fact-label">' + label + '</span></div><div class="ua-fact-row"><span class="ua-fact-val">' + val + '</span>' + (action || '') + '</div></div>';
   UA.card = card; UA.btn = btn;
 
   /* ───────────── Shell ───────────── */
@@ -45,11 +45,10 @@
     UA.toast('Copied', email + ' copied to clipboard');
   };
   UA.saMenu = function (ev) {
-    UA.menu(ev, [
-      { label: 'View full profile', icon: 'user', fn: "UA.toast('Profile','Viewing is part of Account Settings (not in this module).')" },
-      { sep: 1 },
-      { lbl: 'Future actions' }
-    ]);
+    const items = [{ label: 'View full profile', icon: 'user', fn: "UA.toast('Profile','Viewing is part of Account Settings (not in this module).')" }];
+    if (!UA.db.transfer) items.push({ label: 'Request ownership transfer', icon: 'swap', fn: 'UA.openTransfer()' });
+    items.push({ sep: 1 }, { lbl: 'Future actions' });
+    UA.menu(ev, items);
   };
 
   UA.render = function () {
@@ -98,15 +97,16 @@
     const sas = UA.people().filter((p) => p.role === 'superadmin');
     return sas.map((p) => {
       const isMe = p.id === 'me';
-      const roleAction = isMe && !UA.db.transfer ? btn('Transfer', 'UA.openTransfer()', 'btn-ghost-v btn-sm', 'swap') : '';
       const emailAction = isMe ? '<button type="button" class="ua-fact-copy" onclick="UA.copyEmail(event)" aria-label="Copy email">' + ic('copy', 12) + '</button>' : '';
-      const title = '<div class="ua-row" style="gap:10px">' + UA.av(p).replace('class="ua-av', 'style="font-family:var(--font)" class="ua-av') + '<span>' + esc(p.name) + '</span>' + (isMe ? ' <span class="ua-you" style="font-family:var(--font)">You</span>' : '') + ' <span class="ub navy" style="font-family:var(--font)">' + ic('crown', 11) + 'Superadmin</span></div>';
-      return card(title, 'Platform-wide access since ' + esc(UA.db.org.since),
+      const title = '<div class="ua-row" style="gap:10px;align-items:flex-start">' + UA.av(p).replace('class="ua-av', 'style="font-family:var(--font)" class="ua-av') +
+        '<div><div class="ua-row" style="gap:8px">' + '<span>' + esc(p.name) + '</span>' + (isMe ? ' <span class="ua-you" style="font-family:var(--font)">You</span>' : '') + ' <span class="ub navy" style="font-family:var(--font)">' + ic('crown', 11) + 'Superadmin</span>' + '</div>' +
+        '<div class="ua-hint" style="font-family:var(--font);font-weight:400;margin-top:2px">Platform-wide access since ' + esc(UA.db.org.since) + '</div></div></div>';
+      return card(title, null,
         '<div class="ua-fact-grid">' +
-        fact('Work Email', esc(p.email), 'mail', emailAction) +
-        fact('Platform Role', 'Superadmin', 'crown', roleAction) +
-        fact('Department', esc(p.dept || '—'), 'building') +
-        fact('Job Title', esc(p.title || '—'), 'briefcase') +
+        fact('Work Email', esc(p.email), emailAction) +
+        fact('Platform Role', 'Superadmin') +
+        fact('Department', esc(p.dept || '—')) +
+        fact('Job Title', esc(p.title || '—')) +
         '</div>' + (isMe ? transferBanner() : ''),
         isMe ? '<button type="button" class="btn btn-icon-sm" aria-label="Superadmin actions" onclick="UA.saMenu(event)">' + ic('more', 15) + '</button>' : '');
     }).join('');
@@ -134,10 +134,10 @@
     const id = card(esc(UA.db.org.name) + ' <span class="ub success" style="font-family:var(--font);vertical-align:middle;margin-left:4px">' + esc(UA.db.org.status) + '</span>',
       'Verified member since ' + esc(UA.db.org.since),
       '<div class="ua-fact-grid">' +
-      fact('Domain', esc(UA.db.org.domain), 'globe') +
-      fact('Account ID', esc(UA.db.org.id), 'key', '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
-      fact('Plan', free ? 'Free' : 'Premium', 'gem') +
-      fact('Location', esc(UA.db.org.location), 'pin') +
+      fact('Domain', esc(UA.db.org.domain)) +
+      fact('Account ID', esc(UA.db.org.id), '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
+      fact('Plan', free ? 'Free' : 'Premium') +
+      fact('Location', esc(UA.db.org.location)) +
       '</div>' +
       (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
       UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default')

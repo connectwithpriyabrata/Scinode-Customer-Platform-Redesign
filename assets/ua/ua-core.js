@@ -146,7 +146,7 @@
     const tnames = pl.teams;
     const mkTeam = (i, admins, extra) => Object.assign({ id: 't' + (i + 1), name: tnames[i], desc: TEAM_DESC[i], admins: admins, mods: n === 1 ? '1' : MOD_PATS[i].slice(0, n), status: 'active' }, extra || {});
     const db = { org: UA.ORG, plan: plan, day: day, people: [], teams: [], invites: [], requests: [], audit: [], transfer: null, unlocked: {}, seq: 100 };
-    const me = fit(mk('me', 'Priya Sharma', 'priya@acme.com', 'superadmin', [], 'active', 'UVNUVUUN', { dr: 'V', joined: '02 Jun 2026', last: 'Just now', dept: 'Chemical Operations', title: 'VP of Chemical Operations' }));
+    const me = fit(mk('me', 'Priya Sharma', 'priya@acme.com', 'superadmin', [], 'active', 'UVNUVUUN', { dr: 'V', joined: '02 Jun 2026', last: 'Just now', dept: 'Executive Leadership', title: 'Managing Director & CEO' }));
     const rahul = fit(mk('rahul', 'Rahul Mehta', 'rahul@acme.com', 'member', [], 'active', 'UUUUUUUU', { dr: 'U', joined: '02 Jun 2026' }));
     if (plan === 'free' && day === 0) {
       rahul.role = 'superadmin'; rahul.hideWhen = 'superadmin'; db.people = [me, rahul];

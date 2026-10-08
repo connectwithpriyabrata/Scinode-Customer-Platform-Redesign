@@ -38,6 +38,15 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).catch(() => {});
     UA.toast('Copied', id + ' copied to clipboard');
   };
+  UA.openPlanLimits = function (ev) {
+    if (ev) ev.stopPropagation();
+    UA.modal({
+      icon: 'gem', iconCls: 'gold', title: 'Plan limitations', sub: 'What your Free plan includes — and what Premium adds.',
+      body: '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
+        '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>',
+      foot: btn('Close', 'UA.closeModal()', 'btn-ghost-v') + btn('Upgrade to Premium', "UA.closeModal();UA.upgrade('tab','Organization › Plan limitations')", 'btn-premium')
+    });
+  };
 
   UA.render = function () {
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
@@ -120,7 +129,7 @@
       '<div class="ua-fact-grid">' +
       fact('Domain', esc(UA.db.org.domain)) +
       fact('Account ID', esc(UA.db.org.id), '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
-      fact('Plan', free ? 'Free' : 'Premium') +
+      fact('Plan', free ? 'Free' : 'Premium', free ? '<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button>' : '') +
       fact('Location', esc(UA.db.org.location)) +
       '</div>',
       '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');
@@ -128,14 +137,10 @@
     let caps = cap('Superadmins', 'crown', U.sa, L.sa, U.sa / L.sa * 100, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'Additional Superadmins are available on Premium.') +
       cap('Member seats', 'users', U.mem, L.mem, U.mem / L.mem * 100, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'Limits are configuration-driven.');
     caps += free ? cap('Teams', 'network', '0', null, null, 'Teams unlock with Premium.', { locked: true, tag: ' <span class="ub gold" style="margin-left:2px">Premium</span>' }) : cap('Teams', 'network', U.teams, L.teams, U.teams / L.teams * 100, U.teams ? 'Each Team is scoped to this platform.' : 'No Teams yet.');
-    caps += free ? '<div class="ua-card ua-cap"><div class="lbl">' + ic('gem', 14) + 'Plan</div><div class="num">Free</div><div class="foot">Superadmin, Members and access management within Free capacity.</div><div style="margin-top:12px">' + btn('Upgrade to Premium', "UA.upgrade('tab','Organization › Plan card')", 'btn-premium btn-sm') + '</div></div>'
+    caps += free ? '<div class="ua-card ua-cap"><div class="lbl">' + ic('gem', 14) + 'Plan<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button></div><div class="num">Free</div><div class="foot">Superadmin, Members and access management within Free capacity.</div><div style="margin-top:12px">' + btn('Upgrade to Premium', "UA.upgrade('tab','Organization › Plan card')", 'btn-premium btn-sm') + '</div></div>'
       : cap('Modules', 'grid', modsOn, UA.n(), modsOn / UA.n() * 100, 'Modules enabled by at least one Team on ' + esc(pl.name) + '.');
-    let mid = '';
-    if (UA.db.day === 1 && free) mid = card('Plan limitations', 'What your Free plan includes — and what Premium adds.',
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
-      '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
-    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div><div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div><div class="ua-grid c4">' + caps + '</div>' + dir + '</div>';
   }
   function steps() {
     const u = UA.usage(), free = !UA.premium();

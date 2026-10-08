@@ -20,6 +20,9 @@
 .ua-card.ua-feature{background:linear-gradient(135deg,var(--navy-500),var(--navy-900));}
 .ua-card.ua-feature .ua-h{color:#fff;}
 .ua-card.ua-feature .ua-hint{color:rgba(255,255,255,.75);}
+.ua-card.ua-upsell{background:linear-gradient(135deg,#FFFBEA 0%,var(--white) 60%);box-shadow:var(--shadow-hero);}
+.ua-upsell-icon{width:36px;height:36px;border-radius:var(--radius-full);background:var(--gold);color:#2a2600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.btn-premium svg{color:#2a2600;}
 .ua-card.flush{padding:0;overflow:hidden;}
 .ua-card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
 .ua-h{font-family:var(--font-heading);font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.35;color:var(--text-1);}

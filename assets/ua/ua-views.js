@@ -81,6 +81,13 @@
 
   function quickStartHub() {
     const day0Premium = UA.db.day === 0 && UA.premium();
+    const day0FreeSA = UA.db.day === 0 && !UA.premium() && UA.isSA();
+    if (day0FreeSA) {
+      return card('Unlock more with Premium',
+        'Your organization is on the Free plan. Upgrade to Premium to invite more colleagues, create teams, and manage access with greater flexibility as your organization grows.',
+        '<div class="ua-row wrap" style="gap:10px">' + btn('Upgrade to premium', "UA.upgrade('team','Quick Start Hub')", 'btn-premium', 'sparkles') + '</div>',
+        '<span class="ua-upsell-icon">' + ic('crown', 18) + '</span>', 'ua-upsell');
+    }
     return card(day0Premium ? 'Get started' : 'Manage Organization Structure',
       day0Premium ? 'Premium is active for your organization. Set up your workspace by inviting colleagues, creating teams, and assigning the right module access as your organization grows.' : 'Quickly scale your organization by onboarding colleagues and structuring operational squads with scoped module access.',
       '<div class="ua-row wrap" style="gap:10px">' +

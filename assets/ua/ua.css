@@ -17,7 +17,7 @@
 
 /* Cards */
 .ua-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:20px;}
-.ua-card.ua-feature{background:linear-gradient(135deg,var(--navy-500),var(--navy-900));}
+.ua-card.ua-feature{background:linear-gradient(135deg,#016358 0%,#043E54 50%,#182133 100%);}
 .ua-card.ua-feature .ua-h{color:#fff;}
 .ua-card.ua-feature .ua-hint{color:rgba(255,255,255,.75);}
 .ua-card.ua-upsell{background:linear-gradient(135deg,#FFFBEA 0%,var(--white) 60%);box-shadow:var(--shadow-hero);}

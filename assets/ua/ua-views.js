@@ -26,29 +26,17 @@
   UA.go = function (tab) { S.tab = tab; UA.render(); window.scrollTo({ top: 0 }); };
   UA.toggleDir = function () { S.dirOpen = !S.dirOpen; UA.render(); if (UA.syncDemo) UA.syncDemo(); };
   UA.orgMenu = function (ev) {
-    UA.menu(ev, [
-      { label: 'Edit organization details', icon: 'pencil', fn: "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')" },
-      { sep: 1 },
-      { lbl: 'Future actions' }
-    ]);
+    const items = [];
+    if (UA.db.day === 0) items.push({ label: 'Set up your organization', icon: 'arrow', fn: "UA.go('members')" });
+    items.push({ label: 'Edit organization details', icon: 'pencil', fn: "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')" });
+    items.push({ sep: 1 }, { lbl: 'Future actions' });
+    UA.menu(ev, items);
   };
   UA.copyOrgId = function (ev) {
     if (ev) ev.stopPropagation();
     const id = UA.db.org.id;
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).catch(() => {});
     UA.toast('Copied', id + ' copied to clipboard');
-  };
-  UA.copyEmail = function (ev) {
-    if (ev) ev.stopPropagation();
-    const email = UA.me().email;
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(email).catch(() => {});
-    UA.toast('Copied', email + ' copied to clipboard');
-  };
-  UA.saMenu = function (ev) {
-    const items = [{ label: 'View full profile', icon: 'user', fn: "UA.toast('Profile','Viewing is part of Account Settings (not in this module).')" }];
-    if (!UA.db.transfer) items.push({ label: 'Request ownership transfer', icon: 'swap', fn: 'UA.openTransfer()' });
-    items.push({ sep: 1 }, { lbl: 'Future actions' });
-    UA.menu(ev, items);
   };
 
   UA.render = function () {
@@ -91,31 +79,12 @@
   }
   UA.accessRows = accessRows;
 
-  function transferBanner() {
-    const t = UA.db.transfer; if (!t) return '';
-    const to = UA.person(t.to);
-    return '<div class="ua-banner warn" style="margin-top:8px"><span>' + ic('clock', 16) + '</span><div class="grow"><div class="t">Transfer to ' + esc(to.name) + ' is awaiting Scinode review</div><div>You remain Superadmin until it is approved. Submitted ' + esc(t.at) + '.</div></div></div>' +
-      '<div class="ua-sim" style="margin-top:8px"><span class="ua-proto">Prototype</span><span>Nucleus reviewer:</span>' + btn('Approve', 'UA.simTransfer(true)', 'btn-outline btn-sm') + btn('Reject', 'UA.simTransfer(false)', 'btn-danger-ghost btn-sm') + '</div>' +
-      '<div style="margin-top:8px">' + btn('Cancel request', 'UA.cancelTransfer()', 'btn-ghost-v btn-sm') + '</div>';
-  }
-
-  function saBar() {
-    const sas = UA.people().filter((p) => p.role === 'superadmin');
-    return sas.map((p) => {
-      const isMe = p.id === 'me';
-      const emailAction = isMe ? '<button type="button" class="ua-fact-copy" onclick="UA.copyEmail(event)" aria-label="Copy email">' + ic('copy', 12) + '</button>' : '';
-      const title = '<div class="ua-row" style="gap:10px;align-items:flex-start">' + UA.av(p).replace('class="ua-av', 'style="font-family:var(--font)" class="ua-av') +
-        '<div><div class="ua-row" style="gap:8px">' + '<span>' + esc(p.name) + '</span>' + (isMe ? ' <span class="ua-you" style="font-family:var(--font)">You</span>' : '') + ' <span class="ub navy" style="font-family:var(--font)">' + ic('crown', 11) + 'Superadmin</span>' + '</div>' +
-        '<div class="ua-hint" style="font-family:var(--font);font-weight:400;margin-top:2px">Platform-wide access since ' + esc(UA.db.org.since) + '</div></div></div>';
-      return card(title, null,
-        '<div class="ua-fact-grid">' +
-        fact('Work Email', esc(p.email), emailAction) +
-        fact('Platform Role', 'Superadmin') +
-        fact('Department', esc(p.dept || '—')) +
-        fact('Job Title', esc(p.title || '—')) +
-        '</div>' + (isMe ? transferBanner() : ''),
-        isMe ? '<button type="button" class="btn btn-icon-sm" aria-label="Superadmin actions" onclick="UA.saMenu(event)">' + ic('more', 15) + '</button>' : '');
-    }).join('');
+  function quickStartHub() {
+    return card('Manage Organization Structure', 'Quickly scale your organization by onboarding colleagues and structuring operational squads with scoped module access.',
+      '<div class="ua-row wrap" style="gap:10px">' +
+      btn('Create Team', UA.premium() ? 'UA.openCreateTeam()' : "UA.upgrade('team','Quick Start Hub')", 'btn-default', 'plus') +
+      btn('Add Members', 'UA.openAddUser()', 'btn-outline', 'user-plus') +
+      '</div>', null, 'ua-feature');
   }
 
   function tree(scope) {
@@ -144,10 +113,8 @@
       fact('Account ID', esc(UA.db.org.id), '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
       fact('Plan', free ? 'Free' : 'Premium') +
       fact('Location', esc(UA.db.org.location)) +
-      '</div>' +
-      (UA.db.day === 0 ? '<div class="ua-div" style="margin:16px 0 4px"></div><div class="ua-h" style="font-size:14px;margin-top:12px">Set up your organization</div><div class="ua-steps">' + steps() + '</div>' : ''),
-      UA.db.day === 0 ? btn('Set up your organization', "UA.go('members')", 'btn-default')
-        : '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');
+      '</div>',
+      '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');
     const modsOn = (function () { let c = 0; for (let i = 0; i < UA.n(); i++) if (UA.teams().some((t) => t.mods[i] === '1')) c++; return c; })();
     let caps = cap('Superadmins', 'crown', U.sa, L.sa, U.sa / L.sa * 100, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'Additional Superadmins are available on Premium.') +
       cap('Member seats', 'users', U.mem, L.mem, U.mem / L.mem * 100, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'Limits are configuration-driven.');
@@ -160,7 +127,7 @@
       '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
     else if (UA.db.day !== 1 && !free) mid = card('Get started', 'Premium is active — set up how your organization works.', '<div class="ua-row wrap">' + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') + btn('Add Member', 'UA.openAddUser()', 'btn-outline', 'user-plus') + '</div><div class="ua-hint" style="margin-top:10px">Invite roles available to you: Superadmin, Admin, Member.</div>');
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
-    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + saBar() + '</div><div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div><div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
   }
   function steps() {
     const u = UA.usage(), free = !UA.premium();
@@ -237,7 +204,10 @@
     const only = UA.membersVisible().length === 1 && UA.isSA();
     let h = '';
     if (full && UA.isSA()) h += '<div class="ua-banner warn"><span>' + ic('alert', 16) + '</span><div class="grow"><div class="t">You’ve reached your Free plan user limit</div><div>All ' + L.mem + ' Member seats are in use. Upgrade to add more people, Teams and Admins.</div></div><div class="acts">' + btn('Upgrade to Premium', "UA.upgrade('member','Members banner')", 'btn-premium btn-sm') + '</div></div>';
-    if (only) return '<div style="display:flex;flex-direction:column;gap:16px">' + h + '<div class="ua-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div></div>';
+    if (only) {
+      const setup = UA.db.day === 0 ? card('Set up your organization', null, '<div class="ua-steps">' + steps() + '</div>') : '';
+      return '<div style="display:flex;flex-direction:column;gap:16px">' + h + setup + '<div class="ua-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div></div>';
+    }
     const teamOpts = '<option value="all">All Teams</option><option value="none">No Team</option>' + UA.teams().map((t) => '<option value="' + t.id + '"' + (S.f.team === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('');
     h += '<div class="ua-tbl-wrap"><div class="ua-toolbar"><label class="ua-search">' + ic('search', 15) + '<input type="search" placeholder="Search name or email" value="' + esc(S.f.q) + '" oninput="UA.setF(\'q\',this.value)"></label>' +
       '<select class="ua-select" onchange="UA.setF(\'role\',this.value)"><option value="all">All roles</option><option value="superadmin"' + (S.f.role === 'superadmin' ? ' selected' : '') + '>Superadmin</option><option value="admin"' + (S.f.role === 'admin' ? ' selected' : '') + '>Admin</option><option value="member"' + (S.f.role === 'member' ? ' selected' : '') + '>Member</option></select>' +

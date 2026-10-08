@@ -80,7 +80,9 @@
   UA.accessRows = accessRows;
 
   function quickStartHub() {
-    return card('Manage Organization Structure', 'Quickly scale your organization by onboarding colleagues and structuring operational squads with scoped module access.',
+    const day0Premium = UA.db.day === 0 && UA.premium();
+    return card(day0Premium ? 'Get started' : 'Manage Organization Structure',
+      day0Premium ? 'Premium is active for your organization. Set up your workspace by inviting colleagues, creating teams, and assigning the right module access as your organization grows.' : 'Quickly scale your organization by onboarding colleagues and structuring operational squads with scoped module access.',
       '<div class="ua-row wrap" style="gap:10px">' +
       btn('Create Team', UA.premium() ? 'UA.openCreateTeam()' : "UA.upgrade('team','Quick Start Hub')", 'btn-default', 'plus') +
       btn('Add Members', 'UA.openAddUser()', 'btn-outline', 'user-plus') +
@@ -125,7 +127,6 @@
     if (UA.db.day === 1 && free) mid = card('Plan limitations', 'What your Free plan includes — and what Premium adds.',
       '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
       '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>');
-    else if (UA.db.day !== 1 && !free) mid = card('Get started', 'Premium is active — set up how your organization works.', '<div class="ua-row wrap">' + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') + btn('Add Member', 'UA.openAddUser()', 'btn-outline', 'user-plus') + '</div><div class="ua-hint" style="margin-top:10px">Invite roles available to you: Superadmin, Admin, Member.</div>');
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
     return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div><div class="ua-grid c4">' + caps + '</div>' + mid + dir + '</div>';
   }

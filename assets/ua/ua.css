@@ -107,6 +107,10 @@
 .ua-cap .foot{font-size:11px;color:var(--text-2);margin-top:8px;line-height:1.45;}
 .ua-cap.locked{background:linear-gradient(180deg,#fff,#FBFAEA);}
 .ua-cap.locked .num{color:var(--text-3);}
+.ua-cap-hoverable{position:relative;overflow:hidden;transition:box-shadow .2s ease;}
+.ua-cap-hover-cta{position:absolute;top:14px;right:14px;opacity:0;transform:translateX(18px);transition:opacity .2s ease,transform .25s cubic-bezier(.22,1,.36,1);pointer-events:none;}
+.ua-cap-hoverable:hover{box-shadow:var(--shadow-hero);}
+.ua-cap-hoverable:hover .ua-cap-hover-cta{opacity:1;transform:translateX(0);pointer-events:auto;}
 
 /* Tables */
 .ua-tbl-wrap{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden;}

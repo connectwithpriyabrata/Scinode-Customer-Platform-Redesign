@@ -75,8 +75,14 @@
     UA.menu(ev, it);
   };
   UA.suspend = function (id) {
+    const p = UA.person(id);
+    if (p.status === 'suspended') return UA.doSuspend(id);
+    UA.modal({ icon: 'ban', iconCls: 'gray', title: 'Suspend ' + esc(p.name) + '?', sub: 'They immediately lose access to ' + esc(UA.plat().name) + '. They keep their place in the organization, and you can reactivate them at any time.', body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Suspend', "UA.doSuspend('" + id + "')", 'btn-danger') });
+  };
+  UA.doSuspend = function (id) {
     const p = UA.person(id), was = p.status; p.status = was === 'suspended' ? 'active' : 'suspended';
     UA.audit(p.status === 'suspended' ? 'User suspended' : 'User reactivated', p.name, was, p.status);
+    UA.closeModal();
     UA.toast(p.name + (p.status === 'suspended' ? ' suspended' : ' reactivated'), p.status === 'suspended' ? 'They keep their place in the organization but lose platform access.' : ''); UA.closeDrawer(); refresh();
   };
   UA.confirmRemove = function (id) {
@@ -191,7 +197,11 @@
     UA.toast('Invitation sent to ' + e, UA.isAdm() ? 'Superadmin notified · appears in Invitations / Applications as “Sent”.' : 'Appears in Invitations / Applications as “Sent”.'); refresh();
   };
   UA.resendInvite = function (id) { const i = UA.db.invites.find((x) => x.id === id); UA.audit('Invitation resent', i.email, 'Sent', 'Sent'); UA.toast('Invitation resent to ' + i.email); };
-  UA.cancelInvite = function (id) { const i = UA.db.invites.find((x) => x.id === id); i.status = 'cancelled'; UA.audit('Invitation cancelled', i.email, 'Sent', 'Cancelled'); UA.toast('Invitation cancelled', 'The link is no longer valid and the seat is released.'); refresh(); };
+  UA.cancelInvite = function (id) {
+    const i = UA.db.invites.find((x) => x.id === id);
+    UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Cancel this invitation?', sub: 'The link sent to <b>' + esc(i.email) + '</b> will stop working and the reserved seat is released.', body: '', foot: btn('Keep invitation', 'UA.closeModal()', 'btn-ghost-v') + btn('Cancel invitation', "UA.doCancelInvite('" + id + "')", 'btn-danger') });
+  };
+  UA.doCancelInvite = function (id) { const i = UA.db.invites.find((x) => x.id === id); i.status = 'cancelled'; UA.audit('Invitation cancelled', i.email, 'Sent', 'Cancelled'); UA.closeModal(); UA.toast('Invitation cancelled', 'The link is no longer valid and the seat is released.'); refresh(); };
   UA.simSignup = function (id) {
     const i = UA.db.invites.find((x) => x.id === id), pid = UA.uid('p'), pub = i.domain === 'public';
     const perm = i.perm || 'U'.repeat(UA.n()); const p = { id: pid, name: i.name, email: i.email, role: i.role, teams: i.team ? [i.team] : [], status: pub ? 'pending' : 'active', perm: perm, joined: 'Today', last: '—', pubdomain: pub };

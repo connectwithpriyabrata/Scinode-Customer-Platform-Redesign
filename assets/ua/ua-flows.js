@@ -204,9 +204,9 @@
   };
 
   /* ───────────── Add New User (send-side of the invite flow) ───────────── */
-  UA.au = { role: 'member', team: '', email: '', perms: {} };
+  UA.au = { role: 'member', team: '', email: '', perms: {}, msg: '' };
   UA.openAddUser = function (pre) {
-    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', perms: {} };
+    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', perms: {}, msg: '' };
     if (UA.isAdm() && !UA.au.team) UA.au.team = UA.myTeams()[0] ? UA.myTeams()[0].id : '';
     UA.auStep1();
   };
@@ -244,6 +244,7 @@
     UA.modal({ icon: 'user-plus', title: UA.isAdm() ? 'Invite Member' : 'Add New User', sub: 'Step 2 of 2 · Inviting a <b>' + UA.roleLabel(a.role) + '</b> to ' + esc(pl.name) + '.', size: '', noFocus: keep === true,
       body: '<div class="ua-field"><label for="au-email">Work email *</label><input id="au-email" class="ua-input" type="email" placeholder="name@company.com" value="' + esc(a.email) + '" oninput="UA.au.email=this.value;UA.auHint()"><div class="h" id="au-hint">' + auHint(dt) + '</div><div class="e" id="au-err"></div></div>' + teamSel +
         '<div><div class="ua-sect">Module permissions' + (a.role === 'member' || a.role === 'admin' ? ' · defaults to Use' : '') + '</div>' + auModules() + '</div>' +
+        '<div class="ua-field"><label for="au-msg">Invitation message <span class="ua-faint" style="font-weight:400">(optional)</span></label><textarea id="au-msg" class="ua-input" rows="3" maxlength="280" placeholder="Add a personal note the invitee will see in their invitation…" oninput="UA.au.msg=this.value">' + esc(a.msg || '') + '</textarea></div>' +
         '<div class="ua-banner info"><span>' + ic('bell', 16) + '</span><div class="grow">' + (UA.isAdm() ? 'The Superadmin is notified of this invitation the moment it’s sent.' : 'The invitee gets an email. Company, Role and Team are pre-set — they’re never asked for them at sign-up.') + '</div></div>',
       foot: btn('Back', 'UA.auStep1()', 'btn-ghost-v') + btn('Send Invitation', 'UA.auSend()', 'btn-default', 'send') });
   };
@@ -256,7 +257,7 @@
     if ((a.role === 'admin' || UA.isAdm()) && UA.premium() && !a.team) { err.textContent = 'Choose a Team — ' + (a.role === 'admin' ? 'Admins' : 'you can only invite into your own Team; Members here') + ' must belong to one.'; return; }
     const blocked = UA.capacity(a.role); if (blocked) return UA.upgrade(blocked, 'Add New User › Send');
     const t = a.team ? UA.team(a.team) : null; let perm = ''; for (let i = 0; i < UA.n(); i++) perm += a.role === 'superadmin' ? 'U' : (t && t.mods[i] !== '1') ? 'N' : { use: 'U', view: 'V' }[a.perms[i] || 'use'];
-    UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(e), email: e, by: 'me', role: a.role, team: a.team || null, status: 'sent', domain: UA.domainType(e), date: 'Today', perm: perm });
+    UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(e), email: e, by: 'me', role: a.role, team: a.team || null, status: 'sent', domain: UA.domainType(e), date: 'Today', perm: perm, msg: a.msg || '' });
     if (t && a.role === 'admin' && !t.admins.length) t.pendingAdmin = e;
     UA.audit('Invitation sent', e, '—', UA.roleLabel(a.role) + (t ? ' · ' + t.name : ' · No Team')); UA.closeModal();
     UA.toast('Invitation sent to ' + e, UA.isAdm() ? 'Superadmin notified · appears in Invitations / Applications as “Sent”.' : 'Appears in Invitations / Applications as “Sent”.'); refresh();

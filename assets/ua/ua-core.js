@@ -375,6 +375,7 @@
     const bd = root('ua-dbd', 'ua-backdrop'); const d = root('ua-drawer', 'ua-drawer');
     bd.classList.add('open'); bd.onclick = () => UA.closeDrawer();
     d.innerHTML = '<div class="ua-drawer-h">' + (o.lead || '') + '<div style="flex:1;min-width:0"><div class="ua-h" style="font-size:18px">' + o.title + '</div>' + (o.sub ? '<div class="ua-hint">' + o.sub + '</div>' : '') + '</div>' +
+      (o.kebab ? '<button type="button" class="btn btn-icon-sm" aria-label="More actions" onclick="' + o.kebab + '">' + ic('more', 16) + '</button>' : '') +
       '<button type="button" class="ua-x" onclick="UA.closeDrawer()" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<div class="ua-drawer-b">' + o.body + '</div>' + (o.foot ? '<div class="ua-drawer-f">' + o.foot + '</div>' : '');
     requestAnimationFrame(() => d.classList.add('open'));

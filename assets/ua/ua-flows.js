@@ -126,12 +126,20 @@
     for (let i = 0; i < UA.n(); i++) { const m = UA.mod(i), on = t.mods[i] === '1'; mods += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (editMods ? '<button type="button" class="ua-switch ' + (on ? 'on' : '') + '" onclick="UA.toggleTeamMod(\'' + tid + '\',' + i + ')" aria-label="Toggle ' + m.name + '"></button>' : '<span class="ub ' + (on ? 'teal' : 'gray') + '">' + (on ? 'Enabled' : 'Not enabled') + '</span>') + '</div>'; }
     UA.drawer({
       lead: '<span class="ua-ic lg">' + ic('users', 20) + '</span>', title: esc(t.name), sub: esc(t.desc),
+      kebab: UA.isSA() ? "UA.teamMenu(event,'" + tid + "')" : '',
       body: '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">Active</span><span class="ub gray">Platform · ' + esc(UA.plat().name) + '</span></div>' +
         '<div><div class="ua-sect">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + UA.roleBadge('admin') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div>' +
         '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
         '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-list" style="margin-top:6px">' + (pp.map((p) => '<div class="ua-li"><div class="grow">' + UA.person$(p, { noEmail: UA.isMem() }) + '</div><span class="ua-xs ua-muted ua-tnum">' + UA.accessSummary(p) + '</span>' + UA.roleBadge(p.role) + '</div>').join('') || '<div class="ua-hint">No members yet.</div>') + '</div></div>',
-      foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') + btn('Assign Admin', "UA.assignTeamAdmin('" + tid + "')", 'btn-outline', 'shield') + btn('Delete Team', "UA.confirmDeleteTeam('" + tid + "')", 'btn-danger-ghost', 'trash') : ''
+      foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') : ''
     });
+  };
+  UA.teamMenu = function (ev, tid) {
+    UA.menu(ev, [
+      { label: 'Assign Admin', icon: 'shield', fn: "UA.assignTeamAdmin('" + tid + "')" },
+      { sep: 1 },
+      { label: 'Delete Team', icon: 'trash', dg: 1, fn: "UA.confirmDeleteTeam('" + tid + "')" }
+    ]);
   };
   UA.toggleTeamMod = function (tid, i) {
     const t = UA.team(tid), a = t.mods.split(''); a[i] = a[i] === '1' ? '0' : '1'; t.mods = a.join('');

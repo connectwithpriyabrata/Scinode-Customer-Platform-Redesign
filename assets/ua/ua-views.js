@@ -246,15 +246,15 @@
   function vInvites() {
     const list = UA.invitesVisible(), pl = UA.plat();
     const life = '<div class="ua-life"><span class="s"><i>1</i>Invite sent</span><span class="ln"></span><span class="s"><i>2</i>They accept</span><span class="ln"></span><span class="s"><i>3</i>They sign up</span><span class="ln"></span><div class="fork"><span class="s"><i>' + ic('check', 11) + '</i>Company email → joins instantly</span><span class="s"><i>' + ic('clock', 11) + '</i>Personal email → needs your approval</span></div></div><div class="ua-hint" style="margin-top:12px">An invite can also be declined or withdrawn at any point.</div>';
-    const setup = card('How invites work', 'From sending an invite to them joining your organization.', life, null, 'ua-pair-card');
+    const setup = UA.db.day === 0 ? card('How invites work', 'From sending an invite to them joining your organization.', life, null, 'ua-pair-card') : '';
     const rows = list.length ? list.map((i) => {
       const inv = i.by === 'me' ? UA.me() : UA.person(i.by), by = inv ? inv.name : '—', t = i.team ? UA.team(i.team) : null;
       const lbl = i.status === 'waiting' ? UA.statusBadge('waiting') + '<div class="ua-xs ua-muted" style="margin-top:3px">Waiting for ' + esc(pl.name) + ' approval</div>' : UA.statusBadge(i.status);
       return '<tr><td><div class="ua-person">' + UA.av(i.name) + '<div><div class="nm">' + esc(i.name) + '</div><div class="em">' + esc(i.email) + '</div></div></div></td><td>' + esc(by) + '</td><td>' + UA.roleBadge(i.role) + '</td><td>' + (t ? '<span class="ub teal">' + esc(t.name) + '</span>' : '<span class="ua-faint">—</span>') + '</td><td>' + (i.domain === 'public' ? '<span class="ub warn">Public domain</span>' : '<span class="ub teal">Verified domain</span>') + '</td><td>' + lbl + '</td><td class="ua-muted">' + i.date + '</td><td class="r"><button type="button" class="btn btn-icon-sm" aria-label="Actions" onclick="UA.inviteMenu(event,\'' + i.id + '\')">' + ic('more', 15) + '</button></td></tr>';
     }).join('') : '';
     if (!list.length) {
-      const empty = '<div class="ua-card ua-pair-card">' + UA.emptyState('mail', 'No invitations yet', 'Invited users and their approval status will appear here once you send an invite.', btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus')) + '</div>';
-      return '<div class="ua-grid c2">' + empty + setup + '</div>';
+      const empty = '<div class="ua-card ' + (setup ? 'ua-pair-card' : '') + '">' + UA.emptyState('mail', 'No invitations yet', 'Invited users and their approval status will appear here once you send an invite.', btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus')) + '</div>';
+      return setup ? '<div class="ua-grid c2">' + empty + setup + '</div>' : empty;
     }
     return '<div style="display:flex;flex-direction:column;gap:16px">' + setup +
       '<div class="ua-tbl-wrap"><div class="ua-toolbar"><div class="ua-h" style="font-size:14px">Invitations &amp; applications</div><span class="ua-spacer"></span>' + btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + '</div><div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Invitee</th><th>Invited by</th><th>Role</th><th>Team</th><th>Domain</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div></div>';

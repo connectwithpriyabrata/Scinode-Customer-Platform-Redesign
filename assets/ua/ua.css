@@ -14,6 +14,9 @@
 .ua-chip.gold{background:rgba(229,214,46,.25);color:#5C4A00;}
 .ua-chip.gold b{color:#2a2600;}
 .ua-chip.gold svg{color:#5C4A00;}
+.ua-chip.success{background:#D4F0EE;color:#2D7A3A;}
+.ua-chip.success b{color:#2D7A3A;}
+.ua-chip.success svg{color:#2D7A3A;}
 
 /* Cards */
 .ua-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:20px;}

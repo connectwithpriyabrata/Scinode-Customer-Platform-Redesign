@@ -136,7 +136,7 @@
     const modsOn = (function () { let c = 0; for (let i = 0; i < UA.n(); i++) if (UA.teams().some((t) => t.mods[i] === '1')) c++; return c; })();
     const capsHead = '<div class="ua-row" style="justify-content:space-between;align-items:center">' +
       '<div class="ua-h">Your organization at a glance</div>' +
-      (free ? '' : '<span class="ua-chip gold">' + ic('crown', 13) + 'Unlimited Superadmins, Members &amp; Teams on Premium</span>') + '</div>';
+      (free ? '' : '<span class="ua-chip success">' + ic('sparkles', 13) + 'Unlimited Capacity - Premium</span>') + '</div>';
     let caps = cap('Superadmins', 'crown', U.sa, free ? L.sa : null, free ? U.sa / L.sa * 100 : null, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'No limit on Premium — add as many as you need.') +
       cap(free ? 'Member seats' : 'Members', 'users', U.mem, free ? L.mem : null, free ? U.mem / L.mem * 100 : null, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'No limit on Premium.');
     caps += free ? cap('Teams', 'network', '0', null, null, 'Teams unlock with Premium.', { locked: true, tag: ' <span class="ub gold" style="margin-left:2px">Premium</span>' }) : cap('Teams', 'network', U.teams, null, null, U.teams ? 'Each Team is scoped to this platform.' : 'No Teams yet.');

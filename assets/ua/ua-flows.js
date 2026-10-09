@@ -135,11 +135,25 @@
     });
   };
   UA.teamMenu = function (ev, tid) {
+    const t = UA.team(tid), hasAdmin = (t.admins || []).length > 0;
     UA.menu(ev, [
-      { label: 'Assign Admin', icon: 'shield', fn: "UA.assignTeamAdmin('" + tid + "')" },
+      hasAdmin ? { label: 'Remove Admin', icon: 'x-circle', fn: "UA.confirmRemoveTeamAdmin('" + tid + "')" } : { label: 'Assign Admin', icon: 'shield', fn: "UA.assignTeamAdmin('" + tid + "')" },
       { sep: 1 },
       { label: 'Delete Team', icon: 'trash', dg: 1, fn: "UA.confirmDeleteTeam('" + tid + "')" }
     ]);
+  };
+  UA.confirmRemoveTeamAdmin = function (tid) {
+    const t = UA.team(tid), a = UA.adminOf(t)[0];
+    UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Remove Admin from ' + esc(t.name) + '?',
+      sub: (a ? esc(a.name) : 'The current Admin') + ' goes back to Member and no longer manages this Team. You can assign a new Admin afterwards.',
+      body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Remove Admin', "UA.doRemoveTeamAdmin('" + tid + "')", 'btn-danger') });
+  };
+  UA.doRemoveTeamAdmin = function (tid) {
+    const t = UA.team(tid), ids = (t.admins || []).slice(), names = ids.map((id) => { const p = UA.person(id); return p ? p.name : id; });
+    t.admins = [];
+    ids.forEach((id) => { const p = UA.person(id); if (p && p.role === 'admin' && !UA.db.teams.some((team) => (team.admins || []).indexOf(id) > -1)) p.role = 'member'; });
+    UA.audit('Team Admin removed', t.name, names.join(', ') || '—', 'No Admin');
+    UA.closeModal(); UA.toast('Admin removed from ' + t.name); UA.openTeam(tid); refresh();
   };
   UA.toggleTeamMod = function (tid, i) {
     const t = UA.team(tid), a = t.mods.split(''); a[i] = a[i] === '1' ? '0' : '1'; t.mods = a.join('');

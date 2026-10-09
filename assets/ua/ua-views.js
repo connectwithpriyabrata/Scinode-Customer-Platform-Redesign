@@ -157,7 +157,7 @@
   function vOrgAdmin() {
     const me = UA.me(), db = UA.db, ts = UA.myTeams();
     const idc = card(esc(db.org.name), 'Read-only overview · ' + esc(UA.plat().name),
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gold">Premium</span><span class="ub navy">' + ic('shield', 11) + 'Your role · Admin</span>' + ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') + '</div>' +
+      '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gold">' + ic('gem', 11) + 'Premium</span><span class="ub navy">' + ic('shield', 11) + 'Your role · Admin</span>' + ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') + '</div>' +
       '<div class="ua-hint" style="margin-top:12px">You manage Members and module access for ' + (ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'your assigned Team') + '.</div>',
       btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'), 'ua-pair-card');
     const teamDir = card('Your Team directory', 'Only the Team(s) you belong to.', tree('mine'), null, 'ua-pair-card');
@@ -171,7 +171,7 @@
     const me = UA.me(), db = UA.db, ts = UA.myTeams();
     const useN = [...Array(UA.n()).keys()].filter((i) => UA.access(me, i).lvl === 'use').length, viewN = [...Array(UA.n()).keys()].filter((i) => UA.access(me, i).lvl === 'view').length;
     const hd = card(UA.db.day === 0 ? 'You are a Member of this organization' : 'My organization', esc(db.org.name) + ' · ' + esc(UA.plat().name),
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? 'Premium' : 'Free') + '</span>' + (ts.length ? ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') : '<span class="ub gray">No Team</span>') + '</div>' +
+      '<div class="ua-row wrap" style="gap:8px"><span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? ic('gem', 11) + 'Premium' : 'Free') + '</span>' + (ts.length ? ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') : '<span class="ub gray">No Team</span>') + '</div>' +
       '<div class="ua-fact-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-top:16px">' +
       fact('Organization', esc(db.org.name)) +
       fact('Team(s)', ts.map((t) => esc(t.name)).join(', ') || 'None — organization-level access') +

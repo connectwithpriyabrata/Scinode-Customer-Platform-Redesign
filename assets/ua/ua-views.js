@@ -171,11 +171,12 @@
     const me = UA.me(), db = UA.db, ts = UA.myTeams();
     const useN = [...Array(UA.n()).keys()].filter((i) => UA.access(me, i).lvl === 'use').length, viewN = [...Array(UA.n()).keys()].filter((i) => UA.access(me, i).lvl === 'view').length;
     const hd = card(UA.db.day === 0 ? 'You are a Member of this organization' : 'My organization', esc(db.org.name) + ' · ' + esc(UA.plat().name),
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">Role · Member</span><span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? 'Premium' : 'Free') + '</span>' + (ts.length ? ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') : '<span class="ub gray">No Team</span>') + '</div>' +
-      '<div class="ua-fact-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px">' +
+      '<div class="ua-row wrap" style="gap:8px"><span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? 'Premium' : 'Free') + '</span>' + (ts.length ? ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') : '<span class="ub gray">No Team</span>') + '</div>' +
+      '<div class="ua-fact-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-top:16px">' +
       fact('Organization', esc(db.org.name)) +
       fact('Team(s)', ts.map((t) => esc(t.name)).join(', ') || 'None — organization-level access') +
       fact('Access', useN + ' Use · ' + viewN + ' View') +
+      fact('Role', 'Member') +
       '</div>');
     const acc = UA.db.day === 0 ? '' : card('My access', 'Team-disabled always overrides an individual permission. Upgrade requests go to ' + (ts.length ? 'your Team Admin' : 'the Superadmin') + '.', '<div class="ua-list">' + accessRows() + '</div>',
       btn('Browse organization activity', 'UA.openModulePreview()', 'btn-outline btn-sm', 'activity'));

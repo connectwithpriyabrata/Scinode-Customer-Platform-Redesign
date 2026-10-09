@@ -75,7 +75,7 @@
 .ua-btn-locked{position:relative;}
 
 /* Badges */
-.ub{display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-full);padding:2px 9px;font-size:11px;font-weight:500;letter-spacing:.01em;white-space:nowrap;line-height:1.5;}
+.ub{display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-full);padding:2px 9px;font-size:11px;font-weight:500;letter-spacing:.01em;white-space:nowrap;line-height:1.5;flex-shrink:0;min-width:max-content;}
 .ub.teal{background:var(--teal-50);color:var(--teal-600);}
 .ub.navy{background:var(--navy-50);color:var(--navy-500);}
 .ub.success{background:#D4F0EE;color:#2D7A3A;}

@@ -114,7 +114,7 @@
     ts.forEach((t) => {
       const mem = pp.filter((p) => (p.teams || []).indexOf(t.id) > -1);
       h += '<div class="ua-branch"><div class="ua-node team"><span class="ua-ic">' + ic('users', 16) + '</span><div><div class="t">' + esc(t.name) + '</div><div class="s">Admin: ' + (UA.adminOf(t).map((a) => esc(a.name)).join(', ') || '—') + ' · ' + mem.length + ' member' + (mem.length === 1 ? '' : 's') + '</div></div></div>' +
-        (mem.length ? '<div class="ua-leafs">' + mem.map(leaf).join('') + '</div>' : '') + '</div>';
+        (mem.length && scope !== 'mine' ? '<div class="ua-leafs">' + mem.map(leaf).join('') + '</div>' : '') + '</div>';
     });
     if (none.length) h += '<div class="ua-branch"><div class="ua-node none"><span class="ua-ic gray">' + ic('user', 16) + '</span><div><div class="t">No Team</div><div class="s">Standalone Members · organization-level permissions</div></div></div><div class="ua-leafs">' + none.map(leaf).join('') + '</div></div>';
     return h + '</div></div>';

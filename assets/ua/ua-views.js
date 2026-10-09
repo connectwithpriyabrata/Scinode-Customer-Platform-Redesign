@@ -144,7 +144,7 @@
     caps += free ? '<div class="ua-card ua-cap ua-cap-hoverable"><div class="lbl">' + ic('gem', 14) + 'Plan<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button></div><div class="num">Free</div><div class="foot">Limited Free plan capacity.</div>' + btn('Upgrade to Premium', "UA.upgrade('tab','Organization › Plan card')", 'btn-premium btn-sm ua-cap-hover-cta') + '</div>'
       : cap('Modules', 'grid', modsOn, null, null, 'Workflows available on ' + esc(pl.name) + '.');
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
-    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div>' + capsHead + '<div class="ua-grid ' + (free ? 'c4' : 'c5') + '">' + caps + '</div>' + dir + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-h">Organization snapshot</div><div class="ua-grid c2">' + id + quickStartHub() + '</div>' + capsHead + '<div class="ua-grid ' + (free ? 'c4' : 'c5') + '">' + caps + '</div>' + dir + '</div>';
   }
   function steps() {
     const u = UA.usage(), free = !UA.premium();

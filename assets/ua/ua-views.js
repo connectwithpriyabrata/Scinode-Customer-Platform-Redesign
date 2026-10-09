@@ -137,13 +137,14 @@
     const capsHead = '<div class="ua-row" style="justify-content:space-between;align-items:center">' +
       '<div class="ua-h">Your organization at a glance</div>' +
       (free ? '' : '<span class="ua-chip success">' + ic('sparkles', 13) + 'Unlimited Capacity - Premium</span>') + '</div>';
-    let caps = cap('Superadmins', 'crown', U.sa, free ? L.sa : null, free ? U.sa / L.sa * 100 : null, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'No limit on Premium — add as many as you need.') +
-      cap(free ? 'Member seats' : 'Members', 'users', U.mem, free ? L.mem : null, free ? U.mem / L.mem * 100 : null, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'No limit on Premium.');
+    let caps = cap('Superadmins', 'crown', U.sa, free ? L.sa : null, free ? U.sa / L.sa * 100 : null, free ? 'Free includes 1 Superadmin. Doesn’t use a Member seat.' : 'Manage organization structure, billing, and Team-wide access.');
+    if (!free) caps += cap('Admins', 'shield', U.admins, null, null, 'Manage their Team’s Members and module access.');
+    caps += cap(free ? 'Member seats' : 'Members', 'users', U.mem, free ? L.mem : null, free ? U.mem / L.mem * 100 : null, free ? (U.mem >= L.mem ? 'You’ve used all Free seats.' : (L.mem - U.mem) + ' Free seat' + (L.mem - U.mem === 1 ? '' : 's') + ' remaining.') : 'Use enabled modules and request access as needed.');
     caps += free ? cap('Teams', 'network', '0', null, null, 'Teams unlock with Premium.', { locked: true, tag: ' <span class="ub gold" style="margin-left:2px">Premium</span>' }) : cap('Teams', 'network', U.teams, null, null, U.teams ? 'Each Team is scoped to this platform.' : 'No Teams yet.');
     caps += free ? '<div class="ua-card ua-cap ua-cap-hoverable"><div class="lbl">' + ic('gem', 14) + 'Plan<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button></div><div class="num">Free</div><div class="foot">Superadmin, Members and access management within Free capacity.</div>' + btn('Upgrade to Premium', "UA.upgrade('tab','Organization › Plan card')", 'btn-premium btn-sm ua-cap-hover-cta') + '</div>'
-      : cap('Modules', 'grid', modsOn, null, null, 'Modules enabled by at least one Team on ' + esc(pl.name) + '.');
+      : cap('Modules', 'grid', modsOn, null, null, 'Specialized workflows your organization can access on ' + esc(pl.name) + '.');
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
-    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div>' + capsHead + '<div class="ua-grid c4">' + caps + '</div>' + dir + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-grid c2">' + id + quickStartHub() + '</div>' + capsHead + '<div class="ua-grid ' + (free ? 'c4' : 'c5') + '">' + caps + '</div>' + dir + '</div>';
   }
   function steps() {
     const u = UA.usage(), free = !UA.premium();

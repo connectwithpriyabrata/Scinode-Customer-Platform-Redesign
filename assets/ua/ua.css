@@ -38,8 +38,9 @@
 .ua-grid.c2{grid-template-columns:repeat(2,minmax(0,1fr));}
 .ua-grid.c3{grid-template-columns:repeat(3,minmax(0,1fr));}
 .ua-grid.c4{grid-template-columns:repeat(4,minmax(0,1fr));}
+.ua-grid.c5{grid-template-columns:repeat(5,minmax(0,1fr));}
 .ua-grid.side{grid-template-columns:minmax(0,1fr) 340px;}
-@media(max-width:1180px){.ua-grid.c4{grid-template-columns:repeat(2,minmax(0,1fr));}.ua-grid.side{grid-template-columns:1fr;}}
+@media(max-width:1180px){.ua-grid.c4,.ua-grid.c5{grid-template-columns:repeat(2,minmax(0,1fr));}.ua-grid.side{grid-template-columns:1fr;}}
 @media(max-width:820px){.ua-grid.c2,.ua-grid.c3{grid-template-columns:1fr;}}
 .ua-muted{color:var(--text-2);}
 .ua-faint{color:var(--text-3);}

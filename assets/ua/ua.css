@@ -27,6 +27,9 @@
 .ua-upsell-icon{width:36px;height:36px;border-radius:var(--radius-full);background:var(--gold);color:#2a2600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .btn-premium svg{color:#2a2600;}
 .ua-card.flush{padding:0;overflow:hidden;}
+.ua-card.ua-pair-card{display:flex;flex-direction:column;justify-content:center;}
+.ua-card.ua-pair-card .ua-empty{padding:12px 20px;}
+.ua-card.ua-pair-card .ua-card-h{margin-bottom:16px;}
 .ua-card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
 .ua-h{font-family:var(--font-heading);font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.35;color:var(--text-1);}
 .ua-hint{font-size:12px;color:var(--text-2);margin-top:2px;line-height:1.5;}

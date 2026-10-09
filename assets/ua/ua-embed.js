@@ -59,7 +59,7 @@
     MOD = UA.PLATFORMS.scinode.mods.indexOf(EMB.moduleKey);
     el.innerHTML = '<div class="ua-card">' + head(EMB.title) + body(MOD) + '</div>';
   };
-  EMB.setRole = function (r) { S.role = r; UA.applyViewer(); EMB.render(); };
+  EMB.setRole = function (r) { S.role = r; UA.applyViewer(); if (EMB.mountId) EMB.render(); if (EMB.waitingMountIds.length) EMB.renderWaiting(); };
   EMB.setView = function (v) { VIEW = v; EMB.render(); };
   EMB.requestView = function (k) {
     const key = MOD + ':' + k;
@@ -84,4 +84,26 @@
     EMB.mountId = mountId; EMB.moduleKey = moduleKey; EMB.title = title;
     EMB.render();
   };
+
+  /* "Waiting on you" — a second, self-contained widget: pending Request to Use/View/invitation
+     approvals for Admins and Superadmins, surfaced outside Users & Access (e.g. the Dashboard).
+     Members never see it (they have nothing to approve), so it mounts empty for them. */
+  function waitingHead() {
+    const sw = '<div class="ua-row" style="gap:8px"><span class="ua-xs ua-muted">View as</span><div class="ua-seg">' +
+      ['superadmin', 'admin'].map((r) => '<button type="button" class="' + (S.role === r ? 'on use' : '') + '" onclick="UAEmbed.setRole(\'' + r + '\')">' + UA.roleLabel(r) + '</button>').join('') + '</div></div>';
+    return '<div class="ua-row wrap between"><div class="ua-h">Waiting on you</div>' + sw + '</div>';
+  }
+  EMB.waitingMountIds = [];
+  EMB.renderWaiting = function () {
+    const show = UA.isSA() || UA.isAdm(), n = UA.pendingCount();
+    EMB.waitingMountIds.forEach((id) => {
+      const el = document.getElementById(id); if (!el) return;
+      if (!show || !n) { el.innerHTML = ''; return; }
+      el.innerHTML = '<div class="ua-card">' + waitingHead() +
+        '<div class="ua-li" style="padding-top:0"><span class="ua-ic">' + ic('inbox', 16) + '</span><div class="grow"><div class="t">' + n + ' request' + (n === 1 ? '' : 's') + ' waiting on you</div><div class="s">' + (UA.isSA() ? 'Request to Use / View / invitation approvals across your organization' : 'Request to Use / View from your Team') + '</div></div></div>' +
+        '<button type="button" class="btn btn-default" style="margin-top:14px" onclick="UAEmbed.openApprovals()">Open Access &amp; Approvals</button></div>';
+    });
+  };
+  EMB.openApprovals = function () { location.href = 'users-access.html?role=' + S.role + '&plan=' + UA.db.plan + '&day=' + UA.db.day + '&platform=scinode&tab=approvals'; };
+  EMB.mountWaiting = function (mountId) { EMB.waitingMountIds.push(mountId); EMB.renderWaiting(); };
 })();

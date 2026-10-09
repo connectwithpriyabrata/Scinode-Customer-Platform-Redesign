@@ -9,6 +9,7 @@
   <title>Scinode Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/scinode.css?v=20260915" />
+  <link rel="stylesheet" href="assets/ua/ua.css?v=20261009a" />
   <script src="assets/scinode.js?v=20260801b"></script>
 
   <!-- Scinode Ecosystem: React + Babel (How We Execute Complex Science) -->
@@ -1492,6 +1493,9 @@
   <div id="day1" class="hidden">
     <h1 class="sr-only">Scinode Dashboard</h1>
     <div class="content">
+      <!-- "Waiting on you" — Admin/Superadmin pending approvals, embedded via assets/ua/ua-embed.js
+           so it stays wired to the same Users & Access role/permission model. -->
+      <div id="day1-waiting"></div>
       <!-- ═══ D1 SCENARIO TOGGLE:start ═══ -->
       <div class="d1-scenario-toggle" role="tablist" aria-label="Day 1 scenario">
         <button type="button" role="tab" data-mode="activity" aria-selected="false" onclick="setDay1Scenario('activity')">Activity Only</button>
@@ -1997,6 +2001,9 @@
   <div id="day10" class="hidden">
     <h1 class="sr-only">Scinode Dashboard — Active Projects</h1>
     <div class="content">
+      <!-- "Waiting on you" — Admin/Superadmin pending approvals, embedded via assets/ua/ua-embed.js
+           so it stays wired to the same Users & Access role/permission model. -->
+      <div id="day10-waiting"></div>
       <!-- ── Conversion Matrix ── -->
       <section aria-label="Conversion Matrix">
       <div class="sec-hdr">
@@ -4799,5 +4806,11 @@ function App() {
   [].forEach.call(document.querySelectorAll('.opps'),initOpps);
 })();
 </script>
+
+<!-- "Waiting on you" — Admin/Superadmin pending approvals, embedded via assets/ua/ua-embed.js
+     so it stays wired to the same Users & Access role/permission model (Day 1 + Day 10 only). -->
+<script src="assets/ua/ua-core.js?v=20261009a"></script>
+<script src="assets/ua/ua-embed.js?v=20261009a"></script>
+<script>UAEmbed.mountWaiting('day1-waiting');UAEmbed.mountWaiting('day10-waiting');</script>
 </body>
 </html>

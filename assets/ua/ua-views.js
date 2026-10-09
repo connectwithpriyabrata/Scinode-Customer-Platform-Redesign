@@ -129,7 +129,7 @@
       '<div class="ua-fact-grid">' +
       fact('Domain', esc(UA.db.org.domain)) +
       fact('Account ID', esc(UA.db.org.id), '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
-      fact('Plan', free ? 'Free' : 'Premium', free ? '<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button>' : '') +
+      fact('Plan', free ? 'Free' : '<span class="ub gold">' + ic('gem', 11) + 'Premium</span>', free ? '<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button>' : '') +
       fact('Location', esc(UA.db.org.location)) +
       '</div>',
       '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');

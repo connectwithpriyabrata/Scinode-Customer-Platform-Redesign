@@ -18,7 +18,7 @@
     const t = [{ id: 'organization', label: 'Organization' }, { id: 'teams', label: 'Teams', lock: !UA.premium() }, { id: 'members', label: 'Members' }];
     if (!UA.isMem()) {
       const inv = UA.invitesVisible().filter((i) => i.status === 'sent' || i.status === 'waiting').length;
-      t.push({ id: 'invitations', label: 'Invitations / Applications', n: inv, gray: true });
+      t.push({ id: 'invitations', label: 'Invitations', n: inv, gray: true });
       t.push({ id: 'approvals', label: 'Access & Approvals', n: UA.pendingCount() });
     }
     return t;
@@ -262,7 +262,7 @@
       return setup ? '<div class="ua-grid c2">' + empty + setup + '</div>' : empty;
     }
     return '<div style="display:flex;flex-direction:column;gap:16px">' + setup +
-      '<div class="ua-tbl-wrap"><div class="ua-toolbar"><div class="ua-h" style="font-size:14px">Invitations &amp; applications</div><span class="ua-spacer"></span>' + btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + '</div><div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Invitee</th><th>Invited by</th><th>Role</th><th>Team</th><th>Domain</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div></div>';
+      '<div class="ua-tbl-wrap"><div class="ua-toolbar"><div class="ua-h" style="font-size:14px">Invitations</div><span class="ua-spacer"></span>' + btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + '</div><div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Invitee</th><th>Invited by</th><th>Role</th><th>Team</th><th>Domain</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div></div>';
   }
   UA.inviteMenu = function (ev, id) {
     const i = UA.db.invites.find((x) => x.id === id), it = [];

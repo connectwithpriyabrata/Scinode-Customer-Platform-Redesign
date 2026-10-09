@@ -260,7 +260,7 @@
     UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(e), email: e, by: 'me', role: a.role, team: a.team || null, status: 'sent', domain: UA.domainType(e), date: 'Today', perm: perm, msg: a.msg || '' });
     if (t && a.role === 'admin' && !t.admins.length) t.pendingAdmin = e;
     UA.audit('Invitation sent', e, '—', UA.roleLabel(a.role) + (t ? ' · ' + t.name : ' · No Team')); UA.closeModal();
-    UA.toast('Invitation sent to ' + e, UA.isAdm() ? 'Superadmin notified · appears in Invitations / Applications as “Sent”.' : 'Appears in Invitations / Applications as “Sent”.'); refresh();
+    UA.toast('Invitation sent to ' + e, UA.isAdm() ? 'Superadmin notified · appears in Invitations as “Sent”.' : 'Appears in Invitations as “Sent”.'); refresh();
   };
   UA.resendInvite = function (id) { const i = UA.db.invites.find((x) => x.id === id); UA.audit('Invitation resent', i.email, 'Sent', 'Sent'); UA.toast('Invitation resent to ' + i.email); };
   UA.cancelInvite = function (id) {
@@ -309,7 +309,7 @@
     const mk = (email, role) => UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(email), email: email, by: 'me', role: role, team: t.id, status: 'sent', domain: UA.domainType(email), date: 'Today', perm: perm });
     mk(ad, 'admin'); mm.filter(validEmail).forEach((e) => mk(e, 'member'));
     UA.audit('Team created', nm, '—', mods.split('').filter((c) => c === '1').length + ' modules enabled'); UA.closeModal();
-    UA.toast('Team “' + nm + '” created', (1 + mm.filter(validEmail).length) + ' invitation' + (mm.length ? 's' : '') + ' sent · see Invitations / Applications.'); if (UA.ct.from) UA.auStep1(); else { S.tab = 'teams'; refresh(); }
+    UA.toast('Team “' + nm + '” created', (1 + mm.filter(validEmail).length) + ' invitation' + (mm.length ? 's' : '') + ' sent · see Invitations.'); if (UA.ct.from) UA.auStep1(); else { S.tab = 'teams'; refresh(); }
   };
 
   /* ───────────── Upgrade popups + Upgrade Intent capture ───────────── */

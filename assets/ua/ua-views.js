@@ -283,8 +283,7 @@
       '<select class="ua-select" onchange="S_f(\'rstat\',this.value)"><option value="pending"' + (f.rstat === 'pending' ? ' selected' : '') + '>Pending</option><option value="resolved"' + (f.rstat === 'resolved' ? ' selected' : '') + '>Resolved</option><option value="all"' + (f.rstat === 'all' ? ' selected' : '') + '>All</option></select>';
     window.S_f = function (k, v) { S.f[k] = v; UA.render(); };
     const body = list.length ? '<div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Requester</th><th>Request type</th><th>Module</th><th>Item / scope</th><th>Requested on</th><th>Approver</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' : UA.emptyState('inbox', 'Nothing waiting on you', 'Access & Approvals is empty when there are no open Request to Use / Request to View / invitation-approval items.');
-    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-banner neutral"><span>' + ic('info', 16) + '</span><div class="grow">Requests start inside a module (or in <b>My access</b>) and are resolved here. Members with a Team route to that Team’s Admin; Members with no Team route to the Superadmin. Approving changes a permission — <b>never a role or Team</b>.</div></div>' +
-      '<div class="ua-tbl-wrap"><div class="ua-toolbar"><div class="ua-h" style="font-size:14px">Requests awaiting a decision</div><span class="ua-spacer"></span>' + filters + '</div>' + body + '</div>' +
+    return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-tbl-wrap"><div class="ua-toolbar"><div class="ua-h" style="font-size:14px">Requests awaiting a decision</div><span class="ua-spacer"></span>' + filters + '</div>' + body + '</div>' +
       card('Audit history', 'Every request, approval, denial, invitation and permission change is recorded.', auditList(6), btn('View all', 'UA.openAudit()', 'btn-ghost-v btn-sm')) + '</div>';
   }
   function auditList(n) {

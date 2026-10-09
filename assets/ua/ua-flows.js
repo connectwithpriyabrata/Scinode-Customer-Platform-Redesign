@@ -129,13 +129,56 @@
       body: '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">Active</span><span class="ub gray">Platform · ' + esc(UA.plat().name) + '</span></div>' +
         '<div><div class="ua-sect">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + UA.roleBadge('admin') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div>' +
         '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
-        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-list" style="margin-top:6px">' + (pp.map((p) => '<div class="ua-li"><div class="grow">' + UA.person$(p, { noEmail: UA.isMem() }) + '</div><span class="ua-xs ua-muted ua-tnum">' + UA.accessSummary(p) + '</span>' + UA.roleBadge(p.role) + '</div>').join('') || '<div class="ua-hint">No members yet.</div>') + '</div></div>'
+        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-list" style="margin-top:6px">' + (pp.map((p) => '<div class="ua-li"><div class="grow">' + UA.person$(p, { noEmail: UA.isMem() }) + '</div><span class="ua-xs ua-muted ua-tnum">' + UA.accessSummary(p) + '</span>' + UA.roleBadge(p.role) + '</div>').join('') || '<div class="ua-hint">No members yet.</div>') + '</div></div>',
+      foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') + btn('Assign Admin', "UA.assignTeamAdmin('" + tid + "')", 'btn-outline', 'shield') + btn('Delete Team', "UA.confirmDeleteTeam('" + tid + "')", 'btn-danger-ghost', 'trash') : ''
     });
   };
   UA.toggleTeamMod = function (tid, i) {
     const t = UA.team(tid), a = t.mods.split(''); a[i] = a[i] === '1' ? '0' : '1'; t.mods = a.join('');
     UA.audit('Team module ' + (a[i] === '1' ? 'enabled' : 'disabled'), t.name + ' → ' + UA.mod(i).name, a[i] === '1' ? 'Off' : 'On', a[i] === '1' ? 'On' : 'Off');
     UA.toast(UA.mod(i).name + (a[i] === '1' ? ' enabled' : ' disabled') + ' for ' + t.name, a[i] === '1' ? '' : 'All members of this Team lose access — user-level permissions can’t override it.'); UA.openTeam(tid); refresh();
+  };
+  UA.editTeam = function (tid) {
+    const t = UA.team(tid);
+    UA.modal({ icon: 'pencil', title: 'Edit Team', sub: 'Update ' + esc(t.name) + '’s name and description.',
+      body: '<div class="ua-field"><label>Team name *</label><input type="text" id="et-name" class="ua-input" value="' + esc(t.name) + '" maxlength="60"></div><div class="ua-field" style="margin-top:12px"><label>Description</label><textarea id="et-desc" class="ua-input" rows="2" maxlength="140">' + esc(t.desc) + '</textarea></div>',
+      foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Save changes', "UA.saveTeamEdit('" + tid + "')", 'btn-default') });
+  };
+  UA.saveTeamEdit = function (tid) {
+    const t = UA.team(tid), name = (document.getElementById('et-name').value || '').trim(), desc = (document.getElementById('et-desc').value || '').trim();
+    if (!name) return;
+    const oldName = t.name; t.name = name; t.desc = desc;
+    UA.audit('Team details updated', oldName, oldName, name);
+    UA.closeModal(); UA.toast('Team updated'); UA.openTeam(tid); refresh();
+  };
+  UA.assignTeamAdmin = function (tid) {
+    const t = UA.team(tid), candidates = UA.people().filter((p) => p.id !== 'me' && p.role !== 'superadmin' && p.status === 'active');
+    UA.modal({ icon: 'shield', title: 'Assign Admin', sub: 'Choose who manages ' + esc(t.name) + '. They’re promoted to Admin if needed, and added to this Team.',
+      body: candidates.length ? candidates.map((p) => '<label class="ua-radio"><input type="radio" name="tad" value="' + p.id + '"><div><div class="t">' + esc(p.name) + '</div><div class="s">' + UA.roleLabel(p.role) + ((p.teams || []).indexOf(tid) > -1 ? ' · already in this Team' : '') + '</div></div></label>').join('') : '<div class="ua-hint">No eligible Members to assign.</div>',
+      foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + (candidates.length ? btn('Assign', "UA.saveTeamAdmin('" + tid + "')", 'btn-default') : '') });
+  };
+  UA.saveTeamAdmin = function (tid) {
+    const id = (document.querySelector('input[name=tad]:checked') || {}).value; if (!id) return UA.closeModal();
+    const p = UA.person(id), t = UA.team(tid), hadAdmin = t.admins.length > 0;
+    if ((p.teams || []).indexOf(tid) < 0) p.teams = (p.teams || []).concat([tid]);
+    if (p.role !== 'admin') p.role = 'admin';
+    if (t.admins.indexOf(id) < 0) t.admins.push(id);
+    UA.audit('Team Admin assigned', t.name, hadAdmin ? 'Had an Admin' : 'No Admin', p.name);
+    UA.closeModal(); UA.toast(p.name + ' is now Admin of ' + t.name); UA.openTeam(tid); refresh();
+  };
+  UA.confirmDeleteTeam = function (tid) {
+    const t = UA.team(tid), pp = UA.people().filter((p) => (p.teams || []).indexOf(tid) > -1);
+    UA.modal({ icon: 'trash', iconCls: 'gray', title: 'Delete ' + esc(t.name) + '?',
+      sub: (pp.length ? pp.length + ' member' + (pp.length === 1 ? '' : 's') + ' will move to No Team, keeping their organization-level access. ' : 'This Team has no members. ') + 'This can’t be undone.',
+      body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Delete Team', "UA.doDeleteTeam('" + tid + "')", 'btn-danger') });
+  };
+  UA.doDeleteTeam = function (tid) {
+    const t = UA.team(tid), wasAdmins = (t.admins || []).slice();
+    UA.people().forEach((p) => { if ((p.teams || []).indexOf(tid) > -1) p.teams = p.teams.filter((x) => x !== tid); });
+    UA.db.teams = UA.db.teams.filter((x) => x.id !== tid);
+    wasAdmins.forEach((id) => { const p = UA.person(id); if (p && p.role === 'admin' && !UA.db.teams.some((team) => (team.admins || []).indexOf(id) > -1)) p.role = 'member'; });
+    UA.audit('Team deleted', t.name, 'Active', 'Deleted');
+    UA.closeModal(); UA.closeDrawer(); UA.toast(t.name + ' deleted', 'Members moved to No Team.'); refresh();
   };
 
   /* ───────────── Add New User (send-side of the invite flow) ───────────── */

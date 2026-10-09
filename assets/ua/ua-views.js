@@ -52,8 +52,8 @@
     const rootEl = document.getElementById('ua-root'); if (!rootEl) return;
     const tabs = UA.tabList(); if (!tabs.find((t) => t.id === S.tab)) S.tab = 'organization';
     let headerActions = '';
-    if (!UA.isMem()) {
-      if (UA.isSA()) headerActions += btn('Create Team', UA.premium() ? 'UA.openCreateTeam()' : "UA.upgrade('team','Header button')", 'btn-outline', 'plus');
+    if (!UA.isMem() && !UA.premium()) {
+      if (UA.isSA()) headerActions += btn('Create Team', "UA.upgrade('team','Header button')", 'btn-outline', 'plus');
       headerActions += btn(UA.isAdm() ? 'Invite Member' : 'Add Member', 'UA.openAddUser()', 'btn-default', 'user-plus');
     }
     let h = '<div class="ua-crumb">Organization Settings <span class="ua-faint">›</span> <b>Users &amp; Access</b></div>' +

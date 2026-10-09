@@ -80,7 +80,7 @@
       const teamState = me.teams.length ? (a.teamOff ? '<span class="ub gray">Not available to this team</span>' : '<span class="ub teal">Enabled for team</span>') : '<span class="ub gray">No Team · org-level</span>';
       let act = '';
       if (pend) act = '<span class="ub warn dot">Request pending</span>';
-      else if (a.lvl === 'view') act = btn('Request use', "UA.requestUse(" + i + ")", 'btn-outline btn-sm', 'arrow');
+      else if (a.lvl === 'view') act = btn('Request use', "UA.requestUse(" + i + ")", 'btn-ghost-v btn-sm');
       else if (a.lvl === 'none' && !a.teamOff) act = btn('Request access', "UA.requestUse(" + i + ")", 'btn-ghost-v btn-sm');
       h += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 16) + '</span><div class="n">' + m.name + '<small>' + (a.teamOff ? (a.base !== 'none' ? 'Team-disabled overrides your individual ' + a.base.toUpperCase() + ' permission' : 'Disabled for your team') : 'Your permission: ' + (a.base === 'none' ? 'No Access' : a.base === 'use' ? 'Use' : 'View')) + '</small></div>' + (compact ? '' : teamState) + UA.lvlBadge(a.lvl, a.teamOff) + '<div style="min-width:140px;text-align:right">' + act + '</div></div>';
     }

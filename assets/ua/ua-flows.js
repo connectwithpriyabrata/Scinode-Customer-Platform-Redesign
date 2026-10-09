@@ -297,6 +297,14 @@
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Approve', "UA.decide('" + rid + "','approve',document.getElementById('ea-v').value)", 'btn-default') });
   };
   UA.decide = function (rid, act, opt) {
+    if (act === 'reject') {
+      const r = UA.db.requests.find((x) => x.id === rid), p = UA.person(r.pid);
+      const sub = r.type === 'invite' ? esc(p.name) + ' won’t be added to ' + esc(UA.plat().name) + '. They can be invited again later.' : esc(p.name) + ' is notified and their current access stays unchanged.';
+      return UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Reject this request?', sub: sub, body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Reject', "UA.doDecide('" + rid + "','reject')", 'btn-danger') });
+    }
+    UA.doDecide(rid, act, opt);
+  };
+  UA.doDecide = function (rid, act, opt) {
     const r = UA.db.requests.find((x) => x.id === rid), p = UA.person(r.pid), ok = act === 'approve'; r.status = ok ? 'approved' : 'rejected';
     if (r.type === 'use' && ok) { const lv = opt || 'use'; UA.setPerm(p, r.mod, lv); UA.audit('Request to Use approved', p.name + ' → ' + UA.mod(r.mod).name, 'View', cap1(lv)); }
     else if (r.type === 'view' && ok) { UA.db.unlocked[r.itemKey || (p.id + ':' + r.mod)] = true; if (opt === 'module') UA.db.unlocked['*' + p.id + ':' + r.mod] = true; UA.audit('Request to View approved', p.name + ' → ' + UA.mod(r.mod).name, 'Restricted', opt === 'module' ? 'Module history unlocked' : 'Item unlocked'); }

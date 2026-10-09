@@ -158,7 +158,7 @@
     const me = UA.me(), db = UA.db, ts = UA.myTeams();
     const idc = card(esc(db.org.name), 'Read-only overview · ' + esc(UA.plat().name),
       '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gold">Premium</span><span class="ub navy">' + ic('shield', 11) + 'Your role · Admin</span>' + ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') + '</div>' +
-      '<div class="ua-hint" style="margin-top:12px">Billing, ownership controls, Superadmin management and organization-wide role management aren’t shown to Admins.</div>',
+      '<div class="ua-hint" style="margin-top:12px">You manage Members and module access for ' + (ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'your assigned Team') + '.</div>',
       btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'), 'ua-pair-card');
     const teamDir = card('Your Team directory', 'Only the Team(s) you belong to.', tree('mine'), null, 'ua-pair-card');
     const scope = card('What you can do as an Admin', 'Your authority is bounded by your assigned Team(s).',

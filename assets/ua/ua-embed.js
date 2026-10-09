@@ -25,7 +25,7 @@
     const m = UA.mod(i), me = UA.me(), a = UA.access(me, i), mem = UA.isMem(), adm = UA.isAdm();
     const pill = UA.isSA() ? '<span class="ub navy">Superadmin · Use on every module</span>' : a.teamOff ? '<span class="ub gray">Not enabled for your Team</span>' : '<span class="ub ' + (a.lvl === 'use' ? 'teal' : a.lvl === 'view' ? 'navy' : 'gray') + '">Your access: ' + (a.lvl === 'use' ? 'Use' : a.lvl === 'view' ? 'View' : 'No Access') + '</span>';
     const pendingUse = UA.db.requests.some((r) => r.pid === 'me' && r.mod === i && r.type === 'use' && r.status === 'pending');
-    const upg = a.lvl === 'view' && !UA.isSA() ? (pendingUse ? '<span class="ub warn dot">Upgrade request pending</span>' : '<button type="button" class="btn btn-outline btn-sm" onclick="UAEmbed.upgradeToUse()">' + ic('arrow', 14) + 'Upgrade to Use</button>') : '';
+    const upg = a.lvl === 'view' && !UA.isSA() ? (pendingUse ? '<span class="ub warn dot">Request pending</span>' : '<button type="button" class="btn btn-outline btn-sm" onclick="UAEmbed.upgradeToUse()">' + ic('arrow', 14) + 'Request use</button>') : '';
     const statusRow = '<div class="ua-row wrap" style="gap:8px;margin-top:10px">' + pill + upg + '</div>';
 
     const adminOff = adm && a.teamOff;

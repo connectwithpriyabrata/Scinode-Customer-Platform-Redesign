@@ -415,7 +415,7 @@
     const el = document.getElementById('pv-body'); if (!el) return; const i = UA.pv.mod, m = UA.mod(i), me = UA.me(), a = UA.access(me, i), mem = UA.isMem();
     const sel = '<select class="ua-select" onchange="UA.pv.mod=+this.value;UA.renderPreview()">' + UA.modIds().map((id, k) => '<option value="' + k + '"' + (k === i ? ' selected' : '') + '>' + UA.mod(k).name + '</option>').join('') + '</select>';
     const pill = UA.isSA() ? '<span class="ub navy">Superadmin · Use on every module</span>' : a.teamOff ? '<span class="ub gray">Not enabled for your Team</span>' : '<span class="ub ' + (a.lvl === 'use' ? 'teal' : a.lvl === 'view' ? 'navy' : 'gray') + '">Your access: ' + (a.lvl === 'use' ? 'Use' : a.lvl === 'view' ? 'View' : 'No Access') + '</span>';
-    const upg = a.lvl === 'view' && !UA.isSA() ? (UA.db.requests.some((r) => r.pid === 'me' && r.mod === i && r.type === 'use' && r.status === 'pending') ? '<span class="ub warn dot">Upgrade request pending</span>' : btn('Upgrade to Use', 'UA.requestUse(' + i + ')', 'btn-outline btn-sm', 'arrow')) : '';
+    const upg = a.lvl === 'view' && !UA.isSA() ? (UA.db.requests.some((r) => r.pid === 'me' && r.mod === i && r.type === 'use' && r.status === 'pending') ? '<span class="ub warn dot">Request pending</span>' : btn('Request use', 'UA.requestUse(' + i + ')', 'btn-outline btn-sm', 'arrow')) : '';
     const head = '<div class="ua-row wrap between"><div class="ua-row"><span class="ua-ic lg">' + ic(m.icon, 20) + '</span><div><div class="ua-h" style="font-size:18px">' + m.name + '</div><div class="ua-hint">' + esc(UA.db.org.name) + ' · ' + esc(UA.plat().name) + '</div></div></div><div class="ua-row wrap">' + sel + pill + upg + '</div></div>';
     let body = '';
     const adminOff = UA.isAdm() && a.teamOff;

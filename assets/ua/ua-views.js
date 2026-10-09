@@ -159,11 +159,12 @@
     const idc = card(esc(db.org.name), 'Read-only overview · ' + esc(UA.plat().name),
       '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gold">Premium</span><span class="ub navy">' + ic('shield', 11) + 'Your role · Admin</span>' + ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') + '</div>' +
       '<div class="ua-hint" style="margin-top:12px">Billing, ownership controls, Superadmin management and organization-wide role management aren’t shown to Admins.</div>',
-      btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'));
+      btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'), 'ua-pair-card');
+    const teamDir = card('Your Team directory', 'Only the Team(s) you belong to.', tree('mine'), null, 'ua-pair-card');
     const scope = card('What you can do as an Admin', 'Your authority is bounded by your assigned Team(s).',
       '<div class="ua-grid c2"><div><div class="ua-sect">You can</div><div class="ua-list">' + ['Manage Members inside your Team(s)', 'Invite Members into your own Team — the Superadmin is notified of every invite', 'Set View / Use within modules already enabled for your Team', 'Approve Request to Use / View for your Team’s Members'].map((x) => '<div class="ua-li" style="padding:6px 0"><span style="color:var(--teal-600)">' + ic('check', 15) + '</span><div class="grow t" style="font-weight:400">' + x + '</div></div>').join('') + '</div></div>' +
       '<div><div class="ua-sect">You can’t</div><div class="ua-list">' + ['Create Teams or invite Admins / Superadmins', 'Enable new modules for a Team', 'Manage people outside your Team scope', 'Change organization-wide structure or Billing'].map((x) => '<div class="ua-li" style="padding:6px 0"><span style="color:var(--text-3)">' + ic('x', 15) + '</span><div class="grow t" style="font-weight:400;color:var(--text-2)">' + x + '</div></div>').join('') + '</div></div></div>');
-    return '<div style="display:flex;flex-direction:column;gap:16px;min-width:0">' + idc + scope + card('Your Team directory', 'Only the Team(s) you belong to.', tree('mine')) + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px;min-width:0"><div class="ua-grid c2">' + idc + teamDir + '</div>' + scope + '</div>';
   }
 
   function vOrgMember() {

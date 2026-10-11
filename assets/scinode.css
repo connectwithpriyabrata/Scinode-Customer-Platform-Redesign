@@ -923,6 +923,13 @@
                   font-size:12px;border:0.5px solid var(--border);background:var(--white);color:var(--text-2);}
     .btn-icon-sm:hover{border-color:var(--teal-500);color:var(--teal-500);}
 
+    /* Toggle switch — shared, used wherever a preference is on/off */
+    .sw{position:relative;width:34px;height:20px;border-radius:999px;background:#CBD5E1;border:none;cursor:pointer;flex-shrink:0;transition:background .15s;padding:0;}
+    .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .15s;}
+    .sw.on{background:var(--teal-500);}
+    .sw.on::after{transform:translateX(14px);}
+    .sw:disabled{opacity:.45;cursor:not-allowed;}
+
     /* Badge — unified shadcn variants with Scinode type tokens */
     .badge{display:inline-flex;align-items:center;border-radius:var(--radius-full);
            border:1px solid transparent;padding:2px 8px;font-size:11px;

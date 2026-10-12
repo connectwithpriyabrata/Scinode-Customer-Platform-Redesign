@@ -191,6 +191,8 @@ textarea.ua-input{height:auto;padding:9px 12px;resize:vertical;line-height:1.5;}
 .ua-list{display:flex;flex-direction:column;}
 .ua-li{display:flex;align-items:center;gap:12px;padding:11px 0;}
 .ua-li+.ua-li{border-top:.5px solid var(--border);}
+.ua-li.click{cursor:pointer;margin:0 -8px;padding:11px 8px;border-radius:var(--radius-sm);}
+.ua-li.click:hover{background:#F8FAFC;}
 .ua-li .grow{flex:1;min-width:0;}
 .ua-li .t{font-size:13px;font-weight:500;color:var(--text-1);}
 .ua-li .s{font-size:11px;color:var(--text-2);margin-top:1px;line-height:1.45;}

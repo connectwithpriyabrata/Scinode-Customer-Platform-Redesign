@@ -216,16 +216,13 @@
   function vMembers() {
     const U = UA.usage(), L = UA.limits(), free = !UA.premium(), full = free && U.mem >= L.mem;
     const canAdd = !UA.isMem();
-    const only = UA.membersVisible().length === 1 && UA.isSA();
+    const onboarding = UA.membersVisible().length === 1 && UA.isSA() && UA.db.day === 0;
     let h = '';
     if (full && UA.isSA()) h += '<div class="ua-banner warn"><span>' + ic('alert', 16) + '</span><div class="grow"><div class="t">You’ve reached your Free plan user limit</div><div>All ' + L.mem + ' Member seats are in use. Upgrade to add more people, Teams and Admins.</div></div><div class="acts">' + btn('Upgrade to Premium', "UA.upgrade('member','Members banner')", 'btn-premium btn-sm') + '</div></div>';
-    if (only) {
+    if (onboarding) {
       const buildCard = '<div class="ua-card ua-pair-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div>';
-      if (UA.db.day === 0) {
-        const setup = card('Set up your organization', null, '<div class="ua-steps">' + steps() + '</div>', null, 'ua-pair-card');
-        return '<div style="display:flex;flex-direction:column;gap:16px">' + h + '<div class="ua-grid c2">' + buildCard + setup + '</div></div>';
-      }
-      return '<div style="display:flex;flex-direction:column;gap:16px">' + h + buildCard + '</div>';
+      const setup = card('Set up your organization', null, '<div class="ua-steps">' + steps() + '</div>', null, 'ua-pair-card');
+      h += '<div class="ua-grid c2">' + buildCard + setup + '</div>';
     }
     const teamOpts = '<option value="all">All Teams</option><option value="none">No Team</option>' + UA.teams().map((t) => '<option value="' + t.id + '"' + (S.f.team === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('');
     h += '<div class="ua-tbl-wrap"><div class="ua-toolbar"><label class="ua-search">' + ic('search', 15) + '<input type="search" placeholder="Search name or email" value="' + esc(S.f.q) + '" oninput="UA.setF(\'q\',this.value)"></label>' +

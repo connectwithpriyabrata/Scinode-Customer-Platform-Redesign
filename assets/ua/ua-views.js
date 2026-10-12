@@ -118,7 +118,7 @@
     if (UA.isMem()) return vOrgMember();
     if (UA.isAdm()) return vOrgAdmin();
     const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
-    const id = card(esc(UA.db.org.name) + ' <span class="ub success" style="font-family:var(--font);vertical-align:middle;margin-left:4px">' + esc(UA.db.org.status) + '</span>',
+    const id = card(esc(UA.db.org.name),
       'Verified member since ' + esc(UA.db.org.since),
       '<div class="ua-fact-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">' +
       fact('Domain', esc(UA.db.org.domain)) +

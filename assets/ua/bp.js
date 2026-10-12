@@ -9,7 +9,7 @@
 
   /* ───────────── Scope map (the answer to “what else needs to be built”) ───────────── */
   const UI = [
-    ['Organization tab', 'Org identity, plan, capacity counters (X/2 Members, X/1 Superadmin), Day 0 setup, org directory tree.', 1, 'proto', 'users-access.html?tab=organization'],
+    ['Organization tab', 'Org identity, plan, capacity counters (X/10 Members, X/1 Superadmin), Day 0 setup, org directory tree.', 1, 'proto', 'users-access.html?tab=organization'],
     ['Teams tab', 'Free = Premium gate with a clickable Create Team. Premium = create/manage Teams, assign Admin, per-Team module on/off, Team members.', 1, 'proto', 'users-access.html?plan=premium&day=1&tab=teams'],
     ['Members tab', 'Directory with Role / Team / Status filters, detail drawer, View/Use per module, change role, suspend, remove.', 1, 'proto', 'users-access.html?tab=members&plan=premium&day=1'],
     ['Add New User (send side)', 'Role → capacity check → details → send. Blocked actions open the Premium modal, never a dead end. <i>Confirm overlap with your invite flow.</i>', 1, 'proto', 'users-access.html?tab=members'],
@@ -25,7 +25,7 @@
     ['Domain-matching & company-routing engine', 'Public-domain check → private-domain lookup → new vs existing company. Public list is a config table, never hard-coded.', 1],
     ['Shared authorization service — canUserAccess()', 'One server-side 14-step precedence check for every platform. Front-end hiding is never a substitute.', 1],
     ['Entitlement & allowance engine', 'Member ≤ Team ≤ Organization allowance. Pools belong to the Company ID — never multiplied by users, teams or platforms.', 1],
-    ['Capacity checks before create', 'Free = 1 Superadmin + 2 Members + 0 Teams, enforced before creating/activating anything plan-controlled.', 1],
+    ['Capacity checks before create', 'Free = 1 Superadmin + 10 Members + 0 Teams, enforced before creating/activating anything plan-controlled.', 1],
     ['Upgrade Intent service', 'User, role, plan, trigger event, source screen, timestamp → routed to the right Ops team (Deep Research → IONS Ops, kept configurable).', 1],
     ['Access Request workflow', 'Request to Use / Request to View entity + endpoints, routed to Team Admin or Superadmin. Changes a permission — never a role or Team.', 1],
     ['Audit log + Module Activity Log', 'Two append-only tables: internal audit trail vs the customer-facing per-module Org Activity feed.', 1],
@@ -168,7 +168,7 @@
       'Master UI doc (99 pp): Members can invite Members; the invite needs Team Admin / Superadmin approval.', 'PRD rule 27 + Design Spec §3.3: <b>Members can never invite, on any plan.</b> (Design Spec §8.2 still mentions “approve Member-invited users” — a leftover.)',
       'Members cannot invite. Master doc treated as superseded.', 'Confirm'],
     ['soon', 'Do pending invitations use up a Member seat?',
-      'Not specified. Free = 2 Member seats.', 'A Free org could over-invite unless invites reserve seats.',
+      'Not specified. Free = 10 Member seats.', 'A Free org could over-invite unless invites reserve seats.',
       'Sent invitations reserve a seat; cancelling releases it.', 'Product'],
     ['soon', 'What role does the outgoing Superadmin keep after an approved transfer?',
       'Docs: current Superadmin keeps ownership until Nucleus approves; audit records previous / new / approver / timestamp.', 'Nothing about what the previous owner becomes, or who is eligible to receive ownership.',

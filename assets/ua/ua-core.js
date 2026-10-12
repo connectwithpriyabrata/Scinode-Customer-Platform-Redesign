@@ -318,8 +318,8 @@
     return all;
   };
 
-  /* ───────────── Capacity (Free = 1 Superadmin + 2 Members + 0 Teams; Premium limits are config-driven — illustrative) ───────────── */
-  UA.limits = () => (UA.premium() ? { sa: 3, mem: 25, teams: 10, admins: 10 } : { sa: 1, mem: 2, teams: 0, admins: 0 });
+  /* ───────────── Capacity (Free = 1 Superadmin + 10 Members + 0 Teams; Premium limits are config-driven — illustrative) ───────────── */
+  UA.limits = () => (UA.premium() ? { sa: 3, mem: 25, teams: 10, admins: 10 } : { sa: 1, mem: 10, teams: 0, admins: 0 });
   UA.usage = function () {
     const pp = UA.people();
     const reserved = UA.db.invites.filter((i) => i.role === 'member' && (i.status === 'sent') && !i.pid).length;

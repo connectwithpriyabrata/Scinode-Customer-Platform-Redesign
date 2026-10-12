@@ -36,7 +36,7 @@
     if (ev) ev.stopPropagation();
     UA.modal({
       icon: 'gem', iconCls: 'gold', title: 'Plan limitations', sub: 'What your Free plan includes — and what Premium adds.',
-      body: '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">2 Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
+      body: '<div class="ua-row wrap" style="gap:8px"><span class="ub gray">1 Superadmin</span><span class="ub gray">' + UA.limits().mem + ' Members</span><span class="ub gray">No Teams</span><span class="ub gray">No Admins</span></div><div class="ua-lockrow" style="margin-top:14px"><span class="ua-xs ua-muted">Locked on Free:</span>' +
         '<button type="button" class="ua-lockchip" onclick="UA.upgrade(\'team\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Team</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'admin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Create Admin</button><button type="button" class="ua-lockchip" onclick="UA.upgrade(\'superadmin\',\'Organization › Locked actions\')">' + ic('lock', 12) + 'Add another Superadmin</button></div>',
       foot: btn('Close', 'UA.closeModal()', 'btn-ghost-v') + btn('Upgrade to Premium', "UA.closeModal();UA.upgrade('tab','Organization › Plan limitations')", 'btn-premium')
     });
@@ -55,7 +55,7 @@
       (headerActions ? '<div class="ua-row" style="gap:8px">' + headerActions + '</div>' : '') + '</div>';
 
     if (S.role === 'admin' && !UA.premium()) {
-      h += '<div class="ua-card">' + UA.emptyState('lock', 'Admin isn’t available on the Free plan', 'Admin is a Team-scoped role — it requires at least one Team, and Teams are a Premium capability. On Free, an organization has 1 Superadmin and up to 2 Members.',
+      h += '<div class="ua-card">' + UA.emptyState('lock', 'Admin isn’t available on the Free plan', 'Admin is a Team-scoped role — it requires at least one Team, and Teams are a Premium capability. On Free, an organization has 1 Superadmin and up to ' + UA.limits().mem + ' Members.',
         '<div class="ua-row wrap" style="justify-content:center;margin-top:6px"><span class="ua-proto">Prototype</span>' + btn('View as Premium Admin', "UA.setState({plan:'premium'})", 'btn-outline') + btn('View as Free Superadmin', "UA.setState({role:'superadmin'})", 'btn-ghost-v') + '</div>', 'gray') + '</div>';
       rootEl.innerHTML = h; return;
     }
@@ -191,7 +191,7 @@
         '<p class="ua-sub" style="margin-top:8px">' + (d1 ? 'Teams let you group members and control which modules they can access.' : 'Create teams to organize members and control module access at the team level.') + '</p>' +
         '<ul>' + ['Group Members and give each Team its own module access', 'Assign Team Admins who manage their own people', 'Enable or disable modules per Team — Team settings always win', 'Team-scoped approvals for access requests'].map((x) => '<li>' + ic('check', 15) + x + '</li>').join('') + '</ul>' +
         '<div class="ua-row wrap">' + btn('Create Team', "UA.upgrade('team','Teams tab › + Create Team')", 'btn-default', 'plus') + btn('Upgrade to Premium', "UA.upgrade('tab','Teams tab › Upgrade')", 'btn-premium') + '</div><div class="ua-hint" style="margin-top:10px">Free includes 0 Teams. The Create Team button stays visible and clickable — it opens the upgrade popup instead of a broken form.</div></div>' +
-        '<div class="ua-gate-art"><span class="g">Your organization today</span><div><div class="big">0</div><div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:4px">Teams on the Free plan</div></div><div style="font-size:12px;color:rgba(255,255,255,.55)">Superadmin · ' + UA.usage().mem + '/2 Members</div></div></div>';
+        '<div class="ua-gate-art"><span class="g">Your organization today</span><div><div class="big">0</div><div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:4px">Teams on the Free plan</div></div><div style="font-size:12px;color:rgba(255,255,255,.55)">Superadmin · ' + UA.usage().mem + '/' + UA.limits().mem + ' Members</div></div></div>';
     }
     let ts = UA.isSA() ? UA.teams() : UA.myTeams();
     const head = '<div class="ua-row between wrap"><div><div class="ua-h">' + (UA.isSA() ? 'Teams' : UA.isAdm() ? 'Your Teams' : 'My Teams') + '</div><div class="ua-hint">' + (UA.isAdm() ? 'You manage members within your assigned Teams.' : UA.isMem() ? 'View-only — your Teams, their modules, and your effective access.' : 'Teams are scoped to this platform and never appear on another.') + '</div></div>' + (UA.isSA() && UA.db.day !== 0 ? btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') : '') + '</div>';

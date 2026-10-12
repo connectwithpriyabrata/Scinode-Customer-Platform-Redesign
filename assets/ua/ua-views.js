@@ -32,12 +32,6 @@
     items.push({ sep: 1 }, { lbl: 'Future actions' });
     UA.menu(ev, items);
   };
-  UA.copyOrgId = function (ev) {
-    if (ev) ev.stopPropagation();
-    const id = UA.db.org.id;
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).catch(() => {});
-    UA.toast('Copied', id + ' copied to clipboard');
-  };
   UA.openPlanLimits = function (ev) {
     if (ev) ev.stopPropagation();
     UA.modal({
@@ -126,9 +120,8 @@
     const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
     const id = card(esc(UA.db.org.name) + ' <span class="ub success" style="font-family:var(--font);vertical-align:middle;margin-left:4px">' + esc(UA.db.org.status) + '</span>',
       'Verified member since ' + esc(UA.db.org.since),
-      '<div class="ua-fact-grid">' +
+      '<div class="ua-fact-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">' +
       fact('Domain', esc(UA.db.org.domain)) +
-      fact('Account ID', esc(UA.db.org.id), '<button type="button" class="ua-fact-copy" onclick="UA.copyOrgId(event)" aria-label="Copy account ID">' + ic('copy', 12) + '</button>') +
       fact('Plan', free ? 'Free' : '<span class="ub gold">' + ic('gem', 11) + 'Premium</span>', free ? '<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button>' : '') +
       fact('Location', esc(UA.db.org.location)) +
       '</div>',

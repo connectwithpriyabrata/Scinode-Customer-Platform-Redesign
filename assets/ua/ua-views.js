@@ -219,11 +219,6 @@
     const onboarding = UA.membersVisible().length === 1 && UA.isSA() && UA.db.day === 0;
     let h = '';
     if (full && UA.isSA()) h += '<div class="ua-banner warn"><span>' + ic('alert', 16) + '</span><div class="grow"><div class="t">You’ve reached your Free plan user limit</div><div>All ' + L.mem + ' Member seats are in use. Upgrade to add more people, Teams and Admins.</div></div><div class="acts">' + btn('Upgrade to Premium', "UA.upgrade('member','Members banner')", 'btn-premium btn-sm') + '</div></div>';
-    if (onboarding) {
-      const buildCard = '<div class="ua-card ua-pair-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div>';
-      const setup = card('Set up your organization', null, '<div class="ua-steps">' + steps() + '</div>', null, 'ua-pair-card');
-      h += '<div class="ua-grid c2">' + buildCard + setup + '</div>';
-    }
     const teamOpts = '<option value="all">All Teams</option><option value="none">No Team</option>' + UA.teams().map((t) => '<option value="' + t.id + '"' + (S.f.team === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('');
     h += '<div class="ua-tbl-wrap"><div class="ua-toolbar"><label class="ua-search">' + ic('search', 15) + '<input type="search" placeholder="Search name or email" value="' + esc(S.f.q) + '" oninput="UA.setF(\'q\',this.value)"></label>' +
       '<select class="ua-select" onchange="UA.setF(\'role\',this.value)"><option value="all">All roles</option><option value="superadmin"' + (S.f.role === 'superadmin' ? ' selected' : '') + '>Superadmin</option><option value="admin"' + (S.f.role === 'admin' ? ' selected' : '') + '>Admin</option><option value="member"' + (S.f.role === 'member' ? ' selected' : '') + '>Member</option></select>' +
@@ -233,6 +228,11 @@
       (canAdd ? btn(UA.isAdm() ? 'Invite Member' : 'Add New User', 'UA.openAddUser()', 'btn-default', 'plus') : '') + '</div>' +
       '<div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Member</th><th>Role</th><th>Team</th><th>Status</th><th>Access</th><th>' + (UA.premium() && UA.db.day === 1 ? 'Last active' : 'Joined') + '</th><th></th></tr></thead><tbody id="ua-mrows">' + memberRows() + '</tbody></table></div></div>' +
       (UA.isMem() ? '<div class="ua-hint" style="margin-top:12px">Members can see basic directory info and their own access. Only Superadmins and Admins can invite people or edit access.</div>' : '');
+    if (onboarding) {
+      const buildCard = '<div class="ua-card ua-pair-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div>';
+      const setup = card('Set up your organization', null, '<div class="ua-steps">' + steps() + '</div>', null, 'ua-pair-card');
+      h += '<div class="ua-grid c2">' + buildCard + setup + '</div>';
+    }
     return '<div style="display:flex;flex-direction:column;gap:16px">' + h + '</div>';
   }
   UA.setF = function (k, v) { S.f[k] = v; const b = document.getElementById('ua-mrows'); if (b) b.innerHTML = memberRows(); else UA.render(); };

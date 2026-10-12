@@ -204,17 +204,19 @@
   };
 
   /* ───────────── Add New User (send-side of the invite flow) ───────────── */
-  UA.au = { role: 'member', team: '', email: '', perms: {}, msg: '' };
+  UA.au = { role: 'member', team: '', email: '', perms: {}, msg: '', teamLocked: false };
   UA.openAddUser = function (pre) {
-    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', perms: {}, msg: '' };
+    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', perms: {}, msg: '', teamLocked: !!(pre && pre.team) };
     if (UA.isAdm() && !UA.au.team) UA.au.team = UA.myTeams()[0] ? UA.myTeams()[0].id : '';
     UA.auStep1();
   };
   UA.auStep1 = function () {
     const o = (r, ttl, s, lock) => '<label class="ua-radio' + (UA.au.role === r ? ' on' : '') + (lock === 'x' ? ' disabled' : '') + '"><input type="radio" name="aur" value="' + r + '"' + (UA.au.role === r ? ' checked' : '') + (lock === 'x' ? ' disabled' : '') + ' onchange="UA.au.role=this.value;UA.auStep1()"><div style="flex:1"><div class="t">' + ttl + (lock === 'p' ? ' <span class="ub gold">' + ic('lock', 10) + 'Premium</span>' : '') + '</div><div class="s">' + s + '</div></div></label>';
     const u = UA.usage(), l = UA.limits();
+    if (UA.au.teamLocked && UA.au.role === 'superadmin') UA.au.role = 'member';
     UA.modal({ icon: 'user-plus', title: UA.isAdm() ? 'Invite Member' : 'Add New User', sub: 'Step 1 of 2 · Choose a role. Capacity is checked before anything is created.',
       body: (UA.isAdm() ? o('member', 'Member', 'Standard user, joins your Team with Use permission unless you set View.') + o('admin', 'Admin', 'Co-manages your Team — invites Members, approves requests.') + '<div class="ua-hint">Admins can invite Members or a fellow Admin into their own Team, but can’t invite Superadmins or create Teams. The Superadmin is notified of every invite you send.</div>'
+        : UA.au.teamLocked ? o('member', 'Member', 'Standard user. Joins with Use permission unless you set View.') + o('admin', 'Admin', 'Manages people inside this Team.', UA.premium() ? '' : 'p') + '<div class="ua-hint">Adding directly to a Team — Superadmins aren’t scoped to a Team, so only Member and Admin are offered here.</div>'
         : o('member', 'Member', 'Standard user. Joins with Use permission unless you set View.') + o('admin', 'Admin', 'Manages people inside assigned Team(s). Requires a Team.', UA.premium() ? '' : 'p') + o('superadmin', 'Superadmin', 'Platform-wide administration. Doesn’t need a Team.', UA.premium() ? '' : 'p')) +
         (UA.premium() ? '' : '<div class="ua-row between ua-sm ua-muted"><span>Members <b style="color:var(--text-1)">' + u.mem + '/' + l.mem + '</b> used on Free</span>' + (u.mem >= l.mem ? '<span class="ub warn">Seat limit reached</span>' : '') + '</div>'),
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Continue', 'UA.auContinue()', 'btn-default', 'arrow') });

@@ -17,24 +17,6 @@
     return false;
   }
 
-  /* ───────────── Cross-platform footprint (Consolidated PRD §4 — one identity, independent membership
-     per platform). 'me' is excluded: in this prototype 'me' is a flexible "View as" simulation lens rather
-     than a fixed identity, so the Platform selector itself is how you explore your own cross-platform view. */
-  function footprintHtml(id) {
-    if (id === 'me') return '';
-    const fp = UA.footprint(id);
-    return '<div><div class="ua-sect">Across platforms <span class="ua-faint" style="font-weight:400;text-transform:none;letter-spacing:0">— same identity, independent membership</span></div><div class="ua-list">' +
-      fp.map((f) => {
-        const pl = UA.PLATFORMS[f.platform], here = f.platform === S.platform;
-        const name = esc(pl.name) + (pl.legacy ? ' <span class="ua-faint">(' + pl.legacy + ')</span>' : '') + (here ? ' <span class="ub teal">Here</span>' : '');
-        if (!f.person) return '<div class="ua-li"><span class="ua-ic gray">' + ic('layers', 15) + '</span><div class="grow"><div class="t">' + name + '</div><div class="s">No membership · ' + cap1(f.plan) + ' plan</div></div></div>';
-        const status = f.person.status !== 'active' ? ' · ' + UA.statusBadge(f.person.status) : '';
-        return '<div class="ua-li"><span class="ua-ic ' + (here ? '' : 'gray') + '">' + ic('layers', 15) + '</span><div class="grow"><div class="t">' + name + '</div><div class="s">' + UA.roleLabel(f.person.role) + ' · ' + (f.teamNames.length ? esc(f.teamNames.join(', ')) : 'No Team') + ' · ' + cap1(f.plan) + '/Day ' + f.day + status + '</div></div>' +
-          (here ? '' : btn('View here', "UA.jumpTo('" + f.platform + "','" + id + "')", 'btn-ghost-v btn-sm')) + '</div>';
-      }).join('') + '</div></div>';
-  }
-  UA.jumpTo = function (plat, id) { UA.closeDrawer(); UA.setState({ platform: plat, tab: 'members' }); UA.openMember(id); };
-
   /* ───────────── Member detail drawer ───────────── */
   UA.openMember = function (id) {
     const p = UA.person(id), mem = UA.isMem(), edit = canManage(p) && p.status === 'active';
@@ -51,7 +33,6 @@
       lead: UA.av(p, 'lg'), title: esc(p.name) + (p.id === 'me' ? ' <span class="ua-you">You</span>' : ''), sub: (mem ? '' : esc(p.email)),
       body: '<div class="ua-row wrap" style="gap:8px">' + UA.roleBadge(p.role) + UA.statusBadge(p.status) + '</div>' +
         '<div><div class="ua-sect">Details</div><dl class="ua-kv">' + (mem ? '' : '<dt>Email</dt><dd>' + esc(p.email) + '</dd><dt>Phone</dt><dd>+91 98••• ••' + (40 + p.name.length) + '</dd>') + '<dt>Organization</dt><dd>' + esc(UA.db.org.name) + '</dd><dt>Platform</dt><dd>' + esc(UA.plat().name) + '</dd><dt>Team</dt><dd>' + UA.teamChips(p) + '</dd><dt>Joined</dt><dd>' + esc(p.joined) + (p.organic ? ' · joined without an invite' : '') + '</dd></dl></div>' +
-        (mem ? '' : footprintHtml(id)) +
         (p.status === 'pending' ? '<div class="ua-banner warn"><span>' + ic('clock', 16) + '</span><div class="grow">Waiting for approval — public-domain signup.</div>' + (UA.isMem() ? '' : '<div class="acts">' + btn('Review', "UA.closeDrawer();UA.go('approvals')", 'btn-outline btn-sm') + '</div>') + '</div>' : '<div><div class="ua-sect">Module access' + (edit ? ' · effective = Team enabled ∧ Member permission' : '') + '</div>' + mods + '</div>' + recent) +
         (UA.isAdm() && p.role !== 'member' ? '<div class="ua-hint">Admins can’t change other Admins or Superadmins.</div>' : '') + (mem && p.id !== 'me' ? '<div class="ua-hint">Members see basic directory info only.</div>' : ''),
       foot: foot

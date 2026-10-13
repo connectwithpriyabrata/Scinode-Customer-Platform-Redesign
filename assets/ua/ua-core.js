@@ -221,9 +221,8 @@
       if (role === 'member' && db.plan === 'premium') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
     }
   };
-  /* ensurePlatform seeds a platform with its own default Plan/Stage the first time it's looked at — either
-     by actually visiting it, or indirectly via UA.footprint() — and never touches whichever platform is
-     currently active. */
+  /* ensurePlatform seeds a platform with its own default Plan/Stage the first time it's visited —
+     and never touches whichever platform is currently active. */
   UA.ensurePlatform = function (plat) {
     if (!UA.cache[plat]) { const d = UA.PLATFORM_DEFAULTS[plat]; UA.cache[plat] = seed(d.plan, d.day, plat); }
     return UA.cache[plat];
@@ -242,19 +241,6 @@
     UA.applyViewer();
   };
   UA.resetData = function () { UA.cache = {}; UA.load(); };
-
-  /* One identity, many platform memberships (Consolidated PRD §4): look up this same person id across all
-     four platforms without disturbing whichever platform is currently on screen. Each platform resolves
-     its own team names from its OWN team list — team ids are only unique within a platform. */
-  UA.footprint = function (id) {
-    return Object.keys(UA.PLATFORMS).map((plat) => {
-      const db = UA.ensurePlatform(plat);
-      const person = db.people.find((x) => x.id === id);
-      const active = person && person.status !== 'removed' ? person : null;
-      const teamNames = active ? (active.teams || []).map((tid) => { const t = db.teams.find((x) => x.id === tid); return t ? t.name : tid; }) : [];
-      return { platform: plat, plan: db.plan, day: db.day, person: active, teamNames: teamNames };
-    });
-  };
 
   /* ───────────── Accessors ───────────── */
   UA.people = () => UA.db.people.filter((p) => p.hideWhen !== S.role && p.status !== 'removed');

@@ -140,6 +140,12 @@
 textarea.ua-input{height:auto;padding:9px 12px;resize:vertical;line-height:1.5;}
 .ua-input:hover{border-color:var(--teal-100);}
 .ua-input.err{border-color:#EF4444;border-width:1.5px;}
+.ua-chip-input{min-height:36px;width:100%;border:.5px solid #CBD5E1;border-radius:var(--radius-sm);background:#fff;padding:5px 8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;cursor:text;}
+.ua-chip-input:focus-within{border-color:var(--teal-500);}
+.ua-chip-input input{flex:1;min-width:140px;border:none;outline:none;font-family:var(--font);font-size:13px;color:var(--text-1);padding:4px 2px;background:transparent;}
+.ua-mem-chip{display:inline-flex;align-items:center;gap:4px;background:#D4F0EE;color:#2D7A3A;border-radius:var(--radius-full);padding:3px 4px 3px 10px;font-size:12px;font-weight:500;white-space:nowrap;}
+.ua-mem-chip button{background:none;border:none;color:#2D7A3A;cursor:pointer;display:flex;align-items:center;padding:3px;border-radius:50%;}
+.ua-mem-chip button:hover{background:rgba(45,122,58,.15);}
 .ua-field{display:flex;flex-direction:column;gap:6px;}
 .ua-field>label{font-size:12px;font-weight:500;color:var(--text-1);}
 .ua-field .h{font-size:11px;color:var(--text-2);line-height:1.45;}

@@ -262,11 +262,42 @@
   };
 
   /* ───────────── Create Team (Premium) ───────────── */
-  UA.ct = { mods: {}, msg: '' };
+  UA.ct = { mods: {}, msg: '', mem: [] };
   UA.openCreateTeam = function (o) {
     const blocked = UA.capacity('team'); if (blocked) return UA.upgrade(blocked, 'Teams tab › + Create Team');
-    UA.ct = { mods: {}, from: o && o.from, modsOpen: false, msg: '' }; for (let i = 0; i < UA.n(); i++) UA.ct.mods[i] = { on: true, lvl: 'use' };
+    UA.ct = { mods: {}, from: o && o.from, modsOpen: false, msg: '', mem: [] }; for (let i = 0; i < UA.n(); i++) UA.ct.mods[i] = { on: true, lvl: 'use' };
     UA.ctRender();
+  };
+  function ctMemChips() {
+    return (UA.ct.mem || []).map((e) => '<span class="ua-mem-chip">' + esc(e) + '<button type="button" onclick="UA.ctRemoveMem(\'' + e.replace(/'/g, "\\'") + '\')" aria-label="Remove ' + esc(e) + '">' + ic('x', 10) + '</button></span>').join('');
+  }
+  function ctCommitMemDraft(el) {
+    const v = el.value.trim().toLowerCase();
+    if (v && (UA.ct.mem || []).indexOf(v) < 0) (UA.ct.mem = UA.ct.mem || []).push(v);
+    el.value = '';
+    const wrap = el.parentElement;
+    wrap.querySelectorAll('.ua-mem-chip').forEach((c) => c.remove());
+    wrap.insertAdjacentHTML('afterbegin', ctMemChips());
+  }
+  UA.ctMemInput = function (el) {
+    if (el.value.indexOf(',') === -1) return;
+    const parts = el.value.split(','), rest = parts.pop();
+    parts.forEach((p) => { el.value = p; ctCommitMemDraft(el); });
+    el.value = rest;
+  };
+  UA.ctMemKey = function (ev, el) {
+    if (ev.key === 'Enter') { ev.preventDefault(); ctCommitMemDraft(el); }
+    else if (ev.key === 'Backspace' && !el.value && (UA.ct.mem || []).length) {
+      UA.ct.mem.pop();
+      const chips = el.parentElement.querySelectorAll('.ua-mem-chip');
+      if (chips.length) chips[chips.length - 1].remove();
+    }
+  };
+  UA.ctRemoveMem = function (email) {
+    UA.ct.mem = (UA.ct.mem || []).filter((e) => e !== email);
+    const wrap = document.getElementById('ct-mem').parentElement;
+    wrap.querySelectorAll('.ua-mem-chip').forEach((c) => c.remove());
+    wrap.insertAdjacentHTML('afterbegin', ctMemChips());
   };
   UA.ctRender = function () {
     const keepVals = ['ct-name', 'ct-desc', 'ct-admin', 'ct-mem', 'ct-msg'].map((id) => { const e = document.getElementById(id); return e ? e.value : ''; });
@@ -275,14 +306,14 @@
     UA.modal({ icon: 'users', title: 'Create Team', sub: 'Teams belong to <b>' + esc(UA.db.org.name) + '</b> on <b>' + esc(UA.plat().name) + '</b> only.', size: 'wide', noFocus: true,
       body: '<div class="ua-grid c2"><div class="ua-field"><label for="ct-name">Team name *</label><input id="ct-name" class="ua-input" placeholder="e.g. Process Development" value="' + esc(keepVals[0]) + '"><div class="e" id="ct-e1"></div></div><div class="ua-field"><label for="ct-admin">Assigned Admin (email)</label><input id="ct-admin" class="ua-input" type="email" placeholder="admin@acme.com" value="' + esc(keepVals[2]) + '"><div class="e" id="ct-e2"></div></div></div>' +
         '<div class="ua-field"><label for="ct-desc">Description</label><input id="ct-desc" class="ua-input" placeholder="What does this Team work on?" value="' + esc(keepVals[1]) + '"></div>' +
-        '<div class="ua-field"><label for="ct-mem">Add Members</label><input id="ct-mem" class="ua-input" placeholder="a@acme.com, b@acme.com" value="' + esc(keepVals[3]) + '"><div class="h">Invite people to this Team right away — separate multiple emails with commas.</div></div>' +
+        '<div class="ua-field"><label for="ct-mem">Add Members</label><div class="ua-chip-input" onclick="document.getElementById(\'ct-mem\').focus()">' + ctMemChips() + '<input id="ct-mem" placeholder="' + ((UA.ct.mem || []).length ? '' : 'a@acme.com, b@acme.com') + '" value="' + esc(keepVals[3]) + '" oninput="UA.ctMemInput(this)" onkeydown="UA.ctMemKey(event,this)"></div><div class="h">Invite people to this Team right away — press comma or Enter after each email.</div></div>' +
         '<div><div class="ua-row between" style="align-items:center"><div class="ua-sect" style="color:var(--text-1);margin-bottom:0">Module access</div><button type="button" class="ua-link" onclick="UA.ct.modsOpen=!UA.ct.modsOpen;UA.ctRender()">' + (modsOpen ? 'Hide' : 'Show (' + onCount + ' of ' + UA.n() + ' on)') + '</button></div><div class="ua-hint" style="margin:4px 0 10px">Turn each module on or off for this Team, and set View or Use as the default for new members. A module that’s off overrides any individual permission.</div>' + (modsOpen ? mods : '') + '</div>' +
         '<div class="ua-field"><label for="ct-msg">Invitation message <span class="ua-faint" style="font-weight:400">(optional)</span></label><textarea id="ct-msg" class="ua-input" rows="3" maxlength="280" placeholder="Add a personal note the invitees will see in their invitation…" oninput="UA.ct.msg=this.value">' + esc(keepVals[4]) + '</textarea></div>' +
         '<div class="ua-banner info"><span>' + ic('info', 16) + '</span><div class="grow">Creating the Team sends invitations to any Admin and Members you add — you can assign an Admin later from the Team drawer. Invitees default to <b>Use</b> unless you choose View. An Admin can never create a Team or invite another Admin.</div></div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Create Team', 'UA.ctSubmit()', 'btn-default') });
   };
   UA.ctSubmit = function () {
-    const nm = document.getElementById('ct-name').value.trim(), ad = document.getElementById('ct-admin').value.trim().toLowerCase(), ds = document.getElementById('ct-desc').value.trim(), mm = document.getElementById('ct-mem').value.split(',').map((x) => x.trim().toLowerCase()).filter(Boolean), msg = document.getElementById('ct-msg').value;
+    const nm = document.getElementById('ct-name').value.trim(), ad = document.getElementById('ct-admin').value.trim().toLowerCase(), ds = document.getElementById('ct-desc').value.trim(), draft = document.getElementById('ct-mem').value.trim().toLowerCase(), mm = (UA.ct.mem || []).concat(draft ? [draft] : []), msg = document.getElementById('ct-msg').value;
     let bad = false; const e1 = document.getElementById('ct-e1'), e2 = document.getElementById('ct-e2'); e1.textContent = e2.textContent = '';
     if (!nm) { e1.textContent = 'Give the Team a name.'; bad = true; } else if (UA.teams().some((t) => t.name.toLowerCase() === nm.toLowerCase())) { e1.textContent = 'A Team with this name already exists on this platform.'; bad = true; }
     if (ad && !validEmail(ad)) { e2.textContent = 'Enter a valid email, or leave this blank.'; bad = true; }

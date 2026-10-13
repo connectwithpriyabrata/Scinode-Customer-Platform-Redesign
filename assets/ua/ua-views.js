@@ -28,7 +28,7 @@
   UA.orgMenu = function (ev) {
     const items = [];
     if (UA.db.day === 0) items.push({ label: 'Set up your organization', icon: 'arrow', fn: "UA.go('members')" });
-    items.push({ label: 'Edit organization details', icon: 'pencil', fn: "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')" });
+    items.push({ label: 'Edit details', icon: 'pencil', fn: "UA.toast('Organization details','Editing is part of Organization Settings (not in this module).')" });
     items.push({ sep: 1 }, { lbl: 'Future actions' });
     UA.menu(ev, items);
   };

@@ -265,17 +265,18 @@
   UA.ct = { mods: {} };
   UA.openCreateTeam = function (o) {
     const blocked = UA.capacity('team'); if (blocked) return UA.upgrade(blocked, 'Teams tab › + Create Team');
-    UA.ct = { mods: {}, from: o && o.from }; for (let i = 0; i < UA.n(); i++) UA.ct.mods[i] = { on: true, lvl: 'use' };
+    UA.ct = { mods: {}, from: o && o.from, modsOpen: false }; for (let i = 0; i < UA.n(); i++) UA.ct.mods[i] = { on: true, lvl: 'use' };
     UA.ctRender();
   };
   UA.ctRender = function () {
     const keepVals = ['ct-name', 'ct-desc', 'ct-admin', 'ct-mem'].map((id) => { const e = document.getElementById(id); return e ? e.value : ''; });
+    const modsOpen = !!UA.ct.modsOpen, onCount = Object.keys(UA.ct.mods).filter((i) => UA.ct.mods[i].on).length;
     let mods = ''; for (let i = 0; i < UA.n(); i++) { const m = UA.mod(i), c = UA.ct.mods[i]; mods += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (c.on ? seg(c.lvl, "UA.ct.mods[" + i + "].lvl='%L';UA.ctRender()", ['view', 'use']) : '') + '<button type="button" class="ua-switch ' + (c.on ? 'on' : '') + '" onclick="UA.ct.mods[' + i + '].on=!UA.ct.mods[' + i + '].on;UA.ctRender()" aria-label="Toggle ' + m.name + '"></button></div>'; }
     UA.modal({ icon: 'users', title: 'Create Team', sub: 'Teams belong to <b>' + esc(UA.db.org.name) + '</b> on <b>' + esc(UA.plat().name) + '</b> only.', size: 'wide', noFocus: true,
       body: '<div class="ua-grid c2"><div class="ua-field"><label for="ct-name">Team name *</label><input id="ct-name" class="ua-input" placeholder="e.g. Process Development" value="' + esc(keepVals[0]) + '"><div class="e" id="ct-e1"></div></div><div class="ua-field"><label for="ct-admin">Assigned Admin (email)</label><input id="ct-admin" class="ua-input" type="email" placeholder="admin@acme.com" value="' + esc(keepVals[2]) + '"><div class="e" id="ct-e2"></div></div></div>' +
         '<div class="ua-field"><label for="ct-desc">Description</label><input id="ct-desc" class="ua-input" placeholder="What does this Team work on?" value="' + esc(keepVals[1]) + '"></div>' +
         '<div class="ua-field"><label for="ct-mem">Add Members</label><input id="ct-mem" class="ua-input" placeholder="a@acme.com, b@acme.com" value="' + esc(keepVals[3]) + '"><div class="h">Invite people to this Team right away — separate multiple emails with commas.</div></div>' +
-        '<div><div class="ua-sect" style="color:var(--text-1)">Module access</div><div class="ua-hint" style="margin-bottom:10px">Turn each module on or off for this Team, and set View or Use as the default for new members. A module that’s off overrides any individual permission.</div>' + mods + '</div>' +
+        '<div><div class="ua-row between" style="align-items:center"><div class="ua-sect" style="color:var(--text-1);margin-bottom:0">Module access</div><button type="button" class="ua-link" onclick="UA.ct.modsOpen=!UA.ct.modsOpen;UA.ctRender()">' + (modsOpen ? 'Hide' : 'Show (' + onCount + ' of ' + UA.n() + ' on)') + '</button></div><div class="ua-hint" style="margin:4px 0 10px">Turn each module on or off for this Team, and set View or Use as the default for new members. A module that’s off overrides any individual permission.</div>' + (modsOpen ? mods : '') + '</div>' +
         '<div class="ua-banner info"><span>' + ic('mail', 16) + '</span><div class="grow">Creating the Team sends invitations to any Admin and Members you add — you can assign an Admin later from the Team drawer. Invitees default to <b>Use</b> unless you choose View. An Admin can never create a Team or invite another Admin.</div></div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Create Team', 'UA.ctSubmit()', 'btn-default') });
   };

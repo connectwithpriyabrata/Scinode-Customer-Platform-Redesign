@@ -271,28 +271,29 @@
   UA.ctRender = function () {
     const keepVals = ['ct-name', 'ct-desc', 'ct-admin', 'ct-mem'].map((id) => { const e = document.getElementById(id); return e ? e.value : ''; });
     let mods = ''; for (let i = 0; i < UA.n(); i++) { const m = UA.mod(i), c = UA.ct.mods[i]; mods += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (c.on ? seg(c.lvl, "UA.ct.mods[" + i + "].lvl='%L';UA.ctRender()", ['view', 'use']) : '') + '<button type="button" class="ua-switch ' + (c.on ? 'on' : '') + '" onclick="UA.ct.mods[' + i + '].on=!UA.ct.mods[' + i + '].on;UA.ctRender()" aria-label="Toggle ' + m.name + '"></button></div>'; }
-    UA.modal({ icon: 'users', title: 'Create Team', sub: 'Teams belong to <b>' + esc(UA.db.org.name) + '</b> on <b>' + esc(UA.plat().name) + '</b> only. Every Team needs an assigned Admin.', size: 'wide', noFocus: true,
-      body: '<div class="ua-grid c2"><div class="ua-field"><label for="ct-name">Team name *</label><input id="ct-name" class="ua-input" placeholder="e.g. Process Development" value="' + esc(keepVals[0]) + '"><div class="e" id="ct-e1"></div></div><div class="ua-field"><label for="ct-admin">Assigned Admin (email) *</label><input id="ct-admin" class="ua-input" type="email" placeholder="admin@acme.com" value="' + esc(keepVals[2]) + '"><div class="e" id="ct-e2"></div></div></div>' +
+    UA.modal({ icon: 'users', title: 'Create Team', sub: 'Teams belong to <b>' + esc(UA.db.org.name) + '</b> on <b>' + esc(UA.plat().name) + '</b> only. Assigning an Admin now is optional, but recommended.', size: 'wide', noFocus: true,
+      body: '<div class="ua-grid c2"><div class="ua-field"><label for="ct-name">Team name *</label><input id="ct-name" class="ua-input" placeholder="e.g. Process Development" value="' + esc(keepVals[0]) + '"><div class="e" id="ct-e1"></div></div><div class="ua-field"><label for="ct-admin">Assigned Admin (email) <span class="ua-faint" style="font-weight:400">(optional)</span></label><input id="ct-admin" class="ua-input" type="email" placeholder="admin@acme.com" value="' + esc(keepVals[2]) + '"><div class="e" id="ct-e2"></div></div></div>' +
         '<div class="ua-field"><label for="ct-desc">Description</label><input id="ct-desc" class="ua-input" placeholder="What does this Team work on?" value="' + esc(keepVals[1]) + '"></div>' +
         '<div class="ua-field"><label for="ct-mem">Initial Members (optional, comma-separated emails)</label><input id="ct-mem" class="ua-input" placeholder="a@acme.com, b@acme.com" value="' + esc(keepVals[3]) + '"></div>' +
         '<div><div class="ua-sect">Module access for this Team · toggle on/off, then default View or Use for invitees</div>' + mods + '<div class="ua-hint" style="margin-top:6px">If a module is off for the Team, every member loses it — individual permissions can’t override.</div></div>' +
-        '<div class="ua-banner info"><span>' + ic('mail', 16) + '</span><div class="grow">Creating the Team sends invitations to the Admin and any Members. Invitees default to <b>Use</b> unless you choose View. An Admin can never create a Team or invite another Admin.</div></div>',
+        '<div class="ua-banner info"><span>' + ic('mail', 16) + '</span><div class="grow">Creating the Team sends invitations to any Admin and Members you add — you can assign an Admin later from the Team drawer. Invitees default to <b>Use</b> unless you choose View. An Admin can never create a Team or invite another Admin.</div></div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Create Team', 'UA.ctSubmit()', 'btn-default') });
   };
   UA.ctSubmit = function () {
     const nm = document.getElementById('ct-name').value.trim(), ad = document.getElementById('ct-admin').value.trim().toLowerCase(), ds = document.getElementById('ct-desc').value.trim(), mm = document.getElementById('ct-mem').value.split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
     let bad = false; const e1 = document.getElementById('ct-e1'), e2 = document.getElementById('ct-e2'); e1.textContent = e2.textContent = '';
     if (!nm) { e1.textContent = 'Give the Team a name.'; bad = true; } else if (UA.teams().some((t) => t.name.toLowerCase() === nm.toLowerCase())) { e1.textContent = 'A Team with this name already exists on this platform.'; bad = true; }
-    if (!validEmail(ad)) { e2.textContent = 'A Team needs an assigned Admin — enter a valid email.'; bad = true; }
+    if (ad && !validEmail(ad)) { e2.textContent = 'Enter a valid email, or leave this blank.'; bad = true; }
     if (bad) return;
     const blocked = UA.capacity('team'); if (blocked) return UA.upgrade(blocked, 'Create Team › Submit');
     let mods = '', perm = ''; for (let i = 0; i < UA.n(); i++) { const c = UA.ct.mods[i]; mods += c.on ? '1' : '0'; perm += c.on ? (c.lvl === 'view' ? 'V' : 'U') : 'N'; }
-    const t = { id: UA.uid('t'), name: nm, desc: ds || 'New Team', admins: [], mods: mods, status: 'active', pendingAdmin: ad };
+    const t = { id: UA.uid('t'), name: nm, desc: ds || 'New Team', admins: [], mods: mods, status: 'active', pendingAdmin: ad || '' };
     UA.db.teams.push(t);
     const mk = (email, role) => UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(email), email: email, by: 'me', role: role, team: t.id, status: 'sent', domain: UA.domainType(email), date: 'Today', perm: perm });
-    mk(ad, 'admin'); mm.filter(validEmail).forEach((e) => mk(e, 'member'));
+    if (ad) mk(ad, 'admin'); mm.filter(validEmail).forEach((e) => mk(e, 'member'));
     UA.audit('Team created', nm, '—', mods.split('').filter((c) => c === '1').length + ' modules enabled'); UA.closeModal();
-    UA.toast('Team “' + nm + '” created', (1 + mm.filter(validEmail).length) + ' invitation' + (mm.length ? 's' : '') + ' sent · see Invitations.'); if (UA.ct.from) UA.auStep1(); else { S.tab = 'teams'; refresh(); }
+    const invited = (ad ? 1 : 0) + mm.filter(validEmail).length;
+    UA.toast('Team “' + nm + '” created', invited ? invited + ' invitation' + (invited === 1 ? '' : 's') + ' sent · see Invitations.' : 'No Admin assigned yet — you can add one from the Team drawer.'); if (UA.ct.from) UA.auStep1(); else { S.tab = 'teams'; refresh(); }
   };
 
   /* ───────────── Upgrade popups + Upgrade Intent capture ───────────── */

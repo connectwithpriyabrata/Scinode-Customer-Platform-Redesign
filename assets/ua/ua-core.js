@@ -347,7 +347,7 @@
     bd.style.zIndex = 215; bd.classList.add('open'); bd.onclick = () => UA.closeModal();
     m.innerHTML = '<div class="ua-modal-box ' + (o.size || '') + '" role="dialog" aria-modal="true">' +
       '<div class="ua-modal-h">' + (o.icon ? '<span class="ua-ic ' + (o.iconCls || '') + ' lg">' + ic(o.icon, 20) + '</span>' : '') +
-      '<div style="flex:1;min-width:0"><div class="ua-modal-t">' + o.title + '</div>' + (o.sub ? '<div class="ua-modal-s">' + o.sub + '</div>' : '') + '</div>' +
+      '<div style="flex:1;min-width:0"><div class="ua-modal-t" style="display:flex;align-items:center;justify-content:space-between;gap:8px">' + '<span>' + o.title + '</span>' + (o.badge ? '<span class="ub gray" style="font-family:var(--font);flex-shrink:0">' + o.badge + '</span>' : '') + '</div>' + (o.sub ? '<div class="ua-modal-s">' + o.sub + '</div>' : '') + '</div>' +
       '<button type="button" class="ua-x" onclick="UA.closeModal()" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<div class="ua-modal-b">' + (o.body || '') + '</div>' + (o.foot ? '<div class="ua-modal-f">' + o.foot + '</div>' : '') + '</div>';
     requestAnimationFrame(() => m.classList.add('open'));

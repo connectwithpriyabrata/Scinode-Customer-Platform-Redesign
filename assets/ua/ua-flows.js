@@ -335,7 +335,7 @@
     team: () => ({ ttl: 'Create your first Team with Premium', txt: 'Free includes 0 Teams. Upgrade to Premium to organize Members into Teams and manage module access by Team.', ev: 'CREATE_TEAM', cta: 'Upgrade to Premium', no: 'Cancel' }),
     superadmin: () => ({ ttl: 'Share administration with Premium', txt: 'Free includes 1 Superadmin. Upgrade to Premium to add another Superadmin and share platform administration.', ev: 'ADD_SUPERADMIN', cta: 'Upgrade to Premium', no: 'Cancel' }),
     admin: () => ({ ttl: 'Add an Admin with Premium', txt: 'Admins work through Teams. Free includes 0 Teams, so you’ll need Premium to create a Team and add a team-based Admin.', ev: 'CREATE_ADMIN', cta: 'Upgrade to Premium', no: 'Cancel' }),
-    tab: () => ({ ttl: 'Unlock more with Premium', txt: 'You’re currently on Free. This part of Users & Access is available with Premium, including expanded users, Teams and stronger access controls.', ev: 'PREMIUM_TAB_ACTION', cta: 'Upgrade to Premium', no: 'Not now' })
+    tab: () => ({ ttl: 'Unlock more with Premium', txt: 'You’re on the Free plan. Upgrade to Premium for more users, Teams, and stronger access controls.', ev: 'PREMIUM_TAB_ACTION', cta: 'Upgrade to Premium', no: 'Not now' })
   };
   UA.upgrade = function (variant, src) {
     if (UA.isMem() && variant !== 'limit') variant = 'learn';
@@ -343,7 +343,7 @@
     if (variant === 'limit') return UA.modal({ icon: 'alert', iconCls: 'gold', title: 'You’ve reached your plan limit', sub: 'This organization has used all of its Premium capacity for this resource. Limits are configuration-driven per organization.', body: '', foot: btn('Close', 'UA.closeModal()', 'btn-ghost-v') + btn('Contact ' + esc(UA.plat().ops), "UA.closeModal();UA.toast('Request sent to ' + '" + esc(UA.plat().ops) + "')", 'btn-default') });
     if (variant === 'admin-noteam') return UA.modal({ icon: 'users', title: 'Create a Team first', sub: 'Admins are scoped to Teams — an Admin must belong to at least one. Create a Team, then invite its Admin.', body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') });
     const v = UPG[variant](); UA._upg = { v: v, variant: variant, src: src };
-    UA.modal({ icon: 'gem', iconCls: 'gold', title: v.ttl, sub: v.txt, body: '<div class="ua-list">' + [['Additional Superadmins', 'crown'], ['Admins and Team-based administration', 'shield'], ['Teams and module enablement per Team', 'users'], ['Expanded Member capacity', 'user-plus']].map((x) => '<div class="ua-li" style="padding:7px 0"><span class="ua-ic gold">' + ic(x[1], 15) + '</span><div class="grow t">' + x[0] + '</div></div>').join('') + '</div><div class="ua-hint">' + esc(UA.plat().name) + ' → ' + esc(UA.plat().dest) + '.</div>',
+    UA.modal({ icon: 'gem', iconCls: 'gold', title: v.ttl, sub: v.txt, body: '<div class="ua-list">' + [['More Superadmins', 'crown'], ['Admins for each Team', 'shield'], ['Teams with per-module access', 'users'], ['More Member seats', 'user-plus']].map((x) => '<div class="ua-li" style="padding:7px 0"><span class="ua-ic gold">' + ic(x[1], 15) + '</span><div class="grow t">' + x[0] + '</div></div>').join('') + '</div>',
       foot: btn(v.no, 'UA.closeModal()', 'btn-ghost-v') + btn(v.cta, 'UA.confirmUpgrade()', 'btn-premium') });
   };
   UA.confirmUpgrade = function () {

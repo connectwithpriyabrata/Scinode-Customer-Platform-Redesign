@@ -332,7 +332,7 @@
   /* ───────────── Upgrade popups + Upgrade Intent capture ───────────── */
   const UPG = {
     member: () => ({ ttl: 'You’re at your Free plan limit', txt: 'You’ve used all ' + UA.usage().mem + ' of ' + UA.limits().mem + ' Member seats included in Free. Upgrade to Premium to add more people and unlock Teams and broader access management.', ev: 'ADD_MEMBER_LIMIT', cta: 'Upgrade to Premium', no: 'Cancel' }),
-    team: () => ({ ttl: 'Create your first Team with Premium', txt: 'Free includes 0 Teams. Upgrade to Premium to organize Members into Teams and manage module access by Team.', ev: 'CREATE_TEAM', cta: 'Upgrade to Premium', no: 'Cancel' }),
+    team: () => ({ ttl: 'Create your first Team with Premium', txt: 'You’re on the Free plan. Upgrade to Premium for more users, Teams, and stronger access controls.', ev: 'CREATE_TEAM', cta: 'Upgrade to Premium', no: 'Cancel' }),
     superadmin: () => ({ ttl: 'Share administration with Premium', txt: 'Free includes 1 Superadmin. Upgrade to Premium to add another Superadmin and share platform administration.', ev: 'ADD_SUPERADMIN', cta: 'Upgrade to Premium', no: 'Cancel' }),
     admin: () => ({ ttl: 'Add an Admin with Premium', txt: 'Admins work through Teams. Free includes 0 Teams, so you’ll need Premium to create a Team and add a team-based Admin.', ev: 'CREATE_ADMIN', cta: 'Upgrade to Premium', no: 'Cancel' }),
     tab: () => ({ ttl: 'Unlock more with Premium', txt: 'You’re on the Free plan. Upgrade to Premium for more users, Teams, and stronger access controls.', ev: 'PREMIUM_TAB_ACTION', cta: 'Upgrade to Premium', no: 'Not now' })

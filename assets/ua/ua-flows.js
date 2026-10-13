@@ -209,7 +209,7 @@
   };
   function auModules() {
     const t = UA.au.team ? UA.team(UA.au.team) : null; let h = '';
-    if (UA.au.role === 'superadmin') return '<div class="ua-banner neutral"><span>' + ic('crown', 16) + '</span><div>Superadmins get Use access across every module by default and aren’t restricted by Team gating.</div></div>';
+    if (UA.au.role === 'superadmin') return '<div class="ua-banner ok"><span>' + ic('crown', 16) + '</span><div>Superadmins get Use access across every module by default and aren’t restricted by Team gating.</div></div>';
     for (let i = 0; i < UA.n(); i++) {
       if (t && t.mods[i] !== '1') continue; const m = UA.mod(i), v = UA.au.perms[i] || 'use';
       h += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + seg(v, "UA.au.perms[" + i + "]='%L';UA.auStep2(true)", ['view', 'use']) + '</div>';

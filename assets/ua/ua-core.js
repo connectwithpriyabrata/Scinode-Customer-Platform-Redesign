@@ -408,7 +408,7 @@
   };
   UA.teamChips = function (p) {
     const ts = UA.teamsOf(p);
-    if (!ts.length) return '<span class="ua-faint">No Team</span>';
+    if (!ts.length) return '<span class="ua-faint">Standalone</span>';
     return ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join(' ');
   };
   UA.emptyState = function (icon, title, text, cta, cls) {

@@ -262,14 +262,14 @@
   };
 
   /* ───────────── Create Team (Premium) ───────────── */
-  UA.ct = { mods: {} };
+  UA.ct = { mods: {}, msg: '' };
   UA.openCreateTeam = function (o) {
     const blocked = UA.capacity('team'); if (blocked) return UA.upgrade(blocked, 'Teams tab › + Create Team');
-    UA.ct = { mods: {}, from: o && o.from, modsOpen: false }; for (let i = 0; i < UA.n(); i++) UA.ct.mods[i] = { on: true, lvl: 'use' };
+    UA.ct = { mods: {}, from: o && o.from, modsOpen: false, msg: '' }; for (let i = 0; i < UA.n(); i++) UA.ct.mods[i] = { on: true, lvl: 'use' };
     UA.ctRender();
   };
   UA.ctRender = function () {
-    const keepVals = ['ct-name', 'ct-desc', 'ct-admin', 'ct-mem'].map((id) => { const e = document.getElementById(id); return e ? e.value : ''; });
+    const keepVals = ['ct-name', 'ct-desc', 'ct-admin', 'ct-mem', 'ct-msg'].map((id) => { const e = document.getElementById(id); return e ? e.value : ''; });
     const modsOpen = !!UA.ct.modsOpen, onCount = Object.keys(UA.ct.mods).filter((i) => UA.ct.mods[i].on).length;
     let mods = ''; for (let i = 0; i < UA.n(); i++) { const m = UA.mod(i), c = UA.ct.mods[i]; mods += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (c.on ? seg(c.lvl, "UA.ct.mods[" + i + "].lvl='%L';UA.ctRender()", ['view', 'use']) : '') + '<button type="button" class="ua-switch ' + (c.on ? 'on' : '') + '" onclick="UA.ct.mods[' + i + '].on=!UA.ct.mods[' + i + '].on;UA.ctRender()" aria-label="Toggle ' + m.name + '"></button></div>'; }
     UA.modal({ icon: 'users', title: 'Create Team', sub: 'Teams belong to <b>' + esc(UA.db.org.name) + '</b> on <b>' + esc(UA.plat().name) + '</b> only.', size: 'wide', noFocus: true,
@@ -277,11 +277,12 @@
         '<div class="ua-field"><label for="ct-desc">Description</label><input id="ct-desc" class="ua-input" placeholder="What does this Team work on?" value="' + esc(keepVals[1]) + '"></div>' +
         '<div class="ua-field"><label for="ct-mem">Add Members</label><input id="ct-mem" class="ua-input" placeholder="a@acme.com, b@acme.com" value="' + esc(keepVals[3]) + '"><div class="h">Invite people to this Team right away — separate multiple emails with commas.</div></div>' +
         '<div><div class="ua-row between" style="align-items:center"><div class="ua-sect" style="color:var(--text-1);margin-bottom:0">Module access</div><button type="button" class="ua-link" onclick="UA.ct.modsOpen=!UA.ct.modsOpen;UA.ctRender()">' + (modsOpen ? 'Hide' : 'Show (' + onCount + ' of ' + UA.n() + ' on)') + '</button></div><div class="ua-hint" style="margin:4px 0 10px">Turn each module on or off for this Team, and set View or Use as the default for new members. A module that’s off overrides any individual permission.</div>' + (modsOpen ? mods : '') + '</div>' +
+        '<div class="ua-field"><label for="ct-msg">Invitation message <span class="ua-faint" style="font-weight:400">(optional)</span></label><textarea id="ct-msg" class="ua-input" rows="3" maxlength="280" placeholder="Add a personal note the invitees will see in their invitation…" oninput="UA.ct.msg=this.value">' + esc(keepVals[4]) + '</textarea></div>' +
         '<div class="ua-banner info"><span>' + ic('info', 16) + '</span><div class="grow">Creating the Team sends invitations to any Admin and Members you add — you can assign an Admin later from the Team drawer. Invitees default to <b>Use</b> unless you choose View. An Admin can never create a Team or invite another Admin.</div></div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Create Team', 'UA.ctSubmit()', 'btn-default') });
   };
   UA.ctSubmit = function () {
-    const nm = document.getElementById('ct-name').value.trim(), ad = document.getElementById('ct-admin').value.trim().toLowerCase(), ds = document.getElementById('ct-desc').value.trim(), mm = document.getElementById('ct-mem').value.split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
+    const nm = document.getElementById('ct-name').value.trim(), ad = document.getElementById('ct-admin').value.trim().toLowerCase(), ds = document.getElementById('ct-desc').value.trim(), mm = document.getElementById('ct-mem').value.split(',').map((x) => x.trim().toLowerCase()).filter(Boolean), msg = document.getElementById('ct-msg').value;
     let bad = false; const e1 = document.getElementById('ct-e1'), e2 = document.getElementById('ct-e2'); e1.textContent = e2.textContent = '';
     if (!nm) { e1.textContent = 'Give the Team a name.'; bad = true; } else if (UA.teams().some((t) => t.name.toLowerCase() === nm.toLowerCase())) { e1.textContent = 'A Team with this name already exists on this platform.'; bad = true; }
     if (ad && !validEmail(ad)) { e2.textContent = 'Enter a valid email, or leave this blank.'; bad = true; }
@@ -290,7 +291,7 @@
     let mods = '', perm = ''; for (let i = 0; i < UA.n(); i++) { const c = UA.ct.mods[i]; mods += c.on ? '1' : '0'; perm += c.on ? (c.lvl === 'view' ? 'V' : 'U') : 'N'; }
     const t = { id: UA.uid('t'), name: nm, desc: ds || 'New Team', admins: [], mods: mods, status: 'active', pendingAdmin: ad || '' };
     UA.db.teams.push(t);
-    const mk = (email, role) => UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(email), email: email, by: 'me', role: role, team: t.id, status: 'sent', domain: UA.domainType(email), date: 'Today', perm: perm });
+    const mk = (email, role) => UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(email), email: email, by: 'me', role: role, team: t.id, status: 'sent', domain: UA.domainType(email), date: 'Today', perm: perm, msg: msg || '' });
     if (ad) mk(ad, 'admin'); mm.filter(validEmail).forEach((e) => mk(e, 'member'));
     UA.audit('Team created', nm, '—', mods.split('').filter((c) => c === '1').length + ' modules enabled'); UA.closeModal();
     const invited = (ad ? 1 : 0) + mm.filter(validEmail).length;

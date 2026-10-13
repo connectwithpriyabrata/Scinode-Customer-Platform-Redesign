@@ -101,19 +101,45 @@
   };
 
   /* ───────────── Team drawer ───────────── */
+  UA.ta = { team: null, open: null };
   UA.openTeam = function (tid) {
+    if (UA.ta.team !== tid) UA.ta = { team: tid, open: null };
     const t = UA.team(tid), pp = UA.people().filter((p) => (p.teams || []).indexOf(tid) > -1), editMods = UA.isSA(), canAdd = !UA.isMem();
     let mods = '';
     for (let i = 0; i < UA.n(); i++) { const m = UA.mod(i), on = t.mods[i] === '1'; mods += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (editMods ? '<button type="button" class="ua-switch ' + (on ? 'on' : '') + '" onclick="UA.toggleTeamMod(\'' + tid + '\',' + i + ')" aria-label="Toggle ' + m.name + '"></button>' : '<span class="ub ' + (on ? 'teal' : 'gray') + '">' + (on ? 'Enabled' : 'Not enabled') + '</span>') + '</div>'; }
+    const memberRows = pp.map((p) => {
+      const expanded = UA.ta.open === p.id, editable = canManage(p) && p.status === 'active' && p.role !== 'superadmin';
+      let panel = '';
+      if (expanded) {
+        let rows = '';
+        for (let i = 0; i < UA.n(); i++) {
+          if (t.mods[i] !== '1') continue;
+          const m = UA.mod(i), a = UA.access(p, i);
+          rows += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (editable ? seg(a.base, "UA.setTeamMemberLvl('" + tid + "','" + p.id + "'," + i + ",'%L')") : UA.lvlBadge(a.lvl)) + '</div>';
+        }
+        panel = '<div class="ua-ta-panel">' + (rows || '<div class="ua-hint">No modules enabled for this Team.</div>') + (!editable ? '<div class="ua-hint">' + (p.status !== 'active' ? 'Access can’t be changed until the invitation is accepted.' : 'You can’t change this person’s access.') + '</div>' : '') + '</div>';
+      }
+      return '<div class="ua-tm"><div class="ua-li click" onclick="UA.toggleTeamMember(\'' + tid + '\',\'' + p.id + '\')"><div class="grow">' + UA.person$(p, { noEmail: UA.isMem() }) + '</div><span class="ua-xs ua-muted ua-tnum">' + UA.accessSummary(p) + '</span>' + UA.roleBadge(p.role) + '<span class="ua-chev' + (expanded ? ' open' : '') + '">' + ic('chevd', 14) + '</span></div>' + panel + '</div>';
+    }).join('') || '<div class="ua-hint">No members yet.</div>';
     UA.drawer({
       lead: '<span class="ua-ic lg">' + ic('users', 20) + '</span>', title: esc(t.name), sub: esc(t.desc),
       kebab: UA.isSA() ? "UA.teamMenu(event,'" + tid + "')" : '',
       body: '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">Active</span><span class="ub gray">Platform · ' + esc(UA.plat().name) + '</span></div>' +
         '<div><div class="ua-sect">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + UA.roleBadge('admin') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div>' +
         '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
-        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-list" style="margin-top:6px">' + (pp.map((p) => { const clickable = !UA.isMem() || p.id === 'me'; return '<div class="ua-li ' + (clickable ? 'click' : '') + '" ' + (clickable ? 'onclick="UA.closeDrawer();UA.openMember(\'' + p.id + '\')"' : '') + '><div class="grow">' + UA.person$(p, { noEmail: UA.isMem() }) + '</div><span class="ua-xs ua-muted ua-tnum">' + UA.accessSummary(p) + '</span>' + UA.roleBadge(p.role) + '</div>'; }).join('') || '<div class="ua-hint">No members yet.</div>') + '</div></div>',
+        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (UA.isMem() ? 'view' : 'view or change') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
       foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') : ''
     });
+  };
+  UA.toggleTeamMember = function (tid, pid) {
+    UA.ta.open = UA.ta.open === pid ? null : pid;
+    UA.openTeam(tid);
+  };
+  UA.setTeamMemberLvl = function (tid, pid, i, lvl) {
+    const p = UA.person(pid), old = UA.access(p, i).base; if (old === lvl) return;
+    UA.setPerm(p, i, lvl); UA.audit('Module permission changed', p.name + ' → ' + UA.mod(i).name, old, lvl);
+    UA.toast(p.name + ': ' + UA.mod(i).name + ' → ' + (lvl === 'none' ? 'No Access' : cap1(lvl)), 'Only ' + p.name + ' is notified — not the whole organization.');
+    UA.openTeam(tid); refresh();
   };
   UA.teamMenu = function (ev, tid) {
     const t = UA.team(tid), hasAdmin = (t.admins || []).length > 0;

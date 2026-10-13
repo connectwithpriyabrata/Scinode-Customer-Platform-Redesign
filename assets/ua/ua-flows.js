@@ -127,7 +127,7 @@
     const t = UA.team(tid), a = UA.adminOf(t)[0];
     UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Remove Admin from ' + esc(t.name) + '?',
       sub: (a ? esc(a.name) : 'The current Admin') + ' goes back to Member and no longer manages this Team.',
-      body: '<div class="ua-field"><label for="rta-admin">Who do you want to be Admin for this Team? <span class="ua-faint" style="font-weight:400">(optional, email)</span></label><input id="rta-admin" class="ua-input" type="email" placeholder="admin@acme.com"><div class="e" id="rta-e"></div><div class="h">An existing Member is promoted right away; anyone else gets invited as Admin. Leave blank to assign one later.</div></div>',
+      body: '<div class="ua-field"><label for="rta-admin">Who do you want to be Admin for this Team?</label><input id="rta-admin" class="ua-input" type="email" placeholder="admin@acme.com"><div class="e" id="rta-e"></div><div class="h">Enter their email — you can also do this later from the Team drawer.</div></div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Remove Admin', "UA.doRemoveTeamAdmin('" + tid + "')", 'btn-danger') });
   };
   UA.doRemoveTeamAdmin = function (tid) {

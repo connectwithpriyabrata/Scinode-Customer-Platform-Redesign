@@ -139,14 +139,6 @@
     const dir = S.dirOpen ? card('Organization directory', 'A directory for access — not an HR hierarchy. Teams with members, then No Team.', tree('all')) : '';
     return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-h">Organization snapshot</div><div class="ua-grid c2">' + id + quickStartHub() + '</div>' + capsHead + '<div class="ua-grid ' + (free ? 'c4' : 'c5') + '">' + caps + '</div>' + dir + '</div>';
   }
-  function steps() {
-    const u = UA.usage(), free = !UA.premium();
-    const st = [['Confirm organization details', true]];
-    if (free) { st.push(['Add your first Member', u.mem > 0]); st.push(['Explore Premium for Teams', false]); }
-    else { st.push(['Create your first Team', UA.teams().length > 0]); st.push(['Add Members', u.mem > 0]); st.push(['Configure module access', false]); }
-    return st.map((s, i) => '<div class="ua-step ' + (s[1] ? 'done' : '') + '"><span class="dot">' + (s[1] ? ic('check', 12) : i + 1) + '</span><span class="t">' + s[0] + '</span></div>').join('');
-  }
-
   function vOrgAdmin() {
     const me = UA.me(), db = UA.db, ts = UA.myTeams();
     const idc = card(esc(db.org.name), 'Read-only overview · ' + esc(UA.plat().name),
@@ -229,9 +221,7 @@
       '<div class="ua-scroll"><table class="ua-tbl"><thead><tr><th>Member</th><th>Role</th><th>Team</th><th>Status</th><th>Access</th><th>' + (UA.premium() && UA.db.day === 1 ? 'Last active' : 'Joined') + '</th><th></th></tr></thead><tbody id="ua-mrows">' + memberRows() + '</tbody></table></div></div>' +
       (UA.isMem() ? '<div class="ua-hint" style="margin-top:12px">Members can see basic directory info and their own access. Only Superadmins and Admins can invite people or edit access.</div>' : '');
     if (onboarding) {
-      const buildCard = '<div class="ua-card ua-pair-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div>';
-      const setup = card('Set up your organization', null, '<div class="ua-steps">' + steps() + '</div>', null, 'ua-pair-card');
-      h += '<div class="ua-grid c2">' + buildCard + setup + '</div>';
+      h += '<div class="ua-card">' + UA.emptyState('users', 'Build your team', 'Invite people from your organization to start working together.' + (UA.premium() ? ' Roles you can invite: Superadmin, Admin, Member.' : ''), btn('Add New User', 'UA.openAddUser()', 'btn-default', 'plus') + (free ? '<div class="ua-hint">Members ' + U.mem + '/' + L.mem + ' used on the Free plan</div>' : '')) + '</div>';
     }
     return '<div style="display:flex;flex-direction:column;gap:16px">' + h + '</div>';
   }

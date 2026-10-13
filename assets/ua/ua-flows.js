@@ -220,7 +220,7 @@
     if (keep === true) { const e = document.getElementById('au-email'); if (e) UA.au.email = e.value; }
     const a = UA.au, pl = UA.plat(), dt = a.email && validEmail(a.email) ? UA.domainType(a.email) : null;
     const ts = UA.isAdm() ? UA.myTeams() : UA.teams();
-    const teamSel = !UA.premium() ? '<div class="ua-field"><label>Team</label><div class="ua-hint">Teams are available with Premium — this Member will join with No Team and Use access.</div></div>' :
+    const teamSel = !UA.premium() ? '<div class="ua-field"><label>Team</label><div class="ua-hint"><span class="ub gold" style="margin-right:6px">' + ic('lock', 10) + 'Premium</span>this Member will join with No Team and Use access.</div></div>' :
       '<div class="ua-field"><label>Team' + (a.role === 'admin' ? ' *' : '') + '</label><select class="ua-select" style="width:100%" onchange="UA.au.team=this.value;UA.au.perms={};if(this.value===\'__new\'){UA.au.team=\'\';UA.openCreateTeam({from:1});}else UA.auStep2(true)">' +
       (a.role !== 'admin' && !UA.isAdm() ? '<option value="">No Team — standalone Member</option>' : '<option value="">Select a Team</option>') + ts.map((t) => '<option value="' + t.id + '"' + (a.team === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('') + (UA.isSA() ? '<option value="__new">+ Create new Team…</option>' : '') + '</select>' +
       '<div class="h">' + (a.role === 'admin' ? 'Admins must belong to a Team.' + (UA.isAdm() ? ' You can only invite within your own Team.' : '') : UA.isAdm() ? 'You can only invite into Teams you belong to.' : 'Optional for Members.') + '</div></div>';

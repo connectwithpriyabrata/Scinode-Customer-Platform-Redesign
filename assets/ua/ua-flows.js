@@ -344,7 +344,7 @@
     if (variant === 'admin-noteam') return UA.modal({ icon: 'users', title: 'Create a Team first', sub: 'Admins are scoped to Teams — an Admin must belong to at least one. Create a Team, then invite its Admin.', body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') });
     const v = UPG[variant](); UA._upg = { v: v, variant: variant, src: src };
     UA.modal({ icon: 'gem', iconCls: 'gold', title: v.ttl, sub: v.txt, body: '<div class="ua-list" style="gap:4px">' + [['More Superadmins', 'crown'], ['Admins for each Team', 'shield'], ['Teams with per-module access', 'users'], ['More Member seats', 'user-plus']].map((x) => '<div class="ua-li" style="padding:9px 0;border-top:none"><span class="ua-ic gold">' + ic(x[1], 15) + '</span><div class="grow t">' + x[0] + '</div></div>').join('') + '</div>',
-      foot: btn(v.no, 'UA.closeModal()', 'btn-ghost-v') + btn(v.cta, 'UA.confirmUpgrade()', 'btn-premium') });
+      foot: btn(v.no, 'UA.closeModal()', 'btn-ghost-v') + btn(v.cta, 'UA.confirmUpgrade()', 'btn-premium', 'sparkles') });
   };
   UA.confirmUpgrade = function () {
     const u = UA._upg, v = u.v, now = 'Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

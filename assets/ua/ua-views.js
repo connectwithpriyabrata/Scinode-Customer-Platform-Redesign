@@ -86,7 +86,7 @@
   }
   UA.accessRows = accessRows;
   function accessTbl(compact) {
-    return '<div class="ua-scroll"><table class="ua-tbl' + (compact ? ' compact' : '') + '"><thead><tr><th>Module</th>' + (compact ? '' : '<th>Team</th>') + '<th>Your access</th><th></th></tr></thead><tbody>' + accessRows(compact) + '</tbody></table></div>';
+    return '<div class="ua-scroll"><table class="ua-tbl' + (compact ? ' compact' : '') + '"><thead><tr><th>Module</th>' + (compact ? '' : '<th>Team</th>') + '<th>Your access</th><th class="r">Action</th></tr></thead><tbody>' + accessRows(compact) + '</tbody></table></div>';
   }
   UA.accessTbl = accessTbl;
 

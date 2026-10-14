@@ -259,7 +259,7 @@
   };
   function auModules() {
     const t = UA.au.team ? UA.team(UA.au.team) : null; let h = '';
-    if (UA.au.role === 'superadmin') return '<div class="ua-banner ok"><span>' + ic('crown', 16) + '</span><div>Superadmins get Use access across every module by default and aren’t restricted by Team gating.</div></div>';
+    if (UA.au.role === 'superadmin') return '<div class="ua-banner ok"><span>' + ic('crown', 16) + '</span><div>Superadmins automatically get full access to every module — Teams never limit them.</div></div>';
     for (let i = 0; i < UA.n(); i++) {
       if (t && t.mods[i] !== '1') continue; const m = UA.mod(i), v = UA.au.perms[i] || 'use';
       h += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + seg(v, "UA.au.perms[" + i + "]='%L';UA.auStep2(true)", ['view', 'use']) + '</div>';
@@ -278,10 +278,10 @@
       body: '<div class="ua-field"><label for="au-email">Work email *</label><input id="au-email" class="ua-input" type="email" placeholder="name@company.com" value="' + esc(a.email) + '" oninput="UA.au.email=this.value;UA.auHint()"><div class="h" id="au-hint">' + auHint(dt) + '</div><div class="e" id="au-err"></div></div>' + teamSel +
         '<div><div class="ua-sect">Module permissions' + (a.role === 'member' || a.role === 'admin' ? ' · defaults to Use' : '') + '</div>' + auModules() + '</div>' +
         '<div class="ua-field"><label for="au-msg">Invitation message <span class="ua-faint" style="font-weight:400">(optional)</span></label><textarea id="au-msg" class="ua-input" rows="3" maxlength="280" placeholder="Add a personal note the invitee will see in their invitation…" oninput="UA.au.msg=this.value">' + esc(a.msg || '') + '</textarea></div>' +
-        '<div class="ua-banner info"><span>' + ic('bell', 16) + '</span><div class="grow">' + (UA.isAdm() ? 'The Superadmin is notified of this invitation the moment it’s sent.' : 'The invitee gets an email. Company, Role and Team are pre-set — they’re never asked for them at sign-up.') + '</div></div>',
+        '<div class="ua-banner info"><span>' + ic('bell', 16) + '</span><div class="grow">' + (UA.isAdm() ? 'The Superadmin is notified of this invitation the moment it’s sent.' : 'We’ll send them an invite email with their Company, Role and Team already set up — nothing for them to fill in.') + '</div></div>',
       foot: btn('Back', 'UA.auStep1()', 'btn-ghost-v') + btn('Send Invitation', 'UA.auSend()', 'btn-default', 'send') });
   };
-  function auHint(dt) { return dt === 'public' ? 'Public email domain — the invitation fixes company, role and Team, but the invitee will still need approval before becoming Active.' : dt === 'private' ? 'Verified organization domain — the invitee joins as Active after sign-up (no approval needed for the same platform).' : 'Invitations override normal domain / company selection.'; }
+  function auHint(dt) { return dt === 'public' ? 'Public email domain — the invitation fixes company, role and Team, but the invitee will still need approval before becoming Active.' : dt === 'private' ? 'Verified organization domain — the invitee joins as Active after sign-up (no approval needed for the same platform).' : 'Enter their email and we’ll set up the invite for you.'; }
   UA.auHint = function () { const e = UA.au.email, h = document.getElementById('au-hint'); if (h) h.textContent = auHint(validEmail(e) ? UA.domainType(e) : null); };
   UA.auSend = function () {
     const a = UA.au, e = (document.getElementById('au-email').value || '').trim().toLowerCase(); a.email = e; const err = document.getElementById('au-err'), inp = document.getElementById('au-email');

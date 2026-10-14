@@ -242,7 +242,7 @@
     const setup = UA.db.day === 0 ? card('How invites work', 'From sending an invite to them joining your organization.', life, null, 'ua-pair-card') : '';
     const rows = list.length ? list.map((i) => {
       const inv = i.by === 'me' ? UA.me() : UA.person(i.by), by = inv ? inv.name : '—', t = i.team ? UA.team(i.team) : null;
-      const lbl = i.status === 'waiting' ? UA.statusBadge('waiting') + '<div class="ua-xs ua-muted" style="margin-top:3px">Waiting for ' + esc(pl.name) + ' approval</div>' : UA.statusBadge(i.status);
+      const lbl = i.status === 'waiting' ? UA.statusBadge('waiting') + '<div class="ua-xs ua-muted" style="margin-top:3px">Waiting for ' + esc(pl.name) + ' approval</div>' + (UA.isMem() ? '' : '<button type="button" class="ua-link" style="margin-top:3px" onclick="UA.reviewInvitePid(\'' + i.pid + '\')">Review' + ic('arrow', 12) + '</button>') : UA.statusBadge(i.status);
       return '<tr><td><div class="ua-person">' + UA.av(i.name) + '<div><div class="nm">' + esc(i.name) + '</div><div class="em">' + esc(i.email) + '</div></div></div></td><td>' + esc(by) + '</td><td>' + UA.roleBadge(i.role) + '</td><td>' + (t ? '<span class="ub teal">' + esc(t.name) + '</span>' : '<span class="ua-faint">—</span>') + '</td><td>' + (i.domain === 'public' ? '<span class="ub warn">Public domain</span>' : '<span class="ub teal">Verified domain</span>') + '</td><td>' + lbl + '</td><td class="ua-muted">' + i.date + '</td><td class="r"><button type="button" class="btn btn-icon-sm" aria-label="Actions" onclick="UA.inviteMenu(event,\'' + i.id + '\')">' + ic('more', 15) + '</button></td></tr>';
     }).join('') : '';
     if (!list.length) {
@@ -255,7 +255,7 @@
   UA.inviteMenu = function (ev, id) {
     const i = UA.db.invites.find((x) => x.id === id), it = [];
     if (i.status === 'sent') { it.push({ label: 'Resend invitation', icon: 'send', fn: "UA.resendInvite('" + id + "')" }); it.push({ lbl: 'Prototype' }); it.push({ label: 'Simulate: invitee signs up', icon: 'play', fn: "UA.simSignup('" + id + "')" }); it.push({ sep: 1 }); it.push({ label: 'Cancel invitation', icon: 'x-circle', dg: 1, fn: "UA.cancelInvite('" + id + "')" }); }
-    else if (i.status === 'waiting') { it.push({ label: 'Review in Access & Approvals', icon: 'inbox', fn: "UA.go('approvals')" }); }
+    else if (i.status === 'waiting') { it.push({ label: 'Review in Access & Approvals', icon: 'inbox', fn: "UA.reviewInvitePid('" + i.pid + "')" }); }
     else it.push({ label: 'No actions available', dis: 1, fn: '' });
     UA.menu(ev, it);
   };

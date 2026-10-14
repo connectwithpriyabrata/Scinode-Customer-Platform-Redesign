@@ -33,7 +33,7 @@
       lead: UA.av(p, 'lg'), title: esc(p.name) + (p.id === 'me' ? ' <span class="ua-you">You</span>' : ''), sub: (mem ? '' : esc(p.email)),
       body: '<div class="ua-row wrap" style="gap:8px">' + UA.roleBadge(p.role) + UA.statusBadge(p.status) + '</div>' +
         '<div><div class="ua-sect">Details</div><dl class="ua-kv">' + (mem ? '' : '<dt>Email</dt><dd>' + esc(p.email) + '</dd><dt>Phone</dt><dd>+91 98••• ••' + (40 + p.name.length) + '</dd>') + '<dt>Organization</dt><dd>' + esc(UA.db.org.name) + '</dd><dt>Platform</dt><dd>' + esc(UA.plat().name) + '</dd><dt>Team</dt><dd>' + UA.teamChips(p) + '</dd><dt>Joined</dt><dd>' + esc(p.joined) + (p.organic ? ' · joined without an invite' : '') + '</dd></dl></div>' +
-        (p.status === 'pending' ? '<div class="ua-banner warn"><span>' + ic('clock', 16) + '</span><div class="grow">Waiting for approval — public-domain signup.</div>' + (UA.isMem() ? '' : '<div class="acts">' + btn('Review', "UA.closeDrawer();UA.go('approvals')", 'btn-outline btn-sm') + '</div>') + '</div>' : '<div><div class="ua-sect">Module access' + (edit ? ' · effective = Team enabled ∧ Member permission' : '') + '</div>' + mods + '</div>' + recent) +
+        (p.status === 'pending' ? '<div class="ua-banner warn"><span>' + ic('clock', 16) + '</span><div class="grow">Waiting for approval — public-domain signup.</div>' + (UA.isMem() ? '' : '<div class="acts">' + btn('Review', "UA.closeDrawer();UA.reviewInvitePid('" + p.id + "')", 'btn-outline btn-sm') + '</div>') + '</div>' : '<div><div class="ua-sect">Module access' + (edit ? ' · effective = Team enabled ∧ Member permission' : '') + '</div>' + mods + '</div>' + recent) +
         (UA.isAdm() && p.role !== 'member' ? '<div class="ua-hint">Admins can’t change other Admins or Superadmins.</div>' : '') + (mem && p.id !== 'me' ? '<div class="ua-hint">Members see basic directory info only.</div>' : ''),
       foot: foot
     });
@@ -420,8 +420,14 @@
     facts.push(['Requested on', r.date], ['Approver', esc(ap.label)]); if (r.reason) facts.push(['Reason', '“' + esc(r.reason) + '”']);
     UA.drawer({ lead: UA.av(p, 'lg'), title: RT_L[r.type], sub: esc(p.name) + ' · ' + r.date,
       body: '<dl class="ua-kv">' + facts.map((f) => '<dt>' + f[0] + '</dt><dd>' + f[1] + '</dd>').join('') + '</dl>' + (r.status !== 'pending' ? '<div class="ua-banner ' + (r.status === 'approved' ? 'ok' : 'err') + '"><span>' + ic(r.status === 'approved' ? 'check-circle' : 'x-circle', 16) + '</span><div class="grow">' + cap1(r.status) + ' — recorded in the audit history.</div></div>' : '') +
-        '<div class="ua-banner neutral"><span>' + ic('shield', 16) + '</span><div class="grow ua-sm">' + (r.type === 'invite' ? 'Approving activates this person on ' + esc(UA.plat().name) + '. It doesn’t change any other platform.' : 'Approving changes <b>only ' + esc(p.name.split(' ')[0]) + '’s ' + (r.type === 'view' ? 'access to this one item' : 'Module Permission') + '</b>. Role, Team and Company are untouched.') + '</div></div>',
+        '<div class="ua-banner neutral"><span>' + ic('shield', 16) + '</span><div class="grow ua-sm">' + (r.type === 'invite' ? 'Approving activates this person on ' + esc(UA.plat().name) + '. It doesn’t change any other platform.' : 'Approving changes <b>only ' + esc(p.name.split(' ')[0]) + '’s ' + (r.type === 'view' ? 'access to this one item' : 'Module Permission') + '</b>. Role, Team and Company are untouched.') + '</div></div>' +
+        (r.type === 'invite' ? '<div style="margin-top:10px"><button type="button" class="ua-link" onclick="UA.closeDrawer();UA.go(\'invitations\')">View full invitation in Invitations' + ic('arrow', 12) + '</button></div>' : ''),
       foot: open ? btn('Reject', "UA.decide('" + rid + "','reject')", 'btn-danger-ghost') + (r.type !== 'invite' ? btn('Edit & Approve', "UA.editApprove('" + rid + "')", 'btn-outline') : '') + btn('Approve', "UA.decide('" + rid + "','approve')", 'btn-default', 'check') : '' });
+  };
+  UA.reviewInvitePid = function (pid) {
+    const r = UA.db.requests.find((x) => x.type === 'invite' && x.pid === pid);
+    if (!r) return UA.go('approvals');
+    S.f.rtype = 'all'; S.f.rstat = 'all'; UA.go('approvals'); UA.review(r.id);
   };
   const RT_L = { use: 'Request to Use', view: 'Request to View', invite: 'Invitation approval' };
   UA.editApprove = function (rid) {

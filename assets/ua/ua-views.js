@@ -230,7 +230,7 @@
   /* ───────────── INVITATIONS / APPLICATIONS ───────────── */
   function vInvites() {
     const list = UA.invitesVisible(), pl = UA.plat();
-    const life = '<div class="ua-life"><span class="s"><i>1</i>Invite sent</span><span class="ln"></span><span class="s"><i>2</i>They accept</span><span class="ln"></span><span class="s"><i>3</i>They sign up</span><span class="ln"></span><div class="fork"><span class="s"><i>' + ic('check', 11) + '</i>Company email → joins instantly</span><span class="s"><i>' + ic('clock', 11) + '</i>Personal email → needs your approval</span></div></div><div class="ua-hint" style="margin-top:12px">An invite can also be declined or withdrawn at any point.</div>';
+    const life = '<div class="ua-life"><span class="s"><i>1</i>Invite sent</span><span class="ln"></span><span class="s"><i>2</i>They accept</span><span class="ln"></span><span class="s"><i>3</i>They sign up</span><span class="ln"></span><div class="fork"><span class="s"><i>' + ic('check', 11) + '</i>Most invites join right away</span><span class="s"><i>' + ic('clock', 11) + '</i>Some may need your approval first</span></div></div><div class="ua-hint" style="margin-top:12px">An invite can also be declined or withdrawn at any point.</div>';
     const setup = UA.db.day === 0 ? card('How invites work', 'From sending an invite to them joining your organization.', life, null, 'ua-pair-card') : '';
     const rows = list.length ? list.map((i) => {
       const inv = i.by === 'me' ? UA.me() : UA.person(i.by), by = inv ? inv.name : '—', t = i.team ? UA.team(i.team) : null;

@@ -235,9 +235,9 @@
   };
 
   /* ───────────── Add New User (send-side of the invite flow) ───────────── */
-  UA.au = { role: 'member', team: '', email: '', perms: {}, msg: '', teamLocked: false };
+  UA.au = { role: 'member', team: '', email: '', emails: [], perms: {}, msg: '', teamLocked: false };
   UA.openAddUser = function (pre) {
-    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', perms: {}, msg: '', teamLocked: !!(pre && pre.team) };
+    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', emails: [], perms: {}, msg: '', teamLocked: !!(pre && pre.team) };
     if (UA.isAdm() && !UA.au.team) UA.au.team = UA.myTeams()[0] ? UA.myTeams()[0].id : '';
     UA.auStep1();
   };
@@ -266,6 +266,37 @@
     }
     return h || '<div class="ua-hint">No modules are enabled for this Team yet.</div>';
   }
+  function auMemChips() {
+    return (UA.au.emails || []).map((e) => '<span class="ua-mem-chip">' + esc(e) + '<button type="button" onclick="UA.auRemoveMem(\'' + e.replace(/'/g, "\\'") + '\')" aria-label="Remove ' + esc(e) + '">' + ic('x', 10) + '</button></span>').join('');
+  }
+  function auCommitMemDraft(el) {
+    const v = el.value.trim().toLowerCase();
+    if (v && (UA.au.emails || []).indexOf(v) < 0) (UA.au.emails = UA.au.emails || []).push(v);
+    el.value = '';
+    const wrap = el.parentElement;
+    wrap.querySelectorAll('.ua-mem-chip').forEach((c) => c.remove());
+    wrap.insertAdjacentHTML('afterbegin', auMemChips());
+  }
+  UA.auMemInput = function (el) {
+    if (el.value.indexOf(',') === -1) return;
+    const parts = el.value.split(','), rest = parts.pop();
+    parts.forEach((p) => { el.value = p; auCommitMemDraft(el); });
+    el.value = rest;
+  };
+  UA.auMemKey = function (ev, el) {
+    if (ev.key === 'Enter') { ev.preventDefault(); auCommitMemDraft(el); }
+    else if (ev.key === 'Backspace' && !el.value && (UA.au.emails || []).length) {
+      UA.au.emails.pop();
+      const chips = el.parentElement.querySelectorAll('.ua-mem-chip');
+      if (chips.length) chips[chips.length - 1].remove();
+    }
+  };
+  UA.auRemoveMem = function (email) {
+    UA.au.emails = (UA.au.emails || []).filter((e) => e !== email);
+    const wrap = document.getElementById('au-mem').parentElement;
+    wrap.querySelectorAll('.ua-mem-chip').forEach((c) => c.remove());
+    wrap.insertAdjacentHTML('afterbegin', auMemChips());
+  };
   UA.auStep2 = function (keep) {
     if (keep === true) { const e = document.getElementById('au-email'); if (e) UA.au.email = e.value; }
     const a = UA.au, pl = UA.plat(), dt = a.email && validEmail(a.email) ? UA.domainType(a.email) : null;
@@ -274,17 +305,22 @@
       '<div class="ua-field"><label>Team' + (a.role === 'admin' ? ' *' : '') + '</label><select class="ua-select" style="width:100%" onchange="UA.au.team=this.value;UA.au.perms={};if(this.value===\'__new\'){UA.au.team=\'\';UA.openCreateTeam({from:1});}else UA.auStep2(true)">' +
       (a.role !== 'admin' && !UA.isAdm() ? '<option value="">No Team — standalone Member</option>' : '<option value="">Select a Team</option>') + ts.map((t) => '<option value="' + t.id + '"' + (a.team === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('') + (UA.isSA() ? '<option value="__new">+ Create new Team…</option>' : '') + '</select>' +
       '<div class="h">' + (a.role === 'admin' ? 'Admins must belong to a Team.' + (UA.isAdm() ? ' You can only invite within your own Team.' : '') : UA.isAdm() ? 'You can only invite into Teams you belong to.' : 'Optional for Members.') + '</div></div>';
-    UA.modal({ icon: 'user-plus', title: UA.isAdm() ? 'Invite Member' : 'Add New User', badge: 'Step 2 of 2', sub: 'Inviting a <b>' + UA.roleLabel(a.role) + '</b> to ' + esc(pl.name) + '.', size: '', noFocus: keep === true,
-      body: '<div class="ua-field"><label for="au-email">Work email *</label><input id="au-email" class="ua-input" type="email" placeholder="name@company.com" value="' + esc(a.email) + '" oninput="UA.au.email=this.value;UA.auHint()"><div class="h" id="au-hint">' + auHint(dt) + '</div><div class="e" id="au-err"></div></div>' + teamSel +
+    const emailField = a.role === 'member' ?
+      '<div class="ua-field"><label for="au-mem">Work email(s) *</label><div class="ua-chip-input" onclick="document.getElementById(\'au-mem\').focus()">' + auMemChips() + '<input id="au-mem" placeholder="' + ((a.emails || []).length ? '' : 'a@acme.com, b@acme.com') + '" oninput="UA.auMemInput(this)" onkeydown="UA.auMemKey(event,this)"></div><div class="h">Add one person or several — press comma or Enter after each email.</div><div class="e" id="au-err"></div></div>' :
+      '<div class="ua-field"><label for="au-email">Work email *</label><input id="au-email" class="ua-input" type="email" placeholder="name@company.com" value="' + esc(a.email) + '" oninput="UA.au.email=this.value;UA.auHint()"><div class="h" id="au-hint">' + auHint(dt) + '</div><div class="e" id="au-err"></div></div>';
+    UA.modal({ icon: 'user-plus', title: UA.isAdm() ? 'Invite Member' : 'Add New User', badge: 'Step 2 of 2', sub: 'Inviting ' + (a.role === 'member' ? '<b>Member(s)</b>' : '<b>' + UA.roleLabel(a.role) + '</b>') + ' to ' + esc(pl.name) + '.', size: '', noFocus: keep === true,
+      body: emailField + teamSel +
         '<div><div class="ua-sect">Module permissions' + (a.role === 'member' || a.role === 'admin' ? ' · defaults to Use' : '') + '</div>' + auModules() + '</div>' +
         '<div class="ua-field"><label for="au-msg">Invitation message <span class="ua-faint" style="font-weight:400">(optional)</span></label><textarea id="au-msg" class="ua-input" rows="3" maxlength="280" placeholder="Add a personal note the invitee will see in their invitation…" oninput="UA.au.msg=this.value">' + esc(a.msg || '') + '</textarea></div>' +
         '<div class="ua-banner info"><span>' + ic('bell', 16) + '</span><div class="grow">' + (UA.isAdm() ? 'The Superadmin is notified of this invitation the moment it’s sent.' : 'We’ll send them an invite email with their Company, Role and Team already set up — nothing for them to fill in.') + '</div></div>',
-      foot: btn('Back', 'UA.auStep1()', 'btn-ghost-v') + btn('Send Invitation', 'UA.auSend()', 'btn-default', 'send') });
+      foot: btn('Back', 'UA.auStep1()', 'btn-ghost-v') + btn(a.role === 'member' ? 'Send Invitations' : 'Send Invitation', 'UA.auSend()', 'btn-default', 'send') });
   };
   function auHint(dt) { return dt === 'public' ? 'Public email domain — the invitation fixes company, role and Team, but the invitee will still need approval before becoming Active.' : dt === 'private' ? 'Verified organization domain — the invitee joins as Active after sign-up (no approval needed for the same platform).' : 'Enter their email and we’ll set up the invite for you.'; }
   UA.auHint = function () { const e = UA.au.email, h = document.getElementById('au-hint'); if (h) h.textContent = auHint(validEmail(e) ? UA.domainType(e) : null); };
   UA.auSend = function () {
-    const a = UA.au, e = (document.getElementById('au-email').value || '').trim().toLowerCase(); a.email = e; const err = document.getElementById('au-err'), inp = document.getElementById('au-email');
+    const a = UA.au;
+    if (a.role === 'member') return auSendBulk();
+    const e = (document.getElementById('au-email').value || '').trim().toLowerCase(); a.email = e; const err = document.getElementById('au-err'), inp = document.getElementById('au-email');
     if (!validEmail(e)) { err.textContent = 'Enter a valid email address.'; inp.classList.add('err'); return; }
     if (UA.db.invites.some((i) => i.email === e && (i.status === 'sent' || i.status === 'waiting')) || UA.people().some((p) => p.email === e)) { err.textContent = 'This person already has an invitation or membership on this platform.'; inp.classList.add('err'); return; }
     if ((a.role === 'admin' || UA.isAdm()) && UA.premium() && !a.team) { err.textContent = 'Choose a Team — ' + (a.role === 'admin' ? 'Admins' : 'you can only invite into your own Team; Members here') + ' must belong to one.'; return; }
@@ -295,6 +331,31 @@
     UA.audit('Invitation sent', e, '—', UA.roleLabel(a.role) + (t ? ' · ' + t.name : ' · No Team')); UA.closeModal();
     UA.toast('Invitation sent to ' + e, UA.isAdm() ? 'Superadmin notified · appears in Invitations as “Sent”.' : 'Appears in Invitations as “Sent”.'); refresh();
   };
+  function auSendBulk() {
+    const a = UA.au, err = document.getElementById('au-err'), draftEl = document.getElementById('au-mem');
+    const draft = draftEl ? draftEl.value.trim().toLowerCase() : '';
+    const list = (a.emails || []).concat(draft ? [draft] : []);
+    err.textContent = '';
+    if (!list.length) { err.textContent = 'Add at least one email address.'; return; }
+    const bad = list.filter((e) => !validEmail(e));
+    if (bad.length) { err.textContent = 'Fix invalid email' + (bad.length === 1 ? '' : 's') + ': ' + bad.join(', '); return; }
+    const dupes = list.filter((e) => UA.db.invites.some((i) => i.email === e && (i.status === 'sent' || i.status === 'waiting')) || UA.people().some((p) => p.email === e));
+    if (dupes.length) { err.textContent = 'Already invited or a Member: ' + dupes.join(', '); return; }
+    if (UA.isAdm() && UA.premium() && !a.team) { err.textContent = 'Choose a Team — you can only invite into your own Team; Members here must belong to one.'; return; }
+    if (UA.capacity('member')) return UA.upgrade(UA.capacity('member'), 'Add New User › bulk send');
+    const t = a.team ? UA.team(a.team) : null; let perm = ''; for (let i = 0; i < UA.n(); i++) perm += (t && t.mods[i] !== '1') ? 'N' : { use: 'U', view: 'V' }[a.perms[i] || 'use'];
+    let sent = 0, capped = false;
+    for (let k = 0; k < list.length; k++) {
+      if (UA.capacity('member')) { capped = true; break; }
+      const e = list[k];
+      UA.db.invites.unshift({ id: UA.uid('i'), name: nameFromEmail(e), email: e, by: 'me', role: 'member', team: a.team || null, status: 'sent', domain: UA.domainType(e), date: 'Today', perm: perm, msg: a.msg || '' });
+      sent++;
+    }
+    UA.audit('Invitation sent', sent + ' Member' + (sent === 1 ? '' : 's'), '—', (t ? t.name : 'No Team'));
+    UA.closeModal(); refresh();
+    if (capped) { UA.toast(sent + ' of ' + list.length + ' invitations sent', (list.length - sent) + ' more need Premium — seat limit reached.'); return UA.upgrade('member', 'Add New User › bulk send'); }
+    UA.toast(sent + ' invitation' + (sent === 1 ? '' : 's') + ' sent', UA.isAdm() ? 'Superadmin notified · appears in Invitations as “Sent”.' : 'Appears in Invitations as “Sent”.');
+  }
   UA.resendInvite = function (id) { const i = UA.db.invites.find((x) => x.id === id); UA.audit('Invitation resent', i.email, 'Sent', 'Sent'); UA.toast('Invitation resent to ' + i.email); };
   UA.cancelInvite = function (id) {
     const i = UA.db.invites.find((x) => x.id === id);

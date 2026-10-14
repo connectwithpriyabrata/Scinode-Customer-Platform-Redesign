@@ -170,7 +170,7 @@
       fact('Access', useN + ' Use · ' + viewN + ' View') +
       fact('Role', 'Member') +
       '</div>',
-      '<div class="ua-row wrap" style="gap:8px;flex-shrink:0">' + '<span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? ic('gem', 11) + 'Premium' : 'Free') + '</span>' + (ts.length ? ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') : '<span class="ub gray">No Team</span>') + '</div>');
+      '<div class="ua-row wrap" style="gap:8px;flex-shrink:0"><span class="ub ' + (UA.premium() ? 'gold' : 'gray') + '">' + (UA.premium() ? ic('gem', 11) + 'Premium' : 'Free') + '</span></div>');
     const acc = UA.db.day === 0 ? '' : card('My access', 'Team-disabled always overrides an individual permission. Upgrade requests go to ' + (ts.length ? 'your Team Admin' : 'the Superadmin') + '.', accessTbl(),
       btn('Browse organization activity', 'UA.openModulePreview()', 'btn-outline btn-sm', 'activity'));
     return '<div style="display:flex;flex-direction:column;gap:16px">' + hd + acc + (UA.db.day === 0 ? card('Your access', 'Ask your Superadmin if you need more.', '<div class="ua-hint">Detailed per-module access appears here once you start working. Members can’t invite people, edit access, or manage Teams.</div>') : '') + '</div>';

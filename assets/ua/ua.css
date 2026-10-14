@@ -123,6 +123,8 @@
 .ua-tbl-wrap{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden;}
 .ua-scroll{overflow-x:auto;}
 .ua-tbl{width:100%;min-width:780px;border-collapse:collapse;font-size:12px;}
+.ua-tbl.compact{min-width:0;}
+.ua-tbl.compact td,.ua-tbl.compact th{padding:10px 0;}
 .ua-tbl thead th{padding:11px 16px;text-align:left;font-size:11px;font-weight:500;color:var(--text-2);letter-spacing:.02em;text-transform:uppercase;background:#F8FAFC;white-space:nowrap;}
 .ua-tbl tbody tr{transition:background .12s;}
 .ua-tbl tbody tr+tr td{border-top:.5px solid var(--border);}
@@ -279,6 +281,8 @@ textarea.ua-input{height:auto;padding:9px 12px;resize:vertical;line-height:1.5;}
 .ua-mod+.ua-mod{border-top:.5px solid var(--border);}
 .ua-mod .n{flex:1;min-width:0;font-size:13px;font-weight:500;}
 .ua-mod .n small{display:block;font-weight:400;font-size:11px;color:var(--text-2);margin-top:1px;}
+.mod-name{font-size:13px;font-weight:500;color:var(--text-1);white-space:nowrap;}
+.mod-name small{display:block;font-weight:400;font-size:11px;color:var(--text-2);margin-top:1px;white-space:normal;}
 .ua-kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:13px;}
 .ua-kv dt{color:var(--text-2);font-size:12px;}
 .ua-kv dd{margin:0;color:var(--text-1);}

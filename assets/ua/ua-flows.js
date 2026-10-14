@@ -469,7 +469,7 @@
   };
 
   /* ───────────── My access / Audit drawers ───────────── */
-  UA.openMyAccess = function () { UA.drawer({ lead: '<span class="ua-ic lg navy">' + ic('key', 20) + '</span>', title: 'My access', sub: 'Effective = Team enabled ∧ your permission', body: '<div>' + UA.accessRows(true) + '</div><div class="ua-hint">Members with View can request Use; approval changes a permission, never a role.</div>' }); };
+  UA.openMyAccess = function () { UA.drawer({ lead: '<span class="ua-ic lg navy">' + ic('key', 20) + '</span>', title: 'My access', sub: 'Effective = Team enabled ∧ your permission', body: UA.accessTbl(true) + '<div class="ua-hint">Members with View can request Use; approval changes a permission, never a role.</div>' }); };
   UA.openAudit = function () { UA.drawer({ lead: '<span class="ua-ic lg gray">' + ic('history', 20) + '</span>', title: 'Audit history', sub: 'Append-only · every request, approval, denial, invitation and permission change', body: UA.auditList(60) }); };
 
   /* ───────────── In-module preview: My Activity / Org Activity / Request to View / Upgrade to Use ───────────── */

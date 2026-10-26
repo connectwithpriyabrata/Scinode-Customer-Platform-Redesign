@@ -129,7 +129,7 @@
       body: '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">Active</span><span class="ub gray">Platform · ' + esc(UA.plat().name) + '</span></div>' +
         '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.isSA() ? '<button type="button" class="ua-link" onclick="UA.assignTeamAdmin(\'' + tid + '\')">' + ic('plus', 12) + 'Add admin</button>' : '') + '</div>' + '<div style="margin-top:6px">' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + (UA.isSA() ? '<button type="button" class="btn btn-icon-sm" aria-label="Admin actions" onclick="UA.adminMenu(event,\'' + tid + '\',\'' + a.id + '\')">' + ic('more', 15) + '</button>' : '') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div></div>' +
         '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
-        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (UA.isMem() ? 'view' : 'view or change') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
+        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\',role:\'member\',skipRolePick:true})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (UA.isMem() ? 'view' : 'view or change') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
       foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') : ''
     });
   };
@@ -220,8 +220,9 @@
   };
   UA.assignTeamAdmin = function (tid) {
     const t = UA.team(tid), candidates = UA.people().filter((p) => p.id !== 'me' && p.role !== 'superadmin' && p.status === 'active' && (t.admins || []).indexOf(p.id) < 0);
-    UA.modal({ icon: 'shield', title: 'Assign Admin', sub: 'Choose who manages ' + esc(t.name) + '. They’re promoted to Admin if needed, and added to this Team.',
-      body: candidates.length ? candidates.map((p) => '<label class="ua-radio"><input type="radio" name="tad" value="' + p.id + '"><div><div class="t">' + esc(p.name) + '</div><div class="s">' + UA.roleLabel(p.role) + ((p.teams || []).indexOf(tid) > -1 ? ' · already in this Team' : '') + '</div></div></label>').join('') : '<div class="ua-hint">No eligible Members to assign.</div>',
+    UA.modal({ icon: 'shield', title: 'Assign Admin', sub: 'Choose who manages ' + esc(t.name) + ', or invite someone new.',
+      body: (candidates.length ? candidates.map((p) => '<label class="ua-radio"><input type="radio" name="tad" value="' + p.id + '"><div><div class="t">' + esc(p.name) + '</div><div class="s">' + UA.roleLabel(p.role) + ((p.teams || []).indexOf(tid) > -1 ? ' · already in this Team' : '') + '</div></div></label>').join('') : '<div class="ua-hint">No eligible Members to assign — invite someone new instead.</div>') +
+        '<div style="margin-top:12px;padding-top:12px;border-top:.5px solid var(--border)">' + btn('Invite someone new instead', "UA.closeModal();UA.openAddUser({team:'" + tid + "',role:'admin',skipRolePick:true})", 'btn-outline', 'user-plus') + '</div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + (candidates.length ? btn('Assign', "UA.saveTeamAdmin('" + tid + "')", 'btn-default') : '') });
   };
   UA.saveTeamAdmin = function (tid) {
@@ -249,11 +250,11 @@
   };
 
   /* ───────────── Add New User (send-side of the invite flow) ───────────── */
-  UA.au = { role: 'member', team: '', email: '', emails: [], perms: {}, msg: '', teamLocked: false };
+  UA.au = { role: 'member', team: '', email: '', emails: [], perms: {}, msg: '', teamLocked: false, skipRolePick: false };
   UA.openAddUser = function (pre) {
-    UA.au = { role: 'member', team: (pre && pre.team) || '', email: '', emails: [], perms: {}, msg: '', teamLocked: !!(pre && pre.team) };
+    UA.au = { role: (pre && pre.role) || 'member', team: (pre && pre.team) || '', email: '', emails: [], perms: {}, msg: '', teamLocked: !!(pre && pre.team), skipRolePick: !!(pre && pre.skipRolePick) };
     if (UA.isAdm() && !UA.au.team) UA.au.team = UA.myTeams()[0] ? UA.myTeams()[0].id : '';
-    UA.auStep1();
+    if (UA.au.skipRolePick) UA.auStep2(); else UA.auStep1();
   };
   UA.auStep1 = function () {
     const o = (r, ttl, s, lock) => '<label class="ua-radio' + (UA.au.role === r ? ' on' : '') + (lock === 'x' ? ' disabled' : '') + '"><input type="radio" name="aur" value="' + r + '"' + (UA.au.role === r ? ' checked' : '') + (lock === 'x' ? ' disabled' : '') + ' onchange="UA.au.role=this.value;UA.auStep1()"><div style="flex:1"><div class="t">' + ttl + (lock === 'p' ? ' <span class="ub gold">' + ic('lock', 10) + 'Premium</span>' : '') + '</div><div class="s">' + s + '</div></div></label>';
@@ -322,12 +323,12 @@
     const emailField = a.role === 'member' ?
       '<div class="ua-field"><label for="au-mem">Work email(s) *</label><div class="ua-chip-input" onclick="document.getElementById(\'au-mem\').focus()">' + auMemChips() + '<input id="au-mem" placeholder="' + ((a.emails || []).length ? '' : 'a@acme.com, b@acme.com') + '" oninput="UA.auMemInput(this)" onkeydown="UA.auMemKey(event,this)"></div><div class="h">Add one person or several — press comma or Enter after each email.</div><div class="e" id="au-err"></div></div>' :
       '<div class="ua-field"><label for="au-email">Work email *</label><input id="au-email" class="ua-input" type="email" placeholder="name@company.com" value="' + esc(a.email) + '" oninput="UA.au.email=this.value;UA.auHint()"><div class="h" id="au-hint">' + auHint(dt) + '</div><div class="e" id="au-err"></div></div>';
-    UA.modal({ icon: 'user-plus', title: UA.isAdm() ? 'Invite Member' : 'Add New User', badge: 'Step 2 of 2', sub: 'Inviting ' + (a.role === 'member' ? '<b>Member(s)</b>' : '<b>' + UA.roleLabel(a.role) + '</b>') + ' to ' + esc(pl.name) + '.', size: '', noFocus: keep === true,
+    UA.modal({ icon: 'user-plus', title: UA.isAdm() ? 'Invite Member' : 'Add New User', badge: a.skipRolePick ? '' : 'Step 2 of 2', sub: 'Inviting ' + (a.role === 'member' ? '<b>Member(s)</b>' : '<b>' + UA.roleLabel(a.role) + '</b>') + ' to ' + esc(pl.name) + '.', size: '', noFocus: keep === true,
       body: emailField + teamSel +
         '<div><div class="ua-sect">Module permissions' + (a.role === 'member' || a.role === 'admin' ? ' · defaults to Use' : '') + '</div>' + auModules() + '</div>' +
         '<div class="ua-field"><label for="au-msg">Invitation message <span class="ua-faint" style="font-weight:400">(optional)</span></label><textarea id="au-msg" class="ua-input" rows="3" maxlength="280" placeholder="Add a personal note the invitee will see in their invitation…" oninput="UA.au.msg=this.value">' + esc(a.msg || '') + '</textarea></div>' +
         '<div class="ua-banner info"><span>' + ic('bell', 16) + '</span><div class="grow">' + (UA.isAdm() ? 'The Superadmin is notified of this invitation the moment it’s sent.' : 'We’ll send them an invite email with their Company, Role and Team already set up — nothing for them to fill in.') + '</div></div>',
-      foot: btn('Back', 'UA.auStep1()', 'btn-ghost-v') + btn(a.role === 'member' ? 'Send Invitations' : 'Send Invitation', 'UA.auSend()', 'btn-default', 'send') });
+      foot: (a.skipRolePick ? btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') : btn('Back', 'UA.auStep1()', 'btn-ghost-v')) + btn(a.role === 'member' ? 'Send Invitations' : 'Send Invitation', 'UA.auSend()', 'btn-default', 'send') });
   };
   function auHint(dt) { return dt === 'public' ? 'Public email domain — the invitation fixes company, role and Team, but the invitee will still need approval before becoming Active.' : dt === 'private' ? 'Verified organization domain — the invitee joins as Active after sign-up (no approval needed for the same platform).' : 'Enter their email and we’ll set up the invite for you.'; }
   UA.auHint = function () { const e = UA.au.email, h = document.getElementById('au-hint'); if (h) h.textContent = auHint(validEmail(e) ? UA.domainType(e) : null); };

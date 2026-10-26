@@ -117,7 +117,9 @@
           const m = UA.mod(i), a = UA.access(p, i);
           rows += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (editable ? seg(a.base, "UA.setTeamMemberLvl('" + tid + "','" + p.id + "'," + i + ",'%L')") : UA.lvlBadge(a.lvl)) + '</div>';
         }
-        panel = '<div class="ua-ta-panel">' + (rows || '<div class="ua-hint">No modules enabled for this Team.</div>') + (!editable ? '<div class="ua-hint">' + (p.status !== 'active' ? 'Access can’t be changed until the invitation is accepted.' : 'You can’t change this person’s access.') + '</div>' : '') + '</div>';
+        const canRemove = editable && p.role === 'member';
+        panel = '<div class="ua-ta-panel">' + (rows || '<div class="ua-hint">No modules enabled for this Team.</div>') + (!editable ? '<div class="ua-hint">' + (p.status !== 'active' ? 'Access can’t be changed until the invitation is accepted.' : 'You can’t change this person’s access.') + '</div>' : '') +
+          (canRemove ? '<div style="margin-top:8px;padding-top:8px;border-top:.5px solid var(--border)">' + btn('Remove from Team', "UA.confirmRemoveFromTeam('" + tid + "','" + p.id + "')", 'btn-danger-ghost btn-sm', 'x-circle') + '</div>' : '') + '</div>';
       }
       return '<div class="ua-tm"><div class="ua-li click" onclick="UA.toggleTeamMember(\'' + tid + '\',\'' + p.id + '\')"><div class="grow">' + UA.person$(p, { noEmail: UA.isMem() }) + '</div><span class="ua-xs ua-muted ua-tnum">' + UA.accessSummary(p) + '</span>' + UA.roleBadge(p.role) + '<span class="ua-chev' + (expanded ? ' open' : '') + '">' + ic('chevd', 14) + '</span></div>' + panel + '</div>';
     }).join('') || '<div class="ua-hint">No members yet.</div>';
@@ -139,6 +141,20 @@
     const p = UA.person(pid), old = UA.access(p, i).base; if (old === lvl) return;
     UA.setPerm(p, i, lvl); UA.audit('Module permission changed', p.name + ' → ' + UA.mod(i).name, old, lvl);
     UA.toast(p.name + ': ' + UA.mod(i).name + ' → ' + (lvl === 'none' ? 'No Access' : cap1(lvl)), 'Only ' + p.name + ' is notified — not the whole organization.');
+    UA.openTeam(tid); refresh();
+  };
+  UA.confirmRemoveFromTeam = function (tid, pid) {
+    const t = UA.team(tid), p = UA.person(pid);
+    UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Remove ' + esc(p.name) + ' from ' + esc(t.name) + '?',
+      sub: 'They’ll lose this Team’s module access and keep their organization-level access. This can’t be undone.',
+      body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Remove from Team', "UA.doRemoveFromTeam('" + tid + "','" + pid + "')", 'btn-danger') });
+  };
+  UA.doRemoveFromTeam = function (tid, pid) {
+    const t = UA.team(tid), p = UA.person(pid);
+    p.teams = (p.teams || []).filter((x) => x !== tid);
+    UA.audit('Removed from Team', p.name, t.name, p.teams.length ? UA.teamsOf(p).map((x) => x.name).join(', ') : 'No Team');
+    UA.ta.open = null;
+    UA.closeModal(); UA.toast(p.name + ' removed from ' + t.name, 'They keep organization-level access.');
     UA.openTeam(tid); refresh();
   };
   UA.teamMenu = function (ev, tid) {

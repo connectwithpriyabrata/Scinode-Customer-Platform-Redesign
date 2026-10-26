@@ -146,7 +146,7 @@
   UA.confirmRemoveFromTeam = function (tid, pid) {
     const t = UA.team(tid), p = UA.person(pid);
     UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Remove ' + esc(p.name) + ' from ' + esc(t.name) + '?',
-      sub: 'They’ll lose this Team’s module access and keep their organization-level access. This can’t be undone.',
+      sub: 'They’ll leave this Team but stay part of your organization. This can’t be undone.',
       body: '', foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Remove from Team', "UA.doRemoveFromTeam('" + tid + "','" + pid + "')", 'btn-danger') });
   };
   UA.doRemoveFromTeam = function (tid, pid) {
@@ -154,7 +154,7 @@
     p.teams = (p.teams || []).filter((x) => x !== tid);
     UA.audit('Removed from Team', p.name, t.name, p.teams.length ? UA.teamsOf(p).map((x) => x.name).join(', ') : 'No Team');
     UA.ta.open = null;
-    UA.closeModal(); UA.toast(p.name + ' removed from ' + t.name, 'They keep organization-level access.');
+    UA.closeModal(); UA.toast(p.name + ' removed from ' + t.name, 'They’re still part of your organization.');
     UA.openTeam(tid); refresh();
   };
   UA.teamMenu = function (ev, tid) {

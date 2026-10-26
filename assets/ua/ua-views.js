@@ -50,10 +50,8 @@
       if (UA.isSA()) headerActions += btn('Create Team', "UA.upgrade('team','Header button')", 'btn-outline', 'plus');
       headerActions += btn(UA.isAdm() ? 'Invite Member' : 'Add Member', 'UA.openAddUser()', 'btn-default', 'user-plus');
     }
-    const rmap = { superadmin: ['navy', 'crown'], admin: ['teal', 'shield'], member: ['gray', null] }, rm = rmap[S.role] || rmap.member;
-    const roleChip = '<span class="ub ' + rm[0] + '" style="font-family:var(--font)">' + (rm[1] ? ic(rm[1], 11) : '') + 'Your role · ' + UA.roleLabel(S.role) + '</span>';
     let h = '<div class="ua-crumb">Organization Settings <span class="ua-faint">›</span> <b>Users &amp; Access</b></div>' +
-      '<div class="ua-head"><div><div class="ua-title" style="display:flex;align-items:center;gap:10px">Users &amp; Access' + roleChip + '</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div>' +
+      '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div>' +
       (headerActions ? '<div class="ua-row" style="gap:8px">' + headerActions + '</div>' : '') + '</div>';
 
     if (S.role === 'admin' && !UA.premium()) {
@@ -130,10 +128,11 @@
     const L = UA.limits(), U = UA.usage(), pl = UA.plat(), free = !UA.premium();
     const id = card(esc(UA.db.org.name),
       'Verified member since ' + esc(UA.db.org.since),
-      '<div class="ua-fact-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">' +
+      '<div class="ua-fact-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">' +
       fact('Domain', esc(UA.db.org.domain)) +
       fact('Plan', free ? 'Free' : '<span class="ub gold">' + ic('gem', 11) + 'Premium</span>', free ? '<button type="button" class="ua-icon-btn" onclick="UA.openPlanLimits(event)" aria-label="Plan limitations">' + ic('info', 12) + '</button>' : '') +
       fact('Location', esc(UA.db.org.location)) +
+      fact('Your role', '<span class="ub navy">' + ic('crown', 11) + 'Superadmin</span>') +
       '</div>',
       '<button type="button" class="btn btn-icon-sm" aria-label="Organization actions" onclick="UA.orgMenu(event)">' + ic('more', 15) + '</button>');
     const modsOn = (function () { let c = 0; for (let i = 0; i < UA.n(); i++) if (UA.teams().some((t) => t.mods[i] === '1')) c++; return c; })();

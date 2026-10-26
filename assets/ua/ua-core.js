@@ -216,6 +216,12 @@
           me.teams = [t.id];
           if (role === 'admin' && t.admins.indexOf('me') < 0) t.admins.push('me');
           if (role !== 'admin') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
+          /* Demonstrates Admin of one Team + plain Member of another: 'me' also joins a
+             second Team (if one exists) that 'me' doesn't administer. */
+          if (role === 'admin') {
+            const t2 = db.teams.find((x) => x.id !== t.id && (x.admins || []).indexOf('me') < 0);
+            if (t2 && me.teams.indexOf(t2.id) < 0) me.teams.push(t2.id);
+          }
         }
       } else me.teams = [];
       if (role === 'member' && db.plan === 'premium') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
@@ -256,6 +262,10 @@
   UA.premium = () => UA.db.plan === 'premium';
   UA.roleLabel = (r) => ({ superadmin: 'Superadmin', admin: 'Admin', member: 'Member' }[r]);
   UA.myTeams = () => UA.teamsOf(UA.me());
+  /* Teams a person ADMINISTERS — distinct from UA.teamsOf/myTeams, which is just membership.
+     An Admin can be Admin of one Team and a plain Member of another; teams(p) covers both,
+     this covers only the ones where they're actually in t.admins. */
+  UA.teamsIAdmin = (p) => { p = p || UA.me(); return UA.teams().filter((t) => (t.admins || []).indexOf(p.id) > -1); };
   UA.adminOf = (t) => (t.admins || []).map(UA.person).filter(Boolean);
 
   const permAt = (p, i) => ({ U: 'use', V: 'view', N: 'none' }[(p.perm || '')[i]] || 'none');
@@ -288,7 +298,7 @@
     return UA.db.requests.filter((r) => {
       const ap = UA.approverOf(r);
       if (S.role === 'superadmin') return true;
-      if (S.role === 'admin') return ap.kind === 'team' && UA.me().teams.indexOf(ap.team) > -1;
+      if (S.role === 'admin') return ap.kind === 'team' && UA.teamsIAdmin().some((t) => t.id === ap.team);
       return false;
     });
   };
@@ -296,11 +306,11 @@
 
   /* Invitations visible: SA all, Admin only ones for their teams / sent by them */
   UA.invitesVisible = function () {
-    return UA.db.invites.filter((i) => S.role === 'superadmin' || (S.role === 'admin' && (i.by === 'me' || (i.team && UA.me().teams.indexOf(i.team) > -1))));
+    return UA.db.invites.filter((i) => S.role === 'superadmin' || (S.role === 'admin' && (i.by === 'me' || (i.team && UA.teamsIAdmin().some((t) => t.id === i.team)))));
   };
   UA.membersVisible = function () {
     const all = UA.people();
-    if (S.role === 'admin') { const mt = UA.me().teams; return all.filter((p) => p.id === 'me' || (p.teams || []).some((t) => mt.indexOf(t) > -1)); }
+    if (S.role === 'admin') { const mt = UA.teamsIAdmin().map((t) => t.id); return all.filter((p) => p.id === 'me' || (p.teams || []).some((t) => mt.indexOf(t) > -1)); }
     return all;
   };
 

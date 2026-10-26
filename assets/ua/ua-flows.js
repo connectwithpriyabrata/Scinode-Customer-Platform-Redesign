@@ -13,7 +13,7 @@
   function canManage(p) {
     if (p.id === 'me') return false;
     if (UA.isSA()) return true;
-    if (UA.isAdm()) return p.role === 'member' && (p.teams || []).some((t) => UA.me().teams.indexOf(t) > -1);
+    if (UA.isAdm()) { const mt = UA.teamsIAdmin().map((t) => t.id); return p.role === 'member' && (p.teams || []).some((t) => mt.indexOf(t) > -1); }
     return false;
   }
 
@@ -90,12 +90,12 @@
     UA.audit('Role changed', p.name, UA.roleLabel(p.role), UA.roleLabel(r)); p.role = r; UA.closeModal(); UA.toast(p.name + ' is now ' + UA.roleLabel(r)); refresh();
   };
   UA.assignTeam = function (id) {
-    const p = UA.person(id), ts = UA.isAdm() ? UA.myTeams() : UA.teams();
+    const p = UA.person(id), ts = UA.isAdm() ? UA.teamsIAdmin() : UA.teams();
     UA.modal({ icon: 'users', title: 'Assign Team', sub: esc(p.name) + ' can belong to one, several or no Teams.', body: (ts.length ? ts.map((t) => '<label class="ua-radio"><input type="checkbox" name="atm" value="' + t.id + '"' + ((p.teams || []).indexOf(t.id) > -1 ? ' checked' : '') + '><div><div class="t">' + esc(t.name) + '</div><div class="s">' + t.mods.split('').filter((c) => c === '1').length + ' of ' + t.mods.length + ' modules enabled</div></div></label>').join('') : '<div class="ua-hint">No Teams yet.</div>') + '<div class="ua-hint">Team membership references the platform membership — never the raw user.</div>',
       foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Save', "UA.saveTeams('" + id + "')") });
   };
   UA.saveTeams = function (id) {
-    const p = UA.person(id), keep = (p.teams || []).filter((t) => UA.isAdm() && UA.me().teams.indexOf(t) < 0), sel = [...document.querySelectorAll('input[name=atm]:checked')].map((x) => x.value);
+    const p = UA.person(id), myAdminTeams = UA.teamsIAdmin().map((t) => t.id), keep = (p.teams || []).filter((t) => UA.isAdm() && myAdminTeams.indexOf(t) < 0), sel = [...document.querySelectorAll('input[name=atm]:checked')].map((x) => x.value);
     const before = p.teams.map((t) => UA.team(t).name).join(', ') || 'No Team'; p.teams = keep.concat(sel);
     UA.audit('Team assignment changed', p.name, before, p.teams.map((t) => UA.team(t).name).join(', ') || 'No Team'); UA.closeModal(); UA.toast('Team assignment updated', 'The relevant Team is notified.'); refresh();
   };
@@ -104,7 +104,8 @@
   UA.ta = { team: null, open: null };
   UA.openTeam = function (tid) {
     if (UA.ta.team !== tid) UA.ta = { team: tid, open: null };
-    const t = UA.team(tid), pp = UA.people().filter((p) => (p.teams || []).indexOf(tid) > -1 && p.role === 'member'), editMods = UA.isSA(), canAdd = !UA.isMem();
+    const t = UA.team(tid), pp = UA.people().filter((p) => (p.teams || []).indexOf(tid) > -1 && p.role === 'member'),
+      amAdmin = UA.isSA() || (t.admins || []).indexOf(UA.me().id) > -1, editMods = UA.isSA(), canAdd = amAdmin;
     let mods = '';
     for (let i = 0; i < UA.n(); i++) { const m = UA.mod(i), on = t.mods[i] === '1'; mods += '<div class="ua-mod"><span class="ua-ic gray">' + ic(m.icon, 15) + '</span><div class="n">' + m.name + '</div>' + (editMods ? '<button type="button" class="ua-switch ' + (on ? 'on' : '') + '" onclick="UA.toggleTeamMod(\'' + tid + '\',' + i + ')" aria-label="Toggle ' + m.name + '"></button>' : '<span class="ub ' + (on ? 'teal' : 'gray') + '">' + (on ? 'Enabled' : 'Not enabled') + '</span>') + '</div>'; }
     const memberRows = pp.map((p) => {
@@ -127,9 +128,10 @@
       lead: '<span class="ua-ic lg">' + ic('users', 20) + '</span>', title: esc(t.name), sub: esc(t.desc),
       kebab: UA.isSA() ? "UA.teamMenu(event,'" + tid + "')" : '',
       body: '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">Active</span><span class="ub gray">Platform · ' + esc(UA.plat().name) + '</span></div>' +
+        (UA.isAdm() && !amAdmin ? '<div class="ua-hint" style="margin-top:8px">You’re a Member of this Team, not its Admin — you can view it but not manage it.</div>' : '') +
         '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.isSA() ? '<button type="button" class="ua-link" onclick="UA.assignTeamAdmin(\'' + tid + '\')">' + ic('plus', 12) + 'Add admin</button>' : '') + '</div>' + '<div style="margin-top:6px">' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + (UA.isSA() ? '<button type="button" class="btn btn-icon-sm" aria-label="Admin actions" onclick="UA.adminMenu(event,\'' + tid + '\',\'' + a.id + '\')">' + ic('more', 15) + '</button>' : '') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div></div>' +
-        '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
-        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\',role:\'member\',skipRolePick:true})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (UA.isMem() ? 'view' : 'view or change') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
+        '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (amAdmin && !editMods ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (!amAdmin ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
+        '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\',role:\'member\',skipRolePick:true})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (amAdmin ? 'view or change' : 'view') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
       foot: ''
     });
   };
@@ -257,7 +259,7 @@
   UA.au = { role: 'member', team: '', email: '', emails: [], perms: {}, msg: '', teamLocked: false, skipRolePick: false };
   UA.openAddUser = function (pre) {
     UA.au = { role: (pre && pre.role) || 'member', team: (pre && pre.team) || '', email: '', emails: [], perms: {}, msg: '', teamLocked: !!(pre && pre.team), skipRolePick: !!(pre && pre.skipRolePick) };
-    if (UA.isAdm() && !UA.au.team) UA.au.team = UA.myTeams()[0] ? UA.myTeams()[0].id : '';
+    if (UA.isAdm() && !UA.au.team) UA.au.team = UA.teamsIAdmin()[0] ? UA.teamsIAdmin()[0].id : '';
     if (UA.au.skipRolePick) UA.auStep2(); else UA.auStep1();
   };
   UA.auStep1 = function () {
@@ -319,11 +321,11 @@
   UA.auStep2 = function (keep) {
     if (keep === true) { const e = document.getElementById('au-email'); if (e) UA.au.email = e.value; }
     const a = UA.au, pl = UA.plat(), dt = a.email && validEmail(a.email) ? UA.domainType(a.email) : null;
-    const ts = UA.isAdm() ? UA.myTeams() : UA.teams();
+    const ts = UA.isAdm() ? UA.teamsIAdmin() : UA.teams();
     const teamSel = !UA.premium() ? '<div class="ua-field"><label>Team</label><div class="ua-hint"><span class="ub gold" style="margin-right:6px">' + ic('lock', 10) + 'Premium</span>this Member will join with No Team and Use access.</div></div>' :
       '<div class="ua-field"><label>Team' + (a.role === 'admin' ? ' *' : '') + '</label><select class="ua-select" style="width:100%" onchange="UA.au.team=this.value;UA.au.perms={};if(this.value===\'__new\'){UA.au.team=\'\';UA.openCreateTeam({from:1});}else UA.auStep2(true)">' +
       (a.role !== 'admin' && !UA.isAdm() ? '<option value="">No Team — standalone Member</option>' : '<option value="">Select a Team</option>') + ts.map((t) => '<option value="' + t.id + '"' + (a.team === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('') + (UA.isSA() ? '<option value="__new">+ Create new Team…</option>' : '') + '</select>' +
-      '<div class="h">' + (a.role === 'admin' ? 'Admins must belong to a Team.' + (UA.isAdm() ? ' You can only invite within your own Team.' : '') : UA.isAdm() ? 'You can only invite into Teams you belong to.' : 'Optional for Members.') + '</div></div>';
+      '<div class="h">' + (a.role === 'admin' ? 'Admins must belong to a Team.' + (UA.isAdm() ? ' You can only invite within a Team you manage.' : '') : UA.isAdm() ? 'You can only invite into a Team you manage.' : 'Optional for Members.') + '</div></div>';
     const emailField = a.role === 'member' ?
       '<div class="ua-field"><label for="au-mem">Work email(s) *</label><div class="ua-chip-input" onclick="document.getElementById(\'au-mem\').focus()">' + auMemChips() + '<input id="au-mem" placeholder="' + ((a.emails || []).length ? '' : 'a@acme.com, b@acme.com') + '" oninput="UA.auMemInput(this)" onkeydown="UA.auMemKey(event,this)"></div><div class="h">Add one person or several — press comma or Enter after each email.</div><div class="e" id="au-err"></div></div>' :
       '<div class="ua-field"><label for="au-email">Work email *</label><input id="au-email" class="ua-input" type="email" placeholder="name@company.com" value="' + esc(a.email) + '" oninput="UA.au.email=this.value;UA.auHint()"><div class="h" id="au-hint">' + auHint(dt) + '</div><div class="e" id="au-err"></div></div>';

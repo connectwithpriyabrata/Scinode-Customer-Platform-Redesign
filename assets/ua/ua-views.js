@@ -149,7 +149,7 @@
     return '<div style="display:flex;flex-direction:column;gap:16px"><div class="ua-h">Organization snapshot</div><div class="ua-grid c2">' + id + quickStartHub() + '</div>' + capsHead + '<div class="ua-grid ' + (free ? 'c4' : 'c5') + '">' + caps + '</div>' + dir + '</div>';
   }
   function vOrgAdmin() {
-    const me = UA.me(), db = UA.db, ts = UA.myTeams();
+    const me = UA.me(), db = UA.db, ts = UA.teamsIAdmin();
     const idc = card(esc(db.org.name), 'Read-only overview · ' + esc(UA.plat().name),
       '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gold">' + ic('gem', 11) + 'Premium</span><span class="ub navy">' + ic('shield', 11) + 'Your role · Admin</span>' + ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') + '</div>' +
       '<div class="ua-hint" style="margin-top:12px">You manage Members and module access for ' + (ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'your assigned Team') + '.</div>',
@@ -180,9 +180,11 @@
   /* ───────────── TEAMS ───────────── */
   function teamCard(t) {
     const pp = UA.people().filter((p) => (p.teams || []).indexOf(t.id) > -1), on = t.mods.split('').filter((c) => c === '1').length;
-    return '<div class="ua-card" style="cursor:pointer" onclick="UA.openTeam(\'' + t.id + '\')"><div class="ua-row" style="align-items:flex-start"><span class="ua-ic lg">' + ic('users', 20) + '</span><div class="grow" style="flex:1;min-width:0"><div class="ua-h" style="font-size:15px">' + esc(t.name) + '</div><div class="ua-hint">' + esc(t.desc) + '</div></div><span class="ub success dot">Active</span></div>' +
+    const amAdmin = UA.isSA() || (t.admins || []).indexOf(UA.me().id) > -1;
+    const relBadge = UA.isAdm() ? '<span class="ub ' + (amAdmin ? 'navy' : 'gray') + '" style="margin-left:6px">' + (amAdmin ? 'You admin this Team' : 'You’re a Member') + '</span>' : '';
+    return '<div class="ua-card" style="cursor:pointer" onclick="UA.openTeam(\'' + t.id + '\')"><div class="ua-row" style="align-items:flex-start"><span class="ua-ic lg">' + ic('users', 20) + '</span><div class="grow" style="flex:1;min-width:0"><div class="ua-h" style="font-size:15px">' + esc(t.name) + '</div><div class="ua-hint">' + esc(t.desc) + '</div></div><span class="ub success dot">Active</span>' + relBadge + '</div>' +
       '<div class="ua-row between" style="margin-top:16px"><div><div class="ua-xs ua-muted">Admin' + (t.admins.length === 1 ? '' : 's') + '</div><div class="ua-sm" style="font-weight:500;margin-top:2px">' + (UA.adminOf(t).map((a) => esc(a.name)).join(', ') || (t.pendingAdmin ? esc(t.pendingAdmin) + ' (invited)' : '—')) + '</div></div><div class="ua-avs">' + pp.slice(0, 4).map((p) => UA.av(p, 'sm')).join('') + '</div></div>' +
-      '<div class="ua-row between" style="margin-top:14px"><span class="ua-xs ua-muted">' + pp.length + ' member' + (pp.length === 1 ? '' : 's') + ' · ' + on + ' of ' + t.mods.length + ' module' + (t.mods.length === 1 ? '' : 's') + ' enabled</span><span class="ua-link">' + (UA.isMem() ? 'View' : 'Open') + ic('arrow', 12) + '</span></div></div>';
+      '<div class="ua-row between" style="margin-top:14px"><span class="ua-xs ua-muted">' + pp.length + ' member' + (pp.length === 1 ? '' : 's') + ' · ' + on + ' of ' + t.mods.length + ' module' + (t.mods.length === 1 ? '' : 's') + ' enabled</span><span class="ua-link">' + (UA.isMem() || !amAdmin ? 'View' : 'Open') + ic('arrow', 12) + '</span></div></div>';
   }
   function vTeams() {
     if (!UA.premium()) {
@@ -195,7 +197,7 @@
         '<div class="ua-gate-art"><span class="g">Your organization today</span><div><div class="big">0</div><div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:4px">Teams on the Free plan</div></div><div style="font-size:12px;color:rgba(255,255,255,.55)">Superadmin · ' + UA.usage().mem + '/' + UA.limits().mem + ' Members</div></div></div>';
     }
     let ts = UA.isSA() ? UA.teams() : UA.myTeams();
-    const head = '<div class="ua-row between wrap"><div><div class="ua-h">' + (UA.isSA() ? 'Teams' : UA.isAdm() ? 'Your Teams' : 'My Teams') + '</div><div class="ua-hint">' + (UA.isAdm() ? 'You manage members within your assigned Teams.' : UA.isMem() ? 'View-only — your Teams, their modules, and your effective access.' : 'Teams are scoped to this platform and never appear on another.') + '</div></div>' + (UA.isSA() && UA.db.day !== 0 ? btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') : '') + '</div>';
+    const head = '<div class="ua-row between wrap"><div><div class="ua-h">' + (UA.isSA() ? 'Teams' : UA.isAdm() ? 'Your Teams' : 'My Teams') + '</div><div class="ua-hint">' + (UA.isAdm() ? 'Manage the Teams you administer — view-only for any Team you’ve just joined as a Member.' : UA.isMem() ? 'View-only — your Teams, their modules, and your effective access.' : 'Teams are scoped to this platform and never appear on another.') + '</div></div>' + (UA.isSA() && UA.db.day !== 0 ? btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') : '') + '</div>';
     if (!ts.length) return head + '<div class="ua-card" style="margin-top:16px">' + UA.emptyState('users', UA.isSA() ? 'Create your first Team' : 'You’re not in a Team yet', UA.isSA() ? 'Group Members and manage access more easily. Every Team needs an assigned Admin.' : 'You have organization-level access. Your Superadmin can add you to a Team.', UA.isSA() ? btn('Create Team', 'UA.openCreateTeam()', 'btn-default', 'plus') : '') + '</div>';
     return head + '<div class="ua-grid c3" style="margin-top:16px">' + ts.map(teamCard).join('') + '</div>';
   }

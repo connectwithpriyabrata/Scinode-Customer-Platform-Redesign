@@ -50,8 +50,10 @@
       if (UA.isSA()) headerActions += btn('Create Team', "UA.upgrade('team','Header button')", 'btn-outline', 'plus');
       headerActions += btn(UA.isAdm() ? 'Invite Member' : 'Add Member', 'UA.openAddUser()', 'btn-default', 'user-plus');
     }
+    const rmap = { superadmin: ['navy', 'crown'], admin: ['teal', 'shield'], member: ['gray', null] }, rm = rmap[S.role] || rmap.member;
+    const roleChip = '<span class="ub ' + rm[0] + '" style="font-family:var(--font)">' + (rm[1] ? ic(rm[1], 11) : '') + 'Your role · ' + UA.roleLabel(S.role) + '</span>';
     let h = '<div class="ua-crumb">Organization Settings <span class="ua-faint">›</span> <b>Users &amp; Access</b></div>' +
-      '<div class="ua-head"><div><div class="ua-title">Users &amp; Access</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div>' +
+      '<div class="ua-head"><div><div class="ua-title" style="display:flex;align-items:center;gap:10px">Users &amp; Access' + roleChip + '</div><div class="ua-sub">' + (UA.isMem() ? 'See where you belong and what you can use in this organization.' : 'Manage who belongs to your organization on this platform, what they can access, and what needs your approval.') + '</div></div>' +
       (headerActions ? '<div class="ua-row" style="gap:8px">' + headerActions + '</div>' : '') + '</div>';
 
     if (S.role === 'admin' && !UA.premium()) {

@@ -398,6 +398,14 @@
     const map = { superadmin: ['navy', 'crown'], admin: ['teal', 'shield'], member: ['gray', null] };
     const m = map[r]; return '<span class="ub ' + m[0] + '">' + (m[1] ? ic(m[1], 11) : '') + UA.roleLabel(r) + '</span>';
   };
+  /* Global shell hook: the account-menu dropdown (copy-pasted shell markup, see CLAUDE.md) carries an
+     optional #acct-role-chip placeholder on pages that load this module. Null-safe — no-op elsewhere. */
+  UA.syncAcctRoleChip = function () {
+    const el = document.getElementById('acct-role-chip'); if (!el) return;
+    const map = { superadmin: ['navy', 'crown'], admin: ['teal', 'shield'], member: ['gray', null] };
+    const m = map[S.role] || map.member;
+    el.innerHTML = '<span class="ub ' + m[0] + '">' + (m[1] ? ic(m[1], 10) : '') + UA.roleLabel(S.role) + ' on ' + esc(UA.plat().name) + '</span>';
+  };
   UA.statusBadge = function (s) {
     const map = { active: ['success', 'Active'], pending: ['warn', 'Pending Approval'], suspended: ['gray', 'Suspended'], rejected: ['err', 'Rejected'], sent: ['info', 'Sent'], joined: ['success', 'Joined'], waiting: ['warn', 'Waiting for Approval'], approved: ['success', 'Approved'], cancelled: ['gray', 'Cancelled'], accepted: ['info', 'Invitation Accepted'], reqpending: ['warn', 'Pending'] };
     const m = map[s] || ['gray', s]; return '<span class="ub dot ' + m[0] + '">' + m[1] + '</span>';
@@ -425,6 +433,6 @@
     UA.load();
     if ('plan' in pd) UA.setPlanDay('plan', pd.plan);
     if ('day' in pd) UA.setPlanDay('day', pd.day);
-    if (UA.render) UA.render(); if (UA.syncDemo) UA.syncDemo();
+    if (UA.render) UA.render(); if (UA.syncDemo) UA.syncDemo(); UA.syncAcctRoleChip();
   };
 })();

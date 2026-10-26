@@ -11,6 +11,7 @@
 
   S.platform = 'scinode';
   UA.load(); /* seeds 'scinode' with its own default Plan/Stage (Premium/Day 1) if nothing's touched it yet */
+  UA.syncAcctRoleChip();
 
   const EMB = (window.UAEmbed = {});
   let MOD = 0, VIEW = 'org';
@@ -59,7 +60,7 @@
     MOD = UA.PLATFORMS.scinode.mods.indexOf(EMB.moduleKey);
     el.innerHTML = '<div class="ua-card">' + head(EMB.title) + body(MOD) + '</div>';
   };
-  EMB.setRole = function (r) { S.role = r; UA.applyViewer(); if (EMB.mountId) EMB.render(); if (EMB.waitingMountIds.length) EMB.renderWaiting(); };
+  EMB.setRole = function (r) { S.role = r; UA.applyViewer(); if (EMB.mountId) EMB.render(); if (EMB.waitingMountIds.length) EMB.renderWaiting(); UA.syncAcctRoleChip(); };
   EMB.setView = function (v) { VIEW = v; EMB.render(); };
   EMB.requestView = function (k) {
     const key = MOD + ':' + k;

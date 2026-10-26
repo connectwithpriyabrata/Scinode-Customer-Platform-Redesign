@@ -41,7 +41,7 @@
     const qPlan = q.get('plan'), qDay = q.get('day');
     if (qPlan) UA.setPlanDay('plan', qPlan);
     if (qDay != null && qDay !== '') UA.setPlanDay('day', +qDay);
-    UA.render();
+    UA.render(); UA.syncAcctRoleChip();
     const d = document.createElement('div'); d.className = 'ua-demo'; d.id = 'ua-demo'; d.innerHTML = demoHtml(); document.body.appendChild(d); UA.syncDemo();
     document.querySelector('.main') && new MutationObserver(() => d.classList.toggle('sbc', document.querySelector('.main').classList.contains('sb-collapsed'))).observe(document.querySelector('.main'), { attributes: true, attributeFilter: ['class'] });
     if (q.get('open') === 'preview') UA.openModulePreview();

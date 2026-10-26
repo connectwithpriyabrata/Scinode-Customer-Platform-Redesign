@@ -127,7 +127,7 @@
       lead: '<span class="ua-ic lg">' + ic('users', 20) + '</span>', title: esc(t.name), sub: esc(t.desc),
       kebab: UA.isSA() ? "UA.teamMenu(event,'" + tid + "')" : '',
       body: '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">Active</span><span class="ub gray">Platform · ' + esc(UA.plat().name) + '</span></div>' +
-        '<div><div class="ua-sect">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + UA.roleBadge('admin') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div>' +
+        '<div><div class="ua-sect">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + (UA.isSA() ? '<button type="button" class="btn btn-icon-sm" aria-label="Admin actions" onclick="UA.adminMenu(event,\'' + tid + '\',\'' + a.id + '\')">' + ic('more', 15) + '</button>' : '') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div>' +
         '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
         '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\'})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (UA.isMem() ? 'view' : 'view or change') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
       foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') : ''
@@ -158,38 +158,39 @@
     UA.openTeam(tid); refresh();
   };
   UA.teamMenu = function (ev, tid) {
-    const t = UA.team(tid), hasAdmin = (t.admins || []).length > 0;
-    UA.menu(ev, [
-      hasAdmin ? { label: 'Remove Admin', icon: 'x-circle', fn: "UA.confirmRemoveTeamAdmin('" + tid + "')" } : { label: 'Assign Admin', icon: 'shield', fn: "UA.assignTeamAdmin('" + tid + "')" },
-      { sep: 1 },
-      { label: 'Delete Team', icon: 'trash', dg: 1, fn: "UA.confirmDeleteTeam('" + tid + "')" }
-    ]);
+    const t = UA.team(tid), hasAdmin = (t.admins || []).length > 0, items = [];
+    if (!hasAdmin) { items.push({ label: 'Assign Admin', icon: 'shield', fn: "UA.assignTeamAdmin('" + tid + "')" }); items.push({ sep: 1 }); }
+    items.push({ label: 'Delete Team', icon: 'trash', dg: 1, fn: "UA.confirmDeleteTeam('" + tid + "')" });
+    UA.menu(ev, items);
   };
-  UA.confirmRemoveTeamAdmin = function (tid) {
-    const t = UA.team(tid), a = UA.adminOf(t)[0];
+  UA.adminMenu = function (ev, tid, aid) {
+    UA.menu(ev, [{ label: 'Remove Admin', icon: 'x-circle', dg: 1, fn: "UA.confirmRemoveTeamAdmin('" + tid + "','" + aid + "')" }]);
+  };
+  UA.confirmRemoveTeamAdmin = function (tid, aid) {
+    const t = UA.team(tid), a = UA.person(aid);
     UA.modal({ icon: 'x-circle', iconCls: 'gray', title: 'Remove Admin from ' + esc(t.name) + '?',
-      sub: (a ? esc(a.name) : 'The current Admin') + ' goes back to Member and no longer manages this Team.',
+      sub: (a ? esc(a.name) : 'This person') + ' goes back to Member and no longer manages this Team.',
       body: '<div class="ua-field"><label for="rta-admin">Who do you want to be Admin for this Team?</label><input id="rta-admin" class="ua-input" type="email" placeholder="admin@acme.com"><div class="e" id="rta-e"></div><div class="h">Enter their email — you can also do this later from the Team drawer.</div></div>',
-      foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Remove Admin', "UA.doRemoveTeamAdmin('" + tid + "')", 'btn-danger') });
+      foot: btn('Cancel', 'UA.closeModal()', 'btn-ghost-v') + btn('Remove Admin', "UA.doRemoveTeamAdmin('" + tid + "','" + aid + "')", 'btn-danger') });
   };
-  UA.doRemoveTeamAdmin = function (tid) {
-    const t = UA.team(tid), ids = (t.admins || []).slice(), names = ids.map((id) => { const p = UA.person(id); return p ? p.name : id; });
+  UA.doRemoveTeamAdmin = function (tid, aid) {
+    const t = UA.team(tid), p = UA.person(aid), name = p ? p.name : aid;
     const naEl = document.getElementById('rta-admin'), na = naEl ? naEl.value.trim().toLowerCase() : '', err = document.getElementById('rta-e');
     if (err) err.textContent = '';
     if (na) {
       if (!validEmail(na)) { err.textContent = 'Enter a valid email, or leave this blank.'; return; }
-      if (ids.some((id) => { const p = UA.person(id); return p && p.email === na; })) { err.textContent = 'That’s the Admin being removed.'; return; }
+      if (p && p.email === na) { err.textContent = 'That’s the Admin being removed.'; return; }
       if (UA.db.invites.some((i) => i.email === na && (i.status === 'sent' || i.status === 'waiting'))) { err.textContent = 'This person already has a pending invitation.'; return; }
     }
-    t.admins = [];
-    ids.forEach((id) => { const p = UA.person(id); if (p && p.role === 'admin' && !UA.db.teams.some((team) => (team.admins || []).indexOf(id) > -1)) p.role = 'member'; });
-    UA.audit('Team Admin removed', t.name, names.join(', ') || '—', 'No Admin');
-    let detail = 'You can assign a new Admin from the Team drawer.';
+    t.admins = (t.admins || []).filter((id) => id !== aid);
+    if (p && p.role === 'admin' && !UA.db.teams.some((team) => (team.admins || []).indexOf(aid) > -1)) p.role = 'member';
+    UA.audit('Team Admin removed', t.name, name, t.admins.length ? UA.adminOf(t).map((x) => x.name).join(', ') : 'No Admin');
+    let detail = t.admins.length ? '' : 'You can assign a new Admin from the Team drawer.';
     if (na) {
-      const existing = UA.people().find((p) => p.email === na);
+      const existing = UA.people().find((pp) => pp.email === na);
       if (existing) {
         if ((existing.teams || []).indexOf(tid) < 0) existing.teams = (existing.teams || []).concat([tid]);
-        existing.role = 'admin'; t.admins = [existing.id]; t.pendingAdmin = '';
+        existing.role = 'admin'; if (t.admins.indexOf(existing.id) < 0) t.admins.push(existing.id); t.pendingAdmin = '';
         UA.audit('Team Admin assigned', t.name, 'No Admin', existing.name);
         detail = existing.name + ' is now Admin of ' + t.name + '.';
       } else {
@@ -200,7 +201,7 @@
         detail = nameFromEmail(na) + ' invited as Admin · see Invitations.';
       }
     }
-    UA.closeModal(); UA.toast('Admin removed from ' + t.name, detail); UA.openTeam(tid); refresh();
+    UA.closeModal(); UA.toast(name + ' removed as Admin of ' + t.name, detail); UA.openTeam(tid); refresh();
   };
   UA.toggleTeamMod = function (tid, i) {
     const t = UA.team(tid), a = t.mods.split(''); a[i] = a[i] === '1' ? '0' : '1'; t.mods = a.join('');

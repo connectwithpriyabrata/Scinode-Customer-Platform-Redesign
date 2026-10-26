@@ -130,7 +130,7 @@
         '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Admin' + (t.admins.length === 1 ? '' : 's') + '</div>' + (UA.isSA() ? '<button type="button" class="ua-link" onclick="UA.assignTeamAdmin(\'' + tid + '\')">' + ic('plus', 12) + 'Add admin</button>' : '') + '</div>' + '<div style="margin-top:6px">' + (UA.adminOf(t).map((a) => '<div class="ua-li"><div class="grow">' + UA.person$(a) + '</div>' + (UA.isSA() ? '<button type="button" class="btn btn-icon-sm" aria-label="Admin actions" onclick="UA.adminMenu(event,\'' + tid + '\',\'' + a.id + '\')">' + ic('more', 15) + '</button>' : '') + '</div>').join('') || '<div class="ua-hint">' + (t.pendingAdmin ? esc(t.pendingAdmin) + ' — invitation sent, not yet joined' : 'No Admin assigned') + '</div>') + '</div></div>' +
         '<div><div class="ua-sect">Enabled modules' + (editMods ? '' : '') + '</div>' + mods + (UA.isAdm() ? '<div class="ua-hint">Admins can’t enable new modules for a Team — ask the Superadmin.</div>' : '') + (UA.isMem() ? '<div class="ua-hint">If a module is disabled for the Team, it overrides your individual permission.</div>' : '') + '</div>' +
         '<div><div class="ua-row between"><div class="ua-sect" style="margin:0">Members · ' + pp.length + '</div>' + (canAdd ? '<button type="button" class="ua-link" onclick="UA.closeDrawer();UA.openAddUser({team:\'' + tid + '\',role:\'member\',skipRolePick:true})">' + ic('plus', 12) + 'Add member</button>' : '') + '</div><div class="ua-hint" style="margin:2px 0 6px">Click a member to ' + (UA.isMem() ? 'view' : 'view or change') + ' their access to this Team’s modules.</div><div class="ua-list" style="margin-top:6px">' + memberRows + '</div></div>',
-      foot: UA.isSA() ? btn('Edit Team', "UA.editTeam('" + tid + "')", 'btn-outline', 'pencil') : ''
+      foot: ''
     });
   };
   UA.toggleTeamMember = function (tid, pid) {
@@ -158,7 +158,11 @@
     UA.openTeam(tid); refresh();
   };
   UA.teamMenu = function (ev, tid) {
-    UA.menu(ev, [{ label: 'Delete Team', icon: 'trash', dg: 1, fn: "UA.confirmDeleteTeam('" + tid + "')" }]);
+    UA.menu(ev, [
+      { label: 'Edit Team', icon: 'pencil', fn: "UA.editTeam('" + tid + "')" },
+      { sep: 1 },
+      { label: 'Delete Team', icon: 'trash', dg: 1, fn: "UA.confirmDeleteTeam('" + tid + "')" }
+    ]);
   };
   UA.adminMenu = function (ev, tid, aid) {
     UA.menu(ev, [{ label: 'Remove Admin', icon: 'x-circle', dg: 1, fn: "UA.confirmRemoveTeamAdmin('" + tid + "','" + aid + "')" }]);

@@ -216,11 +216,11 @@
           me.teams = [t.id];
           if (role === 'admin' && t.admins.indexOf('me') < 0) t.admins.push('me');
           if (role !== 'admin') db.teams.forEach((x) => { x.admins = x.admins.filter((a) => a !== 'me'); });
-          /* Demonstrates Admin of one Team + plain Member of another: 'me' also joins a
-             second Team (if one exists) that 'me' doesn't administer. */
+          /* Demonstrates Admin of one Team + plain Member of every other Team: 'me' also
+             joins every other Team that 'me' doesn't administer (so the Teams tab and the
+             Organization card's Team directory show a realistic multi-Team Admin). */
           if (role === 'admin') {
-            const t2 = db.teams.find((x) => x.id !== t.id && (x.admins || []).indexOf('me') < 0);
-            if (t2 && me.teams.indexOf(t2.id) < 0) me.teams.push(t2.id);
+            db.teams.forEach((x) => { if (x.id !== t.id && (x.admins || []).indexOf('me') < 0 && me.teams.indexOf(x.id) < 0) me.teams.push(x.id); });
           }
         }
       } else me.teams = [];

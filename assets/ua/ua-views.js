@@ -159,11 +159,18 @@
       '</div>' +
       '<div class="ua-hint" style="margin-top:12px">You manage Members and module access for ' + (ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'your assigned Team') + '.</div>',
       btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'), 'ua-pair-card');
-    const teamDir = card('Your Team directory', 'Only the Team(s) you belong to.', tree('mine'), null, 'ua-pair-card');
+    const myTs = UA.myTeams();
+    const teamTiles = '<div style="max-height:68px;overflow-y:auto"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px">' +
+      myTs.map((team) => {
+        const memCount = UA.people().filter((p) => (p.teams || []).indexOf(team.id) > -1).length;
+        const sub = 'Admin: ' + (UA.adminOf(team).map((a) => esc(a.name)).join(', ') || '—') + ' · ' + memCount + ' member' + (memCount === 1 ? '' : 's');
+        return '<div class="ua-node team" style="max-width:none" title="' + esc(team.name) + ' — ' + sub + '"><span class="ua-ic">' + ic('users', 16) + '</span><div class="grow" style="min-width:0"><div class="t" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(team.name) + '</div><div class="s" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + sub + '</div></div></div>';
+      }).join('') + '</div></div>';
+    const teamDir = card('Your Team directory', 'Only the Team(s) you belong to.', teamTiles, null, 'ua-pair-card');
     const scope = card('What you can do as an Admin', 'Your authority is bounded by your assigned Team(s).',
       '<div class="ua-grid c2"><div><div class="ua-sect">You can</div><div class="ua-list">' + ['Manage Members inside your Team(s)', 'Invite Members or a fellow Admin into your own Team — the Superadmin is notified of every invite', 'Set View / Use within modules already enabled for your Team', 'Approve Request to Use / View for your Team’s Members'].map((x) => '<div class="ua-li" style="padding:6px 0"><span style="color:var(--teal-600)">' + ic('check-circle', 15) + '</span><div class="grow t" style="font-weight:400">' + x + '</div></div>').join('') + '</div></div>' +
       '<div><div class="ua-sect">You can’t</div><div class="ua-list">' + ['Create Teams or invite Superadmins', 'Enable new modules for a Team', 'Manage people outside your Team scope', 'Change organization-wide structure or Billing'].map((x) => '<div class="ua-li" style="padding:6px 0"><span style="color:var(--text-3)">' + ic('x-circle', 15) + '</span><div class="grow t" style="font-weight:400;color:var(--text-2)">' + x + '</div></div>').join('') + '</div></div></div>');
-    return '<div style="display:flex;flex-direction:column;gap:16px;min-width:0"><div class="ua-grid c2">' + idc + teamDir + '</div>' + scope + '</div>';
+    return '<div style="display:flex;flex-direction:column;gap:16px;min-width:0"><div class="ua-grid c2" style="align-items:start">' + idc + teamDir + '</div>' + scope + '</div>';
   }
 
   function vOrgMember() {

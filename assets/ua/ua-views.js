@@ -160,7 +160,7 @@
       '<div class="ua-hint" style="margin-top:12px">You manage Members and module access for ' + (ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'your assigned Team') + '.</div>',
       btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'), 'ua-pair-card');
     const myTs = UA.myTeams();
-    const teamTiles = '<div style="max-height:68px;overflow-y:auto"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px">' +
+    const teamTiles = '<div style="height:68px;overflow-y:auto"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px">' +
       myTs.map((team) => {
         const memCount = UA.people().filter((p) => (p.teams || []).indexOf(team.id) > -1).length;
         const sub = 'Admin: ' + (UA.adminOf(team).map((a) => esc(a.name)).join(', ') || '—') + ' · ' + memCount + ' member' + (memCount === 1 ? '' : 's');

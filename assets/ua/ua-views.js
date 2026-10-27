@@ -151,7 +151,12 @@
   function vOrgAdmin() {
     const me = UA.me(), db = UA.db, ts = UA.teamsIAdmin();
     const idc = card(esc(db.org.name), 'Read-only overview · ' + esc(UA.plat().name),
-      '<div class="ua-row wrap" style="gap:8px"><span class="ub success dot">' + db.org.status + '</span><span class="ub gold">' + ic('gem', 11) + 'Premium</span><span class="ub navy">' + ic('shield', 11) + 'Your role · Admin</span>' + ts.map((t) => '<span class="ub teal">' + esc(t.name) + '</span>').join('') + '</div>' +
+      '<div class="ua-fact-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">' +
+      fact('Domain', esc(db.org.domain)) +
+      fact('Plan', '<span class="ub gold">' + ic('gem', 11) + 'Premium</span>') +
+      fact('Team(s)', ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'Not yet assigned') +
+      fact('Your role', '<span class="ub navy">' + ic('shield', 11) + 'Admin</span>') +
+      '</div>' +
       '<div class="ua-hint" style="margin-top:12px">You manage Members and module access for ' + (ts.length ? ts.map((t) => esc(t.name)).join(', ') : 'your assigned Team') + '.</div>',
       btn('View my access', 'UA.openMyAccess()', 'btn-outline', 'key'), 'ua-pair-card');
     const teamDir = card('Your Team directory', 'Only the Team(s) you belong to.', tree('mine'), null, 'ua-pair-card');
